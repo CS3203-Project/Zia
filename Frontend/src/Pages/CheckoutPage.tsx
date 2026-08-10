@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ShieldCheck, Lock } from 'lucide-react';
 import { serviceApi, type ServiceResponse } from '../api/serviceApi';
-import { StripePaymentWrapper } from '../components/Payment';
-import { currencyConfig } from '../services/stripeConfig';
+import { PayHereCheckout } from '../components/Payment';
+import { currencyConfig } from '../services/paymentConfig';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -265,7 +265,7 @@ const CheckoutPage: React.FC = () => {
               </p>
             </div>
 
-            <StripePaymentWrapper
+            <PayHereCheckout
               serviceId={service.id}
               amount={totalAmount}
               currency={service.currency}

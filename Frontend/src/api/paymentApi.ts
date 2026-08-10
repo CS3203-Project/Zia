@@ -1,24 +1,37 @@
-import apiClient from './axios';
+import { paymentApiClient } from './axios';
 
 // Payment Types
-export interface PaymentIntent {
-  id: string;
-  amount: number;
+export interface PayHereCheckoutFields {
+  sandbox: boolean;
+  merchant_id: string;
+  return_url: string;
+  cancel_url: string;
+  notify_url: string;
+  order_id: string;
+  items: string;
+  amount: string;
   currency: string;
-  clientSecret: string;
-  status: string;
+  hash: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  country: string;
+  custom_1: string;
 }
 
-export interface CreatePaymentIntentRequest {
+export interface PayHereCheckoutResponse {
+  paymentId: string;
+  orderId: string;
+  payhereFields: PayHereCheckoutFields;
+}
+
+export interface CreateCheckoutRequest {
   serviceId: string;
   amount: number;
   currency?: string;
-  metadata?: Record<string, string | number | boolean>;
-}
-
-export interface ConfirmPaymentRequest {
-  paymentIntentId: string;
-  paymentMethodId?: string;
 }
 
 export interface Payment {
@@ -27,8 +40,8 @@ export interface Payment {
   providerId: string;
   userId: string;
   gateway: string;
-  stripePaymentIntentId?: string;
-  chargeId?: string;
+  payhereOrderId?: string;
+  payherePaymentId?: string;
   amount: number;
   platformFee?: number;
   providerAmount?: number;
@@ -69,7 +82,6 @@ export interface ProviderEarnings {
   pendingBalance: number;
   totalWithdrawn: number;
   currency: string;
-  stripeAccountId?: string;
   lastPayoutAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -102,46 +114,33 @@ export interface PaymentHistoryResponse {
 
 // Payment API Service
 export const paymentApi = {
-  // Create payment intent
-  createPaymentIntent: async (data: CreatePaymentIntentRequest): Promise<PaymentIntent> => {
-    const response = await apiClient.post('/payments/create-intent', data);
-    // Handle your backend's response structure: {success: true, message: "...", data: {...}}
-    if (response.data.success && response.data.data) {
-      return response.data.data; // Return the actual payment intent data
-    } else if (response.data.clientSecret) {
-      return response.data; // Direct response format
-    } else {
-      throw new Error('Invalid response format from payment API');
-    }
-  },
-
-  // Confirm payment
-  confirmPayment: async (data: ConfirmPaymentRequest): Promise<Payment> => {
-    const response = await apiClient.post('/payments/confirm', data);
+  // Create a PayHere checkout payload
+  createCheckout: async (data: CreateCheckoutRequest): Promise<PayHereCheckoutResponse> => {
+    const response = await paymentApiClient.post('/payments/checkout', data);
     return response.data.success ? response.data.data : response.data;
   },
 
   // Get payment status
   getPaymentStatus: async (paymentId: string): Promise<Payment> => {
-    const response = await apiClient.get(`/payments/status/${paymentId}`);
+    const response = await paymentApiClient.get(`/payments/status/${paymentId}`);
     return response.data.success ? response.data.data : response.data;
   },
 
   // Get user payment history
   getPaymentHistory: async (page: number = 1, limit: number = 10): Promise<PaymentHistoryResponse> => {
-    const response = await apiClient.get(`/payments/history?page=${page}&limit=${limit}`);
+    const response = await paymentApiClient.get(`/payments/history?page=${page}&limit=${limit}`);
     return response.data.success ? response.data.data : response.data;
   },
 
   // Refund a payment (Provider/Admin only)
   refundPayment: async (paymentId: string, data?: RefundRequest): Promise<Payment> => {
-    const response = await apiClient.post(`/payments/refund/${paymentId}`, data || {});
+    const response = await paymentApiClient.post(`/payments/refund/${paymentId}`, data || {});
     return response.data.success ? response.data.data : response.data;
   },
 
   // Get provider earnings (Provider only)
   getProviderEarnings: async (): Promise<ProviderEarnings> => {
-    const response = await apiClient.get('/payments/earnings');
+    const response = await paymentApiClient.get('/payments/earnings');
     return response.data.success ? response.data.data : response.data;
   },
 };

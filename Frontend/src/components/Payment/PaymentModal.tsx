@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { CreditCard, DollarSign, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { currencyConfig } from '../../services/stripeConfig';
-import StripePaymentWrapper from './StripePaymentWrapper';
+import { currencyConfig } from '../../services/paymentConfig';
+import PayHereCheckout from './PayHereCheckout';
 import PaymentStatusPopup from './PaymentStatusPopup';
 
 interface PaymentModalProps {
@@ -171,7 +171,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </>
           ) : (
             /* Payment Form */
-            <StripePaymentWrapper
+            <PayHereCheckout
               serviceId={serviceId}
               amount={servicePrice}
               currency={serviceCurrency}

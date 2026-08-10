@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { paymentApi, type Payment, type PaymentHistoryResponse, PaymentStatus } from '../api/paymentApi';
 import { PaymentStatusCard } from '../components/Payment';
-import { currencyConfig } from '../services/stripeConfig';
+import { currencyConfig } from '../services/paymentConfig';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -215,7 +215,7 @@ const PaymentHistory: React.FC = () => {
                     payments
                       .filter(p => p.status === PaymentStatus.SUCCEEDED)
                       .reduce((sum, p) => sum + p.amount, 0),
-                    'usd'
+                    'lkr'
                   )}
                 </p>
               </div>

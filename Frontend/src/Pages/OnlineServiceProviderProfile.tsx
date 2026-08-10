@@ -147,7 +147,7 @@ export default function ServiceProviderProfile() {
         category: 'Web Development',
         completedDate: '2024-12-15',
         clientRating: 5,
-        technologies: ['React', 'Node.js', 'MongoDB', 'Stripe', 'AWS']
+        technologies: ['React', 'Node.js', 'MongoDB', 'PayHere']
       },
       {
         id: 'portfolio-2',

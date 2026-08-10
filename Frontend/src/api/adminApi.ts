@@ -1,4 +1,4 @@
-import apiClient from './axios';
+import apiClient, { paymentApiClient } from './axios';
 
 // Admin API Types
 export interface PendingProvider {
@@ -77,7 +77,6 @@ export interface ServiceProvider {
   _count: {
     services: number;
     schedules: number;
-    payments: number;
   };
 }
 
@@ -122,7 +121,6 @@ export interface Customer {
   lastLoginAt?: string;
   socialmedia: string[];
   _count: {
-    payments: number;
     schedules: number;
     customerReviewsWritten: number;
     customerReviewsReceived: number;
@@ -182,7 +180,6 @@ export interface Service {
   };
   _count: {
     schedules: number;
-    payments: number;
     serviceReviews: number;
   };
 }
@@ -508,7 +505,7 @@ export const adminApi = {
     };
   }> => {
     try {
-      const response = await apiClient.get('/admin/analytics/payments');
+      const response = await paymentApiClient.get('/admin/analytics/payments');
       return response.data.success ? response.data.data : response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -533,7 +530,7 @@ export const adminApi = {
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
 
-      const response = await apiClient.get(`/admin/analytics/revenue-chart?${params.toString()}`);
+      const response = await paymentApiClient.get(`/admin/analytics/revenue-chart?${params.toString()}`);
       return response.data.success ? response.data.data : response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -558,7 +555,7 @@ export const adminApi = {
       const params = new URLSearchParams();
       if (limit) params.append('limit', limit.toString());
 
-      const response = await apiClient.get(`/admin/analytics/top-providers?${params.toString()}`);
+      const response = await paymentApiClient.get(`/admin/analytics/top-providers?${params.toString()}`);
       return response.data.success ? response.data.data : response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -587,7 +584,7 @@ export const adminApi = {
       const params = new URLSearchParams();
       if (limit) params.append('limit', limit.toString());
 
-      const response = await apiClient.get(`/admin/analytics/recent-payments?${params.toString()}`);
+      const response = await paymentApiClient.get(`/admin/analytics/recent-payments?${params.toString()}`);
       return response.data.success ? response.data.data : response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -613,7 +610,7 @@ export const adminApi = {
     totalProviderEarnings: number;
   }> => {
     try {
-      const response = await apiClient.get('/admin/analytics/payment-statistics');
+      const response = await paymentApiClient.get('/admin/analytics/payment-statistics');
       return response.data.success ? response.data.data : response.data;
     } catch (error: any) {
       if (error.response?.status === 401) {

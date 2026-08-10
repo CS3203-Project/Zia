@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckCircle, Clock, XCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { PaymentStatus } from '../../api/paymentApi';
-import { currencyConfig } from '../../services/stripeConfig';
+import { currencyConfig } from '../../services/paymentConfig';
 
 interface PaymentStatusCardProps {
   status: PaymentStatus;
