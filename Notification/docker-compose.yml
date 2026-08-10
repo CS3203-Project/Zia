@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  common-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zia-common-service
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: zia-common-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: zia_com
+    ports:
+      - "5433:5432"
+    volumes:
+      - com_pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: zia-common-rabbitmq
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - com_rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+volumes:
+  com_pg_data:
+  com_rabbitmq_data:
