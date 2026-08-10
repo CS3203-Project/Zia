@@ -1,0 +1,60 @@
+# Non-secret configuration. Real secrets (JWT_SECRET, INTERNAL_API_KEY, PayHere/Gmail/
+# Google Maps credentials) are created separately as Kubernetes Secrets — see k8s/README.md.
+#
+# Service DNS: any Service in this namespace is reachable by other pods using just its
+# name (e.g. "postgres-core"), since they share the "zia" namespace.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: core-config
+  namespace: zia
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core?schema=core"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
+  CHAT_SERVICE_URL: "http://chat-service:3001"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chat-config
+  namespace: zia
+data:
+  NODE_ENV: "production"
+  PORT: "3001"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core?schema=chat"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-config
+  namespace: zia
+data:
+  NODE_ENV: "production"
+  PORT: "3002"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core?schema=payment"
+  CORE_SERVICE_URL: "http://core-service:3000"
+  PAYHERE_MODE: "sandbox"
+  PAYHERE_RETURN_URL: "https://your-domain.example/checkout/success"
+  PAYHERE_CANCEL_URL: "https://your-domain.example/checkout/cancel"
+  # Must be a real public URL — PayHere calls this server-to-server, it cannot reach a
+  # cluster-internal address. Point it at your ingress host once deployed.
+  PAYHERE_NOTIFY_URL: "https://your-domain.example/api/payments/notify"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notification-config
+  namespace: zia
+data:
+  NODE_ENV: "production"
+  PORT: "3001"
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-notification:5432/zia_com"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq-notification:5672"
+  MAIL_HOST: "smtp.gmail.com"
+  MAIL_PORT: "465"

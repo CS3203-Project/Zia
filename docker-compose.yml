@@ -116,10 +116,8 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
     container_name: zia-frontend
-    env_file:
-      - ./Frontend/.env
     ports:
-      - "8080:8080"
+      - "8080:80"
     depends_on:
       - core
       - chat

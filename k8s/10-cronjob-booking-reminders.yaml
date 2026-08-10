@@ -1,0 +1,26 @@
+# Runs the booking-reminder sweep as a one-shot job every 15 minutes, using the same
+# Core image but overriding the command — replaces the old in-process node-cron timer,
+# which would have sent duplicate reminders once Core scales beyond one replica.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: booking-reminders
+  namespace: zia
+spec:
+  schedule: "*/15 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: booking-reminders
+              image: zia/core:dev
+              imagePullPolicy: Never
+              command: ["node", "dist/jobs/send-booking-reminders.js"]
+              envFrom:
+                - configMapRef:
+                    name: core-config
+                - secretRef:
+                    name: core-secrets
+          restartPolicy: OnFailure

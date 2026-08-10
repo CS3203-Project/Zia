@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core
+  namespace: zia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: core
+  template:
+    metadata:
+      labels:
+        app: core
+    spec:
+      containers:
+        - name: core
+          image: zia/core:dev
+          imagePullPolicy: Never # locally built image, loaded into kind — see k8s/README.md
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: core-config
+            - secretRef:
+                name: core-secrets
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: core-uploads
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: core-uploads
+  namespace: zia
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: core-service
+  namespace: zia
+spec:
+  selector:
+    app: core
+  ports:
+    - port: 3000
+      targetPort: 3000

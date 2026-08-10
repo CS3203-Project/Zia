@@ -41,7 +41,6 @@ await generatePrismaClient();
 
 import { prisma } from './src/utils/database.js';
 import { queueService } from './src/services/queue.service.js';
-import { scheduledJobsService } from './src/services/scheduled-jobs.service.js';
 import express, { type Application } from 'express';
 import cors, { type CorsOptions } from 'cors';
 import rateLimit from 'express-rate-limit';
@@ -58,6 +57,7 @@ import serviceRequestRoutes from './src/routes/serviceRequest.route.js';
 import notificationRoutes from './src/routes/notification.route.js';
 import internalRoutes from './src/routes/internal.route.js';
 import scheduleRoutes from './src/routes/schedule.route.js';
+import healthRoutes from './src/routes/health.route.js';
 
 // Simple database test function
 async function testDatabaseConnection() {
@@ -114,6 +114,7 @@ app.use('/api/notifications', notificationRoutes);
 
 app.use('/api/schedule', scheduleRoutes);
 app.use('/internal', internalRoutes);
+app.use('/', healthRoutes);
 
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
@@ -138,31 +139,24 @@ async function startServer() {
     // Don't exit - continue without email functionality
   }
 
-  // Start scheduled jobs
-  try {
-    scheduledJobsService.startAllJobs();
-    console.log('=====> Scheduled jobs started');
-  } catch (error) {
-    console.error('=====> Failed to start scheduled jobs:', error);
-    // Don't exit - continue without scheduled jobs
-  }
+  // Booking reminders now run as a Kubernetes CronJob (src/jobs/send-booking-reminders.ts)
+  // instead of an in-process node-cron timer, to avoid duplicate sends once this
+  // service is scaled to multiple replicas.
 
   app.listen(PORT, () => {
     console.log(`=====> Core service running on port ${PORT}`);
   });
 }
 
-// Graceful shutdown for scheduled jobs
+// Graceful shutdown
 process.on('SIGINT', async () => {
-  console.log('==xx== Received SIGINT, shutting down scheduled jobs...');
-  scheduledJobsService.stopAllJobs();
+  console.log('==xx== Received SIGINT, shutting down...');
   await queueService.close();
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
-  console.log('==xx== Received SIGTERM, shutting down scheduled jobs...');
-  scheduledJobsService.stopAllJobs();
+  console.log('==xx== Received SIGTERM, shutting down...');
   await queueService.close();
   process.exit(0);
 });

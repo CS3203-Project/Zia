@@ -1,0 +1,86 @@
+# Shared Postgres for Core, Chat, and Payment — one instance, one schema per service
+# (created by the init script below, same as scripts/init-core-db.sql used in local
+# docker-compose). Each service migrates only its own schema independently.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-core-init
+  namespace: zia
+data:
+  init-core-db.sql: |
+    CREATE SCHEMA IF NOT EXISTS core;
+    CREATE SCHEMA IF NOT EXISTS chat;
+    CREATE SCHEMA IF NOT EXISTS payment;
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-core-data
+  namespace: zia
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-core
+  namespace: zia
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: postgres-core
+  template:
+    metadata:
+      labels:
+        app: postgres-core
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: zia_core
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgres-core-data
+        - name: init-script
+          configMap:
+            name: postgres-core-init
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-core
+  namespace: zia
+spec:
+  selector:
+    app: postgres-core
+  ports:
+    - port: 5432
+      targetPort: 5432

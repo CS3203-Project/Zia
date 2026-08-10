@@ -1,0 +1,71 @@
+# Single entry point, path-based routing. Requires the ingress-nginx controller
+# (see k8s/README.md for the kind setup command). More specific paths
+# (/api/payments, /api/admin/analytics) take precedence over the general /api
+# catch-all — this is how ingress-nginx resolves overlapping prefixes.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zia-ingress
+  namespace: zia
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # Required for the Chat service's Socket.IO connections to upgrade correctly.
+    nginx.ingress.kubernetes.io/proxy-set-headers: "zia/websocket-headers"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /api/payments
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  number: 3002
+          - path: /api/admin/analytics
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  number: 3002
+          - path: /messaging
+            pathType: Prefix
+            backend:
+              service:
+                name: chat-service
+                port:
+                  number: 3001
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: core-service
+                port:
+                  number: 3000
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: core-service
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: websocket-headers
+  namespace: zia
+data:
+  Upgrade: "$http_upgrade"
+  Connection: "upgrade"
