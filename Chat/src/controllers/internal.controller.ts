@@ -4,7 +4,7 @@ import { prisma } from '../utils/database.js';
 class InternalController {
   async getConversation(req: Request, res: Response) {
     const conversation = await prisma.conversation.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       select: { id: true, userIds: true, serviceId: true },
     });
 

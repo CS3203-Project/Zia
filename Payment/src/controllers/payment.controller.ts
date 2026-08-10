@@ -53,7 +53,7 @@ export class PaymentController {
    */
   async getPaymentStatus(req: Request, res: Response) {
     try {
-      const { paymentId } = req.params;
+      const paymentId = String(req.params.paymentId);
       const payment = await payhereService.getPaymentStatus(paymentId);
 
       res.status(200).json({
@@ -116,7 +116,7 @@ export class PaymentController {
    */
   async refundPayment(req: Request, res: Response) {
     try {
-      const { paymentId } = req.params;
+      const paymentId = String(req.params.paymentId);
       const { amount, reason } = req.body;
       const userId = (req as any).user?.id;
 

@@ -353,7 +353,7 @@ class PayHereService {
         }),
       });
 
-      const refund = await response.json();
+      const refund = (await response.json()) as { status: number; msg?: string; data?: unknown };
 
       if (!response.ok || refund.status !== 1) {
         throw new Error(refund.msg || 'PayHere refund request failed');

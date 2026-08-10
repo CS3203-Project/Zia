@@ -43,7 +43,7 @@ class MessagingController {
 
   async getConversationById(req: Request, res: Response) {
     try {
-      const conversation = await messagingService.findConversationById(req.params.id);
+      const conversation = await messagingService.findConversationById(String(req.params.id));
       res.json(conversation);
     } catch (error) {
       res.status(404).json({ message: error instanceof Error ? error.message : 'Conversation not found' });
@@ -52,8 +52,8 @@ class MessagingController {
 
   async findConversationByParticipants(req: Request, res: Response) {
     const conversation = await messagingService.findConversationByParticipants(
-      req.params.participantOne,
-      req.params.participantTwo
+      String(req.params.participantOne),
+      String(req.params.participantTwo)
     );
 
     if (!conversation) return res.status(404).json({ message: 'Conversation not found' });
@@ -62,7 +62,7 @@ class MessagingController {
 
   async deleteConversation(req: Request, res: Response) {
     try {
-      await messagingService.deleteConversation(req.params.id, getActorId(req));
+      await messagingService.deleteConversation(String(req.params.id), getActorId(req));
       res.status(204).send();
     } catch (error) {
       res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to delete conversation' });
@@ -71,7 +71,7 @@ class MessagingController {
 
   async markConversationAsRead(req: Request, res: Response) {
     try {
-      await messagingService.markConversationAsRead(req.params.id, getActorId(req));
+      await messagingService.markConversationAsRead(String(req.params.id), getActorId(req));
       res.status(204).send();
     } catch (error) {
       res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to mark conversation as read' });
@@ -102,8 +102,8 @@ class MessagingController {
     try {
       const { page = '1', limit = '50' } = req.query as Record<string, string>;
       const result = await messagingService.getMessagesBetweenUsers(
-        req.params.userOne,
-        req.params.userTwo,
+        String(req.params.userOne),
+        String(req.params.userTwo),
         Number(page),
         Number(limit)
       );
@@ -115,7 +115,7 @@ class MessagingController {
 
   async getMessageById(req: Request, res: Response) {
     try {
-      const message = await messagingService.getMessageById(req.params.id);
+      const message = await messagingService.getMessageById(String(req.params.id));
       res.json(message);
     } catch (error) {
       res.status(404).json({ message: error instanceof Error ? error.message : 'Message not found' });
@@ -124,7 +124,7 @@ class MessagingController {
 
   async markMessageAsRead(req: Request, res: Response) {
     try {
-      const message = await messagingService.markMessageAsRead(req.params.id, getActorId(req));
+      const message = await messagingService.markMessageAsRead(String(req.params.id), getActorId(req));
       res.json(message);
     } catch (error) {
       res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to mark message as read' });
@@ -133,7 +133,7 @@ class MessagingController {
 
   async deleteMessage(req: Request, res: Response) {
     try {
-      await messagingService.deleteMessage(req.params.id, getActorId(req));
+      await messagingService.deleteMessage(String(req.params.id), getActorId(req));
       res.status(204).send();
     } catch (error) {
       res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to delete message' });
@@ -141,7 +141,7 @@ class MessagingController {
   }
 
   async getUnreadMessageCount(req: Request, res: Response) {
-    const count = await messagingService.getUnreadMessageCount(req.params.userId);
+    const count = await messagingService.getUnreadMessageCount(String(req.params.userId));
     res.json({ count });
   }
 }

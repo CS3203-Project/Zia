@@ -178,7 +178,6 @@ export class AdminService {
           select: {
             services: true,
             schedules: true,
-            payments: true,
           },
         },
       },
@@ -249,7 +248,6 @@ export class AdminService {
           select: {
             services: true,
             schedules: true,
-            payments: true,
           },
         },
       },
@@ -291,7 +289,6 @@ export class AdminService {
         socialmedia: true,
         _count: {
           select: {
-            payments: true,
             schedules: true,
             customerReviewsWritten: true,
             customerReviewsReceived: true,
@@ -344,7 +341,6 @@ export class AdminService {
         _count: {
           select: {
             schedules: true,
-            payments: true,
             serviceReviews: true,
           },
         },

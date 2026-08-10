@@ -8,7 +8,7 @@ import { prisma } from '../utils/database.js';
 export class InternalController {
   async getUser(req: Request, res: Response) {
     const user = await prisma.user.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       select: {
         id: true,
         email: true,
@@ -27,7 +27,7 @@ export class InternalController {
 
   async getService(req: Request, res: Response) {
     const service = await prisma.service.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       select: { id: true, title: true, price: true, providerId: true },
     });
 
@@ -37,7 +37,7 @@ export class InternalController {
 
   async getProvider(req: Request, res: Response) {
     const provider = await prisma.serviceProvider.findUnique({
-      where: { id: req.params.id },
+      where: { id: String(req.params.id) },
       select: { id: true, userId: true },
     });
 
@@ -47,7 +47,7 @@ export class InternalController {
 
   async getProviderByUserId(req: Request, res: Response) {
     const provider = await prisma.serviceProvider.findUnique({
-      where: { userId: req.params.userId },
+      where: { userId: String(req.params.userId) },
       select: { id: true, userId: true },
     });
 
@@ -57,7 +57,7 @@ export class InternalController {
 
   async getAdmin(req: Request, res: Response) {
     const admin = await prisma.admin.findUnique({
-      where: { id: Number(req.params.id) },
+      where: { id: Number(String(req.params.id)) },
       select: { id: true, username: true, firstName: true, lastName: true },
     });
 

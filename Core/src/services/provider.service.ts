@@ -119,8 +119,7 @@ export const deleteProvider = async (userId: string) => {
     where: { userId },
     include: {
       services: true,
-      schedules: { select: { customerConfirmation: true, providerConfirmation: true } },
-      payments: true
+      schedules: { select: { customerConfirmation: true, providerConfirmation: true } }
     }
   });
 

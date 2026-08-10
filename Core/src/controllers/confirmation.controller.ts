@@ -209,7 +209,7 @@ async function sendConfirmationEmails(schedule: any, conversationId: string, eve
 
 export const getConfirmationController = async (req: Request, res: Response) => {
   try {
-    const { conversationId } = req.params;
+    const conversationId = String(req.params.conversationId);
 
     // Check if conversation exists (conversations now live in the Chat service)
     const conversation = await chatClient.getConversation(conversationId);
@@ -289,7 +289,7 @@ export const createConfirmationController = async (req: Request, res: Response) 
 
 export const upsertConfirmationController = async (req: Request, res: Response) => {
   try {
-    const { conversationId } = req.params;
+    const conversationId = String(req.params.conversationId);
     const updates = req.body;
 
     // Check if conversation exists (conversations now live in the Chat service)
