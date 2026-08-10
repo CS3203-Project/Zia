@@ -31,15 +31,12 @@ import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router: import('express').Router = Router();
 
-// Apply authentication middleware to all routes
-router.use(authMiddleware);
-
 /**
  * @route   POST /api/services
  * @desc    Create a new service
  * @access  Private (Service Provider only)
  */
-router.post('/', validate(createServiceSchema), createService);
+router.post('/', authMiddleware, validate(createServiceSchema), createService);
 
 /**
  * @route   GET /api/services/search/hybrid
@@ -88,7 +85,7 @@ router.post('/location/reverse-geocode', validate(reverseGeocodeSchema), reverse
  * @desc    Batch update embeddings for all services
  * @access  Private (Admin)
  */
-router.post('/embeddings/batch', updateAllServiceEmbeddings);
+router.post('/embeddings/batch', authMiddleware, updateAllServiceEmbeddings);
 
 /**
  * @route   GET /api/services
@@ -123,14 +120,15 @@ router.get('/:id/similar', validate(serviceIdSchema, 'params'), getSimilarServic
  * @desc    Update embeddings for a specific service
  * @access  Private (Admin)
  */
-router.post('/:id/embeddings', validate(serviceIdSchema, 'params'), updateServiceEmbeddings);
+router.post('/:id/embeddings', authMiddleware, validate(serviceIdSchema, 'params'), updateServiceEmbeddings);
 
 /**
  * @route   PUT /api/services/:id
  * @desc    Update a service
  * @access  Private (Service Provider - own services only)
  */
-router.put('/:id', 
+router.put('/:id',
+  authMiddleware,
   validate(serviceIdSchema, 'params'),
   validate(updateServiceSchema),
   updateService
@@ -141,6 +139,6 @@ router.put('/:id',
  * @desc    Delete a service
  * @access  Private (Service Provider - own services only)
  */
-router.delete('/:id', validate(serviceIdSchema, 'params'), deleteService);
+router.delete('/:id', authMiddleware, validate(serviceIdSchema, 'params'), deleteService);
 
 export default router;
