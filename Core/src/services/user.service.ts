@@ -126,40 +126,43 @@ export const getProfile = async (userId: string) => {
   // Only fetch service provider data if user is a provider
   let serviceProvider = null;
   if (user.role === 'PROVIDER' || user.role === 'ADMIN') {
-    serviceProvider = await prisma.serviceProvider.findUnique({
+    const provider = await prisma.serviceProvider.findUnique({
       where: { userId },
       include: {
         services: {
           where: { isActive: true },
           select: { id: true }
-        },
-        reviewsReceived: {
-          select: {
-            id: true,
-            rating: true,
-            comment: true,
-            createdAt: true,
-            reviewer: {
-              select: {
-                firstName: true,
-                lastName: true,
-                imageUrl: true
-              }
-            }
-          },
-          orderBy: { createdAt: 'desc' },
-          take: 5
         }
       },
     });
-    
-    // Transform the data
-    if (serviceProvider) {
-      const { services, reviewsReceived, ...providerData } = serviceProvider as any;
+
+    // Transform the data. ServiceReview relates to Service, not directly to
+    // ServiceProvider, so recent reviews are fetched via the provider's services.
+    if (provider) {
+      const recentReviews = await prisma.serviceReview.findMany({
+        where: { service: { providerId: provider.id } },
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          reviewer: {
+            select: {
+              firstName: true,
+              lastName: true,
+              imageUrl: true
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5
+      });
+
+      const { services, ...providerData } = provider as any;
       serviceProvider = {
         ...providerData,
         servicesCount: services?.length || 0,
-        recentReviews: reviewsReceived || []
+        recentReviews
       };
     }
   }

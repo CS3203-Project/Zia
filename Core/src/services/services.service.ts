@@ -63,7 +63,8 @@ export const createService = async (serviceData: ServiceCreateData) => {
       tags = [],
       images = [],
       isActive = true,
-      workingTime = []
+      workingTime = [],
+      videoUrl
     } = serviceData;
 
     // Validate required fields

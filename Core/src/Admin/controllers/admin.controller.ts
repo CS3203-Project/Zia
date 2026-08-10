@@ -205,7 +205,7 @@ export class AdminController {
 
   async updateServiceProviderVerification(req: Request, res: Response): Promise<void> {
     try {
-      const { providerId } = req.params;
+      const providerId = String(req.params.providerId);
       const { isVerified } = req.body;
 
       // Validate the input

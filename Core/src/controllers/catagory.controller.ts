@@ -48,7 +48,7 @@ export const getCategories = async (req: Request, res: Response, next: NextFunct
  */
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const options = {
       includeChildren: req.query.includeChildren !== 'false',
       includeParent: req.query.includeParent !== 'false',
@@ -79,7 +79,7 @@ export const getCategoryById = async (req: Request, res: Response, next: NextFun
  */
 export const getCategoryBySlug = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { slug } = req.params;
+    const slug = String(req.params.slug);
     const options = {
       includeChildren: req.query.includeChildren !== 'false',
       includeParent: req.query.includeParent !== 'false',
@@ -110,7 +110,7 @@ export const getCategoryBySlug = async (req: Request, res: Response, next: NextF
  */
 export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const updateData = req.body;
 
     const updatedCategory = await categoryService.updateCategory(id!, updateData);
@@ -130,7 +130,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
  */
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const options = {
       force: req.query.force === 'true'
     };
@@ -173,7 +173,7 @@ export const getRootCategories = async (req: Request, res: Response, next: NextF
  */
 export const getCategoryHierarchy = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     const hierarchy = await categoryService.getCategoryHierarchy(id!);
     

@@ -130,7 +130,7 @@ export const createReviewController = async (req: Request, res: Response, next: 
 
 export const getUserGivenReviewsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.params;
+    const userId = String(req.params.userId);
     const { page = 1, limit = 10 } = req.query;
     const reviews = await getUserGivenReviews(userId!, Number(page), Number(limit));
     res.status(200).json(reviews);
@@ -141,7 +141,7 @@ export const getUserGivenReviewsController = async (req: Request, res: Response,
 
 export const getUserReceivedReviewsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.params;
+    const userId = String(req.params.userId);
     const { page = 1, limit = 10 } = req.query;
     const reviews = await getReviewsByProvider(userId!, Number(page), Number(limit));
     res.status(200).json(reviews);
@@ -152,7 +152,7 @@ export const getUserReceivedReviewsController = async (req: Request, res: Respon
 
 export const getReviewByIdController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { reviewId } = req.params;
+    const reviewId = String(req.params.reviewId);
     const review = await getReviewById(reviewId!);
     res.status(200).json(review);
   } catch (err) {
@@ -162,7 +162,7 @@ export const getReviewByIdController = async (req: Request, res: Response, next:
 
 export const updateReviewController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { reviewId } = req.params;
+    const reviewId = String(req.params.reviewId);
     const reviewerId = req.body.reviewerId;
     const updateData = req.body;
     const review = await updateReview(reviewId!, updateData, reviewerId);
@@ -174,7 +174,7 @@ export const updateReviewController = async (req: Request, res: Response, next: 
 
 export const deleteReviewController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { reviewId } = req.params;
+    const reviewId = String(req.params.reviewId);
     const reviewerId = req.body.reviewerId;
     const result = await deleteReview(reviewId!, reviewerId);
     res.status(200).json(result);
@@ -185,7 +185,7 @@ export const deleteReviewController = async (req: Request, res: Response, next: 
 
 export const getUserReviewStatsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.params;
+    const userId = String(req.params.userId);
     const stats = await getCustomerStats(userId!);
     res.status(200).json(stats);
   } catch (err) {
@@ -195,7 +195,8 @@ export const getUserReviewStatsController = async (req: Request, res: Response, 
 
 export const getUserReviewStatusController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId, revieweeId } = req.params;
+    const userId = String(req.params.userId);
+    const revieweeId = String(req.params.revieweeId);
     const reviewStatus = await getUserReviewStatus(userId!, revieweeId!);
     res.status(200).json(reviewStatus);
   } catch (err) {

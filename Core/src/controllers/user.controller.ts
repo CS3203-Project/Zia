@@ -138,7 +138,7 @@ export const uploadImageController = async (req: Request, res: Response, next: N
 
 export const getUserByIdController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.params;
+    const userId = String(req.params.userId);
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required' });
     }

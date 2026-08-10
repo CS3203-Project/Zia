@@ -50,7 +50,7 @@ export const getCategories = async (req: Request, res: Response, next: NextFunct
  */
 export const getCategoryById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const { includeChildren, includeParent, includeServices } = req.query;
     
     if (!id) {
@@ -90,7 +90,7 @@ export const getCategoryById = async (req: Request, res: Response, next: NextFun
  */
 export const getCategoryBySlug = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { slug } = req.params;
+    const slug = String(req.params.slug);
     const { includeChildren, includeParent, includeServices } = req.query;
     
     if (!slug) {
@@ -130,7 +130,7 @@ export const getCategoryBySlug = async (req: Request, res: Response, next: NextF
  */
 export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const updateData = req.body;
 
     if (!id) {
@@ -157,7 +157,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
  */
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const { force } = req.query;
     
     if (!id) {
@@ -212,7 +212,7 @@ export const getRootCategories = async (req: Request, res: Response, next: NextF
  */
 export const getCategoryHierarchy = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     if (!id) {
       return res.status(400).json({

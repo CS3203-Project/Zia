@@ -52,7 +52,7 @@ export const getNotificationStatsController = async (req: Request, res: Response
 export const getNotification = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user.id;
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     if (!id) {
       return res.status(400).json({ message: 'Notification ID is required' });
@@ -68,7 +68,7 @@ export const getNotification = async (req: Request, res: Response, next: NextFun
 export const markAsRead = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user.id;
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     if (!id) {
       return res.status(400).json({ message: 'Notification ID is required' });

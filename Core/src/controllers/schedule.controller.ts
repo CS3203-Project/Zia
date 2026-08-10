@@ -3,7 +3,7 @@ import { prisma } from '../utils/database.js';
 
 export const getCurrentScheduleTimes = async (req: Request, res: Response) => {
   try {
-    const { serviceId } = req.params;
+    const serviceId = String(req.params.serviceId);
 
     // Get current time
     const now = new Date();

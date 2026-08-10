@@ -101,7 +101,7 @@ export const getServices = async (req: Request, res: Response, next: NextFunctio
  */
 export const getServiceById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const service = await serviceService.getServiceById(id!);
     
     if (!service) {
@@ -126,7 +126,7 @@ export const getServiceById = async (req: Request, res: Response, next: NextFunc
  */
 export const updateService = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const updateData = req.body;
 
     // Handle location data if provided
@@ -186,7 +186,7 @@ export const updateService = async (req: Request, res: Response, next: NextFunct
  */
 export const deleteService = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     
     await serviceService.deleteService(id!);
     
@@ -204,7 +204,7 @@ export const deleteService = async (req: Request, res: Response, next: NextFunct
  */
 export const getServiceByConversationId = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { conversationId } = req.params;
+    const conversationId = String(req.params.conversationId);
     const service = await serviceService.getServiceByConversationId(conversationId!);
     
     if (!service) {
@@ -561,7 +561,7 @@ export const searchServices = async (req: Request, res: Response, next: NextFunc
  */
 export const getSimilarServices = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     const { limit } = req.query;
 
     const similarServices = await semanticSearchService.findSimilarServices(
@@ -584,7 +584,7 @@ export const getSimilarServices = async (req: Request, res: Response, next: Next
  */
 export const updateServiceEmbeddings = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     await semanticSearchService.updateServiceEmbeddings(id!);
 

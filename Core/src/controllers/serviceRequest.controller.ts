@@ -131,7 +131,7 @@ export const getUserServiceRequests = async (req: Request, res: Response) => {
  */
 export const getServiceRequestById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     
     if (!id) {
       return res.status(400).json({
@@ -185,7 +185,7 @@ export const getServiceRequestById = async (req: Request, res: Response) => {
  */
 export const updateServiceRequest = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     
     if (!id) {
       return res.status(400).json({
@@ -224,7 +224,7 @@ export const updateServiceRequest = async (req: Request, res: Response) => {
  */
 export const deleteServiceRequest = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     
     if (!id) {
       return res.status(400).json({
@@ -261,7 +261,7 @@ export const deleteServiceRequest = async (req: Request, res: Response) => {
  */
 export const findMatchingServices = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
     
     if (!id) {
       return res.status(400).json({
