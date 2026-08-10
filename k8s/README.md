@@ -100,16 +100,33 @@ verify user tokens.
 kubectl apply -f k8s/
 ```
 
-## 6. Run the per-service Prisma migrations
+## 6. Sync each service's schema
 
-The Postgres pods start empty. From your machine (not in-cluster), run each service's
-migration against the cluster's Postgres by temporarily port-forwarding it:
+The Postgres pod starts empty. From your machine (not in-cluster), port-forward it and
+sync each service's schema:
 
 ```bash
 kubectl port-forward -n zia svc/postgres-core 5432:5432 &
-# then, in Core/, Chat/, Payment/ respectively, with DATABASE_URL pointed at localhost:5432
-# and the right ?schema=core|chat|payment:
-npx prisma migrate deploy
+```
+
+**Core** uses the database's default `public` schema, and its 35-migration history
+predates this split — a handful of those migrations turned out to reference objects
+(an index, an embedding column) that were apparently created by hand on the original
+dev database rather than through a migration, so replaying the full history with
+`migrate deploy` fails partway through on a genuinely empty database. Use `db push`
+instead, which syncs the live schema directly and skips replaying history (fine here —
+this is a fresh database, not one with production data to preserve migration lineage for):
+
+```bash
+cd Core && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/zia_core" npx prisma db push
+```
+
+**Chat** and **Payment** have fresh, gap-free migration histories (created as part of
+this split) — use the normal migration flow for those:
+
+```bash
+cd Chat && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/zia_core?schema=chat" npx prisma migrate deploy
+cd Payment && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/zia_core?schema=payment" npx prisma migrate deploy
 ```
 
 ## 7. Point PAYHERE_NOTIFY_URL at something PayHere can reach
