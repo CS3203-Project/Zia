@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  serviceId        String
+  providerId       String
+  userId           String
+  gateway          String?       @default("payhere")
+  payherePaymentId String?       @unique
+  amount           Decimal       @db.Decimal(10, 2)
+  currency         String        @default("lkr")
+  paidAt           DateTime?
+  refundedAt        DateTime?
+  failureReason    String?
+  createdAt        DateTime      @default(now())
+  metadata         Json?
+  platformFee      Decimal?      @db.Decimal(10, 2)
+  providerAmount   Decimal?      @db.Decimal(10, 2)
+  payhereOrderId   String?       @unique
+  updatedAt        DateTime      @updatedAt
+  status           PaymentStatus @default(PENDING)
+
+  @@index([payhereOrderId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([providerId])
+  @@index([userId])
+}
+
+model ProviderEarnings {
+  id               String    @id @default(cuid())
+  providerId       String    @unique
+  totalEarnings    Decimal   @default(0) @db.Decimal(10, 2)
+  availableBalance Decimal   @default(0) @db.Decimal(10, 2)
+  pendingBalance   Decimal   @default(0) @db.Decimal(10, 2)
+  totalWithdrawn   Decimal   @default(0) @db.Decimal(10, 2)
+  currency         String    @default("lkr")
+  lastPayoutAt     DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([providerId])
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
