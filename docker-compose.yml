@@ -1,0 +1,134 @@
+version: "3.9"
+
+# Local dev stack for all 4 microservices + frontend, mirroring the eventual Kubernetes
+# layout: Core/Chat/Payment share one Postgres instance (one schema each) and one
+# RabbitMQ broker; Notification keeps its own separate Postgres + RabbitMQ (unchanged).
+services:
+  core:
+    build:
+      context: ./Core
+      dockerfile: Dockerfile
+    container_name: zia-core
+    env_file:
+      - ./Core/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: unless-stopped
+    volumes:
+      - core_uploads:/app/uploads
+
+  chat:
+    build:
+      context: ./Chat
+      dockerfile: Dockerfile
+    container_name: zia-chat
+    env_file:
+      - ./Chat/.env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: unless-stopped
+
+  payment:
+    build:
+      context: ./Payment
+      dockerfile: Dockerfile
+    container_name: zia-payment
+    env_file:
+      - ./Payment/.env
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    # Note: matches the image the original Backend/docker-compose.yml used. It does not
+    # actually bundle the postgis/vector extensions the Core schema declares — that gap
+    # predates this split and isn't something this change attempts to fix.
+    image: postgres:16-alpine
+    container_name: zia-core-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: zia_core
+    ports:
+      - "5432:5432"
+    volumes:
+      - core_pg_data:/var/lib/postgresql/data
+      - ./scripts/init-core-db.sql:/docker-entrypoint-initdb.d/init-core-db.sql:ro
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: zia-core-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - core_rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  notification:
+    build:
+      context: ./Notification
+      dockerfile: Dockerfile
+    container_name: zia-notification
+    env_file:
+      - ./Notification/.env
+    ports:
+      - "3003:3001"
+    depends_on:
+      - notification-postgres
+      - notification-rabbitmq
+    restart: unless-stopped
+
+  notification-postgres:
+    image: postgres:16-alpine
+    container_name: zia-notification-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: zia_com
+    ports:
+      - "5433:5432"
+    volumes:
+      - notification_pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  notification-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: zia-notification-rabbitmq
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - notification_rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: zia-frontend
+    env_file:
+      - ./Frontend/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - core
+      - chat
+      - payment
+    restart: unless-stopped
+
+volumes:
+  core_pg_data:
+  core_rabbitmq_data:
+  core_uploads:
+  notification_pg_data:
+  notification_rabbitmq_data:

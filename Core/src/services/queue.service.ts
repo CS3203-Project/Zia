@@ -25,6 +25,7 @@ class QueueService {
   private connection: any = null;
   private channel: any = null;
   private readonly exchangeName = 'email_notifications';
+  private readonly chatExchangeName = 'chat_events';
   private isConnecting = false;
   private readonly routingKeys = {
     BOOKING_CONFIRMATION: 'email.booking.confirmation',
@@ -76,12 +77,15 @@ class QueueService {
         this.channel = null;
       });
 
-      // Declare exchange
+      // Declare exchanges
       await this.channel.assertExchange(this.exchangeName, 'topic', {
         durable: true
       });
+      await this.channel.assertExchange(this.chatExchangeName, 'topic', {
+        durable: true
+      });
 
-      console.log('=====> Connected to RabbitMQ and exchange created');
+      console.log('=====> Connected to RabbitMQ and exchanges created');
     } catch (error) {
       console.error('error==> Failed to connect to RabbitMQ:', error);
       this.connection = null;
@@ -135,6 +139,33 @@ class QueueService {
       
       // Don't throw error to prevent breaking the main confirmation flow
       console.error('error==> Email notification failed but continuing with main operation');
+    }
+  }
+
+  /**
+   * Publishes a confirmation update so the Chat service (which now owns the socket
+   * connections) can re-broadcast it to whichever party is actively viewing the
+   * conversation. Replaces the old in-process broadcastConfirmationUpdate() call,
+   * which only worked when confirmation logic and chat sockets shared one process.
+   */
+  async publishConfirmationUpdate(conversationId: string, confirmation: any): Promise<void> {
+    if (!this.channel || !this.connection) {
+      await this.connect();
+    }
+
+    if (!this.channel) {
+      console.error('error==> Confirmation update not published - RabbitMQ connection unavailable');
+      return;
+    }
+
+    try {
+      const message = Buffer.from(JSON.stringify({ conversationId, confirmation }));
+      this.channel.publish(this.chatExchangeName, 'confirmation.updated', message, {
+        persistent: true,
+        timestamp: Date.now(),
+      });
+    } catch (error) {
+      console.error('error==> Error publishing confirmation update:', error);
     }
   }
 

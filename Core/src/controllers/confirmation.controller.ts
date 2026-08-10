@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 import { prisma } from '../utils/database.js';
 import { queueService } from '../services/queue.service.js';
-    const metaEnv: any = (import.meta as any)?.env ?? (process.env as any);
-    const API_BASE_URL = metaEnv.PROD
-      ? metaEnv.VITE_API_BASE_URL_PROD
-      : metaEnv.VITE_API_BASE_URL;
+import chatClient from '../services/chatClient.service.js';
+
 // Confirmation data now maps to Schedule table fields
 // conversationId will be used to find related schedules via conversation user IDs
 
@@ -22,11 +20,8 @@ interface ConversationConfirmation {
 
 // Helper function to find or create a schedule for a conversation
 async function findOrCreateScheduleForConversation(conversationId: string): Promise<any> {
-  // Get conversation with user IDs
-  const conversation = await prisma.conversation.findUnique({
-    where: { id: conversationId },
-    select: { userIds: true }
-  });
+  // Get conversation with user IDs (conversations now live in the Chat service)
+  const conversation = await chatClient.getConversation(conversationId);
 
   if (!conversation || conversation.userIds.length < 2) {
     throw new Error('Invalid conversation or insufficient participants');
@@ -215,16 +210,14 @@ async function sendConfirmationEmails(schedule: any, conversationId: string, eve
 export const getConfirmationController = async (req: Request, res: Response) => {
   try {
     const { conversationId } = req.params;
-    
-    // Check if conversation exists
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId }
-    });
-    
+
+    // Check if conversation exists (conversations now live in the Chat service)
+    const conversation = await chatClient.getConversation(conversationId);
+
     if (!conversation) {
       return res.status(404).json({ error: 'Conversation not found' });
     }
-    
+
     // Find or create schedule for this conversation
     const schedule = await findOrCreateScheduleForConversation(conversationId);
     
@@ -245,19 +238,17 @@ export const createConfirmationController = async (req: Request, res: Response) 
     if (!conversationId) {
       return res.status(400).json({ error: 'conversationId is required' });
     }
-    
-    // Check if conversation exists
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId }
-    });
-    
+
+    // Check if conversation exists (conversations now live in the Chat service)
+    const conversation = await chatClient.getConversation(conversationId);
+
     if (!conversation) {
       return res.status(404).json({ error: 'Conversation not found' });
     }
-    
+
     // Find or create schedule for this conversation
     let schedule = await findOrCreateScheduleForConversation(conversationId);
-    
+
     // Update the schedule with provided values
     schedule = await prisma.schedule.update({
       where: { id: schedule.id },
@@ -279,15 +270,11 @@ export const createConfirmationController = async (req: Request, res: Response) 
     // Convert to confirmation format
     const confirmation = scheduleToConfirmation(schedule, conversationId);
 
-    // Notify communication service for real-time update
+    // Notify the chat service for real-time update (it owns the socket connections)
     try {
-      await fetch(`${API_BASE_URL}/confirmations/broadcast`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, confirmation })
-      });
+      await queueService.publishConfirmationUpdate(conversationId, confirmation);
     } catch (notifyErr) {
-      console.error('Failed to notify communication service:', notifyErr);
+      console.error('Failed to notify chat service:', notifyErr);
     }
 
     // Send email notification
@@ -304,12 +291,10 @@ export const upsertConfirmationController = async (req: Request, res: Response) 
   try {
     const { conversationId } = req.params;
     const updates = req.body;
-    
-    // Check if conversation exists
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId }
-    });
-    
+
+    // Check if conversation exists (conversations now live in the Chat service)
+    const conversation = await chatClient.getConversation(conversationId);
+
     if (!conversation) {
       return res.status(404).json({ error: 'Conversation not found' });
     }
@@ -352,18 +337,12 @@ export const upsertConfirmationController = async (req: Request, res: Response) 
     
     // Convert to confirmation format
     const confirmation = scheduleToConfirmation(schedule, conversationId);
-    // Safely access environment variables: prefer import.meta.env (Vite) but fall back to process.env (Node).
 
-
-    // Notify communication service for real-time update
+    // Notify the chat service for real-time update (it owns the socket connections)
     try {
-      await fetch(`${API_BASE_URL}/confirmations/broadcast`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, confirmation })
-      });
+      await queueService.publishConfirmationUpdate(conversationId, confirmation);
     } catch (notifyErr) {
-      console.error('Failed to notify communication service:', notifyErr);
+      console.error('Failed to notify chat service:', notifyErr);
     }
 
     // Send email notification

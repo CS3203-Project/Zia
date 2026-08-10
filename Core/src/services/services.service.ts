@@ -1,5 +1,6 @@
 import { prisma } from '../utils/database.js';
 import { embeddingService } from './embedding.service.js';
+import chatClient from './chatClient.service.js';
 
 // Type definitions
 interface ServiceCreateData {
@@ -461,54 +462,55 @@ export const deleteService = async (serviceId: string) => {
  */
 export const getServiceByConversationId = async (conversationId: string) => {
   try {
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId },
+    // Conversations now live in the Chat service, so look up its serviceId over HTTP first
+    const conversation = await chatClient.getConversation(conversationId);
+
+    if (!conversation || !conversation.serviceId) {
+      return null;
+    }
+
+    const service = await prisma.service.findUnique({
+      where: { id: conversation.serviceId },
       include: {
-        service: {
+        provider: {
           include: {
-            provider: {
-              include: {
-                user: {
-                  select: {
-                    firstName: true,
-                    lastName: true,
-                    email: true,
-                    phone: true,
-                    imageUrl: true
-                  }
-                }
-              }
-            },
-            category: {
+            user: {
               select: {
-                id: true,
-                name: true,
-                slug: true,
-                description: true
-              }
-            },
-            serviceReviews: {
-              select: {
-                rating: true
-              }
-            },
-            _count: {
-              select: {
-                serviceReviews: true,
-                schedules: true
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                imageUrl: true
               }
             }
+          }
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            description: true
+          }
+        },
+        serviceReviews: {
+          select: {
+            rating: true
+          }
+        },
+        _count: {
+          select: {
+            serviceReviews: true,
+            schedules: true
           }
         }
       }
     });
 
-    if (!conversation || !conversation.service) {
+    if (!service) {
       return null;
     }
 
-    const service = conversation.service;
-    
     // Calculate average rating
     const reviewCount = service._count.serviceReviews;
     let averageRating = 0;
