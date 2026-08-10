@@ -1,7 +1,8 @@
 -- Runs once, on first startup of the shared "zia_core" Postgres database.
--- Core, Chat, and Payment each own one schema (namespace) inside this single database,
--- migrated independently by each service's own Prisma project.
-CREATE SCHEMA IF NOT EXISTS core;
+-- Core uses the database's default "public" schema (its 35-migration history predates
+-- this split and several migrations hardcode "public" — safer to leave it there than
+-- rewrite immutable migration SQL). Chat and Payment, with fresh migration histories,
+-- each get their own dedicated schema below.
 CREATE SCHEMA IF NOT EXISTS chat;
 CREATE SCHEMA IF NOT EXISTS payment;
 

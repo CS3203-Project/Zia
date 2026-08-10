@@ -34,9 +34,9 @@ import { QueueModule } from './modules/queue/queue.module';
         synchronize: false,   // ❌ Disable automatic schema synchronization
         migrationsRun: false, // ❌ Disable automatic migration execution
         migrations: [],       // ❌ No migrations array (since you don't want TypeORM to handle them)
-        ssl: {
-          rejectUnauthorized: false, // Required for NeonDB connections
-        },
+        // SSL is required for cloud Postgres (e.g. NeonDB) but unsupported by a plain
+        // local Postgres container - default off, opt in via DATABASE_SSL=true.
+        ssl: configService.get('DATABASE_SSL') === 'true' ? { rejectUnauthorized: false } : false,
         logging: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : false, // Optional: Control logging
       }),
     }),

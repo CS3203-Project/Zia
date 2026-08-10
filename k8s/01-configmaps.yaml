@@ -11,7 +11,11 @@ metadata:
 data:
   NODE_ENV: "production"
   PORT: "3000"
-  DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core?schema=core"
+  # Core's migration history predates the split and hardcodes the "public" schema in
+  # several files (Prisma FK-constraint artifacts) — rather than rewrite immutable
+  # migration SQL, Core keeps the database's default "public" schema; Chat and Payment
+  # (fresh migration histories) use their own named schemas below.
+  DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core"
   RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
   CHAT_SERVICE_URL: "http://chat-service:3001"
 

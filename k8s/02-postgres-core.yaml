@@ -1,6 +1,7 @@
-# Shared Postgres for Core, Chat, and Payment — one instance, one schema per service
-# (created by the init script below, same as scripts/init-core-db.sql used in local
-# docker-compose). Each service migrates only its own schema independently.
+# Shared Postgres for Core, Chat, and Payment (same layout as scripts/init-core-db.sql
+# used in local docker-compose). Core uses the database's default "public" schema (its
+# migration history predates this split and hardcodes "public" in places); Chat and
+# Payment, with fresh migration histories, each get their own dedicated schema.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,7 +9,6 @@ metadata:
   namespace: zia
 data:
   init-core-db.sql: |
-    CREATE SCHEMA IF NOT EXISTS core;
     CREATE SCHEMA IF NOT EXISTS chat;
     CREATE SCHEMA IF NOT EXISTS payment;
 

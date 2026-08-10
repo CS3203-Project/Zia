@@ -1,5 +1,3 @@
-version: "3.9"
-
 # Local dev stack for all 4 microservices + frontend, mirroring the eventual Kubernetes
 # layout: Core/Chat/Payment share one Postgres instance (one schema each) and one
 # RabbitMQ broker; Notification keeps its own separate Postgres + RabbitMQ (unchanged).
@@ -11,6 +9,14 @@ services:
     container_name: zia-core
     env_file:
       - ./Core/.env
+    # env_file above carries the local-dev DATABASE_URL/etc (localhost:5432), which
+    # doesn't work from inside a container — "localhost" there means the container
+    # itself. These overrides point at the other containers by their Compose service
+    # name instead; `environment:` takes precedence over `env_file`.
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      CHAT_SERVICE_URL: http://chat:3001
     ports:
       - "3000:3000"
     depends_on:
@@ -27,6 +33,9 @@ services:
     container_name: zia-chat
     env_file:
       - ./Chat/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=chat
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
     ports:
       - "3001:3001"
     depends_on:
@@ -41,6 +50,9 @@ services:
     container_name: zia-payment
     env_file:
       - ./Payment/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=payment
+      CORE_SERVICE_URL: http://core:3000
     ports:
       - "3002:3002"
     depends_on:
@@ -48,10 +60,11 @@ services:
     restart: unless-stopped
 
   postgres:
-    # Note: matches the image the original Backend/docker-compose.yml used. It does not
-    # actually bundle the postgis/vector extensions the Core schema declares — that gap
-    # predates this split and isn't something this change attempts to fix.
-    image: postgres:16-alpine
+    # Bundles postgis + pgvector (see scripts/postgres-core.Dockerfile) — Core's schema
+    # needs both for location and embedding columns.
+    build:
+      context: ./scripts
+      dockerfile: postgres-core.Dockerfile
     container_name: zia-core-db
     environment:
       POSTGRES_USER: postgres
@@ -81,6 +94,9 @@ services:
     container_name: zia-notification
     env_file:
       - ./Notification/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@notification-postgres:5432/zia_com
+      RABBITMQ_URL: amqp://guest:guest@notification-rabbitmq:5672
     ports:
       - "3003:3001"
     depends_on:

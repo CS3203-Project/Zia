@@ -1,5 +1,10 @@
 import crypto from 'crypto';
-import { PaymentStatus } from '@prisma/client';
+// Named enum import from the generated client isn't reliably detected by Node's
+// CJS/ESM interop under plain `node` (works under tsx, which is more lenient) —
+// import the default and pull the enum off it instead.
+import prismaPkg from '@prisma/client';
+const PaymentStatus = prismaPkg.PaymentStatus;
+type PaymentStatus = (typeof prismaPkg.PaymentStatus)[keyof typeof prismaPkg.PaymentStatus];
 import { config } from 'dotenv';
 import { prisma } from '../utils/database.js';
 import coreClient from './coreClient.service.js';
