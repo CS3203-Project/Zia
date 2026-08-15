@@ -7,7 +7,6 @@ import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
-import Button from '@/components/shared/Button';
 
 const ConversationHubContent: React.FC<{ currentUser: UserProfile }> = ({ currentUser }) => {
   return (
@@ -146,24 +145,20 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
         
         <Navbar />
         <main className="flex-grow flex items-center justify-center relative z-10 px-4">
-          <div className="text-center bg-black/40 backdrop-blur-xl rounded-2xl border border-gray-200 p-8 shadow-2xl max-w-md w-full relative overflow-hidden">
-            {/* Glittering border effect */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse"></div>
-            
+          <div className="text-center bg-white rounded-2xl border border-gray-100 p-8 shadow-xl max-w-md w-full relative overflow-hidden">
             <div className="relative z-10">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-50 backdrop-blur-sm flex items-center justify-center border border-gray-300">
-                <svg className="w-8 h-8 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-50 flex items-center justify-center border border-orange-100">
+                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
               <p className="text-lg font-medium text-gray-900 mb-2">Error loading conversations</p>
-              <p className="text-sm text-gray-900/70 mb-6">{error}</p>
-              <button 
-                onClick={() => loadConversations()} 
-                className="px-6 py-3 bg-gradient-to-r from-white to-white/80 text-dark-primary font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg relative overflow-hidden group"
+              <p className="text-sm text-gray-500 mb-6">{error}</p>
+              <button
+                onClick={() => loadConversations()}
+                className="px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-orange-500/30"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                <span className="relative z-10">Retry</span>
+                Retry
               </button>
             </div>
           </div>
@@ -174,19 +169,19 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-950 text-gray-900">
+    <div className="flex flex-col min-h-screen bg-white text-gray-900">
       <Navbar />
       <main className="container mx-auto mt-16 flex-grow px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8 text-center">
             <div className="relative inline-block">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mb-4">
                 Conversation Hub
               </h1>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-white/80 to-white/40 rounded-full"></div>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full"></div>
             </div>
-            <p className="text-gray-900/70 mt-6 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-500 mt-6 text-lg max-w-2xl mx-auto">
               Connect, communicate, and collaborate with your network in a seamless messaging experience
             </p>
           </div>
@@ -211,13 +206,13 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
           {/* New Conversation Modal */}
           {showNewConversation && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-              <div className="w-full max-w-lg rounded-2xl border border-gray-100 bg-neutral-900 p-8 shadow-2xl">
+              <div className="w-full max-w-lg rounded-2xl border border-gray-100 bg-white p-8 shadow-2xl">
                 <div>
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="text-2xl font-bold text-gray-900">Start New Conversation</h3>
                     <button
                       onClick={() => setShowNewConversation(false)}
-                      className="p-2 text-gray-900/60 hover:text-gray-900 transition-colors duration-300 rounded-lg hover:bg-orange-50"
+                      className="p-2 text-gray-400 hover:text-gray-900 transition-colors duration-300 rounded-lg hover:bg-orange-50"
                       aria-label="Close modal"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,10 +230,10 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
           )}
 
           {/* Conversations List */}
-          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-neutral-900 shadow-2xl">
+          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
             <div>
               {loading && conversations.length === 0 ? (
-                <div className="divide-y divide-white/10">
+                <div className="divide-y divide-gray-100">
                   {/* Skeleton Loaders */}
                   {[1, 2, 3, 4, 5].map((index) => (
                     <div key={index} className="p-6 animate-pulse">
@@ -269,42 +264,39 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                   ))}
                 </div>
               ) : conversations.length === 0 ? (
-                <div className="p-12 text-center text-gray-900/70">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-50 backdrop-blur-sm flex items-center justify-center border border-gray-200">
-                    <svg className="w-10 h-10 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="p-12 text-center text-gray-500">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-50 flex items-center justify-center border border-orange-100">
+                    <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
                   <p className="text-xl font-semibold text-gray-900 mb-2">No conversations yet</p>
-                  <p className="text-gray-900/60">Start your first conversation to begin messaging with others</p>
+                  <p className="text-gray-500">Start your first conversation to begin messaging with others</p>
                   <button
                     onClick={() => setShowNewConversation(true)}
-                    className="mt-6 px-6 py-3 bg-gradient-to-r from-white to-white/80 text-dark-primary font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg"
+                    className="mt-6 px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-orange-500/30"
                   >
                     Start Messaging
                   </button>
                 </div>
               ) : (
-                <div className="divide-y divide-white/10">
+                <div className="divide-y divide-gray-100">
                   {conversations.map((conversation) => (
                     <div
                       key={conversation.id}
                       onClick={() => handleSelectConversation(conversation)}
-                      className="p-6 hover:bg-gray-50 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 border-transparent hover:border-gray-1000"
+                      className="p-6 hover:bg-orange-50/60 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 border-transparent hover:border-orange-400"
                     >
-                      {/* Hover shimmer effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/3 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                      
                       <div className="flex items-center space-x-4 relative z-10">
                         {/* Avatar with enhanced styling */}
                         <div className="flex-shrink-0 relative">
-                          <div className="w-14 h-14 bg-gradient-to-br from-white to-white/60 rounded-full flex items-center justify-center text-dark-primary font-semibold text-lg shadow-lg group-hover:shadow-xl transition-all duration-300 border-2 border-gray-200 group-hover:border-white/40">
+                          <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md group-hover:shadow-lg transition-all duration-300">
                             {getContactDisplayName(conversation).charAt(0).toUpperCase()}
                           </div>
                           {/* Enhanced online status indicator */}
                           {checkUserOnlineStatus(getOtherParticipant(conversation)) && (
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-dark-card border-3 border-black rounded-full shadow-lg animate-pulse">
-                              <div className="absolute inset-0 bg-white/80 rounded-full animate-ping"></div>
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-lg animate-pulse">
+                              <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping"></div>
                             </div>
                           )}
                         </div>
@@ -313,50 +305,50 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start">
                             <div className="flex-1 min-w-0">
-                              {/* Contact Name with gradient */}
+                              {/* Contact Name */}
                               <div className="flex items-center space-x-2">
-                                <p className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent truncate">
+                                <p className="text-xl font-bold text-gray-900 truncate">
                                   {getContactDisplayName(conversation)}
                                 </p>
                                 {loadingProfiles.has(getOtherParticipant(conversation)) && (
-                                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
                                 )}
                               </div>
-                              
+
                               {/* Conversation Title */}
-                              {conversation.title && 
-                               !conversation.title.includes('Chat with') && 
+                              {conversation.title &&
+                               !conversation.title.includes('Chat with') &&
                                conversation.title !== getContactDisplayName(conversation) && (
-                                <p className="text-sm text-gray-900/80 truncate mt-1 font-medium">
+                                <p className="text-sm text-gray-700 truncate mt-1 font-medium">
                                   {conversation.title}
                                 </p>
                               )}
-                              
+
                               {/* Last Message */}
                               {conversation.lastMessage && (
-                                <p className="text-sm text-gray-900/60 truncate mt-2 leading-relaxed">
+                                <p className="text-sm text-gray-500 truncate mt-2 leading-relaxed">
                                   {conversation.lastMessage.fromId === currentUserId ? (
                                     <span className="text-gray-900 font-medium">You: </span>
                                   ) : ''}
                                   {conversation.lastMessage.content}
                                 </p>
                               )}
-                              
+
                               {!conversation.lastMessage && (
-                                <p className="text-sm text-gray-900/50 italic mt-2">No messages yet - start the conversation!</p>
+                                <p className="text-sm text-gray-400 italic mt-2">No messages yet - start the conversation!</p>
                               )}
                             </div>
-                            
+
                             {/* Time and Unread with enhanced styling */}
                             <div className="flex flex-col items-end ml-4 space-y-2">
                               {conversation.lastMessage && (
-                                <p className="text-xs text-gray-900/50 font-medium">
+                                <p className="text-xs text-gray-400 font-medium">
                                   {formatTime(conversation.lastMessage.createdAt)}
                                 </p>
                               )}
-                              
+
                               {conversation.unreadCount && conversation.unreadCount > 0 && (
-                                <div className="bg-gradient-to-r from-white to-white/80 text-dark-primary text-xs rounded-full h-7 w-7 flex items-center justify-center font-bold shadow-lg animate-pulse">
+                                <div className="bg-orange-500 text-white text-xs rounded-full h-7 w-7 flex items-center justify-center font-bold shadow-md">
                                   {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
                                 </div>
                               )}
@@ -367,7 +359,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                         {/* Enhanced Arrow */}
                         <div className="flex-shrink-0">
                           <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
-                            <svg className="w-4 h-4 text-gray-900/70 group-hover:text-gray-900 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 text-gray-500 group-hover:text-orange-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
                           </div>
@@ -408,7 +400,15 @@ const ConversationHub: React.FC = () => {
     fetchCurrentUser();
   }, []);
 
-  if (loading) {
+  // Redirect straight to login if the user isn't authenticated
+  useEffect(() => {
+    if (!loading && (error || !currentUser)) {
+      localStorage.setItem('RedirectAfterLogin', window.location.pathname);
+      navigate('/signin');
+    }
+  }, [loading, error, currentUser, navigate]);
+
+  if (loading || error || !currentUser) {
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
         {/* Background effects */}
@@ -434,10 +434,8 @@ const ConversationHub: React.FC = () => {
             </div>
 
             {/* Conversations List Skeleton */}
-            <div className="bg-black/40 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 relative overflow-hidden">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse"></div>
-              
-              <div className="relative z-10 divide-y divide-white/10">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
+              <div className="relative z-10 divide-y divide-gray-100">
                 {[1, 2, 3, 4, 5, 6].map((index) => (
                   <div key={index} className="p-6 animate-pulse">
                     <div className="flex items-center space-x-4">
@@ -460,7 +458,7 @@ const ConversationHub: React.FC = () => {
 
                       {/* Right side Skeleton */}
                       <div className="flex flex-col items-end space-y-2">
-                        <div className="h-3 bg-white/15 rounded-lg w-16"></div>
+                        <div className="h-3 bg-orange-50 rounded-lg w-16"></div>
                         <div className="w-7 h-7 bg-orange-100 rounded-full"></div>
                       </div>
                     </div>
@@ -469,37 +467,6 @@ const ConversationHub: React.FC = () => {
               </div>
             </div>
           </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error || !currentUser) {
-    return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-        
-        <Navbar />
-        <main className="flex-grow flex items-center justify-center relative z-10 px-4">
-          <div className="min-h-screen bg-black to-orange-50 dark:bg-black  flex flex-col">
-                  <div className="flex-1 flex items-center justify-center mt-16">
-                    <div className="text-center">
-                  <p className="text-dark-primary dark:text-gray-900 mb-4">Please log in to access your profile.</p>
-                  <Button
-                    onClick={() => {
-                  localStorage.setItem('RedirectAfterLogin', window.location.pathname);
-                  navigate('/signin');
-                    }}
-                    className="bg-black hover:bg-gray-800 text-gray-900 px-6 py-2 rounded-full"
-                  >
-                    Log In
-                  </Button>
-                    </div>
-                  </div>
-                </div>
         </main>
         <Footer />
       </div>

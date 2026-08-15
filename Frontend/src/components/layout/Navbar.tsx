@@ -77,8 +77,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Become a Provider', href: "/become-provider" },
-    { name: 'Messages', href: "/conversation-hub" },
-    { name: 'Service Request', href: "/service-request" }
+    { name: 'Messages', href: "/conversation-hub" }
   ];
 
   return (

@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   User,
   Save,
@@ -23,6 +24,16 @@ import toast, { Toaster } from 'react-hot-toast';
 
 export default function BecomeProvider() {
   const navigate = useNavigate();
+  const { isLoggedIn, isLoading: authLoading } = useAuth();
+
+  // Redirect straight to login if the user isn't authenticated
+  useEffect(() => {
+    if (!authLoading && !isLoggedIn) {
+      localStorage.setItem('RedirectAfterLogin', window.location.pathname);
+      navigate('/signin');
+    }
+  }, [authLoading, isLoggedIn, navigate]);
+
   // Section refs for scrolling to first invalid field on submit
   const bioSectionRef = useRef<HTMLDivElement | null>(null);
   const skillsSectionRef = useRef<HTMLDivElement | null>(null);
@@ -212,6 +223,10 @@ export default function BecomeProvider() {
     if (touched.qualifications) validateField('qualifications', updatedQualifications);
     toast.success('Qualification removed');
   };
+
+  if (authLoading || !isLoggedIn) {
+    return <div className="min-h-screen bg-white" />;
+  }
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
