@@ -77,7 +77,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Become a Provider', href: "/become-provider" },
-    { name: 'Messages', href: "/conversation-hub" }
+    ...(isLoggedIn ? [{ name: 'Messages', href: "/conversation-hub" }] : [])
   ];
 
   return (

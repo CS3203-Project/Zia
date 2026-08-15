@@ -44,7 +44,6 @@ import {
   LabelList
 } from 'recharts';
 import Button from '../../components/shared/Button';
-import MinimalFooter from '../../components/layout/MinimalFooter';
 import { userApi } from '../../api/userApi';
 import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { paymentApi, type Payment, type ProviderEarnings } from '../../api/paymentApi';
@@ -551,68 +550,48 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="relative min-h-screen bg-dark-primary dark:bg-black overflow-hidden">
-        {/* Glass Morphism Background - Homepage Style */}
+      <div className="relative min-h-screen bg-gradient-to-b from-orange-50 to-white overflow-hidden">
+        {/* Background accent - matches homepage */}
         <div className="absolute inset-0 z-0">
-          {/* Main gradient background */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#fff,#ffffff_50%,#e8e8e8_88%)] dark:bg-[linear-gradient(to_bottom,#000,#0000_30%,#898e8e_78%,#ffffff_99%_50%)]"></div>
-
-          {/* Square Grid Pattern */}
-          <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] dark:bg-[linear-gradient(to_right,#374151_0.5px,transparent_0.5px),linear-gradient(to_bottom,#374151_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
-
-          {/* Subtle Orbs for depth */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 opacity-10 blur-3xl">
-            <div className="w-full h-full bg-gradient-to-r from-blue-400 to-orange-400 rounded-full animate-pulse"></div>
+          <div className="absolute top-1/4 right-1/4 w-64 h-64 opacity-10 blur-3xl">
+            <div className="w-full h-full bg-gradient-to-r from-orange-400 to-amber-400 rounded-full animate-pulse"></div>
           </div>
-          <div className="absolute top-1/3 right-1/4 w-80 h-80 opacity-8 blur-3xl">
-            <div className="w-full h-full bg-gradient-to-r from-green-400 to-blue-400 rounded-full animate-pulse"></div>
-          </div>
-          <div className="absolute bottom-1/4 right-1/3 w-72 h-72 opacity-10 blur-3xl">
-            <div className="w-full h-full bg-gradient-to-r from-orange-400 to-pink-400 rounded-full animate-pulse"></div>
-          </div>
-
-          {/* Minimal gradient accents */}
-          <div className="absolute top-1/5 left-3/4 w-64 h-64 bg-black/5 dark:bg-white/5 rounded-full blur-3xl opacity-30"></div>
-          <div className="absolute bottom-1/5 left-1/5 w-56 h-56 bg-black/3 dark:bg-white/3 rounded-full blur-3xl opacity-25"></div>
-
-          {/* Radial overlay for depth */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.1)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.2)_100%)]"></div>
         </div>
 
         {/* Content Overlay - Glass Morphism */}
         <div className="relative z-10 flex flex-col min-h-screen" style={{ paddingLeft: '10px', paddingRight: '10px' }}>
           <main className="flex-1 mx-[30px] px-4 sm:px-6 lg:px-8 mt-20 mb-8">
             {/* Profile Header Skeleton */}
-            <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] overflow-hidden mb-8">
+            <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden mb-8">
               {/* Banner Skeleton */}
-              <div className="relative h-36 bg-gradient-to-r from-dark-secondary via-dark-secondary to-dark-secondary dark:from-gray-900 dark:via-black dark:to-gray-900">
-                <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/2 to-black/5 dark:from-white/5 dark:via-white/2 dark:to-white/5"></div>
+              <div className="relative h-36 bg-gradient-to-r from-dark-secondary via-dark-secondary to-dark-secondary">
+                <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/2 to-black/5"></div>
 
                 {/* Avatar Skeleton */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-16 z-10">
                   <div className="relative">
-                    <div className="w-32 h-32 rounded-full border-4 border-white/50 dark:border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] bg-gray-300 dark:bg-gray-700 animate-pulse"></div>
+                    <div className="w-32 h-32 rounded-full border-4 border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] bg-gray-300 animate-pulse"></div>
                   </div>
                 </div>
               </div>
 
               {/* Header Content Skeleton */}
-              <div className="px-4 sm:px-6 pb-6 bg-gradient-to-b from-white/10 to-transparent dark:from-black/10">
+              <div className="px-4 sm:px-6 pb-6 bg-gradient-to-b from-white/10 to-transparent">
                 <div className="flex flex-col lg:flex-row items-center lg:items-end lg:space-x-8 mt-0">
                   <div className="w-32 h-16 lg:hidden"></div>
                   <div className="flex-1 text-center lg:text-left ml-5 mt-13 lg:mt-0">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
                       <div className="animate-pulse">
-                        <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-48 mb-2 mx-auto lg:mx-0"></div>
-                        <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-32 mb-2 mx-auto lg:mx-0"></div>
+                        <div className="h-8 bg-gray-300 rounded w-48 mb-2 mx-auto lg:mx-0"></div>
+                        <div className="h-4 bg-gray-300 rounded w-32 mb-2 mx-auto lg:mx-0"></div>
                         <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
-                          <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded-full w-24"></div>
-                          <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded-full w-16"></div>
-                          <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded-full w-20"></div>
+                          <div className="h-6 bg-gray-300 rounded-full w-24"></div>
+                          <div className="h-6 bg-gray-300 rounded-full w-16"></div>
+                          <div className="h-6 bg-gray-300 rounded-full w-20"></div>
                         </div>
                       </div>
                       <div className="animate-pulse">
-                        <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded-full w-32"></div>
+                        <div className="h-10 bg-gray-300 rounded-full w-32"></div>
                       </div>
                     </div>
                   </div>
@@ -624,16 +603,16 @@ export default function Profile() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column - Basic Info Skeleton */}
               <div className="lg:col-span-1 space-y-6">
-                <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+                <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
                   <div className="animate-pulse">
-                    <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-40 mb-4"></div>
+                    <div className="h-6 bg-gray-300 rounded w-40 mb-4"></div>
                     <div className="space-y-3">
                       {[1, 2, 3].map((i) => (
-                        <div key={i} className="flex items-center space-x-3 p-3 rounded-xl bg-white/50 dark:bg-black/50">
-                          <div className="w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
+                        <div key={i} className="flex items-center space-x-3 p-3 rounded-xl bg-white/50">
+                          <div className="w-10 h-10 bg-gray-300 rounded-lg"></div>
                           <div className="flex-1">
-                            <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-16 mb-1"></div>
-                            <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-24"></div>
+                            <div className="h-3 bg-gray-300 rounded w-16 mb-1"></div>
+                            <div className="h-4 bg-gray-300 rounded w-24"></div>
                           </div>
                         </div>
                       ))}
@@ -644,24 +623,24 @@ export default function Profile() {
 
               {/* Right Column - Services Skeleton */}
               <div className="lg:col-span-2 space-y-6">
-                <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+                <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
                   <div className="animate-pulse">
-                    <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-32 mb-4"></div>
+                    <div className="h-6 bg-gray-300 rounded w-32 mb-4"></div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 rounded-2xl p-4">
+                        <div key={i} className="bg-white/50 backdrop-blur-sm border border-white/30 rounded-2xl p-4">
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex-1">
-                              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-1"></div>
-                              <div className="h-3 bg-gray-300 dark:bg-gray-700 rounded w-full mb-2"></div>
+                              <div className="h-4 bg-gray-300 rounded w-3/4 mb-1"></div>
+                              <div className="h-3 bg-gray-300 rounded w-full mb-2"></div>
                               <div className="flex items-center gap-2">
-                                <div className="h-5 bg-gray-300 dark:bg-gray-700 rounded w-12"></div>
-                                <div className="h-5 bg-gray-300 dark:bg-gray-700 rounded w-16"></div>
+                                <div className="h-5 bg-gray-300 rounded w-12"></div>
+                                <div className="h-5 bg-gray-300 rounded w-16"></div>
                               </div>
                             </div>
-                            <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded-full w-16"></div>
+                            <div className="h-6 bg-gray-300 rounded-full w-16"></div>
                           </div>
-                          <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-full"></div>
+                          <div className="h-8 bg-gray-300 rounded w-full"></div>
                         </div>
                       ))}
                     </div>
@@ -677,16 +656,16 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-black to-orange-50 dark:bg-black  flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
         <div className="flex-1 flex items-center justify-center mt-16">
           <div className="text-center">
-        <p className="text-dark-primary dark:text-white mb-4">Please log in to access your profile.</p>
+        <p className="text-dark-primary mb-4">Please log in to access your profile.</p>
         <Button
           onClick={() => {
         localStorage.setItem('RedirectAfterLogin', window.location.pathname);
         navigate('/signin');
           }}
-          className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full"
+          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full"
         >
           Log In
         </Button>
@@ -697,51 +676,31 @@ export default function Profile() {
   }
 
   return (
-    <div className="relative min-h-screen bg-dark-primary dark:bg-black overflow-hidden">
-      {/* Glass Morphism Background - Homepage Style */}
+    <div className="relative min-h-screen bg-gradient-to-b from-orange-50 to-white overflow-hidden">
+      {/* Background accent - matches homepage */}
       <div className="absolute inset-0 z-0">
-        {/* Main gradient background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#fff,#ffffff_50%,#e8e8e8_88%)] dark:bg-[linear-gradient(to_bottom,#000,#0000_30%,#898e8e_78%,#ffffff_99%_50%)]"></div>
-        
-        {/* Square Grid Pattern */}
-        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] dark:bg-[linear-gradient(to_right,#374151_0.5px,transparent_0.5px),linear-gradient(to_bottom,#374151_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
-        
-        {/* Subtle Orbs for depth */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 opacity-10 blur-3xl">
-          <Orb hue={280} hoverIntensity={0.2} rotateOnHover={true} />
+        <div className="absolute top-0 right-0 w-72 h-72 opacity-10 blur-3xl">
+          <Orb hue={0} hoverIntensity={0.15} rotateOnHover={true} />
         </div>
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 opacity-8 blur-3xl">
-          <Orb hue={200} hoverIntensity={0.15} rotateOnHover={true} />
-        </div>
-        <div className="absolute bottom-1/4 right-1/3 w-72 h-72 opacity-10 blur-3xl">
-          <Orb hue={320} hoverIntensity={0.2} rotateOnHover={true} />
-        </div>
-        
-        {/* Minimal gradient accents */}
-        <div className="absolute top-1/5 left-3/4 w-64 h-64 bg-black/5 dark:bg-white/5 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute bottom-1/5 left-1/5 w-56 h-56 bg-black/3 dark:bg-white/3 rounded-full blur-3xl opacity-25"></div>
-        
-        {/* Radial overlay for depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.1)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.2)_100%)]"></div>
       </div>
 
       {/* Content Overlay - Glass Morphism */}
       <div className="relative z-10 flex flex-col min-h-screen" style={{ paddingLeft: '10px', paddingRight: '10px' }}>      
         <main className="flex-1 mx-[30px] px-4 sm:px-6 lg:px-8 mt-20 mb-8">
         {/* Profile Header - Glass Style */}
-        <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.05)] overflow-hidden mb-8 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] dark:hover:shadow-[0_12px_48px_0_rgba(255,255,255,0.08)] transition-all duration-300">
+        <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden mb-8 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
           {/* Banner - Minimal Gradient */}
-          <div className="relative h-36 bg-gradient-to-r from-dark-secondary via-dark-secondary to-dark-secondary dark:from-gray-900 dark:via-black dark:to-gray-900">
+          <div className="relative h-36 bg-gradient-to-r from-dark-secondary via-dark-secondary to-dark-secondary">
         <img
           src="https://4kwallpapers.com/images/walls/thumbs_3t/8728.jpg"
           alt="Profile Banner"
-          className="w-full h-full object-cover opacity-10 dark:opacity-10 mix-blend-overlay"
+          className="w-full h-full object-cover opacity-10 mix-blend-overlay"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = 'none';
           }}
         />
         {/* Subtle overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/2 to-black/5 dark:from-white/5 dark:via-white/2 dark:to-white/5"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/2 to-black/5"></div>
         
         {/* Avatar - half above the banner */}
         <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-16 z-10">
@@ -750,7 +709,7 @@ export default function Profile() {
           <img
             src={user.imageUrl}
             alt={`${user.firstName} ${user.lastName}`}
-            className="relative w-32 h-32 rounded-full border-4 border-white/50 dark:border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] object-cover backdrop-blur-sm"
+            className="relative w-32 h-32 rounded-full border-4 border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] object-cover backdrop-blur-sm"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.style.display = 'none';
@@ -760,7 +719,7 @@ export default function Profile() {
           />
             ) : null}
             <div
-          className={`relative w-32 h-32 rounded-full border-4 border-white/50 dark:border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/50 dark:bg-black/50 flex items-center justify-center text-dark-primary dark:text-white text-3xl font-bold ${
+          className={`relative w-32 h-32 rounded-full border-4 border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/50 flex items-center justify-center text-dark-primary text-3xl font-bold ${
             user.imageUrl && user.imageUrl.trim() ? 'hidden' : 'flex'
           }`}
             >
@@ -771,7 +730,7 @@ export default function Profile() {
         </div>
           </div>
           {/* Header Content */}
-          <div className="px-4 sm:px-6 pb-6 bg-gradient-to-b from-white/10 to-transparent dark:from-black/10">
+          <div className="px-4 sm:px-6 pb-6 bg-gradient-to-b from-white/10 to-transparent">
         <div className="flex flex-col lg:flex-row items-center lg:items-end lg:space-x-8 mt-0">
           {/* Spacer for avatar */}
           <div className="w-32 h-16 lg:hidden" />
@@ -779,34 +738,34 @@ export default function Profile() {
           <div className="flex-1 text-center lg:text-left ml-5 mt-13 lg:mt-0">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mt-4 mb-1">
+            <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mt-4 mb-1">
               {user.firstName || 'First'} {user.lastName || 'Last'}
             </h1>
-            <p className="text-dark-secondary dark:text-dark-muted text-lg mb-1">{user.email}</p>
+            <p className="text-dark-secondary text-lg mb-1">{user.email}</p>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
               <span
             className={`px-4 py-2 rounded-full text-sm font-medium border backdrop-blur-md ${
               user.role === 'PROVIDER'
-                ? 'bg-white/50 dark:bg-black/50 text-dark-primary dark:text-white border-white/30 dark:border-white/20'
-                : 'bg-white/50 dark:bg-black/50 text-dark-primary dark:text-white border-white/30 dark:border-white/20'
+                ? 'bg-white/50 text-dark-primary border-white/30'
+                : 'bg-white/50 text-dark-primary border-white/30'
             } shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]`}
               >
             {user.role === 'PROVIDER' ? 'Service Provider' : 'User'}
               </span>
               {user.isEmailVerified && (
-            <span className="flex items-center text-dark-primary dark:text-white bg-white/50 dark:bg-black/50 px-3 py-1 rounded-full border border-white/30 dark:border-white/20 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+            <span className="flex items-center text-dark-primary bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
               <Shield className="h-4 w-4 mr-1" />
               <span className="text-sm font-medium">Verified</span>
             </span>
               )}
               {user.phone && (
-            <span className="flex items-center text-dark-primary dark:text-white bg-white/50 dark:bg-black/50 px-3 py-1 rounded-full border border-white/30 dark:border-white/20 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+            <span className="flex items-center text-dark-primary bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
               <Phone className="h-4 w-4 mr-1" />
               <span className="text-xs font-medium">{user.phone}</span>
             </span>
               )}
               {user.location && (
-            <span className="flex items-center text-dark-primary dark:text-white bg-white/50 dark:bg-black/50 px-3 py-1 rounded-full border border-white/30 dark:border-white/20 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+            <span className="flex items-center text-dark-primary bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
               <MapPin className="h-4 w-4 mr-1" />
               <span className="text-xs font-medium">{user.location}</span>
             </span>
@@ -849,19 +808,19 @@ export default function Profile() {
             )}
             {/* Company Info in Header */}
             {providerProfile && providerProfile.companies && providerProfile.companies.length > 0 && (
-          <div className="flex items-center mt-4 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-xl p-3 border border-white/30 dark:border-white/20 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+          <div className="flex items-center mt-4 bg-white/50 backdrop-blur-md rounded-xl p-3 border border-white/30 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
             {providerProfile.companies[0].logo ? (
               <img
                 src={providerProfile.companies[0].logo}
                 alt={providerProfile.companies[0].name}
-                className="w-10 h-10 rounded-full object-cover mr-3 border-2 border-white/50 dark:border-white/30"
+                className="w-10 h-10 rounded-full object-cover mr-3 border-2 border-white/50"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-md flex items-center justify-center mr-3 border-2 border-white/50 dark:border-white/30">
-                <Building className="h-5 w-5 text-dark-primary dark:text-white" />
+              <div className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center mr-3 border-2 border-white/50">
+                <Building className="h-5 w-5 text-dark-primary" />
               </div>
             )}
-            <span className="text-sm font-medium text-dark-primary dark:text-white">{providerProfile.companies[0].name}</span>
+            <span className="text-sm font-medium text-dark-primary">{providerProfile.companies[0].name}</span>
           </div>
             )}
             {/* Social Media Links */}
@@ -875,62 +834,62 @@ export default function Profile() {
           {/* Left Column - Basic Info */}
           <div className="lg:col-span-1 space-y-6">
             {/* Basic Information */}
-            <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-4">Basic Information</h2>
+            <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-4">Basic Information</h2>
               <div className="space-y-3">
-                <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:scale-102 transition-all duration-200">
-                  <div className="w-10 h-10 rounded-lg bg-white/50 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/30 dark:border-white/20">
-                    <Mail className="h-5 w-5 text-dark-primary dark:text-white" />
+                <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
+                  <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                    <Mail className="h-5 w-5 text-dark-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-dark-secondary dark:text-dark-muted font-medium">Email</p>
-                    <p className="text-sm font-semibold text-dark-primary dark:text-white">{user.email}</p>
+                    <p className="text-xs text-dark-secondary font-medium">Email</p>
+                    <p className="text-sm font-semibold text-dark-primary">{user.email}</p>
                   </div>
                 </div>
                 
                 {user.phone && (
-                  <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:scale-102 transition-all duration-200">
-                    <div className="w-10 h-10 rounded-lg bg-white/50 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/30 dark:border-white/20">
-                      <Phone className="h-5 w-5 text-dark-primary dark:text-white" />
+                  <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
+                    <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <Phone className="h-5 w-5 text-dark-primary" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary dark:text-dark-muted font-medium">Phone</p>
-                      <p className="text-sm font-semibold text-dark-primary dark:text-white">{user.phone}</p>
+                      <p className="text-xs text-dark-secondary font-medium">Phone</p>
+                      <p className="text-sm font-semibold text-dark-primary">{user.phone}</p>
                     </div>
                   </div>
                 )}
                 
                 {user.location && (
-                  <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:scale-102 transition-all duration-200">
-                    <div className="w-10 h-10 rounded-lg bg-white/50 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/30 dark:border-white/20">
-                      <MapPin className="h-5 w-5 text-dark-primary dark:text-white" />
+                  <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
+                    <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <MapPin className="h-5 w-5 text-dark-primary" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary dark:text-dark-muted font-medium">Location</p>
-                      <p className="text-sm font-semibold text-dark-primary dark:text-white">{user.location}</p>
+                      <p className="text-xs text-dark-secondary font-medium">Location</p>
+                      <p className="text-sm font-semibold text-dark-primary">{user.location}</p>
                     </div>
                   </div>
                 )}
 
                 {user.address && (
-                  <div className="group flex items-start space-x-3 p-3 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:scale-102 transition-all duration-200">
-                    <div className="w-10 h-10 rounded-lg bg-white/50 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/30 dark:border-white/20">
-                      <MapPin className="h-5 w-5 text-dark-primary dark:text-white mt-0.5" />
+                  <div className="group flex items-start space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
+                    <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <MapPin className="h-5 w-5 text-dark-primary mt-0.5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary dark:text-dark-muted font-medium">Address</p>
-                      <p className="text-sm font-semibold text-dark-primary dark:text-white">{user.address}</p>
+                      <p className="text-xs text-dark-secondary font-medium">Address</p>
+                      <p className="text-sm font-semibold text-dark-primary">{user.address}</p>
                     </div>
                   </div>
                 )}
                 
-                <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:scale-102 transition-all duration-200">
-                  <div className="w-10 h-10 rounded-lg bg-white/50 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/30 dark:border-white/20">
-                    <Calendar className="h-5 w-5 text-dark-primary dark:text-white" />
+                <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
+                  <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                    <Calendar className="h-5 w-5 text-dark-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-dark-secondary dark:text-dark-muted font-medium">Member since</p>
-                    <p className="text-sm font-semibold text-dark-primary dark:text-white">
+                    <p className="text-xs text-dark-secondary font-medium">Member since</p>
+                    <p className="text-sm font-semibold text-dark-primary">
                       {new Date(user.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -941,27 +900,27 @@ export default function Profile() {
                 </div>
 
                 {user.socialmedia && user.socialmedia.length > 0 && (
-                  <div className="group flex items-start space-x-3 p-4 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20">
-                    <div className="w-10 h-10 rounded-lg bg-white/50 dark:bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/30 dark:border-white/20">
-                      <ExternalLink className="h-5 w-5 text-dark-primary dark:text-white mt-0.5" />
+                  <div className="group flex items-start space-x-3 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
+                    <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <ExternalLink className="h-5 w-5 text-dark-primary mt-0.5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary dark:text-dark-muted font-medium mb-2">Social Media</p>
+                      <p className="text-xs text-dark-secondary font-medium mb-2">Social Media</p>
                       <div className="space-y-2">
                         {user.socialmedia.map((link, index) => {
                           const url = link.startsWith('http') ? link : `https://${link}`;
                           const username = url.split('/').pop(); // Extract username from URL
                           const platformIcon = url.includes('twitter') || url.includes('x.com')
-    ? <i className="fab fa-twitter text-dark-primary dark:text-white"></i>
+    ? <i className="fab fa-twitter text-dark-primary"></i>
     : url.includes('linkedin')
-    ? <i className="fab fa-linkedin text-dark-primary dark:text-white"></i>
+    ? <i className="fab fa-linkedin text-dark-primary"></i>
     : url.includes('instagram')
-    ? <i className="fab fa-instagram text-dark-primary dark:text-white"></i>
+    ? <i className="fab fa-instagram text-dark-primary"></i>
     : url.includes('github')
-    ? <i className="fab fa-github text-dark-primary dark:text-white"></i>
+    ? <i className="fab fa-github text-dark-primary"></i>
     : url.includes('portfolio') || url.includes('website')
-    ? <i className="fas fa-globe text-dark-primary dark:text-white"></i>
-    : <i className="fas fa-link text-dark-primary dark:text-white"></i>;
+    ? <i className="fas fa-globe text-dark-primary"></i>
+    : <i className="fas fa-link text-dark-primary"></i>;
 
   return (
     <a
@@ -969,7 +928,7 @@ export default function Profile() {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center text-dark-primary dark:text-white text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg hover:bg-white/50 dark:hover:bg-black/50 backdrop-blur-sm border border-transparent hover:border-white/30 dark:hover:border-white/20"
+      className="flex items-center text-dark-primary text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg hover:bg-white/50 backdrop-blur-sm border border-transparent hover:border-white/30"
     >
       <span className="mr-2">{platformIcon}</span>
       {username}
@@ -987,24 +946,24 @@ export default function Profile() {
             {providerProfile && (
               <>
                 {servicesLoading ? (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">My Services</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">Manage your services</p>
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Services</h2>
+                        <p className="text-sm text-dark-secondary font-medium">Manage your services</p>
                       </div>
                     </div>
                     <div className="text-center py-12">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white mx-auto mb-3"></div>
-                      <p className="text-dark-secondary dark:text-dark-muted">Loading services...</p>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
+                      <p className="text-dark-secondary">Loading services...</p>
                     </div>
                   </div>
                 ) : services.length > 0 ? (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">My Services</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Services</h2>
+                        <p className="text-sm text-dark-secondary font-medium">
                           {services.length} service{services.length !== 1 ? 's' : ''} • {services.filter(s => s.isActive).length} active
                         </p>
                       </div>
@@ -1014,7 +973,7 @@ export default function Profile() {
                         <div
                           key={service.id}
                           onClick={() => navigate(`/service/${service.id}`)}
-                          className="group p-4 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:border-white/50 dark:hover:border-white/30 cursor-pointer transition-all duration-300 hover:scale-102 hover:shadow-lg"
+                          className="group p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:border-white/50 cursor-pointer transition-all duration-300 hover:scale-102 hover:shadow-lg"
                         >
                           <div className="flex items-start gap-3">
                             {service.images && service.images.length > 0 ? (
@@ -1027,13 +986,13 @@ export default function Profile() {
                                 }}
                               />
                             ) : (
-                              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-dark-tertiary/50 to-gray-300/50 dark:from-gray-800/50 dark:to-gray-900/50 flex items-center justify-center flex-shrink-0">
-                                <Briefcase className="w-6 h-6 text-dark-muted dark:text-dark-muted opacity-50" />
+                              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-dark-tertiary/50 to-gray-300/50 flex items-center justify-center flex-shrink-0">
+                                <Briefcase className="w-6 h-6 text-dark-muted opacity-50" />
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2 mb-1">
-                                <h3 className="text-sm font-bold text-dark-primary dark:text-white line-clamp-1">
+                                <h3 className="text-sm font-bold text-dark-primary line-clamp-1">
                                   {service.title || 'Untitled Service'}
                                 </h3>
                                 <Button
@@ -1062,20 +1021,20 @@ export default function Profile() {
                                   }}
                                   variant="white"
                                   size="sm"
-                                  className="px-3 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-md bg-white/90 dark:bg-white/80 border border-white/40 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+                                  className="px-3 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-md bg-white/90 border border-white/40 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
                                   title="Edit Service"
                                 >
                                   <Edit2 className="h-3.5 w-3.5 text-dark-primary" strokeWidth={2.5} />
                                   <span className="text-xs font-semibold text-dark-primary">Edit</span>
                                 </Button>
                               </div>
-                              <p className="text-xs text-dark-secondary dark:text-dark-muted line-clamp-2 mb-2">
+                              <p className="text-xs text-dark-secondary line-clamp-2 mb-2">
                                 {service.description || 'No description'}
                               </p>
-                              <div className="flex items-center gap-3 text-xs text-dark-secondary dark:text-dark-muted">
+                              <div className="flex items-center gap-3 text-xs text-dark-secondary">
                                 {service.averageRating && service.averageRating > 0 && (
                                   <div className="flex items-center gap-1">
-                                    <Star className="w-3 h-3 fill-current text-dark-primary dark:text-white" />
+                                    <Star className="w-3 h-3 fill-current text-dark-primary" />
                                     <span className="font-semibold">{service.averageRating.toFixed(1)}</span>
                                   </div>
                                 )}
@@ -1102,13 +1061,13 @@ export default function Profile() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
                     <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30 dark:border-white/20">
-                        <Briefcase className="h-8 w-8 text-dark-secondary dark:text-dark-muted" />
+                      <div className="w-16 h-16 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30">
+                        <Briefcase className="h-8 w-8 text-dark-secondary" />
                       </div>
-                      <h3 className="text-base font-semibold text-dark-primary dark:text-white mb-2">No services yet</h3>
-                      <p className="text-sm text-dark-secondary dark:text-dark-muted mb-4">
+                      <h3 className="text-base font-semibold text-dark-primary mb-2">No services yet</h3>
+                      <p className="text-sm text-dark-secondary mb-4">
                         Start showcasing your skills
                       </p>
                       <Button
@@ -1132,19 +1091,19 @@ export default function Profile() {
               // Check if provider is verified
               providerProfile.isVerified === false ? (
                 /* Unverified Provider */
-                <div className="bg-black/20 backdrop-blur-lg rounded-xl shadow-2xl p-8 text-center border border-white/10">
+                <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 text-center border border-gray-100">
                   <div className="max-w-md mx-auto">
                     <div className="p-3 bg-yellow-500/20 backdrop-blur-sm rounded-full inline-flex mb-4 border border-yellow-400/30">
                       <Clock className="h-12 w-12 text-yellow-400" />
                     </div>
-                    <h2 className="text-2xl font-semibold text-white mb-2">Verification in Progress</h2>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Verification in Progress</h2>
                     <p className="text-dark-muted mb-6">
-                      Your provider profile has been submitted and is currently under review. 
+                      Your provider profile has been submitted and is currently under review.
                       Our team is verifying your information and credentials.
                     </p>
-                    <div className="bg-yellow-500/10 backdrop-blur-sm border border-yellow-400/20 rounded-lg p-4 mb-6">
-                      <h3 className="font-semibold text-yellow-300 mb-2">What's Next?</h3>
-                      <ul className="text-sm text-yellow-200 space-y-1 text-left">
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                      <h3 className="font-semibold text-yellow-800 mb-2">What's Next?</h3>
+                      <ul className="text-sm text-yellow-700 space-y-1 text-left">
                         <li>• We'll review your profile and credentials</li>
                         <li>• You'll receive an email once verification is complete</li>
                         <li>• Verification typically takes 1-3 business days</li>
@@ -1172,23 +1131,23 @@ export default function Profile() {
                     
                     {/* Show basic provider info */}
                     <div className="mt-8 text-left">
-                      <h3 className="text-lg font-semibold text-dark-primary dark:text-white mb-4">Your Submitted Information</h3>
-                      <div className="space-y-4 p-4 rounded-lg bg-white/70 border border-dark-secondary dark:bg-white/5 dark:border-white/10">
+                      <h3 className="text-lg font-semibold text-dark-primary mb-4">Your Submitted Information</h3>
+                      <div className="space-y-4 p-4 rounded-lg bg-white/70 border border-dark-secondary">
                         {providerProfile.bio && (
                           <div>
-                            <h4 className="font-medium text-dark-primary dark:text-white mb-1">Bio</h4>
-                            <p className="text-dark-secondary dark:text-gray-200 text-base leading-relaxed">{providerProfile.bio}</p>
+                            <h4 className="font-medium text-dark-primary mb-1">Bio</h4>
+                            <p className="text-dark-secondary text-base leading-relaxed">{providerProfile.bio}</p>
                           </div>
                         )}
                         
                         {providerProfile.skills && providerProfile.skills.length > 0 && (
                           <div>
-                            <h4 className="font-medium text-dark-primary dark:text-white mb-2">Skills</h4>
+                            <h4 className="font-medium text-dark-primary mb-2">Skills</h4>
                             <div className="flex flex-wrap gap-2">
                               {providerProfile.skills.map((skill, index) => (
                                 <span
                                   key={index}
-                                  className="px-3 py-1 bg-dark-tertiary text-blue-400 dark:bg-blue-600/20 dark:text-blue-200 border border-blue-300/60 dark:border-blue-400/30 rounded-full text-sm"
+                                  className="px-3 py-1 bg-dark-tertiary text-blue-400 border border-blue-300/60 rounded-full text-sm"
                                 >
                                   {skill}
                                 </span>
@@ -1199,12 +1158,12 @@ export default function Profile() {
                         
                         {providerProfile.qualifications && providerProfile.qualifications.length > 0 && (
                           <div>
-                            <h4 className="font-medium text-dark-primary dark:text-white mb-2">Qualifications</h4>
+                            <h4 className="font-medium text-dark-primary mb-2">Qualifications</h4>
                             <div className="space-y-1">
                               {providerProfile.qualifications.map((qualification, index) => (
                                 <div key={index} className="flex items-center space-x-2">
-                                  <Award className="h-4 w-4 text-blue-500 dark:text-blue-400" />
-                                  <span className="text-dark-secondary dark:text-gray-200 text-base">{qualification}</span>
+                                  <Award className="h-4 w-4 text-blue-500" />
+                                  <span className="text-dark-secondary text-base">{qualification}</span>
                                 </div>
                               ))}
                             </div>
@@ -1219,16 +1178,16 @@ export default function Profile() {
               <div className="space-y-6">
                 {/* Provider Stats - Glass Morphism */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="group backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                  <div className="group backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-14 h-14 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 dark:border-white/20">
-                        <Star className="h-7 w-7 text-dark-primary dark:text-white" />
+                      <div className="w-14 h-14 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
+                        <Star className="h-7 w-7 text-dark-primary" />
                       </div>
                       <div className="text-right">
-                        <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">
+                        <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">
                           {providerProfile.averageRating?.toFixed(1) || 'N/A'}
                         </p>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-semibold">Average Rating</p>
+                        <p className="text-sm text-dark-secondary font-semibold">Average Rating</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-1">
@@ -1237,27 +1196,27 @@ export default function Profile() {
                           key={i}
                           className={`h-5 w-5 ${
                             i < Math.floor(providerProfile.averageRating || 0)
-                              ? 'text-dark-primary dark:text-white fill-current'
-                              : 'text-dark-muted dark:text-dark-secondary'
+                              ? 'text-dark-primary fill-current'
+                              : 'text-dark-muted'
                           }`}
                         />
                       ))}
                     </div>
                   </div>
                   
-                  <div className="group backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                  <div className="group backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-14 h-14 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 dark:border-white/20">
-                        <Award className="h-7 w-7 text-dark-primary dark:text-white" />
+                      <div className="w-14 h-14 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
+                        <Award className="h-7 w-7 text-dark-primary" />
                       </div>
                       <div className="text-right">
-                        <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">
+                        <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">
                           {providerProfile.totalReviews || 0}
                         </p>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-semibold">Total Reviews</p>
+                        <p className="text-sm text-dark-secondary font-semibold">Total Reviews</p>
                       </div>
                     </div>
-                    <p className="text-xs text-dark-secondary dark:text-dark-muted font-semibold">
+                    <p className="text-xs text-dark-secondary font-semibold">
                       {providerProfile.totalReviews && providerProfile.totalReviews > 0 
                         ? `✨ ${((providerProfile.averageRating || 0) / 5 * 100).toFixed(0)}% satisfaction`
                         : 'No reviews yet'
@@ -1265,19 +1224,19 @@ export default function Profile() {
                     </p>
                   </div>
                   
-                  <div className="group backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                  <div className="group backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="w-14 h-14 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30 dark:border-white/20">
-                        <Briefcase className="h-7 w-7 text-dark-primary dark:text-white" />
+                      <div className="w-14 h-14 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
+                        <Briefcase className="h-7 w-7 text-dark-primary" />
                       </div>
                       <div className="text-right">
-                        <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">
+                        <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">
                           {services.length}
                         </p>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-semibold">Services Listed</p>
+                        <p className="text-sm text-dark-secondary font-semibold">Services Listed</p>
                       </div>
                     </div>
-                    <p className="text-xs text-dark-secondary dark:text-dark-muted font-semibold">
+                    <p className="text-xs text-dark-secondary font-semibold">
                       ✓ {services.filter(s => s.isActive).length} active • {services.filter(s => !s.isActive).length} inactive
                     </p>
                   </div>
@@ -1285,14 +1244,14 @@ export default function Profile() {
 
                 {/* Performance Trends Chart - Full Width */}
                 {services.length > 0 && (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent flex items-center gap-2">
-                          <Activity className="h-6 w-6 text-dark-primary dark:text-white" />
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent flex items-center gap-2">
+                          <Activity className="h-6 w-6 text-dark-primary" />
                           Performance Trends
                         </h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">Service ratings and review trends</p>
+                        <p className="text-sm text-dark-secondary font-medium">Service ratings and review trends</p>
                       </div>
                     </div>
                     <div className="h-80">
@@ -1322,21 +1281,21 @@ export default function Profile() {
                             textAnchor="end"
                             height={100}
                             tick={{ fill: 'currentColor', fontSize: 12 }}
-                            className="text-dark-secondary dark:text-dark-muted"
+                            className="text-dark-secondary"
                           />
                           <YAxis 
                             yAxisId="left"
                             domain={[0, 5]}
                             ticks={[0, 1, 2, 3, 4, 5]}
                             tick={{ fill: 'currentColor', fontSize: 12 }}
-                            className="text-dark-secondary dark:text-dark-muted"
+                            className="text-dark-secondary"
                             label={{ value: 'Rating', angle: -90, position: 'insideLeft', fill: 'currentColor' }}
                           />
                           <YAxis 
                             yAxisId="right" 
                             orientation="right"
                             tick={{ fill: 'currentColor', fontSize: 12 }}
-                            className="text-dark-secondary dark:text-dark-muted"
+                            className="text-dark-secondary"
                             label={{ value: 'Reviews', angle: 90, position: 'insideRight', fill: 'currentColor' }}
                           />
                           <Tooltip 
@@ -1382,16 +1341,16 @@ export default function Profile() {
 
                 {/* Bio - Glass Morphism */}
                 {providerProfile.bio && (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">About Me</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">Professional background and expertise</p>
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">About Me</h2>
+                        <p className="text-sm text-dark-secondary font-medium">Professional background and expertise</p>
                       </div>
                     </div>
                     <div className="prose prose-gray max-w-none">
-                      <blockquote className="border-l-4 border-black/20 dark:border-white/20 pl-6 py-3 bg-white/50 dark:bg-black/50 rounded-r-xl backdrop-blur-sm">
-                        <p className="text-dark-secondary dark:text-dark-muted leading-relaxed text-base italic font-medium">
+                      <blockquote className="border-l-4 border-black/20 pl-6 py-3 bg-white/50 rounded-r-xl backdrop-blur-sm">
+                        <p className="text-dark-secondary leading-relaxed text-base italic font-medium">
                           "{providerProfile.bio}"
                         </p>
                       </blockquote>
@@ -1401,11 +1360,11 @@ export default function Profile() {
 
                 {/* Skills - Glass Morphism */}
                 {providerProfile.skills && providerProfile.skills.length > 0 && (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Skills & Expertise</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Skills & Expertise</h2>
+                        <p className="text-sm text-dark-secondary font-medium">
                           ✨ {providerProfile.skills.length} skill{providerProfile.skills.length !== 1 ? 's' : ''} listed
                         </p>
                       </div>
@@ -1414,7 +1373,7 @@ export default function Profile() {
                       {providerProfile.skills.map((skill, index) => (
                         <span
                           key={index}
-                          className="group px-5 py-2.5 bg-white/50 dark:bg-black/50 backdrop-blur-md text-dark-primary dark:text-white rounded-full text-sm font-semibold border border-white/30 dark:border-white/20 hover:border-white/50 dark:hover:border-white/30 hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.12)] transition-all duration-300 cursor-default hover:scale-105"
+                          className="group px-5 py-2.5 bg-white/50 backdrop-blur-md text-dark-primary rounded-full text-sm font-semibold border border-white/30 hover:border-white/50 hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.12)] transition-all duration-300 cursor-default hover:scale-105"
                         >
                           {skill}
                         </span>
@@ -1425,23 +1384,23 @@ export default function Profile() {
 
                 {/* Qualifications - Glass Morphism */}
                 {providerProfile.qualifications && providerProfile.qualifications.length > 0 && (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Qualifications & Certifications</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Qualifications & Certifications</h2>
+                        <p className="text-sm text-dark-secondary font-medium">
                           Professional credentials and achievements
                         </p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       {providerProfile.qualifications.map((qualification, index) => (
-                        <div key={index} className="group flex items-start space-x-4 p-4 rounded-xl bg-white/50 dark:bg-black/50 backdrop-blur-sm border border-white/30 dark:border-white/20 hover:border-white/50 dark:hover:border-white/30 transition-all duration-300 hover:scale-102">
-                          <div className="w-12 h-12 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30 dark:border-white/20">
-                            <Award className="h-6 w-6 text-dark-primary dark:text-white" />
+                        <div key={index} className="group flex items-start space-x-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-102">
+                          <div className="w-12 h-12 bg-white/50 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
+                            <Award className="h-6 w-6 text-dark-primary" />
                           </div>
                           <div className="flex-1">
-                            <p className="text-dark-primary dark:text-gray-200 font-semibold leading-relaxed">
+                            <p className="text-dark-primary font-semibold leading-relaxed">
                               {qualification}
                             </p>
                           </div>
@@ -1453,11 +1412,11 @@ export default function Profile() {
 
                 {/* Reviews Section with Dropdown for Providers */}
                 {(
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">My Reviews</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Reviews</h2>
+                        <p className="text-sm text-dark-secondary font-medium">
                           {selectedReviewType === 'customer'
                             ? 'Feedback received from service providers'
                             : 'Customer feedback on your services'
@@ -1470,37 +1429,37 @@ export default function Profile() {
                         <select
                           value={selectedReviewType}
                           onChange={(e) => setSelectedReviewType(e.target.value as 'customer' | 'service')}
-                          className="px-4 py-2 pr-8 bg-white/80 dark:bg-black/60 border border-white/30 dark:border-white/20 rounded-xl text-sm font-medium text-dark-primary dark:text-white backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 transition-all duration-200 hover:bg-white/90 dark:hover:bg-black/70 appearance-none"
+                          className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-dark-primary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
                         >
                           {customerReviews.length > 0 && (
-                            <option value="customer" className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">⭐ Reviews from Providers</option>
+                            <option value="customer" className="bg-dark-card text-dark-primary">⭐ Reviews from Providers</option>
                           )}
                           {serviceReviews.length > 0 && (
-                            <option value="service" className="bg-dark-card dark:bg-black text-dark-primary dark:text-white"> Reviews from Customers</option>
+                            <option value="service" className="bg-dark-card text-dark-primary"> Reviews from Customers</option>
                           )}
                         </select>
-                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark-primary dark:text-white h-4 w-4 pointer-events-none rotate-90" />
+                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark-primary h-4 w-4 pointer-events-none rotate-90" />
                       </div>
                     </div>
 
                     {reviewsLoading ? (
                       <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white mx-auto mb-3"></div>
-                        <p className="text-dark-secondary dark:text-dark-muted">Loading reviews...</p>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
+                        <p className="text-dark-secondary">Loading reviews...</p>
                       </div>
                     ) : selectedReviewType === 'customer' && customerReviews.length > 0 ? (
                       <div className="space-y-6">
                         {customerReviews.slice(0, 5).map((review, index) => (
-                          <div key={review.id || index} className="group border border-white/20 dark:border-white/10 rounded-xl p-4 bg-white/30 dark:bg-black/20 backdrop-blur-sm hover:border-white/40 dark:hover:border-white/20 transition-all duration-300">
+                          <div key={review.id || index} className="group border border-gray-100 rounded-xl p-4 bg-white/30 backdrop-blur-sm hover:border-white/40 transition-all duration-300">
                             <div className="flex items-start space-x-4">
                               {review.reviewer?.imageUrl ? (
                                 <img
                                   src={review.reviewer.imageUrl}
                                   alt={`${review.reviewer?.firstName || 'Provider'} ${review.reviewer?.lastName || ''}`}
-                                  className="w-12 h-12 rounded-full object-cover border-2 border-white/40 dark:border-white/30"
+                                  className="w-12 h-12 rounded-full object-cover border-2 border-white/40"
                                 />
                               ) : (
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-white/40 dark:border-white/30">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-white/40">
                                   {((review.reviewer?.firstName || 'P').charAt(0) || 'P').toUpperCase()}
                                   {((review.reviewer?.lastName || '').charAt(0) || 'R').toUpperCase()}
                                 </div>
@@ -1508,7 +1467,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary dark:text-white text-base">
+                                    <h4 className="font-semibold text-dark-primary text-base">
                                       {review.reviewer?.firstName || 'Provider'} {review.reviewer?.lastName || ''}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -1519,18 +1478,18 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted dark:text-dark-secondary'
+                                                : 'text-dark-muted'
                                             }`}
                                           />
                                         ))}
                                       </div>
-                                      <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                                      <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
                                       <span className="text-sm text-dark-muted">• Provider</span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted dark:text-dark-muted">
+                                      <span className="text-sm text-dark-muted">
                                         {review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -1541,7 +1500,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary dark:text-dark-muted text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 dark:bg-black/30 p-3 rounded-r-lg">
+                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -1551,8 +1510,8 @@ export default function Profile() {
                         ))}
 
                         {customerReviews.length > 5 && (
-                          <div className="text-center pt-4 border-t border-white/20 dark:border-white/10">
-                            <span className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                          <div className="text-center pt-4 border-t border-gray-100">
+                            <span className="text-sm text-dark-secondary font-medium">
                               Showing 5 of {customerReviews.length} reviews
                             </span>
                           </div>
@@ -1561,12 +1520,12 @@ export default function Profile() {
                     ) : selectedReviewType === 'service' && serviceReviews.length > 0 ? (
                       <div className="space-y-6">
                         {serviceReviews.slice(0, 5).map((review, index) => (
-                          <div key={review.id || index} className="group border border-white/20 dark:border-white/10 rounded-xl p-4 bg-white/30 dark:bg-black/20 backdrop-blur-sm hover:border-white/40 dark:hover:border-white/20 transition-all duration-300">
+                          <div key={review.id || index} className="group border border-gray-100 rounded-xl p-4 bg-white/30 backdrop-blur-sm hover:border-white/40 transition-all duration-300">
                             <div className="flex items-start space-x-4">
                               <img
                                 src={review.clientAvatar || `https://picsum.photos/seed/${review.reviewerId}/60/60`}
                                 alt={review.clientName}
-                                className="w-12 h-12 rounded-full object-cover border-2 border-white/40 dark:border-white/30"
+                                className="w-12 h-12 rounded-full object-cover border-2 border-white/40"
                                 onError={(e) => {
                                   e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
                                 }}
@@ -1574,7 +1533,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary dark:text-white text-base">
+                                    <h4 className="font-semibold text-dark-primary text-base">
                                       {review.clientName || 'Anonymous Customer'}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -1585,21 +1544,21 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted dark:text-dark-secondary'
+                                                : 'text-dark-muted'
                                             }`}
                                           />
                                         ))}
                                       </div>
-                                      <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                                      <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
                                       <span className="text-sm text-dark-muted">•</span>
-                                      <span className="text-sm text-dark-muted dark:text-dark-muted">
+                                      <span className="text-sm text-dark-muted">
                                         {typeof review.service === 'object' ? review.service?.title : review.service || 'Service'}
                                       </span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted dark:text-dark-muted">
+                                      <span className="text-sm text-dark-muted">
                                         {review.date || (review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -1610,7 +1569,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary dark:text-dark-muted text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 dark:bg-black/30 p-3 rounded-r-lg">
+                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -1620,8 +1579,8 @@ export default function Profile() {
                         ))}
 
                         {serviceReviews.length > 5 && (
-                          <div className="text-center pt-4 border-t border-white/20 dark:border-white/10">
-                            <span className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                          <div className="text-center pt-4 border-t border-gray-100">
+                            <span className="text-sm text-dark-secondary font-medium">
                               Showing 5 of {serviceReviews.length} reviews
                             </span>
                           </div>
@@ -1629,9 +1588,9 @@ export default function Profile() {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <Star className="w-16 h-16 text-dark-muted dark:text-dark-muted mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-dark-primary dark:text-white mb-2">No reviews yet</h3>
-                        <p className="text-dark-secondary dark:text-dark-muted text-sm">
+                        <Star className="w-16 h-16 text-dark-muted mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-dark-primary mb-2">No reviews yet</h3>
+                        <p className="text-dark-secondary text-sm">
                           {selectedReviewType === 'customer'
                             ? 'Reviews from service providers will appear here once you receive feedback.'
                             : 'Reviews from customers will appear here once you receive feedback on your services.'
@@ -1643,9 +1602,9 @@ export default function Profile() {
                 )}
 
                 {/* Companies */}
-                <div className="bg-black/20 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-white/10">
+                <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-gray-100">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-white">Companies</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Companies</h2>
                     <Button
                       onClick={() => {
                         setSelectedCompany(null);
@@ -1663,22 +1622,22 @@ export default function Profile() {
                   {providerProfile.companies && providerProfile.companies.length > 0 ? (
                     <div className="space-y-4">
                       {providerProfile.companies.map((company) => (
-                        <div key={company.id} className="border border-white/10 rounded-lg p-4 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-200">
+                        <div key={company.id} className="border border-gray-100 rounded-lg p-4 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-200">
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center space-x-3">
                               {company.logo ? (
                                 <img
                                   src={company.logo}
                                   alt={company.name}
-                                  className="w-12 h-12 rounded-lg object-cover border border-white/20"
+                                  className="w-12 h-12 rounded-lg object-cover border border-gray-100"
                                 />
                               ) : (
-                                <div className="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                                <div className="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center border border-gray-100">
                                   <Building className="h-6 w-6 text-dark-muted" />
                                 </div>
                               )}
                               <div>
-                                <h3 className="font-semibold text-white">{company.name}</h3>
+                                <h3 className="font-semibold text-gray-900">{company.name}</h3>
                                 {company.description && (
                                   <p className="text-dark-muted text-sm mt-1">{company.description}</p>
                                 )}
@@ -1762,11 +1721,11 @@ export default function Profile() {
 
 
                 {/* Payment History & Earnings */}
-                <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Payment & Earnings</h2>
-                      <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">Your financial overview and transaction history</p>
+                      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Payment & Earnings</h2>
+                      <p className="text-sm text-dark-secondary font-medium">Your financial overview and transaction history</p>
                     </div>
                     <Button
                       onClick={() => setShowPaymentHistory(!showPaymentHistory)}
@@ -1783,21 +1742,21 @@ export default function Profile() {
                   {earnings ? (
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div className="bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-white/20">
+                        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">Total Earnings</p>
-                              <p className="text-3xl font-bold text-dark-primary dark:text-white">
+                              <p className="text-sm text-dark-secondary font-medium">Total Earnings</p>
+                              <p className="text-3xl font-bold text-dark-primary">
                                 LKR {typeof earnings.totalEarnings === 'number' ? earnings.totalEarnings.toFixed(2) : parseFloat(earnings.totalEarnings || '0').toFixed(2)}
                               </p>
                             </div>
                           </div>
                         </div>
-                        <div className="bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-white/20">
+                        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">Completed Payments</p>
-                              <p className="text-3xl font-bold text-dark-primary dark:text-white">
+                              <p className="text-sm text-dark-secondary font-medium">Completed Payments</p>
+                              <p className="text-3xl font-bold text-dark-primary">
                                 {paymentHistory.filter(p => p.status === 'SUCCEEDED').length}
                               </p>
                             </div>
@@ -1807,8 +1766,8 @@ export default function Profile() {
 
                       {/* Earnings Growth Chart */}
                       {paymentHistory.length > 0 && (
-                        <div className="bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl p-6 border border-white/30 dark:border-white/20 mb-6">
-                          <h3 className="text-lg font-bold text-dark-primary dark:text-white mb-4">Earnings Growth</h3>
+                        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/30 mb-6">
+                          <h3 className="text-lg font-bold text-dark-primary mb-4">Earnings Growth</h3>
                           <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
                               <AreaChart
@@ -1839,11 +1798,11 @@ export default function Profile() {
                                 <XAxis 
                                   dataKey="date" 
                                   tick={{ fill: 'currentColor', fontSize: 12 }}
-                                  className="text-dark-secondary dark:text-dark-muted"
+                                  className="text-dark-secondary"
                                 />
                                 <YAxis 
                                   tick={{ fill: 'currentColor', fontSize: 12 }}
-                                  className="text-dark-secondary dark:text-dark-muted"
+                                  className="text-dark-secondary"
                                 />
                                 <Tooltip 
                                   contentStyle={{
@@ -1872,39 +1831,39 @@ export default function Profile() {
                       )}
                     </>
                   ) : (
-                    <div className="bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl p-6 border border-white/30 dark:border-white/20 mb-6">
+                    <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/30 mb-6">
                       <div className="text-center">
-                        <p className="text-dark-secondary dark:text-dark-muted">No earnings data available yet</p>
-                        <p className="text-sm text-dark-muted dark:text-dark-muted mt-1">Start accepting payments to see your earnings here</p>
+                        <p className="text-dark-secondary">No earnings data available yet</p>
+                        <p className="text-sm text-dark-muted mt-1">Start accepting payments to see your earnings here</p>
                       </div>
                     </div>
                   )}
 
                   {/* Payment History */}
                   {showPaymentHistory && (
-                    <div className="border-t border-white/20 dark:border-white/10 pt-6">
-                      <h3 className="text-lg font-bold text-dark-primary dark:text-white mb-4">Payment History</h3>
+                    <div className="border-t border-gray-100 pt-6">
+                      <h3 className="text-lg font-bold text-dark-primary mb-4">Payment History</h3>
                       
                       {paymentLoading ? (
                         <div className="text-center py-8">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white mx-auto mb-3"></div>
-                          <p className="text-dark-secondary dark:text-dark-muted">Loading payment history...</p>
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
+                          <p className="text-dark-secondary">Loading payment history...</p>
                         </div>
                       ) : paymentHistory.length > 0 ? (
                         <>
                           <div className="space-y-3">
                             {paymentHistory.map((payment) => (
-                              <div key={payment.id} className="bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded-xl p-4 border border-white/30 dark:border-white/20 hover:border-white/50 dark:hover:border-white/30 transition-colors">
+                              <div key={payment.id} className="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30 hover:border-white/50 transition-colors">
                                 <div className="flex items-center justify-between">
                                   <div className="flex-1">
                                     <div className="flex items-center space-x-3">
                                       <div className={`w-3 h-3 rounded-full ${
-                                        payment.status === 'SUCCEEDED' ? 'bg-black dark:bg-dark-card' : 
-                                        payment.status === 'PENDING' ? 'bg-dark-secondary0' : 
-                                        payment.status === 'FAILED' ? 'bg-gray-300 dark:bg-gray-600' : 'bg-gray-400'
+                                        payment.status === 'SUCCEEDED' ? 'bg-emerald-500' :
+                                        payment.status === 'PENDING' ? 'bg-amber-400' :
+                                        payment.status === 'FAILED' ? 'bg-red-400' : 'bg-gray-400'
                                       }`}></div>
                                       <div>
-                                        <p className="text-dark-primary dark:text-white font-semibold">
+                                        <p className="text-dark-primary font-semibold">
                                             {payment.service?.title || 'Service Payment'}
                                           </p>
                                           <p className="text-sm text-dark-muted">
@@ -1920,13 +1879,13 @@ export default function Profile() {
                                     </div>
                                   </div>
                                   <div className="text-right">
-                                    <p className="text-lg font-bold text-dark-primary dark:text-white">
+                                    <p className="text-lg font-bold text-dark-primary">
                                       {payment.currency} {typeof payment.amount === 'number' ? payment.amount.toFixed(2) : parseFloat(payment.amount || '0').toFixed(2)}
                                     </p>
                                     <p className={`text-sm font-semibold ${
-                                      payment.status === 'SUCCEEDED' ? 'text-dark-primary dark:text-white' : 
-                                      payment.status === 'PENDING' ? 'text-dark-secondary dark:text-dark-muted' : 
-                                      payment.status === 'FAILED' ? 'text-dark-muted dark:text-dark-muted' : 'text-dark-muted'
+                                      payment.status === 'SUCCEEDED' ? 'text-dark-primary' : 
+                                      payment.status === 'PENDING' ? 'text-dark-secondary' : 
+                                      payment.status === 'FAILED' ? 'text-dark-muted' : 'text-dark-muted'
                                     }`}>
                                       {payment.status}
                                     </p>
@@ -1950,7 +1909,7 @@ export default function Profile() {
                                 <span>Previous</span>
                               </Button>
                               
-                              <span className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                              <span className="text-sm text-dark-secondary font-medium">
                                 Page {paymentPage} of {totalPaymentPages}
                               </span>
                               
@@ -1970,8 +1929,8 @@ export default function Profile() {
                       ) : (
                         <div className="text-center py-8">
                           <CreditCard className="h-12 w-12 text-dark-muted mx-auto mb-3" />
-                          <p className="text-dark-secondary dark:text-dark-muted mb-2">No payment history yet</p>
-                          <p className="text-sm text-dark-muted dark:text-dark-muted">Payments from your services will appear here</p>
+                          <p className="text-dark-secondary mb-2">No payment history yet</p>
+                          <p className="text-sm text-dark-muted">Payments from your services will appear here</p>
                         </div>
                       )}
                     </div>
@@ -1980,10 +1939,10 @@ export default function Profile() {
 
                 {/* Recent Reviews */}
                 {providerProfile.reviews && providerProfile.reviews.length > 0 && (
-                  <div className="bg-black/20 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-white/10">
+                  <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-gray-100">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-semibold text-white">Recent Reviews</h2>
+                        <h2 className="text-xl font-semibold text-gray-900">Recent Reviews</h2>
                         <p className="text-sm text-dark-muted">
                           Latest feedback from your clients
                         </p>
@@ -1992,7 +1951,7 @@ export default function Profile() {
                         <div className="text-right">
                           <div className="flex items-center space-x-1">
                             <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                            <span className="text-lg font-bold text-white">
+                            <span className="text-lg font-bold text-gray-900">
                               {providerProfile.averageRating?.toFixed(1) || 'N/A'}
                             </span>
                           </div>
@@ -2008,17 +1967,17 @@ export default function Profile() {
                               <img
                                 src={review.reviewer.imageUrl}
                                 alt={`${review.reviewer.firstName} ${review.reviewer.lastName}`}
-                                className="w-12 h-12 rounded-full object-cover border-2 border-white/20 group-hover:border-blue-400/50 transition-colors duration-200"
+                                className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 group-hover:border-blue-400/50 transition-colors duration-200"
                               />
                             ) : (
-                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-white/20 group-hover:border-blue-400/50 transition-colors duration-200">
+                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-gray-100 group-hover:border-blue-400/50 transition-colors duration-200">
                                 {(review.reviewer.firstName || '').charAt(0)}{(review.reviewer.lastName || '').charAt(0)}
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-2">
                                 <div>
-                                  <h4 className="font-semibold text-white text-base">
+                                  <h4 className="font-semibold text-gray-900 text-base">
                                     {review.reviewer.firstName} {review.reviewer.lastName}
                                   </h4>
                                   <div className="flex items-center space-x-2 mt-1">
@@ -2075,7 +2034,7 @@ export default function Profile() {
               )
             ) : user.role === 'PROVIDER' && !providerProfile ? (
               /* Loading provider data */
-              <div className="bg-black/50 backdrop-blur-lg rounded-xl border border-gray-800 p-8 text-center">
+              <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-800 p-8 text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
                 <p className="text-dark-muted">Loading provider profile...</p>
               </div>
@@ -2083,20 +2042,20 @@ export default function Profile() {
               /* USER role content */
               <div className="space-y-6">
                 {/* Welcome Section */}
-                <div className="bg-black-900 border border-gray-700 rounded-xl p-8 text-center">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-8 text-center">
                   <div className="max-w-md mx-auto">
-                    <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-600">
-                      <User className="h-8 w-8 text-dark-muted" />
+                    <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-orange-100">
+                      <User className="h-8 w-8 text-orange-500" />
                     </div>
-                    <h2 className="text-2xl font-semibold text-white mb-2">Welcome to Zia!</h2>
-                    <p className="text-dark-muted mb-6">
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Welcome to Zia!</h2>
+                    <p className="text-gray-500 mb-6">
                       You're currently a user on our platform. Upgrade to become a service provider
                       to offer your services and start earning!
                     </p>
                     <Button
                       onClick={handleBecomeProvider}
                       size="lg"
-                      className="flex items-center space-x-2 mx-auto px-6 py-3 text-base font-semibold bg-dark-card hover:bg-dark-tertiary text-dark-primary border-2 border-gray hover:border-white/60 rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1"
+                      className="flex items-center space-x-2 mx-auto px-6 py-3 text-base font-semibold bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all duration-300 shadow-lg hover:scale-105 hover:-translate-y-1"
                     >
                       <UserPlus className="h-5 w-5" />
                       <span>Become a Service Provider</span>
@@ -2106,11 +2065,11 @@ export default function Profile() {
 
                 {/* Reviews Section with Dropdown */}
                 {(customerReviews.length > 0 || (user.role === 'PROVIDER' && serviceReviews.length > 0)) && (
-                  <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                       <div>
-                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">My Reviews</h2>
-                        <p className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                        <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Reviews</h2>
+                        <p className="text-sm text-dark-secondary font-medium">
                           {selectedReviewType === 'customer'
                             ? 'Feedback received from service providers'
                             : 'Customer feedback on your services'
@@ -2123,37 +2082,37 @@ export default function Profile() {
                         <select
                           value={selectedReviewType}
                           onChange={(e) => setSelectedReviewType(e.target.value as 'customer' | 'service')}
-                          className="px-4 py-2 pr-8 bg-white/80 dark:bg-black/60 border border-white/30 dark:border-white/20 rounded-xl text-sm font-medium text-dark-primary dark:text-white backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 transition-all duration-200 hover:bg-white/90 dark:hover:bg-black/70 appearance-none"
+                          className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-dark-primary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
                         >
                           {customerReviews.length > 0 && (
-                            <option value="customer" className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">⭐ Reviews from Providers</option>
+                            <option value="customer" className="bg-dark-card text-dark-primary">⭐ Reviews from Providers</option>
                           )}
                           {user.role === 'PROVIDER' && serviceReviews.length > 0 && (
-                            <option value="service" className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">Reviews from Customers</option>
+                            <option value="service" className="bg-dark-card text-dark-primary">Reviews from Customers</option>
                           )}
                         </select>
-                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark-primary dark:text-white h-4 w-4 pointer-events-none rotate-90" />
+                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark-primary h-4 w-4 pointer-events-none rotate-90" />
                       </div>
                     </div>
 
                     {reviewsLoading ? (
                       <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black dark:border-white mx-auto mb-3"></div>
-                        <p className="text-dark-secondary dark:text-dark-muted">Loading reviews...</p>
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
+                        <p className="text-dark-secondary">Loading reviews...</p>
                       </div>
                     ) : selectedReviewType === 'customer' && customerReviews.length > 0 ? (
                       <div className="space-y-6">
                         {customerReviews.slice(0, 5).map((review, index) => (
-                          <div key={review.id || index} className="group border border-white/20 dark:border-white/10 rounded-xl p-4 bg-white/30 dark:bg-black/20 backdrop-blur-sm hover:border-white/40 dark:hover:border-white/20 transition-all duration-300">
+                          <div key={review.id || index} className="group border border-gray-100 rounded-xl p-4 bg-white/30 backdrop-blur-sm hover:border-white/40 transition-all duration-300">
                             <div className="flex items-start space-x-4">
                               {review.reviewer?.imageUrl ? (
                                 <img
                                   src={review.reviewer.imageUrl}
                                   alt={`${review.reviewer?.firstName || 'Provider'} ${review.reviewer?.lastName || ''}`}
-                                  className="w-12 h-12 rounded-full object-cover border-2 border-white/40 dark:border-white/30"
+                                  className="w-12 h-12 rounded-full object-cover border-2 border-white/40"
                                 />
                               ) : (
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-white/40 dark:border-white/30">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-white/40">
                                   {((review.reviewer?.firstName || 'P').charAt(0) || 'P').toUpperCase()}
                                   {((review.reviewer?.lastName || '').charAt(0) || 'R').toUpperCase()}
                                 </div>
@@ -2161,7 +2120,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary dark:text-white text-base">
+                                    <h4 className="font-semibold text-dark-primary text-base">
                                       {review.reviewer?.firstName || 'Provider'} {review.reviewer?.lastName || ''}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -2172,18 +2131,18 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted dark:text-dark-secondary'
+                                                : 'text-dark-muted'
                                             }`}
                                           />
                                         ))}
                                       </div>
-                                      <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                                      <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
                                       <span className="text-sm text-dark-muted">• Provider</span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted dark:text-dark-muted">
+                                      <span className="text-sm text-dark-muted">
                                         {review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -2194,7 +2153,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary dark:text-dark-muted text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 dark:bg-black/30 p-3 rounded-r-lg">
+                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -2204,8 +2163,8 @@ export default function Profile() {
                         ))}
 
                         {customerReviews.length > 5 && (
-                          <div className="text-center pt-4 border-t border-white/20 dark:border-white/10">
-                            <span className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                          <div className="text-center pt-4 border-t border-gray-100">
+                            <span className="text-sm text-dark-secondary font-medium">
                               Showing 5 of {customerReviews.length} reviews
                             </span>
                           </div>
@@ -2214,12 +2173,12 @@ export default function Profile() {
                     ) : selectedReviewType === 'service' && serviceReviews.length > 0 ? (
                       <div className="space-y-6">
                         {serviceReviews.slice(0, 5).map((review, index) => (
-                          <div key={review.id || index} className="group border border-white/20 dark:border-white/10 rounded-xl p-4 bg-white/30 dark:bg-black/20 backdrop-blur-sm hover:border-white/40 dark:hover:border-white/20 transition-all duration-300">
+                          <div key={review.id || index} className="group border border-gray-100 rounded-xl p-4 bg-white/30 backdrop-blur-sm hover:border-white/40 transition-all duration-300">
                             <div className="flex items-start space-x-4">
                               <img
                                 src={review.clientAvatar || `https://picsum.photos/seed/${review.reviewerId}/60/60`}
                                 alt={review.clientName}
-                                className="w-12 h-12 rounded-full object-cover border-2 border-white/40 dark:border-white/30"
+                                className="w-12 h-12 rounded-full object-cover border-2 border-white/40"
                                 onError={(e) => {
                                   e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
                                 }}
@@ -2227,7 +2186,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary dark:text-white text-base">
+                                    <h4 className="font-semibold text-dark-primary text-base">
                                       {review.clientName || 'Anonymous Customer'}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -2238,21 +2197,21 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted dark:text-dark-secondary'
+                                                : 'text-dark-muted'
                                             }`}
                                           />
                                         ))}
                                       </div>
-                                      <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                                      <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
                                       <span className="text-sm text-dark-muted">•</span>
-                                      <span className="text-sm text-dark-muted dark:text-dark-muted">
+                                      <span className="text-sm text-dark-muted">
                                         {typeof review.service === 'object' ? review.service?.title : review.service || 'Service'}
                                       </span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted dark:text-dark-muted">
+                                      <span className="text-sm text-dark-muted">
                                         {review.date || (review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -2263,7 +2222,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary dark:text-dark-muted text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 dark:bg-black/30 p-3 rounded-r-lg">
+                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -2273,8 +2232,8 @@ export default function Profile() {
                         ))}
 
                         {serviceReviews.length > 5 && (
-                          <div className="text-center pt-4 border-t border-white/20 dark:border-white/10">
-                            <span className="text-sm text-dark-secondary dark:text-dark-muted font-medium">
+                          <div className="text-center pt-4 border-t border-gray-100">
+                            <span className="text-sm text-dark-secondary font-medium">
                               Showing 5 of {serviceReviews.length} reviews
                             </span>
                           </div>
@@ -2282,9 +2241,9 @@ export default function Profile() {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <Star className="w-16 h-16 text-dark-muted dark:text-dark-muted mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-dark-primary dark:text-white mb-2">No reviews yet</h3>
-                        <p className="text-dark-secondary dark:text-dark-muted text-sm">
+                        <Star className="w-16 h-16 text-dark-muted mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-dark-primary mb-2">No reviews yet</h3>
+                        <p className="text-dark-secondary text-sm">
                           {selectedReviewType === 'customer'
                             ? 'Reviews from service providers will appear here once you receive feedback.'
                             : 'Reviews from customers will appear here once you receive feedback on your services.'
@@ -2296,20 +2255,20 @@ export default function Profile() {
                 )}
 
                 {/* Customer Payment History */}
-                <div className="bg-black/30 backdrop-blur-xl rounded-xl shadow-2xl p-6 border border-white/20 relative overflow-hidden">
+                <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-2xl p-6 border border-gray-100 relative overflow-hidden">
                   {/* Animated background glow */}
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-orange-500/5 to-pink-500/5 blur-3xl"></div>
                   <div className="relative z-10">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h2 className="text-xl font-semibold text-white drop-shadow-lg">Payment History</h2>
+                        <h2 className="text-xl font-semibold text-gray-900">Payment History</h2>
                         <p className="text-sm text-dark-muted">Your service payment history</p>
                       </div>
                       <Button
                         onClick={() => setShowPaymentHistory(!showPaymentHistory)}
                         variant="outline"
                         size="sm"
-                        className="flex items-center space-x-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border-blue-400/30 hover:border-blue-400/50 backdrop-blur-sm"
+                        className="flex items-center space-x-2 bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200 hover:border-orange-300 backdrop-blur-sm"
                       >
                         <CreditCard className="h-4 w-4" />
                         <span>{showPaymentHistory ? 'Hide History' : 'View History'}</span>
@@ -2318,8 +2277,8 @@ export default function Profile() {
 
                     {/* Payment History */}
                     {showPaymentHistory && (
-                      <div className="border-t border-white/10 pt-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Recent Payments</h3>
+                      <div className="border-t border-gray-100 pt-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Payments</h3>
                         
                         {paymentLoading ? (
                           <div className="text-center py-8">
@@ -2330,7 +2289,7 @@ export default function Profile() {
                           <>
                             <div className="space-y-3">
                               {paymentHistory.map((payment) => (
-                                <div key={payment.id} className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-white/10 hover:border-white/20 transition-colors">
+                                <div key={payment.id} className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-100 hover:border-gray-100 transition-colors">
                                   <div className="flex items-center justify-between">
                                     <div className="flex-1">
                                       <div className="flex items-center space-x-3">
@@ -2340,7 +2299,7 @@ export default function Profile() {
                                           payment.status === 'FAILED' ? 'bg-red-400' : 'bg-gray-400'
                                         }`}></div>
                                         <div>
-                                          <p className="text-white font-medium">
+                                          <p className="text-gray-900 font-medium">
                                             {payment.service?.title || 'Service Payment'}
                                           </p>
                                           <p className="text-sm text-dark-muted">
@@ -2362,7 +2321,7 @@ export default function Profile() {
                                       </div>
                                     </div>
                                     <div className="text-right">
-                                      <p className="text-lg font-bold text-white">
+                                      <p className="text-lg font-bold text-gray-900">
                                         LKR {typeof payment.amount === 'number' ? payment.amount.toFixed(2) : parseFloat(payment.amount || '0').toFixed(2)}
                                       </p>
                                       <p className={`text-sm font-medium ${
@@ -2386,7 +2345,7 @@ export default function Profile() {
                                   disabled={paymentPage <= 1}
                                   variant="outline"
                                   size="sm"
-                                  className="flex items-center space-x-1 bg-white/10 hover:bg-white/20 text-white border-white/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="flex items-center space-x-1 bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   <ChevronLeft className="h-4 w-4" />
                                   <span>Previous</span>
@@ -2401,7 +2360,7 @@ export default function Profile() {
                                   disabled={paymentPage >= totalPaymentPages}
                                   variant="outline"
                                   size="sm"
-                                  className="flex items-center space-x-1 bg-white/10 hover:bg-white/20 text-white border-white/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  className="flex items-center space-x-1 bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                   <span>Next</span>
                                   <ChevronRight className="h-4 w-4" />
@@ -2430,16 +2389,16 @@ export default function Profile() {
       {/* Update Service Modal */}
       {showUpdateServiceModal && selectedService && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-black/40 backdrop-blur-lg border border-white/20 rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white/80 backdrop-blur-lg border border-gray-100 rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/20">
-              <h3 className="text-xl font-semibold text-white">Update Service</h3>
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-900">Update Service</h3>
               <button
                 onClick={() => {
                   setShowUpdateServiceModal(false);
                   setSelectedService(null);
                 }}
-                className="text-dark-muted hover:text-white transition-colors"
+                className="text-dark-muted hover:text-gray-900 transition-colors"
                 title="Close modal"
               >
                 <X className="h-6 w-6" />
@@ -2457,7 +2416,7 @@ export default function Profile() {
                   type="text"
                   value={serviceFormData.title}
                   onChange={(e) => handleServiceFormChange('title', e.target.value)}
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-dark-muted backdrop-blur-sm"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 placeholder-gray-400 backdrop-blur-sm"
                   placeholder="Enter service title"
                 />
               </div>
@@ -2471,7 +2430,7 @@ export default function Profile() {
                   value={serviceFormData.description}
                   onChange={(e) => handleServiceFormChange('description', e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-dark-muted backdrop-blur-sm"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 placeholder-gray-400 backdrop-blur-sm"
                   placeholder="Describe your service..."
                 />
               </div>
@@ -2488,7 +2447,7 @@ export default function Profile() {
                     onChange={(e) => handleServiceFormChange('price', parseFloat(e.target.value) || 0)}
                     min="0"
                     step="0.01"
-                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-dark-muted backdrop-blur-sm"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 placeholder-gray-400 backdrop-blur-sm"
                     placeholder="0.00"
                   />
                 </div>
@@ -2499,12 +2458,12 @@ export default function Profile() {
                   <select
                     value={serviceFormData.currency}
                     onChange={(e) => handleServiceFormChange('currency', e.target.value)}
-                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white backdrop-blur-sm"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 backdrop-blur-sm"
                     title="Select currency"
                   >
-                    <option value="LKR" className="bg-gray-800 text-white">LKR</option>
-                    <option value="USD" className="bg-gray-800 text-white">USD</option>
-                    <option value="EUR" className="bg-gray-800 text-white">EUR</option>
+                    <option value="LKR" className="bg-white text-gray-900">LKR</option>
+                    <option value="USD" className="bg-white text-gray-900">USD</option>
+                    <option value="EUR" className="bg-white text-gray-900">EUR</option>
                   </select>
                 </div>
               </div>
@@ -2518,7 +2477,7 @@ export default function Profile() {
                   type="text"
                   value={serviceFormData.tags.join(', ')}
                   onChange={(e) => handleServiceFormChange('tags', e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag))}
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-dark-muted backdrop-blur-sm"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 placeholder-gray-400 backdrop-blur-sm"
                   placeholder="web development, design, frontend"
                 />
               </div>
@@ -2532,7 +2491,7 @@ export default function Profile() {
                   type="text"
                   value={serviceFormData.workingTime.join(', ')}
                   onChange={(e) => handleServiceFormChange('workingTime', e.target.value.split(',').map(time => time.trim()).filter(time => time))}
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-dark-muted backdrop-blur-sm"
+                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 placeholder-gray-400 backdrop-blur-sm"
                   placeholder="Monday-Friday 9AM-5PM, Weekends flexible"
                   title="Working time schedule"
                 />
@@ -2567,7 +2526,7 @@ export default function Profile() {
                     accept="image/*"
                     multiple
                     onChange={handleImageUpload}
-                    className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white backdrop-blur-sm"
+                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent text-gray-900 backdrop-blur-sm"
                     disabled={uploadingImages}
                     title="Upload service images"
                   />
@@ -2586,7 +2545,7 @@ export default function Profile() {
                             <img
                               src={imageUrl}
                               alt={`Service image ${index + 1}`}
-                              className="w-16 h-16 object-cover rounded border border-white/20"
+                              className="w-16 h-16 object-cover rounded border border-gray-100"
                             />
                             <button
                               type="button"
@@ -2610,7 +2569,7 @@ export default function Profile() {
                   id="isActive"
                   checked={serviceFormData.isActive}
                   onChange={(e) => handleServiceFormChange('isActive', e.target.checked)}
-                  className="rounded border-white/20 bg-white/10 text-blue-400 focus:ring-blue-400 focus:ring-offset-0"
+                  className="rounded border-gray-300 bg-white text-orange-500 focus:ring-orange-400 focus:ring-offset-0"
                 />
                 <label htmlFor="isActive" className="text-sm font-medium text-dark-muted">
                   Service is active and visible to clients
@@ -2619,20 +2578,20 @@ export default function Profile() {
             </div>
             
             {/* Modal Footer */}
-            <div className="px-6 py-4 border-t border-white/20 bg-black/20 backdrop-blur-sm rounded-b-xl flex space-x-3">
+            <div className="px-6 py-4 border-t border-gray-100 bg-white/80 backdrop-blur-sm rounded-b-xl flex space-x-3">
               <Button
                 onClick={() => {
                   setShowUpdateServiceModal(false);
                   setSelectedService(null);
                 }}
                 variant="outline"
-                className="flex-1 bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm"
+                className="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200 hover:border-gray-300 backdrop-blur-sm"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleUpdateService}
-                className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-blue-500 hover:from-orange-600 hover:to-blue-600 border border-orange-400/20"
+                className="flex-1 flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 border border-transparent"
                 disabled={uploadingImages}
               >
                 <Save className="h-4 w-4" />
@@ -2673,13 +2632,13 @@ export default function Profile() {
       {/* Delete Company Confirmation Modal */}
       {showDeleteCompanyConfirmation && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-black/40 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl w-full max-w-md">
+          <div className="bg-white/80 backdrop-blur-lg border border-gray-100 rounded-2xl shadow-2xl w-full max-w-md">
             <div className="p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="p-2 bg-red-500/20 backdrop-blur-sm rounded-full border border-red-400/30">
                   <AlertTriangle className="h-6 w-6 text-red-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Delete Company</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Company</h3>
               </div>
               <p className="text-dark-muted mb-6">
                 Are you sure you want to delete this company? This action cannot be undone.
@@ -2691,7 +2650,7 @@ export default function Profile() {
                     setShowDeleteCompanyConfirmation(false);
                     setCompanyToDelete(null);
                   }}
-                  className="flex-1 bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm"
+                  className="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200 hover:border-gray-300 backdrop-blur-sm"
                 >
                   Cancel
                 </Button>
@@ -2710,13 +2669,13 @@ export default function Profile() {
       {/* Delete Provider Confirmation Modal */}
       {showDeleteConfirmation && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-black/40 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl w-full max-w-md">
+          <div className="bg-white/80 backdrop-blur-lg border border-gray-100 rounded-2xl shadow-2xl w-full max-w-md">
             <div className="p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="p-2 bg-red-500/20 backdrop-blur-sm rounded-full border border-red-400/30">
                   <AlertTriangle className="h-6 w-6 text-red-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Delete Provider Profile</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Provider Profile</h3>
               </div>
               <p className="text-dark-muted mb-6">
                 Are you sure you want to delete your provider profile? This action cannot be undone. 
@@ -2726,7 +2685,7 @@ export default function Profile() {
                 <Button
                   variant="ghost"
                   onClick={() => setShowDeleteConfirmation(false)}
-                  className="flex-1 bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50 backdrop-blur-sm"
+                  className="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200 hover:border-gray-300 backdrop-blur-sm"
                 >
                   Cancel
                 </Button>
@@ -2741,8 +2700,6 @@ export default function Profile() {
           </div>
         </div>
       )}
-
-      <MinimalFooter />
 
       <Toaster />
       </div>

@@ -4,8 +4,6 @@ import { MessagingProvider, MessageThread, useMessaging } from '../../components
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
 import type { UserProfile } from '../../api/userApi';
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import ConfirmationPanel from '../../components/Messaging/ConfirmationPanel';
 import RatingModal from '../../components/Messaging/RatingModal';
 import UserDetailsModal from '../../components/Messaging/UserDetailsModal';
@@ -189,7 +187,6 @@ const ConversationViewInner: React.FC<{
   if (conversationError) {
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
-        <Navbar />
         <main className="flex-grow flex items-center justify-center px-4 py-6 mt-16">
           <div className="text-center p-8 rounded-xl bg-orange-50 backdrop-blur-sm border border-gray-200 relative overflow-hidden max-w-md w-full">
             <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse rounded-xl"></div>
@@ -218,14 +215,12 @@ const ConversationViewInner: React.FC<{
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      <Navbar />
       <main className="flex-grow px-4 py-6 mt-16">
         <div className="h-[calc(100vh-8rem)] flex flex-col">
           {/* Header */}
@@ -462,7 +457,6 @@ const ConversationViewInner: React.FC<{
           </div>
         </div>
       </main>
-      <Footer />
 
       {/* Rating Modal */}
       <RatingModal
@@ -528,7 +522,6 @@ const ConversationView: React.FC = () => {
   if (loading || error || !currentUser) {
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
-        <Navbar />
         <main className="flex-grow px-4 py-6 mt-16">
           <div className="h-[calc(100vh-8rem)] flex flex-col">
             {/* Header Skeleton */}
@@ -609,7 +602,6 @@ const ConversationView: React.FC = () => {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }

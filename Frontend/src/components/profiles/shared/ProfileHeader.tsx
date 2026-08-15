@@ -53,7 +53,7 @@ export default function ProfileHeader({
       {/* Service Banner */}
       <div className="relative h-64 md:h-80 bg-gray-200 overflow-hidden group animate-fade-in rounded-3xl md:rounded-[2.5rem] shadow-xl">
         {/* Glassmorphism overlay for the whole banner */}
-        <div className="absolute inset-0 z-0 bg-white/10 dark:bg-black/20 backdrop-blur-[6px] rounded-3xl md:rounded-[2.5rem] pointer-events-none" />
+        <div className="absolute inset-0 z-0 bg-white/10 backdrop-blur-[6px] rounded-3xl md:rounded-[2.5rem] pointer-events-none" />
         {provider.coverImage ? (
           <div 
             className="absolute inset-0 bg-cover bg-center transition-all duration-500 rounded-3xl md:rounded-[2.5rem] overflow-hidden"
@@ -188,7 +188,7 @@ export default function ProfileHeader({
                 <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 md:mt-0">
                   <Button
                     onClick={handleContact}
-                    className="px-6 shadow-md bg-blue-600 text-white border border-transparent hover:bg-blue-700 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-600 transition-colors"
+                    className="px-6 shadow-md bg-blue-600 text-white border border-transparent hover:bg-blue-700 transition-colors"
                     aria-label="Contact Provider"
                   >
                     <FiMessageCircle className="w-4 h-4 mr-2" />
@@ -198,8 +198,8 @@ export default function ProfileHeader({
                     variant="outline"
                     onClick={handleFollow}
                     className={cn(
-                      "px-6 shadow-md border border-gray-300 text-black bg-white hover:bg-gray-100 dark:bg-black dark:text-white dark:border-gray-600 dark:hover:bg-gray-900 transition-colors",
-                      isFollowing && "!bg-red-50 !text-red-600 !border-red-200 dark:!bg-red-900 dark:!text-red-200 dark:!border-red-700"
+                      "px-6 shadow-md border border-gray-300 text-black bg-white hover:bg-gray-100 transition-colors",
+                      isFollowing && "!bg-red-50 !text-red-600 !border-red-200"
                     )}
                     aria-label={isFollowing ? 'Unfollow' : 'Follow'}
                   >

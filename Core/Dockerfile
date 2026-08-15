@@ -16,6 +16,7 @@ COPY package*.json ./
 RUN npm install --omit=dev
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma/category_dataset.json ./dist/prisma/category_dataset.json
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

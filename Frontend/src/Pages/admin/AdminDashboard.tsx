@@ -991,7 +991,7 @@ const AdminDashboard: React.FC = () => {
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
-              <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
                 <span className="text-white text-sm font-medium">
                   {adminProfile?.firstName?.[0] || 'A'}
                 </span>

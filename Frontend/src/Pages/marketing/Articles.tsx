@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { FiSearch, FiBook, FiUsers, FiShield, FiDollarSign, FiClock, FiEye, FiChevronRight } from 'react-icons/fi'
 import { useSearchParams } from 'react-router-dom'
-import Navbar from '../../components/layout/Navbar'
-import Footer from '../../components/layout/Footer'
 
 export default function Articles() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -139,7 +137,6 @@ export default function Articles() {
 
   return (
     <div className="min-h-screen bg-dark-primary">
-      <Navbar />
       
       {/* Header Section */}
       <div className="bg-gradient-to-br from-dark-900 via-dark-800 to-black text-white">
@@ -182,7 +179,7 @@ export default function Articles() {
                     onClick={() => setSelectedCategory(category.id)}
                     className={`w-full flex items-center px-3 py-2 rounded-lg text-left transition-colors ${
                       selectedCategory === category.id
-                        ? 'bg-black text-white'
+                        ? 'bg-orange-500 text-white'
                         : 'text-dark-secondary hover:bg-dark-tertiary'
                     }`}
                   >
@@ -205,7 +202,7 @@ export default function Articles() {
                     <div key={article.id} className="bg-dark-card rounded-lg shadow-md overflow-hidden border border-dark-secondary hover:shadow-lg transition-shadow">
                       <div className="p-6">
                         <div className="flex items-center justify-between mb-3">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-black text-white">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-500 text-white">
                             Featured
                           </span>
                           <div className="flex items-center text-sm text-dark-muted">
@@ -295,7 +292,6 @@ export default function Articles() {
         </div>
       </div>
 
-      <Footer />
     </div>
   )
 }

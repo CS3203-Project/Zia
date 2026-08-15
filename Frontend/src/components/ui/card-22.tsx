@@ -118,7 +118,7 @@ export const PlaceCard = ({
       }}
       onClick={handleCardClick}
       className={cn(
-        'w-full overflow-hidden rounded-2xl border border-white/30 dark:border-white/20 bg-gradient-to-br from-white/80 via-white/60 to-white/40 dark:from-black/40 dark:via-black/20 dark:to-black/10 backdrop-blur-xl text-black dark:text-white shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15),0_8px_32px_0_rgba(0,0,0,0.08)] cursor-pointer flex flex-col h-full relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/20 before:to-transparent before:pointer-events-none before:z-10',
+        'w-full overflow-hidden rounded-2xl border border-white/30 bg-gradient-to-br from-white/80 via-white/60 to-white/40 backdrop-blur-xl text-black shadow-[0_20px_40px_-12px_rgba(0,0,0,0.15),0_8px_32px_0_rgba(0,0,0,0.08)] cursor-pointer flex flex-col h-full relative before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/20 before:to-transparent before:pointer-events-none before:z-10',
         className
       )}
     >
@@ -157,7 +157,7 @@ export const PlaceCard = ({
           {tags.map((tag) => (
             <div
               key={tag}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-white/90 via-white/80 to-white/70 dark:from-black/60 dark:via-black/40 dark:to-black/20 backdrop-blur-lg border border-white/40 dark:border-white/30 shadow-lg text-black dark:text-white"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-white/90 via-white/80 to-white/70 backdrop-blur-lg border border-white/40 shadow-lg text-black"
             >
               
               {tag}
@@ -183,31 +183,31 @@ export const PlaceCard = ({
       </div>
 
       {/* Content Section */}
-      <motion.div variants={contentVariants} className="p-5 space-y-4 flex flex-col flex-grow relative z-10 bg-gradient-to-t from-white/60 via-white/40 to-transparent dark:from-black/30 dark:via-black/10 dark:to-transparent backdrop-blur-sm">
+      <motion.div variants={contentVariants} className="p-5 space-y-4 flex flex-col flex-grow relative z-10 bg-gradient-to-t from-white/60 via-white/40 to-transparent backdrop-blur-sm">
         <motion.div variants={itemVariants}>
-          <h3 className="text-xl font-bold text-black dark:text-white line-clamp-2">{title}</h3>
+          <h3 className="text-xl font-bold text-black line-clamp-2">{title}</h3>
         </motion.div>
 
         <motion.div variants={itemVariants} className="flex flex-col gap-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <MapPin className="h-4 w-4 text-black-500 dark:text-white-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <MapPin className="h-4 w-4 text-gray-500 flex-shrink-0" />
             <span className="truncate">{dateRange}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <User className="h-4 w-4 text-black-500 dark:text-white-400 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <User className="h-4 w-4 text-gray-500 flex-shrink-0" />
             <span className="truncate">{hostType}</span>
           </div>
         </motion.div>
 
-        <motion.p variants={itemVariants} className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3 flex-grow">
+        <motion.p variants={itemVariants} className="text-sm text-gray-600 leading-relaxed line-clamp-3 flex-grow">
           {description}
         </motion.p>
 
         <motion.div variants={itemVariants} className="flex justify-between items-center pt-2 mt-auto">
           <div className="flex flex-col gap-1">
-            <p className="font-semibold text-black dark:text-white">
+            <p className="font-semibold text-black">
               LKR {pricePerNight}{' '}
-              <span className="text-sm font-normal text-gray-600 dark:text-gray-400"> terms applied</span>
+              <span className="text-sm font-normal text-gray-600"> terms applied</span>
             </p>
             {rating && rating > 0 ? (
               <div className="flex items-center gap-1.5 group/rating cursor-pointer hover:scale-105 transition-transform">
@@ -218,19 +218,19 @@ export const PlaceCard = ({
                       className={cn(
                         "h-3.5 w-3.5 transition-all",
                         i < Math.floor(rating) 
-                          ? "text-white-400 fill-white-400" 
+                          ? "text-amber-400 fill-amber-400" 
                           : i < rating 
-                            ? "text-white-400 fill-white-400 opacity-50"
-                            : "text-gray-300 dark:text-gray-600"
+                            ? "text-amber-400 fill-amber-400 opacity-50"
+                            : "text-gray-300"
                       )} 
                     />
                   ))}
                 </div>
-                <span className="text-sm font-semibold text-black dark:text-white">
+                <span className="text-sm font-semibold text-black">
                   {rating.toFixed(1)}
                 </span>
                 {reviewCount > 0 && (
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-gray-500">
                     ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
                   </span>
                 )}
@@ -241,11 +241,11 @@ export const PlaceCard = ({
                   {[...Array(5)].map((_, i) => (
                     <Star 
                       key={i}
-                      className="h-3.5 w-3.5 text-gray-300 dark:text-gray-600"
+                      className="h-3.5 w-3.5 text-gray-300"
                     />
                   ))}
                 </div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+                <span className="text-xs text-gray-500">
                   No reviews yet
                 </span>
               </div>

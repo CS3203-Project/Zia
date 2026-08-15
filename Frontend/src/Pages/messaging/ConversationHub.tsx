@@ -5,8 +5,6 @@ import { userApi } from '../../api/userApi';
 import { UserSearch } from '../../components/Messaging';
 import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 
 const ConversationHubContent: React.FC<{ currentUser: UserProfile }> = ({ currentUser }) => {
   return (
@@ -143,7 +141,6 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse"></div>
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
         
-        <Navbar />
         <main className="flex-grow flex items-center justify-center relative z-10 px-4">
           <div className="text-center bg-white rounded-2xl border border-gray-100 p-8 shadow-xl max-w-md w-full relative overflow-hidden">
             <div className="relative z-10">
@@ -163,14 +160,12 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900">
-      <Navbar />
       <main className="container mx-auto mt-16 flex-grow px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -373,7 +368,6 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };
@@ -419,7 +413,6 @@ const ConversationHub: React.FC = () => {
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-orange-50 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-gray-50 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
         
-        <Navbar />
         <main className="flex-grow container mx-auto px-4 py-8 mt-16 relative z-10">
           <div className="max-w-4xl mx-auto">
             {/* Header Skeleton */}
@@ -468,7 +461,6 @@ const ConversationHub: React.FC = () => {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }

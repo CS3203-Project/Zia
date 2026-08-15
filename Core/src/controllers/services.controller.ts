@@ -526,10 +526,16 @@ export const searchServices = async (req: Request, res: Response, next: NextFunc
       });
     }
 
+    // The fallback hash-based embedding (used whenever GEMINI_API_KEY isn't set) only
+    // ever produces weak similarity scores (~0.2-0.4) even for good matches, unlike real
+    // Gemini embeddings where ~0.7 is a meaningful cutoff — so the default threshold has
+    // to be much lower in fallback mode or every search returns zero results.
+    const defaultThreshold = process.env.GEMINI_API_KEY ? 0.7 : 0.15;
+
     const searchOptions: any = {
       query: query as string,
       limit: limit ? parseInt(limit as string) : 20,
-      threshold: threshold ? parseFloat(threshold as string) : 0.7,
+      threshold: threshold ? parseFloat(threshold as string) : defaultThreshold,
       categoryId: categoryId as string,
       providerId: providerId as string,
     };

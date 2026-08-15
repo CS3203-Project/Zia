@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import { Toaster } from 'react-hot-toast';
 import ProfileHeader from '../../components/profiles/shared/ProfileHeader';
 import OnlineProfileTabs from '../../components/profiles/online/OnlineProfileTabs';
@@ -261,7 +259,6 @@ export default function ServiceProviderProfile() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50 flex flex-col ">
       {/* Sticky Navbar */}
       <div className="sticky top-0 z-50 shadow-md bg-white/80 backdrop-blur-md animate-fade-in-down">
-        <Navbar />
       </div>
 
       {/* Main Content */}
@@ -317,7 +314,6 @@ export default function ServiceProviderProfile() {
 
       {/* Footer */}
       <footer className="mt-16 animate-fade-in-up">
-        <Footer />
       </footer>
     </div>
   );

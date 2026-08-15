@@ -14,8 +14,6 @@ import { paymentApi, type ProviderEarnings, type Payment } from '../../api/payme
 import { PaymentStatusCard } from '../../components/Payment';
 import { currencyConfig } from '../../services/paymentConfig';
 import { useAuth } from '../../contexts/AuthContext';
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import toast from 'react-hot-toast';
 
 const ProviderEarningsPage: React.FC = () => {
@@ -103,7 +101,6 @@ const ProviderEarningsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-      <Navbar />
       
       <main className="container mx-auto px-4 py-8">
         {/* Header */}
@@ -321,7 +318,6 @@ const ProviderEarningsPage: React.FC = () => {
         )}
       </main>
       
-      <Footer />
     </div>
   );
 };

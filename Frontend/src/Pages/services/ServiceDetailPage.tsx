@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Star, Heart, MapPin, Clock, MessageCircle, Phone, Mail, ArrowLeft, Calendar,
   Shield, Award, ChevronLeft, ChevronRight, Send, Bookmark, Eye,
-  CheckCircle, Users, ThumbsUp, User, GraduationCap, CreditCard, Github, Linkedin, Twitter, ArrowUpRight, QrCode, Download, Share2
+  CheckCircle, Users, ThumbsUp, User, GraduationCap, CreditCard, Github, Linkedin, Twitter, ArrowUpRight, QrCode, Download, Share2,
+  DollarSign, Image as ImageIcon
 } from 'lucide-react';
 import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { serviceReviewApi, type ServiceReview, type ReviewStats } from '../../api/serviceReviewApi';
@@ -12,8 +13,6 @@ import { messagingApi } from '../../api/messagingApi';
 import { debugMessagingState } from '../../utils/messagingDebug';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/services/Breadcrumb';
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import { PaymentModal } from '../../components/Payment';
 import toast, { Toaster } from 'react-hot-toast';
 import { cn } from '../../utils/utils';
@@ -682,21 +681,20 @@ const ServiceDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary dark:from-black dark:via-dark-950 dark:to-black flex flex-col relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
         {/* Background */}
         <div className="fixed inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent rounded-full blur-3xl"></div>
         </div>
         
-        <Navbar />
         
         <main className="flex-1 mt-16 relative z-10">
           <div className="container mx-auto px-4 py-8">
             {/* Skeleton Breadcrumb */}
-            <div className="mb-8 bg-white/60 dark:bg-black/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20 dark:border-white/20 animate-pulse">
-              <div className="h-4 bg-gradient-to-r from-black/20 via-dark-muted/30 to-black/20 dark:from-white/20 dark:via-dark-secondary0/30 dark:to-white/20 rounded w-1/3 animate-shimmer"></div>
+            <div className="mb-8 bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20 animate-pulse">
+              <div className="h-4 bg-gradient-to-r from-black/20 via-dark-muted/30 to-black/20 rounded w-1/3 animate-shimmer"></div>
             </div>
 
             {/* Main Content Skeleton */}
@@ -704,14 +702,14 @@ const ServiceDetailPage: React.FC = () => {
               {/* Left Column Skeleton */}
               <div className="lg:col-span-2 space-y-6">
                 {/* Media Gallery Skeleton */}
-                <div className="bg-white/60 dark:bg-black/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/10">
-                  <div className="aspect-[16/9] bg-gradient-to-br from-black/10 via-dark-tertiary/20 to-black/10 dark:from-white/10 dark:via-dark-secondary/20 dark:to-white/10 animate-pulse relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20">
+                  <div className="aspect-[16/9] bg-gradient-to-br from-black/10 via-dark-tertiary/20 to-black/10 animate-pulse relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                   </div>
                   <div className="p-4 flex gap-2">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="w-14 h-14 bg-gradient-to-br from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div key={i} className="w-14 h-14 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded-xl animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
                     ))}
                   </div>
@@ -719,45 +717,45 @@ const ServiceDetailPage: React.FC = () => {
 
                 {/* Service Info Skeleton */}
                 <div className="py-8 px-6 space-y-4">
-                  <div className="h-10 bg-gradient-to-r from-black/20 via-dark-muted/30 to-black/20 dark:from-white/20 dark:via-dark-secondary0/30 dark:to-white/20 rounded w-2/3 animate-pulse relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                  <div className="h-10 bg-gradient-to-r from-black/20 via-dark-muted/30 to-black/20 rounded w-2/3 animate-pulse relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                   </div>
                   <div className="flex gap-2">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-8 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded-full w-20 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div key={i} className="h-8 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-full w-20 animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
                     ))}
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 dark:from-white/15 dark:via-dark-secondary0/25 dark:to-white/15 rounded w-full animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 rounded w-full animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 dark:from-white/15 dark:via-dark-secondary0/25 dark:to-white/15 rounded w-5/6 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 rounded w-5/6 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 dark:from-white/15 dark:via-dark-secondary0/25 dark:to-white/15 rounded w-4/6 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 rounded w-4/6 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
-                  <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-1/4 mt-4 animate-pulse relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                  <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-1/4 mt-4 animate-pulse relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                   </div>
                   
                   {/* Location Card Skeleton */}
-                  <div className="bg-white/60 dark:bg-black/50 backdrop-blur-xl rounded-2xl p-6 border border-white/20 dark:border-white/15 shadow-lg mt-6">
-                    <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-1/3 mb-4 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                  <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mt-6">
+                    <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-1/3 mb-4 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
                     <div className="space-y-2">
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-full animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-full animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-3/4 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-3/4 animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-4/6 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-4/6 animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
                     </div>
                   </div>
@@ -766,70 +764,70 @@ const ServiceDetailPage: React.FC = () => {
 
               {/* Right Column Skeleton */}
               <div className="lg:col-span-1">
-                <div className="bg-white/70 dark:bg-black/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-white/15 sticky top-24">
+                <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 sticky top-24">
                   {/* Avatar Skeleton */}
                   <div className="flex flex-col items-center mb-8 pb-8 border-b border-white/20">
-                    <div className="w-20 h-20 bg-gradient-to-br from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded-full mb-4 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="w-20 h-20 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded-full mb-4 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-32 mb-2 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-32 mb-2 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-24 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-24 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
                     
                     {/* Contact Info Skeleton */}
                     <div className="mt-4 w-full space-y-2">
-                      <div className="h-10 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-10 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-xl animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
-                      <div className="h-10 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-10 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-xl animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
                     </div>
                     
                     <div className="flex gap-4 mt-4">
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-16 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-16 animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-16 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-16 animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
                     </div>
                   </div>
 
                   {/* Price Skeleton */}
                   <div className="text-center mb-6 space-y-3">
-                    <div className="h-10 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-32 mx-auto animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-10 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-32 mx-auto animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-24 mx-auto animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-24 mx-auto animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-8 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded-full w-32 mx-auto animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-8 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-full w-32 mx-auto animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
 
                   {/* Buttons Skeleton */}
                   <div className="space-y-3 mb-6">
-                    <div className="h-14 bg-gradient-to-r from-black/30 to-dark-secondary0/40 dark:from-white/30 dark:to-dark-muted/40 rounded-full animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-white/10 to-transparent animate-shimmer"></div>
+                    <div className="h-14 bg-gradient-to-r from-black/30 to-dark-secondary/40 rounded-full animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-14 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded-full animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-14 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded-full animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
 
                   {/* Working Hours Skeleton */}
                   <div className="pt-6 border-t border-white/20 space-y-3">
-                    <div className="h-5 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-32 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                    <div className="h-5 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-32 animate-pulse relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                     </div>
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-12 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                      <div key={i} className="h-12 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-xl animate-pulse relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                       </div>
                     ))}
                   </div>
@@ -840,47 +838,47 @@ const ServiceDetailPage: React.FC = () => {
             {/* Reviews Skeleton */}
             <div className="mb-6 mt-6">
               <div className="flex items-center justify-between mb-8">
-                <div className="h-8 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-48 animate-pulse relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                <div className="h-8 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-48 animate-pulse relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                 </div>
-                <div className="h-10 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded-full w-32 animate-pulse relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                <div className="h-10 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded-full w-32 animate-pulse relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                 </div>
               </div>
               
               <div className="flex gap-6 overflow-hidden pb-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex-shrink-0 w-[90%] sm:w-[45%] lg:w-[32%]">
-                    <div className="bg-white/70 dark:bg-black/50 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 dark:border-white/15 shadow-xl">
+                    <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-xl">
                       <div className="flex items-start gap-4 mb-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded-full animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded-full animate-pulse relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                         </div>
                         <div className="flex-1 space-y-2">
-                          <div className="h-5 bg-gradient-to-r from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded w-3/4 animate-pulse relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                          <div className="h-5 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-3/4 animate-pulse relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                           </div>
-                          <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-1/2 animate-pulse relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                          <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-1/2 animate-pulse relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                           </div>
                         </div>
                       </div>
                       <div className="flex gap-1 mb-4">
                         {[1, 2, 3, 4, 5].map((j) => (
-                          <div key={j} className="w-5 h-5 bg-gradient-to-br from-black/20 to-dark-muted/30 dark:from-white/20 dark:to-dark-secondary0/30 rounded animate-pulse relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                          <div key={j} className="w-5 h-5 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded animate-pulse relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                           </div>
                         ))}
                       </div>
                       <div className="space-y-2">
-                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-full animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-full animate-pulse relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                         </div>
-                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-5/6 animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-5/6 animate-pulse relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                         </div>
-                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 dark:from-white/15 dark:to-dark-secondary0/25 rounded w-4/6 animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 dark:via-white/5 to-transparent animate-shimmer"></div>
+                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-4/6 animate-pulse relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                         </div>
                       </div>
                     </div>
@@ -891,7 +889,6 @@ const ServiceDetailPage: React.FC = () => {
           </div>
         </main>
         
-        <Footer />
       </div>
     );
   }
@@ -899,7 +896,6 @@ const ServiceDetailPage: React.FC = () => {
   if (!service) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-dark-tertiary/30 to-blue-50/20 flex flex-col">
-        <Navbar />
         <div className="flex-1 flex items-center justify-center mt-16">
           <div className="text-center bg-dark-card rounded-2xl p-8 shadow-lg border border-dark-primary">
             <div className="w-16 h-16 bg-gradient-to-r from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -914,7 +910,6 @@ const ServiceDetailPage: React.FC = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -927,17 +922,17 @@ const ServiceDetailPage: React.FC = () => {
 
   if (showLoginPrompt) {
     return (
-      <div className="min-h-screen bg-black to-orange-50 dark:bg-black  flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
         <div className="flex-1 flex items-center justify-center mt-16">
           <div className="text-center">
-        <p className="text-dark-primary dark:text-white mb-4">Please log in to access your profile.</p>
+        <p className="text-gray-900 mb-4">Please log in to access your profile.</p>
         <Button
           onClick={() => {
         localStorage.setItem('RedirectAfterLogin', window.location.pathname);
         navigate('/signin');
         setShowLoginPrompt(false);
           }}
-          className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full"
+          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full"
         >
           Log In
         </Button>
@@ -948,31 +943,29 @@ const ServiceDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary dark:from-black dark:via-dark-950 dark:to-black flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
       {/* Homepage-style Background with Grid Pattern */}
       <div className="fixed inset-0 pointer-events-none">
         {/* Enhanced grid pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
         
         {/* Enhanced gradient orbs with glass effect */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent dark:from-white/10 dark:via-white/5 dark:to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-white/5 to-transparent dark:from-white/5 dark:to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-orange-200/30 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-amber-200/20 to-transparent rounded-full blur-3xl"></div>
       </div>
       
-      <Navbar />
       
       <main className="flex-1 mt-16 relative z-10">
         <div className="container mx-auto px-4 py-8">
           {/* Enhanced Glass Morphism Breadcrumb */}
-          <div className="mb-8 bg-white/60 dark:bg-black/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20 dark:border-white/20">
+          <div className="mb-8 bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20">
             <Breadcrumb items={breadcrumbItems} />
           </div>
 
           {/* Full-width Video Section - Outside Grid Container */}
           {service.videoUrl && (
-            <div className="-mx-4 mb-8 bg-white/60 dark:bg-black/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/10 group">
-              <div className="relative bg-gradient-to-br from-white via-dark-secondary to-white dark:from-black dark:via-dark-950 dark:to-black">
+            <div className="-mx-4 mb-8 bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 group">
+              <div className="relative bg-gradient-to-br from-white via-dark-secondary to-white">
                 <video
                   autoPlay
                   muted
@@ -1005,15 +998,15 @@ const ServiceDetailPage: React.FC = () => {
                     className={cn(
                       "p-3 rounded-full backdrop-blur-md border transition-all duration-300 hover:scale-110 shadow-lg",
                       isWishlisted
-                        ? 'bg-black dark:bg-dark-card text-white dark:text-dark-primary border-black/10 dark:border-white/20'
-                        : 'bg-white/70 dark:bg-black/30 text-dark-primary dark:text-white border-white/5 dark:border-white/5 hover:bg-dark-card dark:hover:bg-black/50'
+                        ? 'bg-orange-500 text-white border-orange-500/10'
+                        : 'bg-white/70 text-dark-primary border-white/5 hover:bg-dark-card'
                     )}
                     title="Add to wishlist"
                   >
                     <Heart className={cn("w-4 h-4", isWishlisted && "fill-current")} />
                   </button>
                   <button
-                    className="p-3 rounded-full bg-white/70 dark:bg-black/30 backdrop-blur-md border border-white/5 dark:border-white/5 text-dark-primary dark:text-white hover:bg-dark-card dark:hover:bg-black/50 transition-all duration-300 hover:scale-110 shadow-lg"
+                    className="p-3 rounded-full bg-white/70 backdrop-blur-md border border-white/5 text-dark-primary hover:bg-dark-card transition-all duration-300 hover:scale-110 shadow-lg"
                     title="Bookmark service"
                   >
                     <Bookmark className="w-4 h-4" />
@@ -1027,247 +1020,231 @@ const ServiceDetailPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Images and Service Info */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Enhanced Compact Image Carousel */}
+              {/* Hero Banner - image with category badge + title overlay */}
               {service.images.length > 0 && (
-                <div className="bg-white/60 dark:bg-black/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 dark:border-white/10 group">
-                  <div className="aspect-[16/9] relative bg-gradient-to-br from-white via-dark-secondary to-white dark:from-black dark:via-dark-950 dark:to-black">
+                <div className="relative rounded-3xl overflow-hidden shadow-xl group">
+                  <div className="aspect-[16/9] relative bg-gray-100">
                     <img
                       src={service.images[selectedImage]}
                       alt={service.title}
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.03]"
                     />
-                    {/* Enhanced Glass Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
                   </div>
 
-                  {/* Glass Morphism Slide Indicator */}
-                  <div className="absolute top-4 left-4">
-                    <div className="flex items-center space-x-2 bg-white/70 dark:bg-black/30 backdrop-blur-md rounded-full px-4 py-2 border border-white/5 dark:border-white/5 shadow-lg">
-                      <Eye className="w-4 h-4 text-dark-primary dark:text-white" />
-                      <span className="text-dark-primary dark:text-white text-sm font-medium">
+                  {/* Category badge */}
+                  {service.category?.name && (
+                    <div className="absolute top-5 left-5">
+                      <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+                        {service.category.name}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Image counter */}
+                  {service.images.length > 1 && (
+                    <div className="absolute top-5 right-5 flex items-center space-x-2 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg">
+                      <Eye className="w-3.5 h-3.5 text-gray-600" />
+                      <span className="text-gray-700 text-xs font-medium">
                         {selectedImage + 1}/{service.images.length}
                       </span>
-                      {autoSlide && (
-                        <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" />
-                      )}
                     </div>
+                  )}
+
+                  {/* Title overlay */}
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <h1 className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-md">
+                      {service.title}
+                    </h1>
+                    {service.description && (
+                      <p className="text-white/90 text-sm md:text-base max-w-2xl line-clamp-1">
+                        {service.description}
+                      </p>
+                    )}
                   </div>
 
-                  {/* Modern Glass Navigation Arrows */}
+                  {/* Navigation arrows */}
                   {service.images.length > 1 && (
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/70 dark:bg-black/30 backdrop-blur-md rounded-full text-dark-primary dark:text-white hover:bg-dark-card dark:hover:bg-black/50 transition-all duration-300 hover:scale-110 shadow-lg border border-white/5 dark:border-white/20"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
                         title="Previous image"
                       >
                         <ChevronLeft className="w-5 h-5" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/70 dark:bg-black/30 backdrop-blur-md rounded-full text-dark-primary dark:text-white hover:bg-dark-card dark:hover:bg-black/50 transition-all duration-300 hover:scale-110 shadow-lg border border-white/5 dark:border-white/20"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
                         title="Next image"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </button>
                     </>
                   )}
-
-                  {/* Modern Glass Progress Indicators */}
-                  {service.images.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-                      {service.images.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => {
-                            setSelectedImage(index);
-                            setAutoSlide(false);
-                            setTimeout(() => setAutoSlide(true), 10000);
-                          }}
-                          className={cn(
-                            "h-2 rounded-full transition-all duration-300 hover:scale-110",
-                            selectedImage === index
-                              ? 'w-8 bg-black dark:bg-dark-card shadow-lg'
-                              : 'w-2 bg-white/70 dark:bg-black/70 hover:bg-dark-card dark:hover:bg-black'
-                          )}
-                          title={`Image ${index + 1}`}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Compact Glass Thumbnails for Images */}
-                  {service.images.length > 1 && (
-                    <div className="flex space-x-2 p-4 overflow-x-auto scrollbar-hide bg-white/30 dark:bg-black/30 backdrop-blur-sm">
-                      {service.images.map((image, index) => (
-                        <button
-                          key={index}
-                          onClick={() => {
-                            setSelectedImage(index);
-                            setAutoSlide(false);
-                            setTimeout(() => setAutoSlide(true), 10000);
-                          }}
-                          className={cn(
-                            "flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-110",
-                            selectedImage === index
-                              ? 'border-black dark:border-white ring-2 ring-black/20 dark:ring-white/20 shadow-lg transform scale-105'
-                              : 'border-white/5 dark:border-white/5 hover:border-black dark:hover:border-white shadow-sm'
-                          )}
-                          title={`Image ${index + 1}`}
-                        >
-                          <img src={image} alt={`${service.title} ${index + 1}`} className="w-full h-full object-cover" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
 
-              {/* Service Header - Minimal Glass Theme */}
-              <div className="py-8 px-6">
-                <div className="max-w-4xl">
-                  {/* Title */}
-                  <h1 className="text-3xl md:text-4xl font-bold text-dark-primary dark:text-white mb-4">
-                    {service.title}
-                  </h1>
+              {/* Info cards row: Price / Location / Provider */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <DollarSign className="w-4 h-4 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Price</p>
+                      <p className="font-semibold text-gray-900">
+                        {service.currency} {service.price.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-gray-500">Location</p>
+                      <p className="font-semibold text-gray-900 truncate">
+                        {[service.city, service.state].filter(Boolean).join(', ') || service.address || 'Flexible'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs text-gray-500">Provider</p>
+                      <p className="font-semibold text-gray-900 truncate">{service.provider.name}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                  {/* Tags */}
+              {/* Stats row */}
+              <div className="flex items-center gap-2 flex-wrap px-1">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, index) => (
+                    <Star
+                      key={index}
+                      className={cn(
+                        "w-4 h-4",
+                        index < Math.floor(averageRating)
+                          ? "fill-amber-400 text-amber-400"
+                          : "fill-none text-gray-300"
+                      )}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-semibold text-gray-900">
+                  {averageRating.toFixed(1)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  ({reviewStats.totalReviews} reviews)
+                </span>
+                {service.serviceRadiusKm && (
+                  <span className="text-sm text-gray-400">&middot; Travels up to {service.serviceRadiusKm}km</span>
+                )}
+              </div>
+
+              {/* About This Service */}
+              <div className="py-2 px-1">
+                <div className="max-w-4xl">
+                  <h2 className="text-xl font-bold text-gray-900 mb-3">About This Service</h2>
+
+                  {service.description && (
+                    <p className="text-base text-gray-600 mb-4 leading-relaxed">
+                      {service.description}
+                    </p>
+                  )}
+
                   {service.tags && service.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap gap-2">
                       {service.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="text-sm px-4 py-1.5 rounded-full text-dark-secondary dark:text-dark-muted bg-white/50 dark:bg-black/30 backdrop-blur-sm border border-white/15 dark:border-white/5 hover:border-black/15 dark:hover:border-white/15 transition-all duration-300"
+                          className="text-xs px-3 py-1.5 rounded-full text-gray-600 bg-gray-100 hover:bg-orange-50 hover:text-orange-700 transition-all duration-300"
                         >
-                          {tag}
+                          #{tag}
                         </span>
                       ))}
                     </div>
                   )}
 
-                  {/* Description */}
-                  {service.description && (
-                    <p className="text-base text-dark-secondary dark:text-dark-muted mb-6 leading-relaxed">
-                      {service.description}
-                    </p>
-                  )}
-
-                  {/* Rating with White Stars */}
-                  <div className="flex items-center gap-2 mb-6">
-                    <div className="flex items-center gap-1">
-                      {[...Array(5)].map((_, index) => (
-                        <Star
-                          key={index}
-                          className={cn(
-                            "w-5 h-5",
-                            index < Math.floor(averageRating)
-                              ? "fill-white text-white dark:fill-white dark:text-white"
-                              : "fill-none text-dark-muted dark:text-dark-secondary"
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm font-semibold text-dark-primary dark:text-white ml-1">
-                      {averageRating.toFixed(1)}
-                    </span>
-                    <span className="text-sm text-dark-muted dark:text-dark-muted">
-                      ({reviewStats.totalReviews} reviews)
-                    </span>
-                  </div>
-
-                  {/* Service Location Card */}
-                  {(service.address || (service.latitude && service.longitude)) && (
-                    <div className="bg-white/60 dark:bg-black/50 backdrop-blur-xl rounded-2xl p-6 border border-white/20 dark:border-white/15 shadow-lg">
-                      <h3 className="text-lg font-semibold text-dark-primary dark:text-white mb-4 flex items-center">
-                        <MapPin className="w-5 h-5 mr-2 text-dark-primary dark:text-white" />
-                        Service Location
-                      </h3>
-
-                      <div className="space-y-3">
-                        {/* Address */}
-                        {service.address && (
-                          <div className="flex items-start">
-                            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-black dark:bg-dark-card mt-2 mr-3" />
-                            <div>
-                              <p className="text-base text-dark-primary dark:text-white font-medium">
-                                {service.address}
-                              </p>
-                              {(service.city || service.state || service.country) && (
-                                <p className="text-sm text-dark-secondary dark:text-dark-muted mt-1">
-                                  {[service.city, service.state, service.country].filter(Boolean).join(', ')}
-                                  {service.postalCode && ` ${service.postalCode}`}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Coordinates */}
-                        {service.latitude && service.longitude && (
-                          <div className="flex items-center text-sm text-dark-secondary dark:text-dark-muted">
-                            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gray-400 dark:bg-dark-secondary0 mr-3" />
-                            <span>
-                              {service.latitude.toFixed(6)}, {service.longitude.toFixed(6)}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Service Radius */}
-                        {service.serviceRadiusKm && (
-                          <div className="flex items-start mt-4 pt-4 border-t border-white/5 dark:border-white/10">
-                            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-black dark:bg-dark-card mt-2 mr-3" />
-                            <div>
-                              <p className="text-sm text-dark-primary dark:text-white font-medium">
-                                Service Area: {service.serviceRadiusKm} km radius
-                              </p>
-                              <p className="text-xs text-dark-secondary dark:text-dark-muted mt-1">
-                                Provider can travel up to {service.serviceRadiusKm} km from the service location
-                              </p>
-                            </div>
-                          </div>
-                        )}
+                  {/* Gallery */}
+                  {service.images.length > 1 && (
+                    <div className="mt-8">
+                      <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <ImageIcon className="w-5 h-5 text-orange-500" />
+                        Gallery
+                      </h2>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {service.images.map((image, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setSelectedImage(index);
+                              setAutoSlide(false);
+                              setTimeout(() => setAutoSlide(true), 10000);
+                            }}
+                            className={cn(
+                              "aspect-video rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-[1.02]",
+                              selectedImage === index
+                                ? 'border-orange-500 ring-2 ring-orange-200 shadow-lg'
+                                : 'border-transparent hover:border-orange-300 shadow-sm'
+                            )}
+                            title={`Image ${index + 1}`}
+                          >
+                            <img src={image} alt={`${service.title} ${index + 1}`} className="w-full h-full object-cover" />
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}
 
                   {/* Current Schedule Section */}
                   {currentSchedules.length > 0 && (
-                    <div className="mt-6 bg-white/60 dark:bg-black/50 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-white/20 dark:border-white/15 shadow-lg">
-                      <h3 className="text-lg font-semibold text-dark-primary dark:text-white mb-4 flex items-center">
-                        <Calendar className="w-5 h-5 mr-2" />
+                    <div className="mt-6 bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <Calendar className="w-5 h-5 mr-2 text-orange-500" />
                         Confirmed Schedule
                       </h3>
                       {scheduleLoading ? (
                         <div className="flex justify-center py-4">
                           <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                           </div>
                         </div>
                       ) : (
                         <>
                           {/* Desktop Table View */}
-                          <div className="hidden md:block bg-white/50 dark:bg-black/30 backdrop-blur-md rounded-xl border border-white/20 dark:border-white/15 overflow-hidden">
+                          <div className="hidden md:block bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
                             <table className="w-full text-sm">
-                              <thead className="bg-white/70 dark:bg-black/50">
+                              <thead className="bg-gray-100">
                                 <tr>
-                                  <th className="px-4 py-3 text-left text-dark-primary dark:text-white font-semibold">Start Time</th>
-                                  <th className="px-4 py-3 text-left text-dark-primary dark:text-white font-semibold">End Time</th>
-                                  <th className="px-4 py-3 text-left text-dark-primary dark:text-white font-semibold">Status</th>
+                                  <th className="px-4 py-3 text-left text-gray-900 font-semibold">Start Time</th>
+                                  <th className="px-4 py-3 text-left text-gray-900 font-semibold">End Time</th>
+                                  <th className="px-4 py-3 text-left text-gray-900 font-semibold">Status</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {currentSchedules.map((schedule, index) => (
-                                  <tr key={index} className="border-t border-white/20 dark:border-white/15">
-                                    <td className="px-4 py-3 text-dark-secondary dark:text-dark-muted">
+                                  <tr key={index} className="border-t border-gray-100">
+                                    <td className="px-4 py-3 text-gray-600">
                                       {new Date(schedule.startTime).toLocaleString()}
                                     </td>
-                                    <td className="px-4 py-3 text-dark-secondary dark:text-dark-muted">
+                                    <td className="px-4 py-3 text-gray-600">
                                       {new Date(schedule.endTime).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-3">
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-dark-tertiary dark:bg-green-900 text-green-400 dark:text-green-200">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
                                         <CheckCircle className="w-3 h-3 mr-1" />
                                         Confirmed
                                       </span>
@@ -1281,24 +1258,24 @@ const ServiceDetailPage: React.FC = () => {
                           {/* Mobile Card View */}
                           <div className="md:hidden space-y-3">
                             {currentSchedules.map((schedule, index) => (
-                              <div key={index} className="bg-white/50 dark:bg-black/30 backdrop-blur-md rounded-xl border border-white/20 dark:border-white/15 p-4">
+                              <div key={index} className="bg-gray-50 rounded-xl border border-gray-100 p-4">
                                 <div className="flex items-center justify-between mb-3">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-dark-tertiary dark:bg-green-900 text-green-400 dark:text-green-200">
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
                                     <CheckCircle className="w-3 h-3 mr-1" />
                                     Confirmed
                                   </span>
                                 </div>
                                 <div className="space-y-2">
                                   <div className="flex justify-between items-center">
-                                    <span className="text-xs text-dark-muted dark:text-dark-muted font-medium">Start:</span>
-                                    <span className="text-sm text-dark-secondary dark:text-dark-muted text-right">
+                                    <span className="text-xs text-gray-500 font-medium">Start:</span>
+                                    <span className="text-sm text-gray-600 text-right">
                                       {new Date(schedule.startTime).toLocaleDateString()} <br />
                                       <span className="text-xs">{new Date(schedule.startTime).toLocaleTimeString()}</span>
                                     </span>
                                   </div>
                                   <div className="flex justify-between items-center">
-                                    <span className="text-xs text-dark-muted dark:text-dark-muted font-medium">End:</span>
-                                    <span className="text-sm text-dark-secondary dark:text-dark-muted text-right">
+                                    <span className="text-xs text-gray-500 font-medium">End:</span>
+                                    <span className="text-sm text-gray-600 text-right">
                                       {new Date(schedule.endTime).toLocaleDateString()} <br />
                                       <span className="text-xs">{new Date(schedule.endTime).toLocaleTimeString()}</span>
                                     </span>
@@ -1320,15 +1297,15 @@ const ServiceDetailPage: React.FC = () => {
               {/* Unified Glass Morphism Card */}
               <div className="relative">
                 <div 
-                  className="bg-white/70 dark:bg-black/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-white/15 sticky top-24"
+                  className="bg-white/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 sticky top-24"
                   style={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)' }}
                 >
                   {/* Provider Profile Section */}
                   {provider && (
-                    <div className="mb-8 pb-8 border-b border-white/20 dark:border-white/20">
+                    <div className="mb-8 pb-8 border-b border-white/20">
                       <div className="flex flex-col items-center">
                         {/* Avatar */}
-                        <div className="w-20 h-20 mb-4 rounded-full p-1 border-2 border-white/10 dark:border-white/10 relative">
+                        <div className="w-20 h-20 mb-4 rounded-full p-1 border-2 border-white/10 relative">
                           <img 
                             src={provider?.logoUrl || provider?.user?.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(provider?.user ? `${provider.user.firstName || ''} ${provider.user.lastName || ''}`.trim() || provider.user.email || 'User' : 'Provider')}&background=000000&color=ffffff&size=96`}
                             alt="Provider"
@@ -1340,8 +1317,8 @@ const ServiceDetailPage: React.FC = () => {
                             }}
                           />
                           {provider?.isVerified && (
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-black dark:bg-dark-card rounded-full flex items-center justify-center border-2 border-white dark:border-black">
-                              <svg className="w-3.5 h-3.5 text-white dark:text-dark-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white">
+                              <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             </div>
@@ -1349,10 +1326,10 @@ const ServiceDetailPage: React.FC = () => {
                         </div>
 
                         {/* Name and Title */}
-                        <h3 className="text-xl font-bold text-dark-primary dark:text-white text-center">
+                        <h3 className="text-xl font-bold text-dark-primary text-center">
                           {provider?.user ? `${provider.user.firstName || ''} ${provider.user.lastName || ''}`.trim() || provider.user.email || 'Provider' : 'Provider'}
                         </h3>
-                        <p className="mt-1 text-sm font-medium text-dark-secondary dark:text-dark-muted">
+                        <p className="mt-1 text-sm font-medium text-dark-secondary">
                           {provider?.isVerified ? 'Verified Provider' : 'Service Provider'}
                         </p>
 
@@ -1362,15 +1339,15 @@ const ServiceDetailPage: React.FC = () => {
                           return (provider?.user?.email || provider?.user?.phone) && (
                             <div className="mt-4 w-full space-y-2">
                               {provider?.user?.email && (
-                                <div className="flex flex-col items-center justify-center gap-1 text-sm bg-white/50 dark:bg-black/30 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 dark:border-white/15">
+                                <div className="flex flex-col items-center justify-center gap-1 text-sm bg-white/50 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20">
                                   <div className="flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-dark-primary dark:text-white" />
-                                    <span className="text-dark-secondary dark:text-dark-muted truncate">{provider.user.email}</span>
+                                    <Mail className="w-4 h-4 text-dark-primary" />
+                                    <span className="text-dark-secondary truncate">{provider.user.email}</span>
                                   </div>
                                   {provider?.user?.phone && (
                                     <div className="flex items-center gap-2">
-                                      <Phone className="w-4 h-4 text-dark-primary dark:text-white" />
-                                      <span className="text-dark-secondary dark:text-dark-muted">{provider.user.phone}</span>
+                                      <Phone className="w-4 h-4 text-dark-primary" />
+                                      <span className="text-dark-secondary">{provider.user.phone}</span>
                                     </div>
                                   )}
                                 </div>
@@ -1385,16 +1362,16 @@ const ServiceDetailPage: React.FC = () => {
                             {provider?.averageRating !== undefined && provider?.averageRating !== null && (
                               <div className="flex items-center gap-1">
                                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                                <span className="text-sm font-semibold text-dark-primary dark:text-white">{provider.averageRating.toFixed(1)}</span>
+                                <span className="text-sm font-semibold text-dark-primary">{provider.averageRating.toFixed(1)}</span>
                                 {provider?.totalReviews !== undefined && provider?.totalReviews !== null && (
-                                  <span className="text-xs text-dark-muted dark:text-dark-muted">({provider.totalReviews})</span>
+                                  <span className="text-xs text-dark-muted">({provider.totalReviews})</span>
                                 )}
                               </div>
                             )}
                             
                             {provider?.services?.length !== undefined && provider?.services?.length !== null && (
-                              <div className="flex items-center gap-1 text-sm text-dark-secondary dark:text-dark-muted">
-                                <span className="font-semibold text-dark-primary dark:text-white">{provider.services.length}</span>
+                              <div className="flex items-center gap-1 text-sm text-dark-secondary">
+                                <span className="font-semibold text-dark-primary">{provider.services.length}</span>
                                 <span className="text-xs">Service{provider.services.length !== 1 ? 's' : ''}</span>
                               </div>
                             )}
@@ -1410,7 +1387,7 @@ const ServiceDetailPage: React.FC = () => {
                             }
                             navigate(`/provider/${provider.id}`);
                           }}
-                          className="mt-4 text-sm text-dark-primary dark:text-white hover:underline flex items-center gap-1"
+                          className="mt-4 text-sm text-dark-primary hover:underline flex items-center gap-1"
                         >
                           View Full Profile
                           <ArrowUpRight className="w-4 h-4" />
@@ -1421,11 +1398,11 @@ const ServiceDetailPage: React.FC = () => {
 
                   {/* Price Section */}
                   <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-dark-primary dark:text-white mb-2">
+                    <div className="text-4xl font-bold text-dark-primary mb-2">
                       {service.currency} {service.price.toLocaleString()}
                     </div>
-                    <div className="text-sm text-dark-muted dark:text-dark-muted mb-4">Starting price</div>
-                    <div className="flex items-center justify-center text-dark-primary dark:text-white bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-full px-4 py-2 border border-white/20 dark:border-white/15 shadow-lg">
+                    <div className="text-sm text-dark-muted mb-4">Starting price</div>
+                    <div className="flex items-center justify-center text-dark-primary bg-white/80 backdrop-blur-xl rounded-full px-4 py-2 border border-white/20 shadow-lg">
                       <CheckCircle className="w-4 h-4 mr-1" />
                       <span className="text-sm font-medium">Available now</span>
                     </div>
@@ -1435,8 +1412,8 @@ const ServiceDetailPage: React.FC = () => {
                   <div className="space-y-3 mb-6">
                     <button
                       onClick={handlePayNow}
-                      className="w-full bg-black dark:bg-dark-card text-white dark:text-dark-primary py-4 px-6 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl border border-black/20 dark:border-white/20 backdrop-blur-sm flex items-center justify-center"
-                      style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}
+                      className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 px-6 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl border border-orange-500/20 backdrop-blur-sm flex items-center justify-center"
+                      style={{ boxShadow: '0 4px 24px rgba(249,115,22,0.3)' }}
                     >
                       <CreditCard className="w-5 h-5 mr-2" />
                       Pay Now
@@ -1445,14 +1422,14 @@ const ServiceDetailPage: React.FC = () => {
                     <button
                       onClick={handleBookNow}
                       disabled={bookingLoading}
-                      className="w-full bg-white/80 dark:bg-black/50 text-dark-primary dark:text-white py-4 px-6 rounded-full font-bold hover:bg-dark-card dark:hover:bg-black/70 transition-all duration-300 shadow-xl border border-white/20 dark:border-white/15 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-xl"
+                      className="w-full bg-white/80 text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-dark-card transition-all duration-300 shadow-xl border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-xl"
                     >
                       {bookingLoading ? (
                         <div className="flex items-center justify-center gap-2">
                           <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                           </div>
                           <span>Creating conversation</span>
                         </div>
@@ -1463,14 +1440,14 @@ const ServiceDetailPage: React.FC = () => {
                     <button
                       onClick={handleBookNow}
                       disabled={bookingLoading}
-                      className="w-full bg-white/80 dark:bg-black/50 text-dark-primary dark:text-white py-4 px-6 rounded-full font-bold hover:bg-dark-card dark:hover:bg-black/70 transition-all duration-300 shadow-xl border border-white/20 dark:border-white/15 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-xl"
+                      className="w-full bg-white/80 text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-dark-card transition-all duration-300 shadow-xl border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-xl"
                     >
                       {bookingLoading ? (
                         <div className="flex items-center justify-center gap-2">
                           <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-black dark:bg-dark-card rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                           </div>
                           <span>Creating conversation</span>
                         </div>
@@ -1481,14 +1458,14 @@ const ServiceDetailPage: React.FC = () => {
                   </div>
 
                   {/* QR Code Section */}
-                  <div className="pt-6 border-t border-white/20 dark:border-white/20">
-                    <h4 className="text-sm font-semibold text-dark-primary dark:text-white mb-4 flex items-center">
+                  <div className="pt-6 border-t border-white/20">
+                    <h4 className="text-sm font-semibold text-dark-primary mb-4 flex items-center">
                       <QrCode className="w-4 h-4 mr-2" />
                       QR Code
                     </h4>
                     <div className="flex flex-col items-center space-y-3">
                       {/* QR Code */}
-                      <div className="bg-white/60 dark:bg-black/30 backdrop-blur-xl p-4 rounded-xl border border-white/20 dark:border-white/15 shadow-sm">
+                      <div className="bg-white/60 backdrop-blur-xl p-4 rounded-xl border border-white/20 shadow-sm">
                         <div className="w-24 h-24 flex items-center justify-center">
                           {qrCodeUrl ? (
                             <QRCode
@@ -1500,7 +1477,7 @@ const ServiceDetailPage: React.FC = () => {
                               bgColor="transparent"
                             />
                           ) : (
-                            <div className="w-full h-full bg-black/20 dark:bg-white/20 rounded animate-pulse"></div>
+                            <div className="w-full h-full bg-black/20 rounded animate-pulse"></div>
                           )}
                         </div>
                       </div>
@@ -1509,7 +1486,7 @@ const ServiceDetailPage: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={handleDownloadQR}
-                          className="flex items-center space-x-1 bg-white/60 dark:bg-black/30 backdrop-blur-xl hover:bg-white/80 dark:hover:bg-black/50 text-dark-primary dark:text-white border border-white/20 dark:border-white/15 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
+                          className="flex items-center space-x-1 bg-white/60 backdrop-blur-xl hover:bg-white/80 text-dark-primary border border-white/20 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
                           title="Download QR Code"
                         >
                           <Download className="w-3 h-3" />
@@ -1517,7 +1494,7 @@ const ServiceDetailPage: React.FC = () => {
                         </button>
                         <button
                           onClick={handleShareService}
-                          className="flex items-center space-x-1 bg-white/60 dark:bg-black/30 backdrop-blur-xl hover:bg-white/80 dark:hover:bg-black/50 text-dark-primary dark:text-white border border-white/20 dark:border-white/15 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
+                          className="flex items-center space-x-1 bg-white/60 backdrop-blur-xl hover:bg-white/80 text-dark-primary border border-white/20 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
                           title="Share Service"
                         >
                           <Share2 className="w-3 h-3" />
@@ -1530,7 +1507,7 @@ const ServiceDetailPage: React.FC = () => {
                   {/* Working Hours Section */}
                   {service.workingTime && service.workingTime.length > 0 && (
                     <div >
-                      <h4 className="text-sm font-semibold text-dark-primary dark:text-white mb-3 flex items-center">
+                      <h4 className="text-sm font-semibold text-dark-primary mb-3 flex items-center">
                         <Clock className="w-4 h-4 mr-2" />
                         Working Hours
                       </h4>
@@ -1538,10 +1515,10 @@ const ServiceDetailPage: React.FC = () => {
                         {service.workingTime.map((time, index) => (
                           <div 
                             key={index}
-                            className="flex items-center bg-white/60 dark:bg-black/30 backdrop-blur-xl rounded-xl p-3 border border-white/20 dark:border-white/15 shadow-sm"
+                            className="flex items-center bg-white/60 backdrop-blur-xl rounded-xl p-3 border border-white/20 shadow-sm"
                           >
-                            <Calendar className="w-3.5 h-3.5 text-dark-primary/60 dark:text-white/60 mr-2" />
-                            <span className="text-sm text-dark-primary dark:text-white font-medium">{time}</span>
+                            <Calendar className="w-3.5 h-3.5 text-dark-primary/60 mr-2" />
+                            <span className="text-sm text-dark-primary font-medium">{time}</span>
                           </div>
                         ))}
                       </div>
@@ -1550,7 +1527,7 @@ const ServiceDetailPage: React.FC = () => {
                 </div>
                 
                 {/* Enhanced Glassmorphism glow effect */}
-                <div className="absolute inset-0 rounded-3xl -z-10 transition-all duration-500 ease-out blur-3xl opacity-30 bg-gradient-to-br from-black/40 via-black/20 to-black/40 dark:from-white/30 dark:via-white/15 dark:to-white/30" />
+                <div className="absolute inset-0 rounded-3xl -z-10 transition-all duration-500 ease-out blur-3xl opacity-30 bg-gradient-to-br from-orange-300/40 via-amber-200/20 to-orange-300/40" />
               </div>
             </div>
           </div>
@@ -1559,15 +1536,15 @@ const ServiceDetailPage: React.FC = () => {
           {reviews.length > 0 && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-bold text-dark-primary dark:text-white">
+                <h2 className="text-3xl font-bold text-dark-primary">
                   Customer Reviews
                 </h2>
-                <div className="flex items-center gap-2 bg-white/70 dark:bg-black/50 backdrop-blur-xl px-4 py-2 rounded-full border border-white/20 dark:border-white/15 shadow-lg">
-                  <Star className="w-5 h-5 fill-white text-white" />
-                  <span className="text-lg font-semibold text-dark-primary dark:text-white">
+                <div className="flex items-center gap-2 bg-white/70 backdrop-blur-xl px-4 py-2 rounded-full border border-white/20 shadow-lg">
+                  <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
+                  <span className="text-lg font-semibold text-dark-primary">
                     {averageRating.toFixed(1)}
                   </span>
-                  <span className="text-sm text-dark-secondary dark:text-dark-muted">
+                  <span className="text-sm text-dark-secondary">
                     ({reviewStats.totalReviews})
                   </span>
                 </div>
@@ -1591,15 +1568,15 @@ const ServiceDetailPage: React.FC = () => {
                       className="flex-shrink-0 w-[90%] sm:w-[45%] lg:w-[32%] snap-start"
                     >
                       <div className={cn(
-                        "bg-white/70 dark:bg-black/50 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 dark:border-white/15 h-full transition-all duration-500",
+                        "bg-white/70 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 h-full transition-all duration-500",
                         index === currentReviewIndex 
-                          ? "shadow-2xl scale-105 border-white/30 dark:border-white/20" 
+                          ? "shadow-2xl scale-105 border-white/30" 
                           : "shadow-xl hover:shadow-2xl"
                       )}>
                         {/* Review Header */}
                         <div className="flex items-start gap-4 mb-6">
                           <div className="relative flex-shrink-0">
-                            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 dark:border-white/10 shadow-lg">
+                            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 shadow-lg">
                               {review.clientAvatar ? (
                                 <img 
                                   src={review.clientAvatar} 
@@ -1607,25 +1584,25 @@ const ServiceDetailPage: React.FC = () => {
                                   className="w-full h-full object-cover"
                                 />
                               ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-black/10 to-black/5 dark:from-white/10 dark:to-white/5 flex items-center justify-center">
-                                  <span className="text-2xl text-dark-primary dark:text-white font-bold">
+                                <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center">
+                                  <span className="text-2xl text-dark-primary font-bold">
                                     {review.clientName?.[0]?.toUpperCase() || 'U'}
                                   </span>
                                 </div>
                               )}
                             </div>
                             {/* Verified badge */}
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-black dark:bg-dark-card rounded-full flex items-center justify-center border-2 border-white dark:border-black shadow-lg">
-                              <svg className="w-3.5 h-3.5 text-white dark:text-dark-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-black rounded-full flex items-center justify-center border-2 border-white shadow-lg">
+                              <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             </div>
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-lg font-bold text-dark-primary dark:text-white mb-1">
+                            <h4 className="text-lg font-bold text-dark-primary mb-1">
                               {review.clientName || 'Anonymous'}
                             </h4>
-                            <p className="text-sm text-dark-muted dark:text-dark-muted">
+                            <p className="text-sm text-dark-muted">
                               {new Date(review.createdAt).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
@@ -1643,12 +1620,12 @@ const ServiceDetailPage: React.FC = () => {
                               className={cn(
                                 "w-5 h-5 transition-all",
                                 starIndex < review.rating
-                                  ? "fill-white text-white drop-shadow-lg"
-                                  : "fill-none text-dark-muted dark:text-dark-secondary"
+                                  ? "fill-amber-400 text-amber-400 drop-shadow-lg"
+                                  : "fill-none text-dark-muted"
                               )}
                             />
                           ))}
-                          <span className="ml-2 text-sm font-semibold text-dark-primary dark:text-white">
+                          <span className="ml-2 text-sm font-semibold text-dark-primary">
                             {review.rating}.0
                           </span>
                         </div>
@@ -1656,7 +1633,7 @@ const ServiceDetailPage: React.FC = () => {
                         {/* Review Comment */}
                         {review.comment && (
                           <div className="relative">
-                            <p className="text-base text-dark-secondary dark:text-dark-muted leading-relaxed line-clamp-5 italic">
+                            <p className="text-base text-dark-secondary leading-relaxed line-clamp-5 italic">
                               "{review.comment}"
                             </p>
                           </div>
@@ -1664,8 +1641,8 @@ const ServiceDetailPage: React.FC = () => {
 
                         {/* Helpful indicator */}
                         {review.helpful > 0 && (
-                          <div className="mt-4 pt-4 border-t border-white/5 dark:border-white/10">
-                            <span className="text-sm text-dark-secondary dark:text-dark-muted flex items-center gap-2">
+                          <div className="mt-4 pt-4 border-t border-white/5">
+                            <span className="text-sm text-dark-secondary flex items-center gap-2">
                               <ThumbsUp className="w-4 h-4" />
                               {review.helpful} found this helpful
                             </span>
@@ -1696,8 +1673,8 @@ const ServiceDetailPage: React.FC = () => {
                         className={cn(
                           "transition-all duration-300 rounded-full",
                           index === currentReviewIndex
-                            ? "w-8 h-2 bg-black dark:bg-dark-card"
-                            : "w-2 h-2 bg-dark-tertiary dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-dark-secondary0"
+                            ? "w-8 h-2 bg-orange-500"
+                            : "w-2 h-2 bg-dark-tertiary hover:bg-gray-400"
                         )}
                       />
                     ))}
@@ -1709,9 +1686,9 @@ const ServiceDetailPage: React.FC = () => {
 
           {/* No Reviews Message */}
           {reviews.length === 0 && !reviewsLoading && (
-            <div className="mb-6 text-center py-12 bg-white/70 dark:bg-black/50 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/15 shadow-lg">
-              <Star className="w-16 h-16 mx-auto mb-4 text-dark-muted dark:text-dark-secondary" />
-              <p className="text-dark-secondary dark:text-dark-muted text-lg">
+            <div className="mb-6 text-center py-12 bg-white/70 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg">
+              <Star className="w-16 h-16 mx-auto mb-4 text-dark-muted" />
+              <p className="text-dark-secondary text-lg">
                 No reviews yet. Be the first to review this service!
               </p>
             </div>
@@ -1722,7 +1699,6 @@ const ServiceDetailPage: React.FC = () => {
         </div>
       </main>
 
-      <Footer />
       <Toaster position="bottom-right" />
       
       {/* Payment Modal */}

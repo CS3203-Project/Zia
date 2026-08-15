@@ -1,5 +1,4 @@
 import ServicesGrid from '../../components/shared/ServicesGrid';
-import Footer from '../../components/layout/Footer';
 import useServices from '../../hooks/useServices';
 import { useState } from 'react';
 import { Search, Loader2, Sparkles, ArrowRight, Asterisk, Star, ShieldCheck, TrendingUp, Users, Clock } from 'lucide-react';
@@ -85,7 +84,7 @@ export default function Homepage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-primary dark:bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-dark-primary relative overflow-hidden">
       {/* Content Overlay */}
       <div className="relative">
         {/* Hero Section - fits one viewport height on desktop (no scroll); flows naturally on mobile */}
@@ -293,14 +292,14 @@ export default function Homepage() {
         </section>
 
         {/* Interactive Feature Cards Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-card dark:bg-black relative">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-card relative">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-dark-primary dark:text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-dark-primary mb-4">
                 Why Choose Our Platform
               </h2>
-              <p className="text-lg text-dark-secondary dark:text-dark-muted max-w-2xl mx-auto">
+              <p className="text-lg text-dark-secondary max-w-2xl mx-auto">
                 Experience a seamless way to connect with professionals and grow your business
               </p>
             </div>
@@ -309,15 +308,15 @@ export default function Homepage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Card 1 - Smart Search */}
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 dark:from-white/5 dark:to-white/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative h-full backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
-                  <div className="mb-6 inline-block p-4 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl border border-white/30 dark:border-white/20 w-fit">
-                    <Sparkles className="w-8 h-8 text-dark-primary dark:text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                <div className="relative h-full backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
+                  <div className="mb-6 inline-block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 w-fit">
+                    <Sparkles className="w-8 h-8 text-dark-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-dark-primary dark:text-white mb-4">
+                  <h3 className="text-2xl font-bold text-dark-primary mb-4">
                     AI-Powered Search
                   </h3>
-                  <p className="text-dark-secondary dark:text-dark-muted leading-relaxed flex-grow">
+                  <p className="text-dark-secondary leading-relaxed flex-grow">
                     Find exactly what you need with our intelligent search algorithm that understands your requirements and delivers relevant results instantly.
                   </p>
                 </div>
@@ -325,15 +324,15 @@ export default function Homepage() {
 
               {/* Card 2 - Location Based */}
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 dark:from-white/5 dark:to-white/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative h-full backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
-                  <div className="mb-6 inline-block p-4 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl border border-white/30 dark:border-white/20 w-fit">
-                    <Search className="w-8 h-8 text-dark-primary dark:text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                <div className="relative h-full backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
+                  <div className="mb-6 inline-block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 w-fit">
+                    <Search className="w-8 h-8 text-dark-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-dark-primary dark:text-white mb-4">
+                  <h3 className="text-2xl font-bold text-dark-primary mb-4">
                     Location-Based Discovery
                   </h3>
-                  <p className="text-dark-secondary dark:text-dark-muted leading-relaxed flex-grow">
+                  <p className="text-dark-secondary leading-relaxed flex-grow">
                     Connect with service providers near you. Our advanced geolocation features help you find local professionals within your preferred radius.
                   </p>
                 </div>
@@ -341,15 +340,15 @@ export default function Homepage() {
 
               {/* Card 3 - Verified Professionals */}
               <div className="group relative h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 dark:from-white/5 dark:to-white/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative h-full backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
-                  <div className="mb-6 inline-block p-4 bg-white/50 dark:bg-white/10 backdrop-blur-sm rounded-2xl border border-white/30 dark:border-white/20 w-fit">
-                    <ArrowRight className="w-8 h-8 text-dark-primary dark:text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
+                <div className="relative h-full backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
+                  <div className="mb-6 inline-block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 w-fit">
+                    <ArrowRight className="w-8 h-8 text-dark-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-dark-primary dark:text-white mb-4">
+                  <h3 className="text-2xl font-bold text-dark-primary mb-4">
                     Verified Professionals
                   </h3>
-                  <p className="text-dark-secondary dark:text-dark-muted leading-relaxed flex-grow">
+                  <p className="text-dark-secondary leading-relaxed flex-grow">
                     Every service provider is thoroughly vetted and verified. Work with confidence knowing you're hiring trusted and qualified professionals.
                   </p>
                 </div>
@@ -359,13 +358,13 @@ export default function Homepage() {
         </section>
         
         {/* Services Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-card dark:bg-black">
+        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-card">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-dark-primary dark:text-white mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-dark-primary mb-6">
                 Featured Services
               </h2>
-              <p className="text-xl text-dark-secondary dark:text-dark-muted max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl text-dark-secondary max-w-3xl mx-auto leading-relaxed">
                 Discover professional services from our verified providers. 
                 Quality guaranteed, satisfaction assured.
               </p>
@@ -397,8 +396,6 @@ export default function Homepage() {
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   );
 }

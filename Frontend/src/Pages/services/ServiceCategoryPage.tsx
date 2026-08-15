@@ -29,16 +29,16 @@ const SubCategorySidebar: React.FC<{
   
   return (
     <div className="w-full md:w-1/4 lg:w-1/5 p-4">
-      <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] border border-white/30 dark:border-white/10 p-6">
-        <h3 className="text-xl font-bold mb-4 text-dark-primary dark:text-white border-b border-white/30 dark:border-white/20 pb-3">Subcategories</h3>
+      <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
+        <h3 className="text-xl font-bold mb-4 text-dark-primary border-b border-white/30 pb-3">Subcategories</h3>
         <ul className="space-y-3">
           <li>
             <button
               onClick={() => onSelectSubCategory(null)}
               className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 ${
                 selectedSubCategory === null
-                  ? 'bg-black text-white dark:bg-dark-card dark:text-dark-primary font-semibold shadow-lg border border-black dark:border-white'
-                  : 'text-dark-secondary dark:text-dark-muted hover:bg-black/10 dark:hover:bg-white/10 hover:text-dark-primary dark:hover:text-white border border-white/30 dark:border-white/20'
+                  ? 'bg-orange-500 text-white font-semibold shadow-lg border border-orange-500'
+                  : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600 border border-white/30'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -46,16 +46,16 @@ const SubCategorySidebar: React.FC<{
                 {isLoading && allServices.length === 0 ? (
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     selectedSubCategory === null 
-                      ? 'bg-white/20 text-dark-primary dark:bg-black/20 dark:text-white' 
-                      : 'bg-dark-tertiary dark:bg-gray-800 text-dark-secondary dark:text-dark-muted'
+                      ? 'bg-white/20 text-dark-primary' 
+                      : 'bg-dark-tertiary text-dark-secondary'
                   }`}>
                     <Loader2 className="w-3 h-3 animate-spin inline" />
                   </span>
                 ) : (
                   <span className={`text-xs px-2 py-1 rounded-full ${
                     selectedSubCategory === null 
-                      ? 'bg-white/20 text-dark-primary dark:bg-black/20 dark:text-white' 
-                      : 'bg-dark-tertiary dark:bg-gray-800 text-dark-secondary dark:text-dark-muted'
+                      ? 'bg-white/20 text-dark-primary' 
+                      : 'bg-dark-tertiary text-dark-secondary'
                   }`}>
                     {getAllCategoryServiceCount()}
                   </span>
@@ -71,8 +71,8 @@ const SubCategorySidebar: React.FC<{
                   onClick={() => onSelectSubCategory(sub.id)}
                   className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 ${
                     selectedSubCategory === sub.id
-                      ? 'bg-black text-white dark:bg-dark-card dark:text-dark-primary font-semibold shadow-lg border border-black dark:border-white'
-                      : 'text-dark-secondary dark:text-dark-muted hover:bg-black/10 dark:hover:bg-white/10 hover:text-dark-primary dark:hover:text-white border border-white/30 dark:border-white/20'
+                      ? 'bg-orange-500 text-white font-semibold shadow-lg border border-orange-500'
+                      : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600 border border-white/30'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -80,16 +80,16 @@ const SubCategorySidebar: React.FC<{
                     {isLoading && allServices.length === 0 ? (
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         selectedSubCategory === sub.id 
-                          ? 'bg-white/20 text-dark-primary dark:bg-black/20 dark:text-white' 
-                          : 'bg-dark-tertiary dark:bg-gray-800 text-dark-secondary dark:text-dark-muted'
+                          ? 'bg-white/20 text-dark-primary' 
+                          : 'bg-dark-tertiary text-dark-secondary'
                       }`}>
                         <Loader2 className="w-3 h-3 animate-spin inline" />
                       </span>
                     ) : (
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         selectedSubCategory === sub.id 
-                          ? 'bg-white/20 text-dark-primary dark:bg-black/20 dark:text-white' 
-                          : 'bg-dark-tertiary dark:bg-gray-800 text-dark-secondary dark:text-dark-muted'
+                          ? 'bg-white/20 text-dark-primary' 
+                          : 'bg-dark-tertiary text-dark-secondary'
                       }`}>
                         {serviceCount}
                       </span>
@@ -268,39 +268,39 @@ const ServiceCategoryPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-primary dark:bg-black relative overflow-hidden">
+      <div className="min-h-screen bg-dark-primary relative overflow-hidden">
         {/* Square Grid Background with fade */}
-        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] dark:bg-[linear-gradient(to_right,#374151_0.5px,transparent_0.5px),linear-gradient(to_bottom,#374151_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
+        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
         
         <div className="container mx-auto px-4 py-8 relative z-10">
           {/* Header Skeleton */}
-          <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] p-8 md:p-10 mb-10 border border-white/30 dark:border-white/10">
+          <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10 border border-white/30">
             <div className="animate-pulse">
               {/* Breadcrumb skeleton */}
               <div className="flex items-center space-x-2 mb-6">
-                <div className="h-4 w-12 bg-dark-tertiary dark:bg-gray-700 rounded"></div>
-                <div className="h-4 w-4 bg-dark-tertiary dark:bg-gray-700 rounded"></div>
-                <div className="h-4 w-20 bg-dark-tertiary dark:bg-gray-700 rounded"></div>
-                <div className="h-4 w-4 bg-dark-tertiary dark:bg-gray-700 rounded"></div>
-                <div className="h-4 w-32 bg-dark-tertiary dark:bg-gray-700 rounded"></div>
+                <div className="h-4 w-12 bg-dark-tertiary rounded"></div>
+                <div className="h-4 w-4 bg-dark-tertiary rounded"></div>
+                <div className="h-4 w-20 bg-dark-tertiary rounded"></div>
+                <div className="h-4 w-4 bg-dark-tertiary rounded"></div>
+                <div className="h-4 w-32 bg-dark-tertiary rounded"></div>
               </div>
               {/* Title skeleton */}
-              <div className="h-12 bg-dark-tertiary dark:bg-gray-700 rounded w-2/3 mb-4"></div>
+              <div className="h-12 bg-dark-tertiary rounded w-2/3 mb-4"></div>
               {/* Description skeleton */}
-              <div className="h-6 bg-dark-tertiary dark:bg-gray-700 rounded w-full mb-2"></div>
-              <div className="h-6 bg-dark-tertiary dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-6 bg-dark-tertiary rounded w-full mb-2"></div>
+              <div className="h-6 bg-dark-tertiary rounded w-3/4"></div>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row -mx-4">
             {/* Sidebar Skeleton */}
             <div className="w-full md:w-1/4 lg:w-1/5 p-4">
-              <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] border border-white/30 dark:border-white/10 p-6">
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
                 <div className="animate-pulse">
-                  <div className="h-6 bg-dark-tertiary dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+                  <div className="h-6 bg-dark-tertiary rounded w-3/4 mb-4"></div>
                   <div className="space-y-3">
                     {[...Array(4)].map((_, i) => (
-                      <div key={i} className="h-10 bg-dark-tertiary dark:bg-gray-700 rounded-xl"></div>
+                      <div key={i} className="h-10 bg-dark-tertiary rounded-xl"></div>
                     ))}
                   </div>
                 </div>
@@ -310,13 +310,13 @@ const ServiceCategoryPage: React.FC = () => {
             {/* Main Content Skeleton */}
             <div className="w-full md:w-3/4 lg:w-4/5 p-4">
               {/* Controls Skeleton */}
-              <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] border border-white/30 dark:border-white/10 mb-8">
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 mb-8">
                 <div className="animate-pulse flex justify-between items-center">
                   <div>
-                    <div className="h-8 bg-dark-tertiary dark:bg-gray-700 rounded w-48 mb-2"></div>
-                    <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded w-32"></div>
+                    <div className="h-8 bg-dark-tertiary rounded w-48 mb-2"></div>
+                    <div className="h-4 bg-dark-tertiary rounded w-32"></div>
                   </div>
-                  <div className="h-10 bg-dark-tertiary dark:bg-gray-700 rounded w-48"></div>
+                  <div className="h-10 bg-dark-tertiary rounded w-48"></div>
                 </div>
               </div>
 
@@ -324,15 +324,15 @@ const ServiceCategoryPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[...Array(6)].map((_, index) => (
                   <div key={index} className="animate-pulse">
-                    <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border border-white/30 dark:border-gray-700 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] overflow-hidden">
-                      <div className="w-full h-64 bg-dark-tertiary dark:bg-gray-700"></div>
+                    <div className="bg-white/50 backdrop-blur-lg border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden">
+                      <div className="w-full h-64 bg-dark-tertiary"></div>
                       <div className="p-6">
-                        <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded w-1/3 mb-3"></div>
-                        <div className="h-6 bg-dark-tertiary dark:bg-gray-700 rounded w-full mb-3"></div>
-                        <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded w-2/3 mb-4"></div>
+                        <div className="h-4 bg-dark-tertiary rounded w-1/3 mb-3"></div>
+                        <div className="h-6 bg-dark-tertiary rounded w-full mb-3"></div>
+                        <div className="h-4 bg-dark-tertiary rounded w-2/3 mb-4"></div>
                         <div className="flex justify-between items-center">
-                          <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded w-24"></div>
-                          <div className="h-6 bg-dark-tertiary dark:bg-gray-700 rounded w-16"></div>
+                          <div className="h-4 bg-dark-tertiary rounded w-24"></div>
+                          <div className="h-6 bg-dark-tertiary rounded w-16"></div>
                         </div>
                       </div>
                     </div>
@@ -348,24 +348,24 @@ const ServiceCategoryPage: React.FC = () => {
 
   if (error || !category) {
     return (
-      <div className="min-h-screen bg-dark-primary dark:bg-black relative overflow-hidden">
+      <div className="min-h-screen bg-dark-primary relative overflow-hidden">
         {/* Enhanced Square Grid Background with fade effect */}
-        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] dark:bg-[linear-gradient(to_right,#374151_0.5px,transparent_0.5px),linear-gradient(to_bottom,#374151_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
+        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
         
         <div className="container mx-auto px-4 py-8 relative z-10">
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
-              <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] border border-white/30 dark:border-white/10">
-                <h2 className="text-3xl font-bold text-dark-primary dark:text-white mb-6">
+              <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30">
+                <h2 className="text-3xl font-bold text-dark-primary mb-6">
                   Category Not Found
                 </h2>
-                <p className="text-dark-secondary dark:text-dark-muted mb-8 leading-relaxed">
+                <p className="text-dark-secondary mb-8 leading-relaxed">
                   {error || 'The category you\'re looking for doesn\'t exist or couldn\'t be loaded.'}
                 </p>
                 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 backdrop-blur-sm border border-yellow-200 dark:border-yellow-800/30 rounded-xl p-6 mb-8">
-                  <h3 className="text-sm font-semibold text-yellow-400 dark:text-yellow-400 mb-3">Troubleshooting:</h3>
-                  <ul className="text-sm text-yellow-700 dark:text-yellow-300 text-left space-y-2">
+                <div className="bg-yellow-50 backdrop-blur-sm border border-yellow-200 rounded-xl p-6 mb-8">
+                  <h3 className="text-sm font-semibold text-yellow-400 mb-3">Troubleshooting:</h3>
+                  <ul className="text-sm text-yellow-700 text-left space-y-2">
                     <li>• Check if the category "{categorySlug}" exists in your database</li>
                     <li>• Verify the category slug is correct</li>
                     <li>• Check the browser console for available categories</li>
@@ -376,13 +376,13 @@ const ServiceCategoryPage: React.FC = () => {
                 <div className="space-y-4">
                   <button
                     onClick={() => window.location.href = '/services'}
-                    className="w-full bg-black hover:bg-black/90 dark:bg-dark-card dark:hover:bg-white/90 text-white dark:text-dark-primary px-6 py-3 rounded-xl transition-all duration-300 font-semibold shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.12)] hover:scale-105 border border-black dark:border-white"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl transition-all duration-300 font-semibold shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] hover:scale-105 border border-orange-500"
                   >
                     Browse All Services
                   </button>
                   <button
                     onClick={() => window.location.reload()}
-                    className="w-full bg-white/70 dark:bg-white/10 backdrop-blur-sm text-dark-primary dark:text-white px-6 py-3 rounded-xl hover:bg-white/90 dark:hover:bg-white/20 transition-all duration-300 border border-white/30 dark:border-white/20 hover:border-white/50 dark:hover:border-white/30"
+                    className="w-full bg-white/70 backdrop-blur-sm text-dark-primary px-6 py-3 rounded-xl hover:bg-white/90 transition-all duration-300 border border-white/30 hover:border-white/50"
                   >
                     Retry Loading
                   </button>
@@ -405,26 +405,26 @@ const ServiceCategoryPage: React.FC = () => {
     : category.name;
 
   return (
-    <div className="min-h-screen bg-dark-primary dark:bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-dark-primary relative overflow-hidden">
       {/* Enhanced Square Grid Background with fade effect */}
-      <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] dark:bg-[linear-gradient(to_right,#374151_0.5px,transparent_0.5px),linear-gradient(to_bottom,#374151_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
+      <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
       
       <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Enhanced Header Section */}
-        <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] p-8 md:p-10 mb-10 border border-white/30 dark:border-white/10 relative overflow-hidden">
+        <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10 border border-white/30 relative overflow-hidden">
           {/* Header Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-dark-secondary0/5 to-black/5 dark:from-white/5 dark:via-dark-muted/5 dark:to-white/5 opacity-50"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-dark-secondary/5 to-black/5 opacity-50"></div>
           
           <div className="relative z-10">
             <Breadcrumb items={breadcrumbItems} />
             <div className="mt-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-dark-primary dark:text-white mb-2">
-                <span className="bg-gradient-to-r from-black via-dark-700 to-black dark:from-white dark:via-dark-tertiary dark:to-white bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-5xl font-bold text-dark-primary mb-2">
+                <span className="bg-gradient-to-r from-black via-dark-700 to-black bg-clip-text text-transparent">
                   {category.name || category.slug}
                 </span>
               </h1>
               {category.description && (
-                <p className="text-lg text-dark-secondary dark:text-dark-muted leading-relaxed">{category.description}</p>
+                <p className="text-lg text-dark-secondary leading-relaxed">{category.description}</p>
               )}
             </div>
           </div>
@@ -445,14 +445,14 @@ const ServiceCategoryPage: React.FC = () => {
 
           {/* Main Content */}
           <div className={`w-full p-4 ${category.children && category.children.length > 0 ? 'md:w-3/4 lg:w-4/5' : ''}`}>
-            <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] border border-white/30 dark:border-white/10 mb-8">
+            <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 mb-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-dark-primary dark:text-white mb-2">
+                  <h2 className="text-2xl md:text-3xl font-bold text-dark-primary mb-2">
                     {currentCategoryName}
                   </h2>
                   {!selectedSubCategory && category.children && category.children.length > 0 && (
-                    <span className="text-sm text-dark-secondary dark:text-dark-muted">
+                    <span className="text-sm text-dark-secondary">
                       Including all subcategories
                     </span>
                   )}
@@ -460,28 +460,28 @@ const ServiceCategoryPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   {servicesLoading ? (
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="w-5 h-5 animate-spin text-dark-primary dark:text-white" />
-                      <span className="text-dark-secondary dark:text-dark-muted">
+                      <Loader2 className="w-5 h-5 animate-spin text-dark-primary" />
+                      <span className="text-dark-secondary">
                         {selectedSubCategory ? 'Loading services...' : 'Loading all services...'}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-dark-secondary dark:text-dark-muted font-medium">{sortedServices.length} services</span>
+                    <span className="text-dark-secondary font-medium">{sortedServices.length} services</span>
                   )}
                   <div className="relative">
                     <select 
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
                       title="Sort services"
-                      className="appearance-none bg-white/50 dark:bg-white/10 backdrop-blur-sm border border-white/30 dark:border-white/20 rounded-xl py-3 pl-4 pr-12 text-sm text-dark-primary dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent hover:bg-white/70 dark:hover:bg-white/20 transition-all duration-300"
+                      className="appearance-none bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl py-3 pl-4 pr-12 text-sm text-dark-primary focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent hover:bg-white/70 transition-all duration-300"
                     >
-                      <option value="relevance" className="bg-dark-card dark:bg-gray-800 text-dark-primary dark:text-white">Sort by: Relevance</option>
-                      <option value="price-low" className="bg-dark-card dark:bg-gray-800 text-dark-primary dark:text-white">Sort by: Price (Low to High)</option>
-                      <option value="price-high" className="bg-dark-card dark:bg-gray-800 text-dark-primary dark:text-white">Sort by: Price (High to Low)</option>
-                      <option value="newest" className="bg-dark-card dark:bg-gray-800 text-dark-primary dark:text-white">Sort by: Newest First</option>
-                      <option value="oldest" className="bg-dark-card dark:bg-gray-800 text-dark-primary dark:text-white">Sort by: Oldest First</option>
+                      <option value="relevance" className="bg-dark-card text-dark-primary">Sort by: Relevance</option>
+                      <option value="price-low" className="bg-dark-card text-dark-primary">Sort by: Price (Low to High)</option>
+                      <option value="price-high" className="bg-dark-card text-dark-primary">Sort by: Price (High to Low)</option>
+                      <option value="newest" className="bg-dark-card text-dark-primary">Sort by: Newest First</option>
+                      <option value="oldest" className="bg-dark-card text-dark-primary">Sort by: Oldest First</option>
                     </select>
-                    <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-dark-secondary dark:text-dark-muted pointer-events-none" />
+                    <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-dark-secondary pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -492,11 +492,11 @@ const ServiceCategoryPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[...Array(6)].map((_, index) => (
                   <div key={index} className="animate-pulse">
-                    <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border border-white/30 dark:border-gray-700 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] p-6">
-                      <div className="w-full h-48 bg-dark-tertiary dark:bg-gray-700 rounded-xl mb-4"></div>
-                      <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded mb-3"></div>
-                      <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded mb-3 w-3/4"></div>
-                      <div className="h-4 bg-dark-tertiary dark:bg-gray-700 rounded w-1/2"></div>
+                    <div className="bg-white/50 backdrop-blur-lg border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+                      <div className="w-full h-48 bg-dark-tertiary rounded-xl mb-4"></div>
+                      <div className="h-4 bg-dark-tertiary rounded mb-3"></div>
+                      <div className="h-4 bg-dark-tertiary rounded mb-3 w-3/4"></div>
+                      <div className="h-4 bg-dark-tertiary rounded w-1/2"></div>
                     </div>
                   </div>
                 ))}
@@ -509,21 +509,21 @@ const ServiceCategoryPage: React.FC = () => {
               </div>
             ) : (
               <div className="text-center py-20">
-                <div className="bg-white/70 dark:bg-black/30 backdrop-blur-xl rounded-2xl p-12 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_0_rgba(255,255,255,0.08)] border border-white/30 dark:border-white/10 max-w-lg mx-auto">
-                  <div className="w-20 h-20 bg-dark-tertiary dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-dark-muted dark:text-dark-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-12 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 max-w-lg mx-auto">
+                  <div className="w-20 h-20 bg-dark-tertiary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-dark-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-dark-primary dark:text-white mb-4">No Services Found</h3>
-                  <p className="text-dark-secondary dark:text-dark-muted leading-relaxed mb-6">
+                  <h3 className="text-2xl font-bold text-dark-primary mb-4">No Services Found</h3>
+                  <p className="text-dark-secondary leading-relaxed mb-6">
                     {selectedSubCategory 
                       ? `There are currently no active services available in this subcategory.`
                       : `There are currently no active services available in "${category.name}" or its subcategories.`
                     }
                   </p>
                   {!selectedSubCategory && category.children && category.children.length > 0 && (
-                    <p className="text-dark-muted dark:text-dark-muted text-sm">
+                    <p className="text-dark-muted text-sm">
                       Try selecting a specific subcategory from the sidebar.
                     </p>
                   )}

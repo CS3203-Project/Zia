@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
+import Footer from './Footer';
 import type { ReactNode } from 'react';
 
 interface LayoutProps {
@@ -29,7 +30,7 @@ const Layout = ({ children }: LayoutProps) => {
         <main className="flex-1">
           {children}
         </main>
-        {/* <Footer /> */}
+        <Footer />
       </div>
     );
   }
@@ -41,7 +42,7 @@ const Layout = ({ children }: LayoutProps) => {
       <main className="flex-1">
         {children}
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };

@@ -593,63 +593,43 @@ export default function CreateService() {
   };
 
   return (
-    <div className="relative min-h-screen bg-dark-primary dark:bg-black overflow-hidden">
-      {/* Glass Morphism Background - Homepage Style */}
+    <div className="relative min-h-screen bg-gradient-to-b from-orange-50 to-white overflow-hidden">
+      {/* Background accent - matches homepage */}
       <div className="absolute inset-0 z-0">
-        {/* Main gradient background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,#fff,#ffffff_50%,#e8e8e8_88%)] dark:bg-[linear-gradient(to_bottom,#000,#0000_30%,#898e8e_78%,#ffffff_99%_50%)]"></div>
-        
-        {/* Square Grid Pattern */}
-        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] dark:bg-[linear-gradient(to_right,#374151_0.5px,transparent_0.5px),linear-gradient(to_bottom,#374151_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
-        
-        {/* Subtle Orbs for depth */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 opacity-10 blur-3xl">
-          <Orb hue={280} hoverIntensity={0.2} rotateOnHover={true} />
+        <div className="absolute top-0 right-0 w-72 h-72 opacity-10 blur-3xl">
+          <Orb hue={0} hoverIntensity={0.15} rotateOnHover={true} />
         </div>
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 opacity-8 blur-3xl">
-          <Orb hue={200} hoverIntensity={0.15} rotateOnHover={true} />
-        </div>
-        <div className="absolute bottom-1/4 right-1/3 w-72 h-72 opacity-10 blur-3xl">
-          <Orb hue={320} hoverIntensity={0.2} rotateOnHover={true} />
-        </div>
-        
-        {/* Minimal gradient accents */}
-        <div className="absolute top-1/5 left-3/4 w-64 h-64 bg-black/5 dark:bg-white/5 rounded-full blur-3xl opacity-30"></div>
-        <div className="absolute bottom-1/5 left-1/5 w-56 h-56 bg-black/3 dark:bg-white/3 rounded-full blur-3xl opacity-25"></div>
-        
-        {/* Radial overlay for depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.1)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.2)_100%)]"></div>
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-16">
-        <div className="backdrop-blur-md bg-white/70 dark:bg-black/30 border border-white/20 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 overflow-hidden">
+        <div className="backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 overflow-hidden">
           
           {/* Enhanced Header */}
-          <div className="relative bg-gradient-to-r from-white/50 to-white/30 dark:from-black/50 dark:to-black/30 backdrop-blur-lg px-8 py-8 border-b border-white/20 dark:border-white/10">
+          <div className="relative bg-gradient-to-r from-white/50 to-white/30 backdrop-blur-lg px-8 py-8 border-b border-white/20">
             <div className="relative flex items-center space-x-4">
-              <div className="p-3 bg-dark-card dark:bg-black rounded-xl border border-white/40 dark:border-white/20 shadow-lg hover:scale-105 transition-all duration-300">
-                <FiPlus className="h-8 w-8 text-dark-primary dark:text-white" />
+              <div className="p-3 bg-dark-card rounded-xl border border-white/40 shadow-lg hover:scale-105 transition-all duration-300">
+                <FiPlus className="h-8 w-8 text-dark-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Create New Service</h1>
-                <p className="text-dark-secondary dark:text-dark-muted mt-2">Share your expertise with the world. Create a service that showcases your skills.</p>
+                <h1 className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Create New Service</h1>
+                <p className="text-dark-secondary mt-2">Share your expertise with the world. Create a service that showcases your skills.</p>
               </div>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="relative p-8 space-y-8">
             {/* Category Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center">
-                <div className="w-3 h-3 bg-black dark:bg-dark-card rounded-full mr-4"></div>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center">
+                <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
                 Category Selection
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Main Category */}
                 <div>
-                  <label htmlFor="categoryId" className="block text-sm font-semibold text-dark-primary dark:text-white mb-3">
-                    Category <span className="text-red-500 dark:text-red-500 dark:text-red-400">*</span>
+                  <label htmlFor="categoryId" className="block text-sm font-semibold text-dark-primary mb-3">
+                    Category <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <select
@@ -657,22 +637,22 @@ export default function CreateService() {
                       name="categoryId"
                       value={formData.categoryId}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 appearance-none text-dark-primary dark:text-white placeholder-dark-muted dark:placeholder-dark-muted ${
-                        errors.categoryId ? 'border-red-400/50 ring-red-400/20' : 'border-white/40 dark:border-white/20'
+                      className={`w-full px-4 py-4 bg-dark-card backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 appearance-none text-dark-primary placeholder-dark-muted ${
+                        errors.categoryId ? 'border-red-400/50 ring-red-400/20' : 'border-white/40'
                       }`}
                     >
-                      <option value="" className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">Select a category</option>
+                      <option value="" className="bg-dark-card text-dark-primary">Select a category</option>
                       {categories.map((category) => (
-                        <option key={category.id} value={category.id} className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">
+                        <option key={category.id} value={category.id} className="bg-dark-card text-dark-primary">
                           {category.name || category.slug}
                         </option>
                       ))}
                     </select>
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <FiChevronDown className="text-dark-secondary dark:text-dark-muted w-5 h-5" />
+                      <FiChevronDown className="text-dark-secondary w-5 h-5" />
                     </div>
                   </div>
-                  {errors.categoryId && <p className="mt-2 text-sm text-red-500 dark:text-red-500 dark:text-red-400 flex items-center">
+                  {errors.categoryId && <p className="mt-2 text-sm text-red-500 flex items-center">
                     <FiX className="w-4 h-4 mr-1" />
                     {errors.categoryId}
                   </p>}
@@ -681,7 +661,7 @@ export default function CreateService() {
                 {/* Subcategory */}
                 {subcategories.length > 0 && (
                   <div>
-                    <label htmlFor="subcategoryId" className="block text-sm font-semibold text-dark-primary dark:text-white mb-3">
+                    <label htmlFor="subcategoryId" className="block text-sm font-semibold text-dark-primary mb-3">
                       Subcategory
                     </label>
                     <div className="relative">
@@ -691,13 +671,13 @@ export default function CreateService() {
                         value={formData.subcategoryId}
                         onChange={handleInputChange}
                         disabled={!formData.categoryId || subcategories.length === 0}
-                        className={`w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 appearance-none text-dark-primary dark:text-white placeholder-dark-muted dark:placeholder-dark-muted ${
+                        className={`w-full px-4 py-4 bg-dark-card backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 appearance-none text-dark-primary placeholder-dark-muted ${
                           !formData.categoryId || subcategories.length === 0 
-                            ? 'bg-dark-tertiary dark:bg-gray-900 text-dark-muted cursor-not-allowed border-dark-primary dark:border-gray-700' 
-                            : 'border-white/40 dark:border-white/20'
+                            ? 'bg-dark-tertiary text-dark-muted cursor-not-allowed border-dark-primary' 
+                            : 'border-white/40'
                         }`}
                       >
-                        <option value="" className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">
+                        <option value="" className="bg-dark-card text-dark-primary">
                           {!formData.categoryId 
                             ? 'Select a category first' 
                             : subcategories.length === 0 
@@ -706,13 +686,13 @@ export default function CreateService() {
                           }
                         </option>
                         {subcategories.map((subcategory) => (
-                          <option key={subcategory.id} value={subcategory.id} className="bg-dark-card dark:bg-black text-dark-primary dark:text-white">
+                          <option key={subcategory.id} value={subcategory.id} className="bg-dark-card text-dark-primary">
                             {subcategory.name || subcategory.slug}
                           </option>
                         ))}
                       </select>
                       <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <FiChevronDown className={!formData.categoryId || subcategories.length === 0 ? 'text-dark-muted w-5 h-5' : 'text-dark-secondary dark:text-dark-muted w-5 h-5'} />
+                        <FiChevronDown className={!formData.categoryId || subcategories.length === 0 ? 'text-dark-muted w-5 h-5' : 'text-dark-secondary w-5 h-5'} />
                       </div>
                     </div>
                   </div>
@@ -721,17 +701,17 @@ export default function CreateService() {
             </div>
 
             {/* Service Details Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center">
-                <div className="w-3 h-3 bg-black dark:bg-dark-card rounded-full mr-4"></div>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center">
+                <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
                 Service Details
               </h2>
               <div className="space-y-8">
                 {/* Title */}
                 <div className="relative">
-                  <label htmlFor="title" className="block text-sm font-semibold text-dark-primary dark:text-white mb-3">
-                    Service Title <span className="text-red-500 dark:text-red-500 dark:text-red-400">*</span>
+                  <label htmlFor="title" className="block text-sm font-semibold text-dark-primary mb-3">
+                    Service Title <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -741,11 +721,11 @@ export default function CreateService() {
                       value={formData.title}
                       onChange={handleInputChange}
                       placeholder="Enter a descriptive title for your service"
-                      className={`w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 text-dark-primary dark:text-white placeholder-dark-muted dark:placeholder-dark-muted ${
-                        errors.title ? 'border-red-400/50 ring-red-400/20' : 'border-white/40 dark:border-white/20'
+                      className={`w-full px-4 py-4 bg-dark-card backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 text-dark-primary placeholder-dark-muted ${
+                        errors.title ? 'border-red-400/50 ring-red-400/20' : 'border-white/40'
                       }`}
                     /></div>
-                  {errors.title && <p className="mt-2 text-sm text-red-500 dark:text-red-400 flex items-center">
+                  {errors.title && <p className="mt-2 text-sm text-red-500 flex items-center">
                     <FiX className="w-4 h-4 mr-1" />
                     {errors.title}
                   </p>}
@@ -753,8 +733,8 @@ export default function CreateService() {
 
                 {/* Description */}
                 <div className="relative">
-                  <label htmlFor="description" className="block text-sm font-semibold text-dark-primary dark:text-white mb-3">
-                    Description <span className="text-red-500 dark:text-red-400">*</span>
+                  <label htmlFor="description" className="block text-sm font-semibold text-dark-primary mb-3">
+                    Description <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <textarea
@@ -764,12 +744,12 @@ export default function CreateService() {
                       onChange={handleInputChange}
                       rows={6}
                       placeholder="Describe your service in detail. Include what's included, your experience, and what makes your service unique."
-                      className={`w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 resize-none text-dark-primary dark:text-white placeholder-dark-muted dark:placeholder-dark-muted ${
+                      className={`w-full px-4 py-4 bg-dark-card backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 resize-none text-dark-primary placeholder-dark-muted ${
                         errors.description ? 'border-red-400/50 ring-red-400/20' : 'border-white/20'
                       }`}
                     />
                   </div>
-                  {errors.description && <p className="mt-2 text-sm text-red-500 dark:text-red-400 flex items-center">
+                  {errors.description && <p className="mt-2 text-sm text-red-500 flex items-center">
                     <FiX className="w-4 h-4 mr-1" />
                     {errors.description}
                   </p>}
@@ -778,8 +758,8 @@ export default function CreateService() {
                 {/* Price and Currency */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="relative">
-                    <label htmlFor="price" className="block text-sm font-semibold text-dark-primary dark:text-white mb-3">
-                      Price <span className="text-red-500 dark:text-red-400">*</span>
+                    <label htmlFor="price" className="block text-sm font-semibold text-dark-primary mb-3">
+                      Price <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <input
@@ -791,18 +771,18 @@ export default function CreateService() {
                         step="0.01"
                         min="0"
                         placeholder="0.00"
-                        className={`w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 text-dark-primary dark:text-white placeholder-dark-muted dark:placeholder-dark-muted ${
+                        className={`w-full px-4 py-4 bg-dark-card backdrop-blur-sm border rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 text-dark-primary placeholder-dark-muted ${
                           errors.price ? 'border-red-400/50 ring-red-400/20' : 'border-white/20'
                         }`}
                       /></div>
-                    {errors.price && <p className="mt-2 text-sm text-red-500 dark:text-red-400 flex items-center">
+                    {errors.price && <p className="mt-2 text-sm text-red-500 flex items-center">
                       <FiX className="w-4 h-4 mr-1" />
                       {errors.price}
                     </p>}
                   </div>
 
                   <div className="relative">
-                    <label htmlFor="currency" className="block text-sm font-semibold text-dark-primary dark:text-white mb-3">
+                    <label htmlFor="currency" className="block text-sm font-semibold text-dark-primary mb-3">
                       Currency
                     </label>
                     <div className="relative">
@@ -811,17 +791,17 @@ export default function CreateService() {
                         name="currency"
                         value={formData.currency}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border border-white/20 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 appearance-none text-white"
+                        className="w-full px-4 py-4 bg-dark-card backdrop-blur-sm border border-white/20 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 appearance-none text-dark-primary"
                       >
-                        <option value="USD" className="bg-gray-900 text-white">USD ($)</option>
-                        <option value="EUR" className="bg-gray-900 text-white">EUR (€)</option>
-                        <option value="GBP" className="bg-gray-900 text-white">GBP (£)</option>
-                        <option value="LKR" className="bg-gray-900 text-white">LKR (₨)</option>
+                        <option value="USD" className="bg-dark-card text-dark-primary">USD ($)</option>
+                        <option value="EUR" className="bg-dark-card text-dark-primary">EUR (€)</option>
+                        <option value="GBP" className="bg-dark-card text-dark-primary">GBP (£)</option>
+                        <option value="LKR" className="bg-dark-card text-dark-primary">LKR (₨)</option>
                       </select>
                       <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <div className="flex items-center space-x-1">
-                          <div className="w-1 h-1 bg-cyan-400 rounded-full animate-pulse"></div>
-                          <FiChevronDown className="text-white/60 w-5 h-5" />
+                          <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
+                          <FiChevronDown className="text-dark-secondary w-5 h-5" />
                         </div>
                       </div>
                     </div>
@@ -831,14 +811,14 @@ export default function CreateService() {
             </div>
 
             {/* Images Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               {/* Attractive background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-green-600/5 via-transparent to-blue-600/5 rounded-3xl"></div>
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Service Images</span>
-                <span className="text-red-500 dark:text-red-400 ml-2">*</span>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
+                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Images</span>
+                <span className="text-red-500 ml-2">*</span>
                 <span className="ml-4 text-sm font-normal text-white/50">(Max 5 images, 5MB each)</span>
               </h2>
               
@@ -885,7 +865,7 @@ export default function CreateService() {
                     className="hidden"
                     aria-label="Upload service images"
                   />
-                {errors.images && <p className="mt-2 text-sm text-red-500 dark:text-red-400 flex items-center">
+                {errors.images && <p className="mt-2 text-sm text-red-500 flex items-center">
                   <FiX className="w-4 h-4 mr-1" />
                   At least one image is required
                 </p>}
@@ -922,36 +902,36 @@ export default function CreateService() {
             </div>
 
             {/* Video Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               {/* Attractive background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-amber-600/5 via-transparent to-blue-600/5 rounded-3xl"></div>
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Service Video</span>
-                <span className="ml-4 text-sm font-normal text-white/50">(Optional, Max 100MB)</span>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
+                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Video</span>
+                <span className="ml-4 text-sm font-normal text-dark-muted">(Optional, Max 100MB)</span>
               </h2>
-              
+
               {/* Video Upload Area */}
               <div className="mb-6 relative z-10">
                 {uploading ? (
-                  <div className="border-2 border-dashed border-white/40 rounded-xl p-8 text-center bg-white/10 backdrop-blur-sm">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-                    <p className="mt-4 text-lg font-medium text-white">
+                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center bg-gray-50 backdrop-blur-sm">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                    <p className="mt-4 text-lg font-medium text-dark-primary">
                       Uploading video to Amazon S3...
                     </p>
-                    <p className="mt-2 text-sm text-white/80">
+                    <p className="mt-2 text-sm text-dark-muted">
                       Please wait while your video is being uploaded...
                     </p>
                   </div>
                 ) : !formData.video && !formData.uploadedVideoUrl ? (
-                  <div 
+                  <div
                     onClick={() => document.getElementById('video-upload')?.click()}
-                    className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:border-white/40 hover:bg-white/5 transition-all duration-300 cursor-pointer group relative overflow-hidden"
+                    className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-orange-300 hover:bg-orange-50/50 transition-all duration-300 cursor-pointer group relative overflow-hidden"
                   >
                     {/* Glowing effect on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-blue-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-orange-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
                     <input
                       type="file"
                       accept="video/*"
@@ -960,31 +940,31 @@ export default function CreateService() {
                       id="video-upload"
                       aria-label="Upload service video"
                     />
-                    
-                    <FiUpload className="mx-auto h-12 w-12 text-white/80 group-hover:text-white transition-colors duration-200 relative z-10" />
-                    <p className="mt-4 text-lg font-medium text-white group-hover:text-white/90 relative z-10">
+
+                    <FiUpload className="mx-auto h-12 w-12 text-dark-muted group-hover:text-orange-500 transition-colors duration-200 relative z-10" />
+                    <p className="mt-4 text-lg font-medium text-dark-primary relative z-10">
                       Click to upload a service video
                     </p>
-                    <p className="mt-2 text-sm text-white/60 relative z-10">
+                    <p className="mt-2 text-sm text-dark-muted relative z-10">
                       MP4, WebM, MOV up to 100MB
                     </p>
-                    <p className="mt-1 text-xs text-white/50 relative z-10">
+                    <p className="mt-1 text-xs text-dark-muted relative z-10">
                       A short video showcasing your service (optional)
                     </p>
                   </div>
                 ) : (
-                  <div className="border-2 border-white/20 rounded-xl p-6 bg-black/20 backdrop-blur-sm">
+                  <div className="border-2 border-gray-200 rounded-xl p-6 bg-gray-50 backdrop-blur-sm">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-r from-amber-600 to-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg">
+                        <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg">
                           <FiEye className="w-6 h-6" />
                         </div>
                         <div>
-                          <p className="font-medium text-white">
+                          <p className="font-medium text-dark-primary">
                             {formData.video ? formData.video.name : 'Uploaded Video'}
                           </p>
-                          <p className="text-sm text-white/70">
-                            {formData.video 
+                          <p className="text-sm text-dark-muted">
+                            {formData.video
                               ? `${(formData.video.size / (1024 * 1024)).toFixed(1)} MB`
                               : 'Video ready'
                             }
@@ -994,7 +974,7 @@ export default function CreateService() {
                       <button
                         type="button"
                         onClick={handleRemoveVideo}
-                        className="p-2 text-white/60 hover:text-red-500 dark:text-red-400 hover:bg-red-500/20 rounded-full transition-all duration-200"
+                        className="p-2 text-dark-muted hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200"
                         aria-label="Remove video"
                         title="Remove video"
                       >
@@ -1003,9 +983,9 @@ export default function CreateService() {
                     </div>
                     {formData.video && (
                       <div className="mt-4">
-                        <video 
-                          controls 
-                          className="w-full max-w-md h-48 bg-black/40 rounded-lg border border-white/20"
+                        <video
+                          controls
+                          className="w-full max-w-md h-48 bg-black/80 rounded-lg border border-gray-200"
                           src={URL.createObjectURL(formData.video)}
                         >
                           Your browser does not support the video tag.
@@ -1018,13 +998,13 @@ export default function CreateService() {
             </div>
 
             {/* Tags Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               {/* Attractive background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/5 via-transparent to-orange-600/5 rounded-3xl"></div>
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Tags</span>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
+                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Tags</span>
               </h2>
               <div className="space-y-6 relative z-10">
                 <div className="flex gap-4">
@@ -1035,14 +1015,14 @@ export default function CreateService() {
                       onChange={(e) => setCurrentTag(e.target.value)}
                       placeholder="e.g., photography, wedding, portrait"
                       maxLength={30}
-                      className="w-full px-4 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border border-white/20 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 text-dark-primary dark:text-white placeholder-dark-muted dark:placeholder-dark-muted"
+                      className="w-full px-4 py-4 bg-dark-card backdrop-blur-sm border border-white/20 rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-black/50 transition-all duration-300 text-dark-primary placeholder-dark-muted"
                       onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                     /></div>
                   <Button 
                     type="button" 
                     onClick={handleAddTag} 
                     size="sm"
-                    className="px-6 py-4 bg-gradient-to-r from-white-600 to-gray-600 text-white shadow-lg transition-all duration-300 rounded-xl font-semibold border border-white-500/30"
+                    className="px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg transition-all duration-300 rounded-xl font-semibold border border-transparent"
                   >
                     <FiPlus className="w-4 h-4 mr-2" />
                     Add Tag
@@ -1053,13 +1033,13 @@ export default function CreateService() {
                     {formData.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-black/30 backdrop-blur-sm text-white border border-white/20 transition-all duration-300 group"
+                        className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-orange-50 backdrop-blur-sm text-orange-700 border border-orange-100 transition-all duration-300 group"
                       >
                         {tag}
                         <button
                           type="button"
                           onClick={() => handleRemoveTag(tag)}
-                          className="ml-2 text-white/70 hover:text-red-500 dark:text-red-400 hover:bg-red-500/20 rounded-full p-1 transition-all duration-200"
+                          className="ml-2 text-orange-400 hover:text-red-500 hover:bg-red-50 rounded-full p-1 transition-all duration-200"
                           aria-label={`Remove tag ${tag}`}
                           title={`Remove tag ${tag}`}
                         >
@@ -1073,17 +1053,17 @@ export default function CreateService() {
             </div>
 
             {/* Working Hours Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               {/* Attractive background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-amber-600/5 via-transparent to-orange-600/5 rounded-3xl"></div>
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Working Hours</span>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
+                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Working Hours</span>
               </h2>
               <div className="space-y-4 relative z-10">
                 {daysOfWeek.map(({ key, label }) => (
-                  <div key={key} className="flex items-center space-x-4 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-white/10 transition-all duration-300">
+                  <div key={key} className="flex items-center space-x-4 p-4 bg-gray-50 backdrop-blur-sm rounded-xl border border-gray-100 transition-all duration-300">
                     <div className="flex items-center min-w-[140px]">
                       <div className="relative">
                         <input
@@ -1091,41 +1071,41 @@ export default function CreateService() {
                           id={`working-${key}`}
                           checked={formData.workingTime[key as keyof WorkingHours].enabled}
                           onChange={(e) => handleWorkingHoursChange(key as keyof WorkingHours, 'enabled', e.target.checked)}
-                          className="h-5 w-5 rounded-md bg-black/30 border border-white/20 focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 text-white transition-all duration-200"
+                          className="h-5 w-5 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-orange-500 transition-all duration-200"
                         />
                       </div>
-                      <label htmlFor={`working-${key}`} className="ml-3 text-sm font-semibold text-dark-primary dark:text-white">
+                      <label htmlFor={`working-${key}`} className="ml-3 text-sm font-semibold text-dark-primary">
                         {label}
                       </label>
                     </div>
-                    
+
                     <div className="flex items-center space-x-3 flex-1">
                       <div className="flex items-center space-x-3">
                         <div className="flex items-center space-x-2">
-                          <FiClock className="w-4 h-4 text-white/60" />
+                          <FiClock className="w-4 h-4 text-dark-muted" />
                           <input
                             type="time"
                             value={formData.workingTime[key as keyof WorkingHours].startTime}
                             onChange={(e) => handleWorkingHoursChange(key as keyof WorkingHours, 'startTime', e.target.value)}
                             disabled={!formData.workingTime[key as keyof WorkingHours].enabled}
-                            className={`px-3 py-2 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 text-white ${
-                              formData.workingTime[key as keyof WorkingHours].enabled 
-                                ? 'border-white/20' 
-                                : 'border-white/10 bg-black/10 text-white/40 cursor-not-allowed'
+                            className={`px-3 py-2 bg-white backdrop-blur-sm border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-dark-primary ${
+                              formData.workingTime[key as keyof WorkingHours].enabled
+                                ? 'border-gray-200'
+                                : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
                             }`}
                             aria-label={`Start time for ${label}`}
                           />
                         </div>
-                        <span className="text-white/60 font-medium">to</span>
+                        <span className="text-dark-muted font-medium">to</span>
                         <input
                           type="time"
                           value={formData.workingTime[key as keyof WorkingHours].endTime}
                           onChange={(e) => handleWorkingHoursChange(key as keyof WorkingHours, 'endTime', e.target.value)}
                           disabled={!formData.workingTime[key as keyof WorkingHours].enabled}
-                          className={`px-3 py-2 bg-dark-card dark:bg-black backdrop-blur-sm border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 focus:border-black/50 dark:focus:border-white/50 transition-all duration-300 text-white ${
-                            formData.workingTime[key as keyof WorkingHours].enabled 
-                              ? 'border-white/20' 
-                              : 'border-white/10 bg-black/10 text-white/40 cursor-not-allowed'
+                          className={`px-3 py-2 bg-white backdrop-blur-sm border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-dark-primary ${
+                            formData.workingTime[key as keyof WorkingHours].enabled
+                              ? 'border-gray-200'
+                              : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
                           }`}
                           aria-label={`End time for ${label}`}
                         />
@@ -1135,11 +1115,11 @@ export default function CreateService() {
                 ))}
               </div>
               {formatWorkingHoursForAPI(formData.workingTime).length > 0 && (
-                <div className="mt-6 p-4 bg-black/20 backdrop-blur-sm rounded-xl border border-white/10">
-                  <div className="text-sm font-semibold text-dark-primary dark:text-white mb-3 flex items-center">
+                <div className="mt-6 p-4 bg-gray-50 backdrop-blur-sm rounded-xl border border-gray-100">
+                  <div className="text-sm font-semibold text-dark-primary mb-3 flex items-center">
                     Preview (as saved):
                   </div>
-                  <div className="text-sm text-white/70 space-y-1">
+                  <div className="text-sm text-dark-muted space-y-1">
                     {formatWorkingHoursForAPI(formData.workingTime).map((time, index) => (
                       <div key={index} className="flex items-center">
                         {time}
@@ -1151,25 +1131,25 @@ export default function CreateService() {
             </div>
 
             {/* Service Status Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               {/* Minimal gradient accent */}
-              <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-transparent to-white/5 dark:from-white/5 dark:to-black/5 rounded-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-black/5 via-transparent to-white/5 rounded-3xl"></div>
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-              <div className="w-3 h-3 bg-black dark:bg-dark-card rounded-full mr-4"></div>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
+              <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
               Service Status
               </h2>
-              <div className="flex items-center justify-between p-6 bg-white/10 dark:bg-black/10 backdrop-blur-sm rounded-xl border border-white/20 dark:border-white/10 relative z-10">
+              <div className="flex items-center justify-between p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 relative z-10">
               <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg border ${formData.isActive ? 'bg-black/30 dark:bg-white/20 border-white/30 dark:border-white/20' : 'bg-black/10 dark:bg-white/5 border-white/10 dark:border-white/10'}`}>
-                <FiEye className={`w-5 h-5 ${formData.isActive ? 'text-dark-primary dark:text-white' : 'text-dark-primary/40 dark:text-white/40'}`} />
+                <div className={`p-2 rounded-lg border ${formData.isActive ? 'bg-orange-100 border-orange-200' : 'bg-gray-100 border-gray-200'}`}>
+                <FiEye className={`w-5 h-5 ${formData.isActive ? 'text-dark-primary' : 'text-dark-primary/40'}`} />
                 </div>
                 <div>
-                <p className={`font-medium ${formData.isActive ? 'text-dark-primary dark:text-white' : 'text-dark-primary/60 dark:text-white/60'}`}>
+                <p className={`font-medium ${formData.isActive ? 'text-dark-primary' : 'text-dark-primary/60'}`}>
                   {formData.isActive ? 'Service Active' : 'Service Inactive'}
                 </p>
-                <p className="text-sm text-dark-primary/50 dark:text-white/50">
+                <p className="text-sm text-dark-primary/50">
                   {formData.isActive 
                   ? 'Your service will be visible to customers and available for booking'
                   : 'Your service will be hidden from customers and unavailable for booking'
@@ -1187,10 +1167,10 @@ export default function CreateService() {
                   aria-label="Toggle service active status"
                 />
                 <div className={`w-12 h-6 rounded-full shadow-inner transition-colors duration-300 border-2 ${
-                  formData.isActive ? 'bg-black dark:bg-dark-card border-black dark:border-white' : 'bg-black/10 dark:bg-white/10 border-black/20 dark:border-white/20'
+                  formData.isActive ? 'bg-orange-500 border-orange-500' : 'bg-black/10 border-black/20'
                 }`}>
-                  <div className={`w-5 h-5 bg-dark-card dark:bg-black rounded-full shadow mt-0.5 ml-0.5 transition-transform duration-300 border ${
-                  formData.isActive ? 'transform translate-x-6 border-black dark:border-white' : 'border-black/20 dark:border-white/20'
+                  <div className={`w-5 h-5 bg-dark-card rounded-full shadow mt-0.5 ml-0.5 transition-transform duration-300 border ${
+                  formData.isActive ? 'transform translate-x-6 border-black' : 'border-black/20'
                   }`}></div>
                 </div>
                 </div>
@@ -1199,13 +1179,13 @@ export default function CreateService() {
             </div>
 
             {/* Location Section */}
-            <div className="relative bg-white/50 dark:bg-black/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 dark:border-white/20 shadow-xl">
+            <div className="relative bg-white/50 backdrop-blur-lg p-8 rounded-3xl border border-white/30 shadow-xl">
               {/* Attractive background pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-green-600/5 rounded-3xl"></div>
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
               
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 dark:from-white dark:to-white/40 bg-clip-text text-transparent">Service Location</span>
+              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
+                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Location</span>
                 <span className="ml-3 text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full border border-blue-400/30">
                   Optional
                 </span>
@@ -1232,7 +1212,7 @@ export default function CreateService() {
             {/* Submit Buttons */}
             <div className="relative pt-12">
               {/* Decorative separator */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/30 dark:via-white/30 to-transparent"></div>
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/30 to-transparent"></div>
               
               <div className="flex justify-end space-x-6 pt-8">
                 <Button
@@ -1240,7 +1220,7 @@ export default function CreateService() {
                   variant="outline"
                   onClick={() => navigate('/profile')}
                   disabled={loading || uploading}
-                  className="px-10 py-4 bg-dark-card dark:bg-black backdrop-blur-sm border border-white/40 dark:border-white/20 text-dark-primary dark:text-white transition-all duration-300 rounded-full shadow-lg hover:scale-105"
+                  className="px-10 py-4 bg-dark-card backdrop-blur-sm border border-white/40 text-dark-primary transition-all duration-300 rounded-full shadow-lg hover:scale-105"
                 >
                   <span className="font-semibold">Cancel</span>
                 </Button>

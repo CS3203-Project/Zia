@@ -1,5 +1,3 @@
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import { Toaster } from 'react-hot-toast';
 
 export default function PrintingServiceProviderProfile() {
@@ -7,7 +5,6 @@ export default function PrintingServiceProviderProfile() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50 flex flex-col ">
       {/* Sticky Navbar */}
       <div className="sticky top-0 z-50 shadow-md bg-white/80 backdrop-blur-md animate-fade-in-down">
-        <Navbar />
       </div>
 
       {/* Main Content */}
@@ -25,7 +22,6 @@ export default function PrintingServiceProviderProfile() {
 
       {/* Footer */}
       <footer className="mt-16 animate-fade-in-up">
-        <Footer />
       </footer>
     </div>
   );

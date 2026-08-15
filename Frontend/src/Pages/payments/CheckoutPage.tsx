@@ -5,8 +5,6 @@ import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { PayHereCheckout } from '../../components/Payment';
 import { currencyConfig } from '../../services/paymentConfig';
 import { useAuth } from '../../contexts/AuthContext';
-import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import toast from 'react-hot-toast';
 
 const CheckoutPage: React.FC = () => {
@@ -88,14 +86,12 @@ const CheckoutPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-        <Navbar />
         <div className="container mx-auto px-4 py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-dark-secondary">Loading service details...</p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -103,7 +99,6 @@ const CheckoutPage: React.FC = () => {
   if (!service) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-        <Navbar />
         <div className="container mx-auto px-4 py-12">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-dark-primary mb-4">Service Not Found</h1>
@@ -116,7 +111,6 @@ const CheckoutPage: React.FC = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -127,7 +121,6 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-      <Navbar />
       
       <main className="container mx-auto px-4 py-8">
         {/* Back button */}
@@ -325,7 +318,6 @@ const CheckoutPage: React.FC = () => {
         )}
       </main>
       
-      <Footer />
     </div>
   );
 };

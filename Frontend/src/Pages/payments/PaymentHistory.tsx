@@ -15,7 +15,6 @@ import { PaymentStatusCard } from '../../components/Payment';
 import { currencyConfig } from '../../services/paymentConfig';
 import { useAuth } from '../../contexts/AuthContext';
 import Navbar from '../../components/layout/Navbar';
-import Footer from '../../components/layout/Footer';
 import toast from 'react-hot-toast';
 
 const PaymentHistory: React.FC = () => {
@@ -341,8 +340,6 @@ const PaymentHistory: React.FC = () => {
           )}
         </div>
       </main>
-      
-      <Footer />
     </div>
   );
 };

@@ -10,14 +10,19 @@
 */
 -- CreateExtension
 CREATE EXTENSION IF NOT EXISTS "postgis";
+CREATE EXTENSION IF NOT EXISTS "vector";
 
 -- DropForeignKey
 ALTER TABLE "public"."email_queue" DROP CONSTRAINT "email_queue_userId_fkey";
 
 -- DropIndex
-DROP INDEX "public"."Service_combinedEmbedding_idx";
+DROP INDEX IF EXISTS "public"."Service_combinedEmbedding_idx";
 
 -- AlterTable
+-- NOTE: the embedding columns below were never actually created by any earlier
+-- migration in this project's history (they were only ever ALTERed, going back to
+-- this migration and every one after it) — so this adds them fresh instead of
+-- altering a type that doesn't exist yet.
 ALTER TABLE "Service" ADD COLUMN     "address" TEXT,
 ADD COLUMN     "city" TEXT,
 ADD COLUMN     "country" TEXT,
@@ -27,10 +32,11 @@ ADD COLUMN     "longitude" DOUBLE PRECISION,
 ADD COLUMN     "postalCode" TEXT,
 ADD COLUMN     "serviceRadiusKm" DOUBLE PRECISION DEFAULT 10,
 ADD COLUMN     "state" TEXT,
-ALTER COLUMN "combinedEmbedding" SET DATA TYPE vector(768),
-ALTER COLUMN "descriptionEmbedding" SET DATA TYPE vector(768),
-ALTER COLUMN "tagsEmbedding" SET DATA TYPE vector(768),
-ALTER COLUMN "titleEmbedding" SET DATA TYPE vector(768);
+ADD COLUMN     "combinedEmbedding" vector(768),
+ADD COLUMN     "descriptionEmbedding" vector(768),
+ADD COLUMN     "embeddingUpdatedAt" TIMESTAMP(3),
+ADD COLUMN     "tagsEmbedding" vector(768),
+ADD COLUMN     "titleEmbedding" vector(768);
 
 -- DropTable
 DROP TABLE "public"."email_queue";

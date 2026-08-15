@@ -229,7 +229,7 @@ export default function BecomeProvider() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-white relative overflow-hidden">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-orange-50 to-white pt-28 lg:pt-32 pb-14 px-4 sm:px-6 lg:px-8 text-center overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
@@ -294,7 +294,7 @@ export default function BecomeProvider() {
       <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
         {/* Form Container */}
         <div className="relative">
-          <div className="relative bg-black-900 border border-black rounded-3xl overflow-hidden">
+          <div className="relative bg-white border border-gray-100 shadow-xl rounded-3xl overflow-hidden">
 
             <form onSubmit={handleSubmit} className="relative z-10">
               <div className="p-8 lg:p-12 space-y-10">
@@ -302,13 +302,13 @@ export default function BecomeProvider() {
                 <div className="flex items-center justify-center space-x-2 mb-8">
                   <div className="flex items-center">
                     <div className="relative">
-                      <div className="flex items-center justify-center w-10 h-10 bg-black-700 rounded-full text-white text-sm font-bold">
+                      <div className="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-full text-white text-sm font-bold">
                         1
                       </div>
                     </div>
                     <div className="ml-4">
-                      <span className="text-white font-semibold text-lg">Profile Setup</span>
-                      <p className="text-dark-primary-400 text-sm">Create your professional profile</p>
+                      <span className="text-gray-900 font-semibold text-lg">Profile Setup</span>
+                      <p className="text-gray-500 text-sm">Create your professional profile</p>
                     </div>
                   </div>
                 </div>
@@ -316,18 +316,18 @@ export default function BecomeProvider() {
               {/* Bio Section */}
               <div ref={bioSectionRef} className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center text-xl font-semibold text-white">
-                    <div className="relative p-3 bg-black-800 rounded-xl mr-3">
-                      <User className="h-6 w-6 text-dark-primary-400" />
+                  <label className="flex items-center text-xl font-semibold text-gray-900">
+                    <div className="relative p-3 bg-orange-50 rounded-xl mr-3">
+                      <User className="h-6 w-6 text-orange-600" />
                     </div>
                     Tell Us About Yourself
                   </label>
-                  <span className="text-xs text-dark-primary-400 bg-black-800 px-2 py-1 rounded-full">Required</span>
+                  <span className="text-xs text-orange-700 bg-orange-50 px-2 py-1 rounded-full">Required</span>
                 </div>
 
                 <div className="relative group">
                   {/* Container */}
-                  <div className="relative bg-black-800 border border-black-600 rounded-2xl overflow-hidden">
+                  <div className="relative bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
                     <textarea
                       value={formData.bio || ''}
                       onChange={(e) => {
@@ -337,10 +337,10 @@ export default function BecomeProvider() {
                       onBlur={() => handleFieldBlur('bio')}
                       placeholder="Share your story, experience, and what makes you unique. This helps customers understand your background and expertise..."
                       rows={6}
-                      className={`w-full px-6 py-4 bg-transparent border-0 rounded-2xl focus:ring-2 resize-none text-white placeholder-black-400 transition-all duration-200 focus:outline-none ${
+                      className={`w-full px-6 py-4 bg-transparent border-0 rounded-2xl focus:ring-2 resize-none text-gray-900 placeholder-gray-400 transition-all duration-200 focus:outline-none ${
                         formErrors.bio && touched.bio
                           ? 'focus:ring-red-500'
-                          : 'focus:ring-black-400'
+                          : 'focus:ring-orange-400'
                       }`}
                       required
                     />
@@ -348,10 +348,10 @@ export default function BecomeProvider() {
                     <div className="absolute bottom-3 right-3 flex items-center space-x-2">
                       <div className={`text-xs px-2 py-1 rounded-full ${
                         (formData.bio?.length || 0) > 900
-                          ? 'bg-red-900 text-red-300'
+                          ? 'bg-red-100 text-red-600'
                           : (formData.bio?.length || 0) > 700
-                            ? 'bg-yellow-900 text-yellow-300'
-                            : 'bg-black-700 text-dark-primary-400'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-gray-200 text-gray-500'
                       }`}>
                         {formData.bio?.length || 0}/1000
                       </div>
@@ -360,8 +360,8 @@ export default function BecomeProvider() {
 
                   {/* Error message */}
                   {formErrors.bio && touched.bio && (
-                    <div className="mt-2 p-3 bg-red-900 border border-red-700 rounded-lg">
-                      <p className="text-red-400 text-sm flex items-center space-x-2">
+                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-600 text-sm flex items-center space-x-2">
                         <span className="text-red-500">Warning</span>
                         <span>{formErrors.bio}</span>
                       </p>
@@ -370,24 +370,24 @@ export default function BecomeProvider() {
 
                   {/* Success indicator */}
                   {formData.bio && formData.bio.length >= 50 && !formErrors.bio && (
-                    <div className="mt-2 p-3 bg-dark-card-900 border border-white-700 rounded-lg">
-                      <p className="text-white-400 text-sm flex items-center space-x-2">
+                    <div className="mt-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                      <p className="text-emerald-600 text-sm flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4" />
                         <span>Great! Your bio looks professional.</span>
                       </p>
                     </div>
                   )}
                 </div>
-                
-                <div className="flex items-start space-x-2 p-4 bg-black-800 border border-black-600 rounded-xl">
-                  <div className="p-1 bg-black-700 rounded-full">
-                    <svg className="h-4 w-4 text-dark-primary-400" fill="currentColor" viewBox="0 0 20 20">
+
+                <div className="flex items-start space-x-2 p-4 bg-orange-50 border border-orange-100 rounded-xl">
+                  <div className="p-1 bg-orange-100 rounded-full">
+                    <svg className="h-4 w-4 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <p className="text-dark-primary-300 text-sm font-medium mb-1">Pro Tip</p>
-                    <p className="text-dark-primary-300 text-sm">A compelling bio increases your booking chances by up to 40%. Include your experience, specialties, and what makes you unique!</p>
+                    <p className="text-gray-700 text-sm font-medium mb-1">Pro Tip</p>
+                    <p className="text-gray-600 text-sm">A compelling bio increases your booking chances by up to 40%. Include your experience, specialties, and what makes you unique!</p>
                   </div>
                 </div>
               </div>
@@ -395,13 +395,13 @@ export default function BecomeProvider() {
               {/* Skills Section */}
               <div ref={skillsSectionRef} className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center text-xl font-semibold text-white">
-                    <div className="relative p-3 bg-black-800 rounded-xl mr-3">
-                      <Award className="h-6 w-6 text-dark-primary-400" />
+                  <label className="flex items-center text-xl font-semibold text-gray-900">
+                    <div className="relative p-3 bg-orange-50 rounded-xl mr-3">
+                      <Award className="h-6 w-6 text-orange-600" />
                     </div>
                     Your Skills & Expertise
                   </label>
-                  <span className="text-xs text-dark-primary-400 bg-black-800 px-2 py-1 rounded-full">
+                  <span className="text-xs text-orange-700 bg-orange-50 px-2 py-1 rounded-full">
                     {formData.skills?.length || 0} skills added
                   </span>
                 </div>
@@ -416,11 +416,11 @@ export default function BecomeProvider() {
                         onChange={(e) => setNewSkill(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
                         placeholder="Add a skill (e.g., Web Development, Photography, Tutoring)"
-                        className="w-full px-6 py-4 bg-black-800 border border-black-600 rounded-xl focus:ring-2 focus:ring-black-400 focus:border-black-400 text-white placeholder-black-400 transition-all duration-200"
+                        className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-gray-900 placeholder-gray-400 transition-all duration-200"
                       />
                       {newSkill && (
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                          <div className="w-2 h-2 bg-dark-card-400 rounded-full"></div>
+                          <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                         </div>
                       )}
                     </div>
@@ -428,7 +428,7 @@ export default function BecomeProvider() {
                       type="button"
                       onClick={addSkill}
                       disabled={!newSkill.trim()}
-                      className="bg-black-700 hover:bg-black-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 px-6 py-4 border border-black-600"
+                      className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 px-6 py-4 border border-orange-500"
                     >
                       <Plus className="h-5 w-5" />
                       <span>Add Skill</span>
@@ -439,23 +439,23 @@ export default function BecomeProvider() {
                 {/* Skills display */}
                 {formData.skills && formData.skills.length > 0 && (
                   <div className="space-y-4">
-                    <h4 className="text-sm font-medium text-dark-primary-300 flex items-center space-x-2">
-                      <Star className="h-4 w-4 text-dark-primary-400" />
+                    <h4 className="text-sm font-medium text-gray-600 flex items-center space-x-2">
+                      <Star className="h-4 w-4 text-orange-500" />
                       <span>Your Skills Portfolio</span>
                     </h4>
                     <div className="flex flex-wrap gap-3">
                       {formData.skills.map((skill, index) => (
                         <div
                           key={index}
-                          className="group relative bg-black-800 border border-black-600 rounded-xl px-4 py-3 transition-all duration-300"
+                          className="group relative bg-white border border-gray-200 shadow-sm rounded-xl px-4 py-3 transition-all duration-300"
                         >
                           <div className="flex items-center space-x-3">
-                            <div className="w-2 h-2 bg-black-400 rounded-full"></div>
-                            <span className="text-sm font-medium text-white">{skill}</span>
+                            <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                            <span className="text-sm font-medium text-gray-900">{skill}</span>
                             <button
                               type="button"
                               onClick={() => removeSkill(skill)}
-                              className="text-dark-primary-400 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 p-1"
+                              className="text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 p-1"
                               title={`Remove ${skill}`}
                             >
                               <Trash2 className="h-3 w-3" />
@@ -469,44 +469,44 @@ export default function BecomeProvider() {
 
                 {/* Error and validation messages */}
                 {formErrors.skills && touched.skills && (
-                  <div className="p-3 bg-red-900 border border-red-700 rounded-lg">
-                    <p className="text-red-400 text-sm flex items-center space-x-2">
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600 text-sm flex items-center space-x-2">
                       <span className="text-red-500">Warning</span>
                       <span>{formErrors.skills}</span>
                     </p>
                   </div>
                 )}
-                
+
                 {/* Success indicator */}
                 {formData.skills && formData.skills.length >= 2 && !formErrors.skills && (
-                  <div className="p-3 bg-dark-card-500/10 backdrop-blur-sm border border-white-500/30 rounded-lg animate-slide-up">
-                    <p className="text-white-400 text-sm flex items-center space-x-2">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg animate-slide-up">
+                    <p className="text-emerald-600 text-sm flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4" />
                       <span>Excellent! You've added {formData.skills.length} skills to your profile.</span>
                     </p>
                   </div>
                 )}
-                
-                <div className="flex items-start space-x-2 p-4 bg-gradient-to-r from-white-500/5 to-orange-500/5 backdrop-blur-sm rounded-xl border border-white-500/20">
-                  <div className="p-1 bg-dark-card-500/20 rounded-full">
-                    <Award className="h-4 w-4 text-white-400" />
+
+                <div className="flex items-start space-x-2 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+                  <div className="p-1 bg-orange-100 rounded-full">
+                    <Award className="h-4 w-4 text-orange-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-white-300 text-sm font-medium mb-1">Skill Tips</p>
-                    <p className="text-dark-primary-300 text-sm">Add 3-5 relevant skills that showcase your expertise. Be specific (e.g., "React Development" instead of just "Programming").</p>
+                    <p className="text-gray-900 text-sm font-medium mb-1">Skill Tips</p>
+                    <p className="text-gray-600 text-sm">Add 3-5 relevant skills that showcase your expertise. Be specific (e.g., "React Development" instead of just "Programming").</p>
                   </div>
                 </div>
               </div>
 
               {/* Qualifications Section */}
               <div ref={qualificationsSectionRef} className="space-y-4">
-                <label className="flex items-center text-xl font-semibold text-white mb-4">
-                  <div className="p-2 bg-dark-card-600/20 rounded-lg mr-3">
-                    <Award className="h-5 w-5 text-white-400" />
+                <label className="flex items-center text-xl font-semibold text-gray-900 mb-4">
+                  <div className="p-2 bg-orange-50 rounded-lg mr-3">
+                    <Award className="h-5 w-5 text-orange-600" />
                   </div>
                   Qualifications & Certifications
                 </label>
-                
+
                 <div className="flex items-center space-x-3 mb-4">
                   <input
                     type="text"
@@ -514,13 +514,13 @@ export default function BecomeProvider() {
                     onChange={(e) => setNewQualification(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addQualification())}
                     placeholder="Add a qualification (e.g., Bachelor's in Computer Science, AWS Certified)"
-                    className="flex-1 px-4 py-3 bg-black-800 border border-black-600 rounded-xl focus:ring-2 focus:ring-black-400 focus:border-black-400 text-white placeholder-black-400 transition-all duration-200"
+                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-gray-900 placeholder-gray-400 transition-all duration-200"
                   />
                   <Button
                     type="button"
                     onClick={addQualification}
                     size="default"
-                    className="bg-black-700 hover:bg-black-600 flex items-center space-x-2 px-6 border border-black-600"
+                    className="bg-orange-500 hover:bg-orange-600 text-white flex items-center space-x-2 px-6 border border-orange-500"
                   >
                     <Plus className="h-4 w-4" />
                     <span>Add</span>
@@ -532,13 +532,13 @@ export default function BecomeProvider() {
                     {formData.qualifications.map((qualification, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between bg-black-800 border border-black-600 px-6 py-4 rounded-xl"
+                        className="flex items-center justify-between bg-white border border-gray-200 shadow-sm px-6 py-4 rounded-xl"
                       >
-                        <span className="text-dark-primary-200 font-medium">{qualification}</span>
+                        <span className="text-gray-900 font-medium">{qualification}</span>
                         <button
                           type="button"
                           onClick={() => removeQualification(qualification)}
-                          className="text-red-400 hover:text-red-300 transition-colors p-1"
+                          className="text-red-500 hover:text-red-600 transition-colors p-1"
                           title={`Remove ${qualification}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -549,32 +549,32 @@ export default function BecomeProvider() {
                 )}
                 {/* Qualifications error and success indicators */}
                 {formErrors.qualifications && touched.qualifications && (
-                  <div className="p-3 bg-red-900 border border-red-700 rounded-lg">
-                    <p className="text-red-400 text-sm flex items-center space-x-2">
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600 text-sm flex items-center space-x-2">
                       <span className="text-red-500">Warning</span>
                       <span>{formErrors.qualifications}</span>
                     </p>
                   </div>
                 )}
                 {formData.qualifications && formData.qualifications.length >= 1 && !formErrors.qualifications && (
-                  <div className="p-3 bg-dark-card-900 border border-white-700 rounded-lg">
-                    <p className="text-white-400 text-sm flex items-center space-x-2">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                    <p className="text-emerald-600 text-sm flex items-center space-x-2">
                       <CheckCircle className="h-4 w-4" />
                       <span>Great! You've added {formData.qualifications.length} qualification{formData.qualifications.length > 1 ? 's' : ''}.</span>
                     </p>
                   </div>
                 )}
 
-                <p className="text-dark-primary-400 text-sm">
+                <p className="text-gray-500 text-sm">
                   Include your education, certifications, and professional achievements
                 </p>
               </div>
 
               {/* Logo Upload Section */}
               <div className="space-y-4">
-                <label className="flex items-center text-xl font-semibold text-white mb-4">
-                  <div className="p-2 bg-black-800 rounded-lg mr-3">
-                    <Camera className="h-5 w-5 text-dark-primary-400" />
+                <label className="flex items-center text-xl font-semibold text-gray-900 mb-4">
+                  <div className="p-2 bg-orange-50 rounded-lg mr-3">
+                    <Camera className="h-5 w-5 text-orange-600" />
                   </div>
                   Business Logo / Profile Picture
                 </label>
@@ -591,44 +591,44 @@ export default function BecomeProvider() {
                   />
                   <label
                     htmlFor="logo-upload"
-                    className="cursor-pointer flex flex-col items-center justify-center w-full px-6 py-12 border-2 border-dashed border-black-600 rounded-2xl hover:border-black-400 transition-all duration-200 bg-black-800"
+                    className="cursor-pointer flex flex-col items-center justify-center w-full px-6 py-12 border-2 border-dashed border-gray-300 rounded-2xl hover:border-orange-400 transition-all duration-200 bg-gray-50"
                   >
-                    <div className="p-4 bg-black-700 rounded-full mb-4">
-                      <Upload className="h-8 w-8 text-dark-primary-400" />
+                    <div className="p-4 bg-orange-100 rounded-full mb-4">
+                      <Upload className="h-8 w-8 text-orange-600" />
                     </div>
                     <div className="text-center">
-                      <p className="text-white font-medium mb-2">Click to upload your logo</p>
-                      <p className="text-dark-primary-400 text-sm">SVG, PNG, JPG up to 5MB</p>
+                      <p className="text-gray-900 font-medium mb-2">Click to upload your logo</p>
+                      <p className="text-gray-500 text-sm">SVG, PNG, JPG up to 5MB</p>
                     </div>
                   </label>
 
                   {uploadingLogo && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-2xl">
-                      <div className="flex items-center space-x-3 text-dark-primary-400">
-                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-black-400 border-t-transparent"></div>
+                      <div className="flex items-center space-x-3 text-white">
+                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange-400 border-t-transparent"></div>
                         <span className="font-medium">Uploading logo...</span>
                       </div>
                     </div>
                   )}
-                  
+
                   {formData.logoUrl && !uploadingLogo && (
-                    <div className="absolute top-4 right-4 flex items-center space-x-2 bg-dark-card-900 border border-white-700 text-white-400 px-3 py-2 rounded-full">
+                    <div className="absolute top-4 right-4 flex items-center space-x-2 bg-emerald-50 border border-emerald-200 text-emerald-600 px-3 py-2 rounded-full">
                       <CheckCircle className="h-4 w-4" />
                       <span className="text-sm font-medium">Uploaded</span>
                     </div>
                   )}
                 </div>
 
-                <p className="text-dark-primary-400 text-sm">
+                <p className="text-gray-500 text-sm">
                   A professional image increases profile views by 60%
                 </p>
               </div>
 
               {/* ID Card Upload Section */}
               <div className="space-y-4">
-                <label className="flex items-center text-xl font-semibold text-white mb-4">
-                  <div className="p-2 bg-black-800 rounded-lg mr-3">
-                    <IdCard className="h-5 w-5 text-dark-primary-400" />
+                <label className="flex items-center text-xl font-semibold text-gray-900 mb-4">
+                  <div className="p-2 bg-orange-50 rounded-lg mr-3">
+                    <IdCard className="h-5 w-5 text-orange-600" />
                   </div>
                   ID Verification
                 </label>
@@ -645,73 +645,73 @@ export default function BecomeProvider() {
                   />
                   <label
                     htmlFor="id-upload"
-                    className="cursor-pointer flex flex-col items-center justify-center w-full px-6 py-12 border-2 border-dashed border-black-600 rounded-2xl hover:border-black-400 transition-all duration-200 bg-black-800"
+                    className="cursor-pointer flex flex-col items-center justify-center w-full px-6 py-12 border-2 border-dashed border-gray-300 rounded-2xl hover:border-orange-400 transition-all duration-200 bg-gray-50"
                   >
-                    <div className="p-4 bg-black-700 rounded-full mb-4">
-                      <Upload className="h-8 w-8 text-dark-primary-400" />
+                    <div className="p-4 bg-orange-100 rounded-full mb-4">
+                      <Upload className="h-8 w-8 text-orange-600" />
                     </div>
                     <div className="text-center">
-                      <p className="text-white font-medium mb-2">Upload ID Document</p>
-                      <p className="text-dark-primary-400 text-sm">Driver's License, ID Card, or Professional License</p>
+                      <p className="text-gray-900 font-medium mb-2">Upload ID Document</p>
+                      <p className="text-gray-500 text-sm">Driver's License, ID Card, or Professional License</p>
                     </div>
                   </label>
 
                   {uploadingId && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-2xl">
-                      <div className="flex items-center space-x-3 text-dark-primary-400">
-                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-black-400 border-t-transparent"></div>
+                      <div className="flex items-center space-x-3 text-white">
+                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange-400 border-t-transparent"></div>
                         <span className="font-medium">Uploading document...</span>
                       </div>
                     </div>
                   )}
 
                   {formData.IDCardUrl && !uploadingId && (
-                    <div className="absolute top-4 right-4 flex items-center space-x-2 bg-dark-card-900 border border-white-700 text-white-400 px-3 py-2 rounded-full">
+                    <div className="absolute top-4 right-4 flex items-center space-x-2 bg-emerald-50 border border-emerald-200 text-emerald-600 px-3 py-2 rounded-full">
                       <CheckCircle className="h-4 w-4" />
                       <span className="text-sm font-medium">Uploaded</span>
                     </div>
                   )}
                 </div>
 
-                <p className="text-dark-primary-400 text-sm">
+                <p className="text-gray-500 text-sm">
                   ID verification can speed up approval by 2-3 days
                 </p>
               </div>
 
               {/* Information Note */}
-              <div className="bg-black-800 border border-black-600 rounded-2xl p-6">
+              <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6">
                 <div className="flex items-start space-x-3">
-                  <div className="p-2 bg-black-700 rounded-lg mt-1">
-                    <Shield className="h-5 w-5 text-dark-primary-400" />
+                  <div className="p-2 bg-orange-100 rounded-lg mt-1">
+                    <Shield className="h-5 w-5 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white mb-3">What happens next?</h3>
+                    <h3 className="font-semibold text-gray-900 mb-3">What happens next?</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <div className="flex items-center space-x-2 text-sm text-dark-primary-300">
-                          <CheckCircle className="h-4 w-4 text-white-400" />
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-emerald-600" />
                           <span>Application review (1-3 business days)</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-dark-primary-300">
-                          <CheckCircle className="h-4 w-4 text-white-400" />
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-emerald-600" />
                           <span>Email notification on approval status</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-dark-primary-300">
-                          <CheckCircle className="h-4 w-4 text-white-400" />
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-emerald-600" />
                           <span>Start adding services immediately</span>
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <div className="flex items-center space-x-2 text-sm text-dark-primary-300">
-                          <CheckCircle className="h-4 w-4 text-white-400" />
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-emerald-600" />
                           <span>Begin accepting customer bookings</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-dark-primary-300">
-                          <CheckCircle className="h-4 w-4 text-white-400" />
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-emerald-600" />
                           <span>Access to provider dashboard</span>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-dark-primary-300">
-                          <CheckCircle className="h-4 w-4 text-white-400" />
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <CheckCircle className="h-4 w-4 text-emerald-600" />
                           <span>Join our community of professionals</span>
                         </div>
                       </div>
@@ -723,7 +723,7 @@ export default function BecomeProvider() {
 
             {/* Submit Section */}
             <div className="relative">
-              <div className="relative px-8 lg:px-12 py-8 border-t border-black-600">
+              <div className="relative px-8 lg:px-12 py-8 border-t border-gray-100">
                 <div className="flex flex-col sm:flex-row items-center justify-between space-y-6 sm:space-y-0 sm:space-x-6">
                   {/* Cancel Button */}
                   <Button
@@ -731,7 +731,7 @@ export default function BecomeProvider() {
                     variant="ghost"
                     onClick={() => navigate('/profile')}
                     disabled={loading}
-                    className="text-dark-primary-300 hover:text-white hover:bg-black-800 border border-black-600 px-6 py-3 rounded-xl transition-all duration-300"
+                    className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-gray-200 px-6 py-3 rounded-xl transition-all duration-300"
                   >
                     Cancel
                   </Button>
@@ -741,7 +741,7 @@ export default function BecomeProvider() {
                     <Button
                       type="submit"
                       disabled={loading || uploadingLogo || uploadingId}
-                      className="relative bg-black-700 hover:bg-black-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 px-8 py-4 text-lg font-bold border border-black-600 rounded-xl"
+                      className="relative bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 px-8 py-4 text-lg font-bold border border-transparent rounded-xl"
                       size="lg"
                     >
                       {loading ? (
@@ -751,7 +751,7 @@ export default function BecomeProvider() {
                         </>
                       ) : (
                         <>
-                          <div className="p-1 bg-black-600 rounded-full">
+                          <div className="p-1 bg-white/20 rounded-full">
                             <Save className="h-5 w-5" />
                           </div>
                           <span>Create Provider Profile</span>
@@ -763,12 +763,12 @@ export default function BecomeProvider() {
 
                 {/* Progress indicator */}
                 <div className="mt-6 flex items-center justify-center space-x-2">
-                  <div className="text-xs text-dark-primary-400 flex items-center space-x-2">
+                  <div className="text-xs text-gray-400 flex items-center space-x-2">
                     <Shield className="h-3 w-3" />
                     <span>Secure SSL Encryption</span>
                   </div>
-                  <div className="w-1 h-1 bg-black-500 rounded-full"></div>
-                  <div className="text-xs text-dark-primary-400 flex items-center space-x-2">
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <div className="text-xs text-gray-400 flex items-center space-x-2">
                     <Clock className="h-3 w-3" />
                     <span>Instant Processing</span>
                   </div>

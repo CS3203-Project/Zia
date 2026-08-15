@@ -4,6 +4,7 @@ import './App.css'
 import { AuthProvider } from './contexts/AuthContext';
 import { LoaderProvider } from './components/shared/LoaderContext';
 import Layout from './components/layout/Layout';
+import ScrollToTop from './components/shared/ScrollToTop';
 import HomepageEnhanced from './Pages/marketing/HomepageEnhanced';
 import Signup from './Pages/auth/Signup.tsx'
 import SignIn from './Pages/auth/SignIn.tsx'
@@ -36,6 +37,7 @@ function App() {
     <AuthProvider>
       <LoaderProvider>
         <Router>
+          <ScrollToTop />
           <Layout>
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white/80">Loading...</div>}>
             <Routes>

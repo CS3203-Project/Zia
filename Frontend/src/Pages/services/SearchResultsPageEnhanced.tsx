@@ -159,7 +159,7 @@ const SearchResultsPageEnhanced: React.FC = () => {
             </div>
           </div>
           
-          <div className="bg-black/30 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-gray-200">
             <div className="flex flex-col gap-4">
               {/* Search Info */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -373,7 +373,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
   return (
     <Link
       to={`/service/${service.id}`}
-      className={`group block bg-black/30 backdrop-blur-lg rounded-xl shadow-lg border border-gray-200 hover:border-gray-200 hover:bg-black/40 transition-all duration-200 hover:-translate-y-1 ${
+      className={`group block bg-white/80 backdrop-blur-lg rounded-xl shadow-lg border border-gray-200 hover:border-gray-200 hover:bg-white/90 transition-all duration-200 hover:-translate-y-1 ${
         viewMode === 'list' ? 'p-4' : 'p-6'
       }`}
     >
