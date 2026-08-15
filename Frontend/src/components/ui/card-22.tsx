@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Star, ArrowRight, MapPin, User } from 'lucid
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/utils';
 import { Badge } from './badge';
-import Button from '../Button';
+import Button from '../shared/Button';
 
 // Interface for component props for type safety and reusability
 interface PlaceCardProps {

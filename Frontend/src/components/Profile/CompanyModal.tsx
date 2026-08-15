@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Building, MapPin, Phone, Globe, Image, Upload, Trash2 } from 'lucide-react';
-import Button from '../Button';
+import Button from '../shared/Button';
 import { userApi } from '../../api/userApi';
 import type { Company, CreateCompanyData, UpdateCompanyData } from '../../api/userApi';
 import { uploadImage } from '../../utils/imageUpload';

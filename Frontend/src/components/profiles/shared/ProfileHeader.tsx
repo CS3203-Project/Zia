@@ -1,5 +1,5 @@
 import { FiCamera, FiShare2, FiFlag, FiMapPin, FiStar, FiClock, FiCheck, FiAward, FiMessageCircle, FiHeart, FiUser } from 'react-icons/fi';
-import Button from '../../Button.tsx';
+import Button from '../../shared/Button.tsx';
 import { cn } from '../../../utils/utils.ts';
 import type { ServiceProviderProfile } from './types.ts';
 import { showSuccessToast } from '../../../utils/toastUtils.ts';
@@ -62,7 +62,7 @@ export default function ProfileHeader({
             <div className="absolute inset-0 bg-black/20 rounded-3xl md:rounded-[2.5rem]" />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center rounded-3xl md:rounded-[2.5rem]">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-orange-700 flex items-center justify-center rounded-3xl md:rounded-[2.5rem]">
             <div className="text-center text-white">
               <FiCamera className="w-16 h-16 mx-auto mb-4 opacity-60 animate-bounce" />
               <h3 className="text-xl font-semibold mb-2">Showcase Your Services</h3>

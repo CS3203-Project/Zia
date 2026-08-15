@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
-import Button from '../Button';
+import Button from '../shared/Button';
 
 interface PaymentStatusPopupProps {
   isOpen: boolean;

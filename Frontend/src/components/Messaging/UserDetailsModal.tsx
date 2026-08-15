@@ -337,7 +337,7 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
                       <div key={review.id} className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/20">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
                               {userRole === 'PROVIDER'
                                 ? review.reviewer?.firstName?.[0] || review.reviewee?.firstName?.[0] || '?'
                                 : review.reviewer?.firstName?.[0] || review.reviewee?.firstName?.[0] || '?'}

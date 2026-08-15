@@ -72,7 +72,7 @@ export default function ProfileContent({
                 <h3 className="text-xl font-bold text-gray-900">Recent Reviews</h3>
                 <button 
                   onClick={() => setActiveTab('reviews')}
-                  className="flex items-center text-indigo-600 hover:text-indigo-700 text-sm font-semibold transition-colors"
+                  className="flex items-center text-amber-600 hover:text-amber-700 text-sm font-semibold transition-colors"
                 >
                   View All
                   <FiChevronRight className="w-4 h-4 ml-1" />
@@ -173,7 +173,7 @@ export default function ProfileContent({
                 {provider.languages.map((language, index) => (
                   <span 
                     key={index}
-                    className="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full hover:bg-indigo-200 transition-colors"
+                    className="px-3 py-1 bg-amber-100 text-amber-800 text-sm font-medium rounded-full hover:bg-amber-200 transition-colors"
                   >
                     {language}
                   </span>
@@ -236,7 +236,7 @@ export default function ProfileContent({
                   alt={service.title}
                   className="w-full h-56 object-cover transition-transform hover:scale-105"
                 />
-                <span className="absolute top-4 left-4 px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full">
+                <span className="absolute top-4 left-4 px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full">
                   {typeof service.category === 'object' && service.category && 'name' in service.category 
                     ? (service.category as { name: string }).name 
                     : service.category || 'Category'}
@@ -253,7 +253,7 @@ export default function ProfileContent({
                     <FiClock className="w-4 h-4 mr-1" />
                     {service.duration}
                   </div>
-                  <button className="flex items-center text-indigo-600 hover:text-indigo-700 font-semibold">
+                  <button className="flex items-center text-amber-600 hover:text-amber-700 font-semibold">
                     View Details
                     <FiChevronRight className="w-4 h-4 ml-1" />
                   </button>
@@ -351,7 +351,7 @@ export default function ProfileContent({
                 <select 
                   value={reviewFilter}
                   onChange={(e) => setReviewFilter(e.target.value)}
-                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent bg-white"
                 >
                   <option value="all">All Reviews</option>
                   <option value="5">5 Stars</option>
@@ -389,7 +389,7 @@ export default function ProfileContent({
                     <p className="text-gray-600 text-sm leading-relaxed mb-3">{review.comment}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-500">Project: {review.projectTitle}</span>
-                      <button className="text-sm text-gray-500 hover:text-indigo-600 transition-colors">
+                      <button className="text-sm text-gray-500 hover:text-amber-600 transition-colors">
                         Helpful ({review.helpful})
                       </button>
                     </div>
@@ -417,9 +417,9 @@ export default function ProfileContent({
               <div className="space-y-6">
                 {provider.experience.map((exp, index) => (
                   <div key={index} className="relative pl-6">
-                    <div className="absolute left-0 top-0 w-3 h-3 rounded-full bg-indigo-500"></div>
+                    <div className="absolute left-0 top-0 w-3 h-3 rounded-full bg-amber-500"></div>
                     <h4 className="font-semibold text-gray-900 text-base">{exp.title}</h4>
-                    <p className="text-indigo-600 font-medium text-sm">{exp.company}</p>
+                    <p className="text-amber-600 font-medium text-sm">{exp.company}</p>
                     <p className="text-sm text-gray-400 mb-2">{exp.duration}</p>
                     <p className="text-gray-600 text-sm leading-relaxed">{exp.description}</p>
                   </div>
@@ -457,7 +457,7 @@ export default function ProfileContent({
                         href={cert.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center text-indigo-600 hover:text-indigo-700 text-sm mt-2 font-medium"
+                        className="inline-flex items-center text-amber-600 hover:text-amber-700 text-sm mt-2 font-medium"
                       >
                         <FiExternalLink className="w-4 h-4 mr-1" />
                         Verify

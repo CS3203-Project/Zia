@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Save, Plus, Trash2, FileText, Camera, Award, Sparkles, Star } from 'lucide-react';
-import Button from '../Button';
+import Button from '../shared/Button';
 import toast from 'react-hot-toast';
 import { userApi } from '../../api/userApi';
 import type { UpdateProviderData, ProviderProfile } from '../../api/userApi';
@@ -88,21 +88,21 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
       {/* Animated background orbs for extra visual flair */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 opacity-20 blur-2xl">
-          <div className="w-full h-full bg-gradient-to-br from-purple-600/30 to-blue-600/30 rounded-full animate-pulse"></div>
+          <div className="w-full h-full bg-gradient-to-br from-orange-600/30 to-blue-600/30 rounded-full animate-pulse"></div>
         </div>
         <div className="absolute bottom-1/3 right-1/4 w-48 h-48 opacity-15 blur-2xl animate-pulse">
-          <div className="w-full h-full bg-gradient-to-br from-pink-500/30 to-violet-500/30 rounded-full"></div>
+          <div className="w-full h-full bg-gradient-to-br from-pink-500/30 to-amber-500/30 rounded-full"></div>
         </div>
       </div>
 
       <div className="edit-provider-modal relative z-10 bg-black/40 backdrop-blur-xl rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden border border-white/20">
         {/* Header with gradient overlay */}
-        <div className="relative bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-pink-600/20 border-b border-white/20 backdrop-blur-lg">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 blur-xl"></div>
+        <div className="relative bg-gradient-to-r from-orange-600/20 via-blue-600/20 to-pink-600/20 border-b border-white/20 backdrop-blur-lg">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-blue-500/10 blur-xl"></div>
           <div className="relative flex items-center justify-between p-6">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500/30 to-blue-500/30 rounded-xl flex items-center justify-center shadow-lg border border-purple-400/20 backdrop-blur-sm">
-                <Sparkles className="h-5 w-5 text-purple-400" />
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500/30 to-blue-500/30 rounded-xl flex items-center justify-center shadow-lg border border-orange-400/20 backdrop-blur-sm">
+                <Sparkles className="h-5 w-5 text-orange-400" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-white drop-shadow-lg">Edit Provider Profile</h2>
@@ -142,7 +142,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
             {/* Bio Section */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10 hover:border-white/20 transition-all duration-200 group">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500/30 to-indigo-500/30 rounded-lg flex items-center justify-center border border-blue-400/20">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500/30 to-amber-500/30 rounded-lg flex items-center justify-center border border-blue-400/20">
                   <FileText className="h-4 w-4 text-blue-400" />
                 </div>
                 <label className="text-sm font-medium text-white group-hover:text-blue-300 transition-colors">
@@ -215,10 +215,10 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
             {/* Skills Section */}
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10 hover:border-white/20 transition-all duration-200 group">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-lg flex items-center justify-center border border-purple-400/20">
-                  <Star className="h-4 w-4 text-purple-400" />
+                <div className="w-8 h-8 bg-gradient-to-br from-orange-500/30 to-pink-500/30 rounded-lg flex items-center justify-center border border-orange-400/20">
+                  <Star className="h-4 w-4 text-orange-400" />
                 </div>
-                <label className="text-sm font-medium text-white group-hover:text-purple-300 transition-colors">
+                <label className="text-sm font-medium text-white group-hover:text-orange-300 transition-colors">
                   Skills & Expertise
                 </label>
               </div>
@@ -227,7 +227,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
                   type="text"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
-                  className="flex-1 px-4 py-3 bg-black/30 border border-white/20 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-200 hover:border-white/30"
+                  className="flex-1 px-4 py-3 bg-black/30 border border-white/20 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-200 hover:border-white/30"
                   placeholder="Enter a skill (e.g., React.js, Photography, etc.)"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
                 />
@@ -235,7 +235,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
                   type="button"
                   onClick={addSkill}
                   size="sm"
-                  className="flex items-center space-x-2 bg-gradient-to-r from-purple-500/30 to-pink-500/30 hover:from-purple-500/40 hover:to-pink-500/40 text-purple-300 border-purple-400/30 hover:border-purple-400/50 backdrop-blur-sm shadow-lg hover:shadow-purple-500/25 transition-all duration-200"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-500/30 to-pink-500/30 hover:from-orange-500/40 hover:to-pink-500/40 text-orange-300 border-orange-400/30 hover:border-orange-400/50 backdrop-blur-sm shadow-lg hover:shadow-orange-500/25 transition-all duration-200"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add</span>
@@ -245,13 +245,13 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
                 {formData.skills?.map((skill, index) => (
                   <span
                     key={index}
-                    className="group/skill flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-full text-sm border border-purple-400/30 hover:border-purple-400/50 hover:shadow-lg hover:shadow-purple-400/20 transition-all duration-200 cursor-default backdrop-blur-lg"
+                    className="group/skill flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-500/20 to-pink-500/20 text-orange-300 rounded-full text-sm border border-orange-400/30 hover:border-orange-400/50 hover:shadow-lg hover:shadow-orange-400/20 transition-all duration-200 cursor-default backdrop-blur-lg"
                   >
                     <span>{skill}</span>
                     <button
                       type="button"
                       onClick={() => removeSkill(skill)}
-                      className="text-purple-400 hover:text-red-400 transition-colors"
+                      className="text-orange-400 hover:text-red-400 transition-colors"
                       title={`Remove ${skill}`}
                     >
                       <X className="h-3 w-3" />
@@ -329,10 +329,10 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
 
         {/* Footer with enhanced styling */}
         <div className="relative bg-gradient-to-r from-gray-900/50 via-black/50 to-gray-900/50 border-t border-white/20 backdrop-blur-lg">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-blue-500/5 blur-xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-blue-500/5 blur-xl"></div>
           <div className="relative flex items-center justify-between p-6">
             <div className="flex items-center space-x-2 text-xs text-gray-400">
-              <Sparkles className="h-4 w-4 text-purple-400" />
+              <Sparkles className="h-4 w-4 text-orange-400" />
               <span>All changes are saved automatically</span>
             </div>
             <div className="flex items-center space-x-3">
@@ -347,7 +347,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white border border-purple-400/20 shadow-lg hover:shadow-xl transition-all duration-200 backdrop-blur-sm"
+                className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-orange-500 to-blue-500 hover:from-orange-600 hover:to-blue-600 text-white border border-orange-400/20 shadow-lg hover:shadow-xl transition-all duration-200 backdrop-blur-sm"
               >
                 {loading ? (
                   <>

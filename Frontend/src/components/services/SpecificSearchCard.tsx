@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Loader2, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../Button';
+import Button from '../shared/Button';
 import { semanticSearchApi } from '../../api/semanticSearchApi';
 
 const SpecificSearchCard: React.FC = () => {
@@ -47,7 +47,7 @@ const SpecificSearchCard: React.FC = () => {
   return (
     <div className="mt-6 p-6 bg-white/5 rounded-xl border border-white/20 shadow-sm">
       <div className="text-center mb-4">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-3">
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full mb-3">
           <Sparkles className="w-6 h-6 text-white" />
         </div>
         <h4 className="font-semibold text-white mb-2">Smart Service Discovery</h4>
@@ -71,7 +71,7 @@ const SpecificSearchCard: React.FC = () => {
           onClick={handleSemanticSearch}
           disabled={isSearching || !searchQuery.trim()}
           size="sm" 
-          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-700 hover:to-orange-700 text-white font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSearching ? (
             <>

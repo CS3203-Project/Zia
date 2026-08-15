@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Save, User, Phone, MapPin, Globe, Upload, Image } from 'lucide-react';
-import Button from '../Button';
+import Button from '../shared/Button';
 import toast from 'react-hot-toast';
 import { userApi } from '../../api/userApi';
 import type { UpdateProfileData, UserProfile } from '../../api/userApi';
@@ -199,7 +199,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
             {/* Location Information */}
             <div className="bg-black/20 backdrop-blur-lg rounded-xl p-5 border border-white/10">
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center drop-shadow-lg">
-                <MapPin className="h-5 w-5 mr-2 text-purple-400" />
+                <MapPin className="h-5 w-5 mr-2 text-orange-400" />
                 Location Information
               </h3>
               <div className="space-y-4">
@@ -430,7 +430,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
           <Button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border border-blue-400/30 backdrop-blur-sm shadow-lg hover:shadow-xl"
+            className="flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-600 hover:to-orange-600 text-white border border-blue-400/30 backdrop-blur-sm shadow-lg hover:shadow-xl"
           >
             {loading ? (
               <>
