@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, ChevronDown, ArrowRight, ArrowUpRight, LogOut, User, Bell, X } from 'lucide-react';
+import { Menu, ChevronDown, LogOut, User, Bell, X } from 'lucide-react';
 import { cn } from '../../utils/utils';
 import { useAuth } from '../../contexts/AuthContext';
 import { clearMessages } from '../../utils/messageDB';
@@ -119,22 +119,22 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1 flex-nowrap">
+          <div className="hidden lg:flex items-center space-x-8 flex-nowrap">
             {/* Services Dropdown */}
             <div className="relative">
               <div
                 className={cn(
-                  "flex items-center space-x-1 font-medium text-sm transition-all duration-200 py-1.5 px-3.5 rounded-full group cursor-pointer",
+                  "flex items-center space-x-1 font-medium text-sm transition-colors duration-200 cursor-pointer",
                   isServicesRouteActive()
-                    ? "text-orange-600 bg-orange-50"
-                    : "text-gray-600 hover:text-orange-600 hover:bg-orange-50/60"
+                    ? "text-orange-600"
+                    : "text-gray-700 hover:text-orange-600"
                 )}
                 onMouseEnter={handleServicesEnter}
                 onMouseLeave={handleServicesLeave}
               >
                 <Link
                   to="/services"
-                  className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                  className="rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
                   <span>Browse Services</span>
                 </Link>
@@ -195,10 +195,10 @@ const Navbar = () => {
                   key={index}
                   to={link.href}
                   className={cn(
-                    "font-medium text-sm transition-all duration-200 py-1.5 px-3.5 rounded-full whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
+                    "font-medium text-sm transition-colors duration-200 whitespace-nowrap rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2",
                     isActive
-                      ? "text-orange-600 bg-orange-50"
-                      : "text-gray-600 hover:text-orange-600 hover:bg-orange-50/60"
+                      ? "text-orange-600"
+                      : "text-gray-700 hover:text-orange-600"
                   )}
                 >
                   {link.name}
@@ -208,7 +208,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-4">
             {isLoggedIn && user ? (
               <>
                 {/* Notifications Bell */}
@@ -277,23 +277,18 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-4">
                 <a
                   href="/signin"
-                  className="font-medium text-sm text-gray-700 hover:text-orange-600 transition-all duration-200 py-2 px-4 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                  className="font-medium text-sm text-gray-700 hover:text-orange-600 transition-colors duration-200 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
-                  Sign In
+                  Log In
                 </a>
                 <a
                   href="/signup"
-                  className="flex items-center group rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
+                  className="font-medium text-sm text-white bg-orange-500 hover:bg-orange-600 py-2.5 px-5 rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
-                  <span className="flex items-center font-medium text-sm text-gray-900 bg-white border border-gray-300 py-2 pl-4 pr-3 rounded-l-full group-hover:bg-orange-50 group-hover:border-orange-300 transition-all duration-200">
-                    Get Started
-                  </span>
-                  <span className="flex items-center justify-center h-[38px] w-[38px] bg-orange-500 rounded-full -ml-3 group-hover:bg-orange-600 transition-all duration-200">
-                    <ArrowUpRight className="h-4 w-4 text-white" />
-                  </span>
+                  Sign Up
                 </a>
               </div>
             )}
@@ -435,12 +430,11 @@ const Navbar = () => {
                     href="/signin"
                     className="w-full justify-center inline-flex items-center px-4 py-2.5 border border-gray-200 rounded-full bg-white text-gray-900 font-medium hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 transition-all duration-200"
                   >
-                    Sign In
+                    Log In
                   </a>
                   <a href="/signup" className="w-full block">
                     <span className="w-full flex justify-center items-center px-4 py-2.5 bg-orange-500 text-white rounded-full font-medium hover:bg-orange-600 transition-all duration-200">
-                      Get Started
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      Sign Up
                     </span>
                   </a>
                 </>

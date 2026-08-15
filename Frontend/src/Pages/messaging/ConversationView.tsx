@@ -521,7 +521,7 @@ const ConversationView: React.FC = () => {
   useEffect(() => {
     if (!loading && (error || !currentUser)) {
       localStorage.setItem('RedirectAfterLogin', window.location.pathname);
-      navigate('/signin');
+      navigate('/signin', { replace: true });
     }
   }, [loading, error, currentUser, navigate]);
 

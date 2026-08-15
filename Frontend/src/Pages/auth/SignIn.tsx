@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { userApi } from '../../api/userApi';
 import { useAuth } from '../../contexts/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
-import { Mail, Lock, Loader, Eye, EyeOff, ArrowRight, Shield, Star } from 'lucide-react';
+import { Mail, Lock, Loader, Eye, EyeOff, ArrowRight, Compass, Zap, Award, ShieldCheck } from 'lucide-react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -58,69 +58,63 @@ export default function SignIn() {
         }}
       />
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 pt-24">
-        <div className="w-full max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
 
-          {/* Left Side - Welcome Content */}
-          <div className="hidden lg:flex flex-col justify-center items-center text-center p-8">
-            <div className="relative">
-              {/* Badge */}
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-orange-100 text-orange-700 text-sm font-medium mb-8">
-                <span className="relative flex h-2 w-2 mr-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                </span>
-                Secure Platform
+          {/* Left Side - Feature panel */}
+          <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-10 text-white shadow-xl shadow-orange-500/20">
+            <h1 className="text-3xl font-bold leading-tight mb-4">
+              Connect with trusted
+              <br />
+              service providers.
+            </h1>
+            <p className="text-orange-50 mb-10 leading-relaxed">
+              Browse verified professionals, book with confidence, and manage every job in one place.
+            </p>
+
+            <div className="space-y-5">
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+                  <Compass className="h-4 w-4 text-white" />
+                </div>
+                <p className="text-sm text-white">Browse every service, no account needed to look around</p>
               </div>
-
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                Welcome Back to
-                <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-                  Zia
-                </span>
-              </h1>
-
-              <p className="text-xl text-gray-500 mb-8 max-w-lg mx-auto leading-relaxed">
-                Continue your journey with trusted professionals and exceptional services
-              </p>
-
-              {/* Feature Cards */}
-              <div className="grid grid-cols-1 gap-4 max-w-md mx-auto">
-                <div className="flex items-center p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-                  <div className="p-2 bg-orange-100 rounded-lg mr-4">
-                    <Shield className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-gray-900 font-medium">Secure & Trusted</p>
-                    <p className="text-gray-500 text-sm">Verified professionals</p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+                  <Zap className="h-4 w-4 text-white" />
                 </div>
-
-                <div className="flex items-center p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
-                  <div className="p-2 bg-orange-100 rounded-lg mr-4">
-                    <Star className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-gray-900 font-medium">Quality Services</p>
-                    <p className="text-gray-500 text-sm">Rated by community</p>
-                  </div>
+                <p className="text-sm text-white">Instant booking confirmations sent straight to your inbox</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+                  <Award className="h-4 w-4 text-white" />
                 </div>
+                <p className="text-sm text-white">Earn trust and reviews with every completed booking</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex-shrink-0 w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
+                  <ShieldCheck className="h-4 w-4 text-white" />
+                </div>
+                <p className="text-sm text-white">Secure checkout on every transaction</p>
               </div>
             </div>
           </div>
 
           {/* Right Side - Sign In Form */}
-          <div className="flex items-center justify-center">
-            <div className="w-full max-w-md">
-              <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
-                {/* Logo */}
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mb-4 shadow-lg shadow-orange-500/30">
-                    <img src="/logo_svg_only_light.svg" alt="Logo" className="h-9 w-9" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Sign In</h2>
-                  <p className="text-gray-500">Welcome back! Please enter your details</p>
-                </div>
+          <div className="flex flex-col justify-center">
+            {/* Logo */}
+            <div className="flex items-center gap-2.5 mb-6">
+              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-sm shadow-orange-500/30">
+                <img src="/logo_svg_only_light.svg" alt="Logo" className="h-5 w-5" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">Zia</span>
+            </div>
+
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                <p className="text-gray-500">Sign in to access your account</p>
+              </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
@@ -217,7 +211,6 @@ export default function SignIn() {
                     <a className="underline hover:text-gray-600 transition-colors" href="/privacy">Privacy Policy</a>.
                   </p>
                 </form>
-              </div>
             </div>
           </div>
         </div>

@@ -382,14 +382,13 @@ export default function Homepage() {
               <div className="text-center mt-12">
                 <Button
                   onClick={refetch}
-                  variant="white"
                   size="lg"
-                  className="px-8 py-4 rounded-full text-lg backdrop-blur-md bg-white/80 hover:bg-white/95 border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.2)] hover:scale-105 transition-all duration-300"
+                  className="px-8 py-4 rounded-full text-lg shadow-lg shadow-orange-500/30 hover:scale-105 transition-all duration-300"
                 >
                   {error ? 'Try Again' : 'Refresh Services'}
                 </Button>
                 {error && (
-                  <p className="text-red-400 dark:text-red-400 text-lg mt-4 font-medium">
+                  <p className="text-red-500 text-lg mt-4 font-medium">
                     Error: {error}
                   </p>
                 )}

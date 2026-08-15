@@ -90,7 +90,7 @@ export const categoriesData: ServiceCategory[] = [
     title: "Home Services",
     description: "Cleaning, repairs, maintenance",
     icon: Home,
-    gradient: "from-green-400 to-blue-500",
+    gradient: "from-orange-400 to-amber-500",
     subcategories: [
       { id: 's1', name: "Cleaning", slug: "cleaning", description: "Residential and commercial cleaning.", icon: Sparkles },
       { id: 's2', name: "Plumbing", slug: "plumbing", description: "Fix leaks, install fixtures.", icon: Wrench },
@@ -102,7 +102,7 @@ export const categoriesData: ServiceCategory[] = [
     title: "Professional Services",
     description: "Tutoring, consulting, coaching",
     icon: Briefcase,
-    gradient: "from-blue-400 to-purple-500",
+    gradient: "from-amber-400 to-orange-500",
     subcategories: [
         { id: 'p1', name: "Tutoring", slug: "tutoring", description: "Academic help for all subjects.", icon: BookOpen },
         { id: 'p2', name: "Business Consulting", slug: "business-consulting", description: "Strategy and management advice.", icon: BarChart3 },

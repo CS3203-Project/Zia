@@ -30,7 +30,7 @@ export default function BecomeProvider() {
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
       localStorage.setItem('RedirectAfterLogin', window.location.pathname);
-      navigate('/signin');
+      navigate('/signin', { replace: true });
     }
   }, [authLoading, isLoggedIn, navigate]);
 
