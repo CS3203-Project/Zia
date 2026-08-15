@@ -162,8 +162,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
             key={star}
             className={`w-4 h-4 ${
               star <= rating
-                ? 'text-white fill-white'
-                : 'text-white/30'
+                ? 'text-amber-400 fill-amber-400'
+                : 'text-gray-300'
             }`}
           />
         ))}
@@ -194,25 +194,21 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={handleClose}
       />
 
       {/* Modal */}
-      <div className="relative bg-black/90 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        {/* Background gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse rounded-2xl"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-
+      <div className="relative bg-white rounded-2xl border border-gray-100 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="relative z-10 p-6 border-b border-white/20">
+        <div className="relative z-10 p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               {userRole === 'PROVIDER' ? 'Customer Details' : '🏢 Service Provider Details'}
             </h2>
             <button
               onClick={handleClose}
-              className="p-2 text-white/70 hover:text-white rounded-lg hover:bg-white/10 transition-all duration-300"
+              className="p-2 text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all duration-300"
             >
               <X className="w-5 h-5" />
             </button>
@@ -223,31 +219,31 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
         <div className="relative z-10 p-6">
           {loading && (
             <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-white/20 border-t-white"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-orange-500"></div>
             </div>
           )}
 
           {error && (
-            <div className="p-4 bg-red-500/20 border border-red-400/30 rounded-xl">
-              <p className="text-red-400 text-sm">{error}</p>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
 
           {userDetails && !loading && (
             <div className="space-y-6">
               {/* User Profile Section */}
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/20">
+              <div className="bg-gray-50 p-6 rounded-xl border border-gray-100">
                 <div className="flex items-start space-x-4">
-                  <div className="w-16 h-16 bg-gradient-to-r from-white/20 to-white/10 rounded-xl flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl flex items-center justify-center text-white text-xl font-bold">
                     {userDetails.firstName?.[0]}{userDetails.lastName?.[0]}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-bold text-white">
+                    <h3 className="text-xl font-bold text-gray-900">
                       {userDetails.firstName} {userDetails.lastName}
                     </h3>
 
-                    <div className="flex items-center space-x-4 mt-2 text-sm text-white/60">
+                    <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
                       <div className="flex items-center space-x-1">
                         <Mail className="w-4 h-4" />
                         <span>{userDetails.email}</span>
@@ -262,14 +258,14 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 
                       {userDetails.isVerified && (
                         <div className="flex items-center space-x-2">
-                          <Award className="w-4 h-4 text-white" />
-                          <span className="text-white">Verified</span>
+                          <Award className="w-4 h-4 text-orange-500" />
+                          <span className="text-orange-600">Verified</span>
                         </div>
                       )}
                     </div>
 
                     {userDetails.location && (
-                      <div className="flex items-center space-x-1 mt-1 text-sm text-white/60">
+                      <div className="flex items-center space-x-1 mt-1 text-sm text-gray-500">
                         <MapPin className="w-4 h-4" />
                         <span>{userDetails.location}</span>
                       </div>
@@ -277,9 +273,9 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 
                     {userDetails.averageRating && (
                       <div className="flex items-center space-x-2 mt-3">
-                        <span className="text-white font-medium">{userDetails.averageRating.toFixed(1)}</span>
+                        <span className="text-gray-900 font-medium">{userDetails.averageRating.toFixed(1)}</span>
                         {renderStars(Math.round(userDetails.averageRating))}
-                        <span className="text-white/60 text-sm">
+                        <span className="text-gray-500 text-sm">
                           ({userDetails.totalReviews || 0} reviews)
                         </span>
                       </div>
@@ -289,8 +285,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 
                 {userDetails.bio && (
                   <div className="mt-4">
-                    <h4 className="text-sm font-medium text-white/80 mb-2">Bio</h4>
-                    <p className="text-sm text-white/70">{userDetails.bio}</p>
+                    <h4 className="text-sm font-medium text-gray-600 mb-2">Bio</h4>
+                    <p className="text-sm text-gray-600">{userDetails.bio}</p>
                   </div>
                 )}
 
@@ -298,10 +294,10 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
                   <div className="mt-4 space-y-3">
                     {userDetails.skills && userDetails.skills.length > 0 && (
                       <div>
-                        <h4 className="text-sm font-medium text-white/80 mb-2">Skills</h4>
+                        <h4 className="text-sm font-medium text-gray-600 mb-2">Skills</h4>
                         <div className="flex flex-wrap gap-2">
                           {userDetails.skills.map((skill, index) => (
-                            <span key={index} className="px-2 py-1 bg-white/10 text-white rounded-lg text-xs">
+                            <span key={index} className="px-2 py-1 bg-orange-50 text-orange-700 rounded-lg text-xs">
                               {skill}
                             </span>
                           ))}
@@ -311,10 +307,10 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 
                     {userDetails.qualifications && userDetails.qualifications.length > 0 && (
                       <div>
-                        <h4 className="text-sm font-medium text-white/80 mb-2">Qualifications</h4>
+                        <h4 className="text-sm font-medium text-gray-600 mb-2">Qualifications</h4>
                         <div className="flex flex-wrap gap-2">
                           {userDetails.qualifications.map((qual, index) => (
-                            <span key={index} className="px-2 py-1 bg-white/10 text-white rounded-lg text-xs">
+                            <span key={index} className="px-2 py-1 bg-orange-50 text-orange-700 rounded-lg text-xs">
                               {qual}
                             </span>
                           ))}
@@ -328,41 +324,41 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
               {/* Reviews Section */}
               {reviews.length > 0 && (
                 <div className="space-y-4">
-                  <h4 className="text-lg font-semibold text-white">
+                  <h4 className="text-lg font-semibold text-gray-900">
                     {userRole === 'PROVIDER' ? 'Reviews Given to Customer' : 'Service Reviews & Ratings'}
                   </h4>
 
                   <div className="space-y-3 max-h-96 overflow-y-auto">
                     {reviews.map((review) => (
-                      <div key={review.id} className="bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/20">
+                      <div key={review.id} className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                            <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center text-white text-sm font-bold">
                               {userRole === 'PROVIDER'
                                 ? review.reviewer?.firstName?.[0] || review.reviewee?.firstName?.[0] || '?'
                                 : review.reviewer?.firstName?.[0] || review.reviewee?.firstName?.[0] || '?'}
                             </div>
                             <div>
-                              <p className="text-white font-medium">
+                              <p className="text-gray-900 font-medium">
                                 {userRole === 'PROVIDER'
                                   ? `Given to: ${review.reviewee?.firstName} ${review.reviewee?.lastName}` || 'Unknown'
                                   : `By: ${review.reviewer?.firstName} ${review.reviewer?.lastName}` || 'Unknown'}
                               </p>
                               <div className="flex items-center space-x-2">
                                 {renderStars(review.rating)}
-                                <span className="text-white text-sm">{review.rating}/5</span>
+                                <span className="text-gray-500 text-sm">{review.rating}/5</span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="text-xs text-white/60">
+                          <div className="text-xs text-gray-400">
                             <Calendar className="w-3 h-3 inline mr-1" />
                             {new Date(review.createdAt).toLocaleDateString()}
                           </div>
                         </div>
 
                         {review.comment && (
-                          <p className="text-white/70 text-sm">{review.comment}</p>
+                          <p className="text-gray-600 text-sm">{review.comment}</p>
                         )}
                       </div>
                     ))}
@@ -372,8 +368,8 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
 
               {reviews.length === 0 && !loading && (
                 <div className="text-center py-8">
-                  <User className="w-12 h-12 text-white/30 mx-auto mb-4" />
-                  <p className="text-white/60">No reviews available yet</p>
+                  <User className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500">No reviews available yet</p>
                 </div>
               )}
             </div>

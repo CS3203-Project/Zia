@@ -73,6 +73,7 @@ export const getServices = async (req: Request, res: Response, next: NextFunctio
     const filters: any = {
       providerId: req.query.providerId as string,
       categoryId: req.query.categoryId as string,
+      search: req.query.search as string,
       skip: req.query.skip ? parseInt(req.query.skip as string) : 0,
       take: req.query.take ? parseInt(req.query.take as string) : 10
     };

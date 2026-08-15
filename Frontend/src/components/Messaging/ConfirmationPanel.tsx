@@ -231,9 +231,9 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
 
   // Status indicator
   const getStatusIcon = () => {
-    if (isComplete) return <CheckCircle className="h-5 w-5 text-white" />;
-    if (partialConfirmed) return <Clock className="h-5 w-5 text-white/60" />;
-    return <AlertCircle className="h-5 w-5 text-white/40" />;
+    if (isComplete) return <CheckCircle className="h-5 w-5 text-emerald-600" />;
+    if (partialConfirmed) return <Clock className="h-5 w-5 text-orange-500" />;
+    return <AlertCircle className="h-5 w-5 text-gray-400" />;
   };
 
   const getStatusText = () => {
@@ -244,23 +244,22 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
   };
 
   const getStatusColor = () => {
-    if (isComplete) return 'bg-white/20 border-white/30';
-    if (partialConfirmed) return 'bg-white/10 border-white/20';
-    return 'bg-white/5 border-white/10';
+    if (isComplete) return 'bg-emerald-50 border-emerald-200';
+    if (partialConfirmed) return 'bg-orange-50 border-orange-200';
+    return 'bg-gray-50 border-gray-200';
   };
 
   // Minimized floating view
   if (isMinimized) {
     return (
-      <div className="fixed top-20 right-4 z-50 bg-black/95 backdrop-blur-xl shadow-2xl rounded-xl border border-white/20 p-4 max-w-xs relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse rounded-xl"></div>
+      <div className="fixed top-20 right-4 z-50 bg-white shadow-2xl rounded-xl border border-gray-200 p-4 max-w-xs relative overflow-hidden">
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center space-x-3">
             {getStatusIcon()}
             <div className="flex-1">
-              <span className="text-sm font-medium text-white block">{getStatusText()}</span>
+              <span className="text-sm font-medium text-gray-900 block">{getStatusText()}</span>
               {hasServiceFee && (
-                <span className="text-xs text-white/60">
+                <span className="text-xs text-gray-500">
                   {record.currency} {record.serviceFee?.toFixed(2)}
                 </span>
               )}
@@ -268,13 +267,13 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
           </div>
           <button
             onClick={() => setIsMinimized(false)}
-            className="text-white/70 hover:text-white ml-2 p-1 rounded-lg hover:bg-white/10 transition-all duration-300"
+            className="text-gray-500 hover:text-gray-900 ml-2 p-1 rounded-lg hover:bg-gray-100 transition-all duration-300"
           >
             <ChevronDown className="h-4 w-4" />
           </button>
         </div>
         {!isComplete && (
-          <div className="text-xs text-white/60 mt-2 relative z-10">
+          <div className="text-xs text-gray-500 mt-2 relative z-10">
             {isProvider && !hasServiceFee ? 'Set service fee to continue' : 'Click to expand and confirm booking'}
           </div>
         )}
@@ -283,19 +282,16 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
   }
 
   return (
-    <div className="h-full flex flex-col bg-black/60 backdrop-blur-xl transition-all duration-300 relative overflow-hidden">
-      {/* Background gradient effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-white/5 animate-pulse"></div>
-      
+    <div className="h-full flex flex-col bg-white transition-all duration-300 relative overflow-hidden">
       {/* Header with status and controls */}
-      <div className={`px-4 py-4 border-b border-white/20 relative z-10 ${getStatusColor()}`}>
+      <div className={`px-4 py-4 border-b relative z-10 ${getStatusColor()}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {getStatusIcon()}
-            <h3 className="text-lg font-semibold text-white">{getStatusText()}</h3>
+            <h3 className="text-lg font-semibold text-gray-900">{getStatusText()}</h3>
             {saving && (
-              <div className="flex items-center space-x-1 text-white/60">
-                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+              <div className="flex items-center space-x-1 text-gray-500">
+                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-orange-500"></div>
                 <span className="text-xs">Saving...</span>
               </div>
             )}
@@ -303,14 +299,14 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="text-white/70 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-all duration-300"
+              className="text-gray-500 hover:text-gray-900 p-1 rounded-lg hover:bg-black/5 transition-all duration-300"
               title={isCollapsed ? 'Expand' : 'Collapse'}
             >
               {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
             </button>
             <button
               onClick={() => setIsMinimized(true)}
-              className="text-white/70 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-all duration-300"
+              className="text-gray-500 hover:text-gray-900 p-1 rounded-lg hover:bg-black/5 transition-all duration-300"
               title="Minimize"
             >
               <Minimize2 className="h-4 w-4" />
@@ -320,20 +316,20 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
 
         {/* Progress indicators */}
         <div className="flex items-center space-x-4 mt-3 flex-wrap">
-          <div className={`flex items-center space-x-1 text-xs ${record.customerConfirmation ? 'text-white' : 'text-white/50'}`}>
-            <div className={`w-2 h-2 rounded-full ${record.customerConfirmation ? 'bg-white' : 'bg-white/30'}`}></div>
+          <div className={`flex items-center space-x-1 text-xs ${record.customerConfirmation ? 'text-gray-900' : 'text-gray-400'}`}>
+            <div className={`w-2 h-2 rounded-full ${record.customerConfirmation ? 'bg-orange-500' : 'bg-gray-300'}`}></div>
             <span>Customer</span>
           </div>
-          <div className={`flex items-center space-x-1 text-xs ${record.providerConfirmation ? 'text-white' : 'text-white/50'}`}>
-            <div className={`w-2 h-2 rounded-full ${record.providerConfirmation ? 'bg-white' : 'bg-white/30'}`}></div>
+          <div className={`flex items-center space-x-1 text-xs ${record.providerConfirmation ? 'text-gray-900' : 'text-gray-400'}`}>
+            <div className={`w-2 h-2 rounded-full ${record.providerConfirmation ? 'bg-orange-500' : 'bg-gray-300'}`}></div>
             <span>Provider</span>
           </div>
-          <div className={`flex items-center space-x-1 text-xs ${hasDateTime ? 'text-white' : 'text-white/50'}`}>
-            <div className={`w-2 h-2 rounded-full ${hasDateTime ? 'bg-white' : 'bg-white/30'}`}></div>
+          <div className={`flex items-center space-x-1 text-xs ${hasDateTime ? 'text-gray-900' : 'text-gray-400'}`}>
+            <div className={`w-2 h-2 rounded-full ${hasDateTime ? 'bg-orange-500' : 'bg-gray-300'}`}></div>
             <span>Schedule</span>
           </div>
-          <div className={`flex items-center space-x-1 text-xs ${hasServiceFee ? 'text-white' : 'text-white/50'}`}>
-            <div className={`w-2 h-2 rounded-full ${hasServiceFee ? 'bg-white' : 'bg-white/30'}`}></div>
+          <div className={`flex items-center space-x-1 text-xs ${hasServiceFee ? 'text-gray-900' : 'text-gray-400'}`}>
+            <div className={`w-2 h-2 rounded-full ${hasServiceFee ? 'bg-orange-500' : 'bg-gray-300'}`}></div>
             <span>Service Fee</span>
           </div>
         </div>
@@ -345,56 +341,53 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
           <div className="space-y-6">
             {/* Confirmation Status Group */}
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wide border-b border-white/20 pb-2">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100 pb-2">
                 Confirmation Status
               </h4>
-              
-              <label className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 hover:border-white/30 transition-all duration-300 group cursor-pointer relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
+
+              <label className="flex items-center space-x-3 bg-gray-50 p-4 rounded-xl border border-gray-200 hover:border-orange-200 transition-all duration-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={!!record.customerConfirmation}
                   disabled={!isCustomer || saving}
                   onChange={(e) => update({ customerConfirmation: e.target.checked })}
-                  className="rounded text-white focus:ring-white/50 focus:ring-offset-black bg-white/20 border-white/30 relative z-10"
+                  className="rounded text-orange-500 focus:ring-orange-400 bg-white border-gray-300"
                 />
-                <span className="font-medium text-white relative z-10">Customer Confirmation</span>
+                <span className="font-medium text-gray-900">Customer Confirmation</span>
                 {isCustomer && (
-                  <span className="text-xs text-white bg-white/20 px-2 py-1 rounded border border-white/30 relative z-10">You</span>
+                  <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded border border-orange-200">You</span>
                 )}
               </label>
 
-              <label className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 hover:border-white/30 transition-all duration-300 group cursor-pointer relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
+              <label className="flex items-center space-x-3 bg-gray-50 p-4 rounded-xl border border-gray-200 hover:border-orange-200 transition-all duration-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={!!record.providerConfirmation}
                   disabled={!isProvider || saving}
                   onChange={(e) => update({ providerConfirmation: e.target.checked })}
-                  className="rounded text-white focus:ring-white/50 focus:ring-offset-black bg-white/20 border-white/30 relative z-10"
+                  className="rounded text-orange-500 focus:ring-orange-400 bg-white border-gray-300"
                 />
-                <span className="font-medium text-white relative z-10">Provider Confirmation</span>
+                <span className="font-medium text-gray-900">Provider Confirmation</span>
                 {isProvider && (
-                  <span className="text-xs text-white bg-white/20 px-2 py-1 rounded border border-white/30 relative z-10">You</span>
+                  <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded border border-orange-200">You</span>
                 )}
               </label>
             </div>
 
             {/* Service Fee Group */}
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wide border-b border-white/20 pb-2">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100 pb-2">
                 Service Fee
               </h4>
-              
-              <div className={`bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 hover:border-white/30 transition-all duration-300 relative overflow-hidden group ${!isProvider ? 'opacity-60' : ''}`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
+
+              <div className={`bg-gray-50 p-4 rounded-xl border border-gray-200 hover:border-orange-200 transition-all duration-300 relative overflow-hidden ${!isProvider ? 'opacity-60' : ''}`}>
                 <div className="flex items-center justify-between mb-3 relative z-10">
-                  <label className="block text-sm font-medium text-white/90">
+                  <label className="block text-sm font-medium text-gray-700">
                     Amount
-                    {isProvider && <span className="text-red-400 ml-1">*</span>}
+                    {isProvider && <span className="text-red-500 ml-1">*</span>}
                   </label>
                   {!isProvider && (
-                    <span className="text-xs text-white/60 bg-white/20 px-2 py-1 rounded border border-white/30">Provider Only</span>
+                    <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded border border-gray-300">Provider Only</span>
                   )}
                 </div>
                 <div className="flex space-x-2 relative z-10">
@@ -404,9 +397,9 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className={`w-full border border-white/30 rounded-xl px-3 py-2 focus:ring-2 focus:ring-white/50 focus:border-white/50 bg-white/20 text-white placeholder-white/50 backdrop-blur-sm ${
+                      className={`w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-400 ${
                         !isProvider ? 'cursor-not-allowed opacity-50' : ''
-                      } ${hasUnsavedChanges ? 'border-white bg-white/30' : ''}`}
+                      } ${hasUnsavedChanges ? 'border-orange-400 bg-orange-50' : ''}`}
                       value={serviceFeeInput}
                       disabled={!isProvider || saving}
                       onChange={(e) => {
@@ -428,62 +421,61 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                     />
                     {hasUnsavedChanges && !saving && (
                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                        <div className="flex items-center space-x-1 text-xs text-yellow-400">
-                          <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
+                        <div className="flex items-center space-x-1 text-xs text-orange-600">
+                          <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                           <span>Press Enter</span>
                         </div>
                       </div>
                     )}
                   </div>
                   <select
-                    className={`border border-white/30 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-white/20 text-white backdrop-blur-sm ${
+                    className={`border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white text-gray-900 ${
                       !isProvider ? 'cursor-not-allowed opacity-50' : ''
                     }`}
                     value={record.currency || 'USD'}
                     disabled={!isProvider || saving}
                     onChange={(e) => update({ currency: e.target.value })}
                   >
-                    <option value="USD" className="bg-gray-800 text-white">USD</option>
-                    <option value="EUR" className="bg-gray-800 text-white">EUR</option>
-                    <option value="GBP" className="bg-gray-800 text-white">GBP</option>
-                    <option value="LKR" className="bg-gray-800 text-white">LKR</option>
-                    <option value="INR" className="bg-gray-800 text-white">INR</option>
+                    <option value="USD" className="bg-white text-gray-900">USD</option>
+                    <option value="EUR" className="bg-white text-gray-900">EUR</option>
+                    <option value="GBP" className="bg-white text-gray-900">GBP</option>
+                    <option value="LKR" className="bg-white text-gray-900">LKR</option>
+                    <option value="INR" className="bg-white text-gray-900">INR</option>
                   </select>
                 </div>
                 {hasUnsavedChanges && isProvider && (
                   <button
                     onClick={saveServiceFee}
                     disabled={saving}
-                    className="mt-3 w-full px-4 py-3 bg-blue-500/20 text-blue-400 rounded-xl hover:bg-blue-500/30 focus:ring-2 focus:ring-blue-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 transition-all duration-300 border border-blue-400/30 hover:border-blue-400/50 backdrop-blur-sm relative overflow-hidden group"
+                    className="mt-3 w-full px-4 py-3 bg-orange-50 text-orange-700 rounded-xl hover:bg-orange-100 focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 transition-all duration-300 border border-orange-200 hover:border-orange-300"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent relative z-10"></div>
-                        <span className="relative z-10">Saving...</span>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-orange-500 border-t-transparent"></div>
+                        <span>Saving...</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="h-4 w-4 relative z-10" />
-                        <span className="relative z-10">Save Amount</span>
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Save Amount</span>
                       </>
                     )}
                   </button>
                 )}
                 {isProvider && (
-                  <div className="mt-2 text-xs text-white/60 relative z-10">
-                    💡 Tip: Press <kbd className="px-1 py-0.5 bg-white/20 border border-white/30 rounded text-white/80">Enter</kbd> or click outside to save your changes
+                  <div className="mt-2 text-xs text-gray-500 relative z-10">
+                    💡 Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click outside to save your changes
                   </div>
                 )}
                 {isProvider && !hasServiceFee && (
-                  <p className="text-xs text-orange-400 mt-2 flex items-center space-x-1 relative z-10">
+                  <p className="text-xs text-orange-600 mt-2 flex items-center space-x-1 relative z-10">
                     <AlertCircle className="h-3 w-3" />
                     <span>Please set the service fee to complete the booking</span>
                   </p>
                 )}
                 {!isProvider && hasServiceFee && (
-                  <div className="mt-3 p-3 bg-green-500/20 rounded-xl border border-green-400/30 relative z-10">
-                    <p className="text-sm text-green-400 font-medium text-center">
+                  <div className="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200 relative z-10">
+                    <p className="text-sm text-emerald-600 font-medium text-center">
                       {record.currency} {record.serviceFee?.toFixed(2)}
                     </p>
                   </div>
@@ -493,18 +485,17 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
 
             {/* Schedule Group */}
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wide border-b border-white/20 pb-2">
+              <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100 pb-2">
                 Schedule
               </h4>
 
-              <div className={`bg-white/10 backdrop-blur-sm p-4 rounded-xl border hover:border-white/30 transition-all duration-300 relative overflow-hidden group ${hasStartTimeUnsavedChanges ? 'border-blue-400/50 bg-blue-500/10' : 'border-white/20'}`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                <label className="block text-sm font-medium text-white/90 mb-2 relative z-10">Start Date & Time</label>
+              <div className={`bg-gray-50 p-4 rounded-xl border hover:border-orange-200 transition-all duration-300 relative overflow-hidden ${hasStartTimeUnsavedChanges ? 'border-orange-300 bg-orange-50' : 'border-gray-200'}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-2 relative z-10">Start Date & Time</label>
                 <div className="relative">
                   <input
                     type="datetime-local"
-                    className={`w-full border border-white/30 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-white/20 text-white backdrop-blur-sm relative z-10 ${
-                      hasStartTimeUnsavedChanges ? 'border-blue-400 bg-blue-500/20' : ''
+                    className={`w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white text-gray-900 relative z-10 ${
+                      hasStartTimeUnsavedChanges ? 'border-orange-400 bg-orange-50' : ''
                     }`}
                     value={startDateInput}
                     disabled={saving}
@@ -524,8 +515,8 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   />
                   {hasStartTimeUnsavedChanges && !saving && (
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                      <div className="flex items-center space-x-1 text-xs text-blue-400">
-                        <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
+                      <div className="flex items-center space-x-1 text-xs text-orange-600">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                         <span>Unsaved</span>
                       </div>
                     </div>
@@ -535,32 +526,30 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   <button
                     onClick={saveStartTime}
                     disabled={saving}
-                    className="mt-3 w-full px-4 py-3 bg-blue-500/20 text-blue-400 rounded-xl hover:bg-blue-500/30 focus:ring-2 focus:ring-blue-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 transition-all duration-300 border border-blue-400/30 hover:border-blue-400/50 backdrop-blur-sm relative overflow-hidden group"
+                    className="mt-3 w-full px-4 py-3 bg-orange-50 text-orange-700 rounded-xl hover:bg-orange-100 focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 transition-all duration-300 border border-orange-200 hover:border-orange-300"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent relative z-10"></div>
-                        <span className="relative z-10">Saving Start Time...</span>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-orange-500 border-t-transparent"></div>
+                        <span>Saving Start Time...</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="h-4 w-4 relative z-10" />
-                        <span className="relative z-10">Save Start Time</span>
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Save Start Time</span>
                       </>
                     )}
                   </button>
                 )}
               </div>
 
-              <div className={`bg-white/10 backdrop-blur-sm p-4 rounded-xl border hover:border-white/30 transition-all duration-300 relative overflow-hidden group ${hasEndTimeUnsavedChanges ? 'border-blue-400/50 bg-blue-500/10' : 'border-white/20'}`}>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                <label className="block text-sm font-medium text-white/90 mb-2 relative z-10">End Date & Time</label>
+              <div className={`bg-gray-50 p-4 rounded-xl border hover:border-orange-200 transition-all duration-300 relative overflow-hidden ${hasEndTimeUnsavedChanges ? 'border-orange-300 bg-orange-50' : 'border-gray-200'}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-2 relative z-10">End Date & Time</label>
                 <div className="relative">
                   <input
                     type="datetime-local"
-                    className={`w-full border border-white/30 rounded-xl px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 bg-white/20 text-white backdrop-blur-sm relative z-10 ${
-                      hasEndTimeUnsavedChanges ? 'border-blue-400 bg-blue-500/20' : ''
+                    className={`w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white text-gray-900 relative z-10 ${
+                      hasEndTimeUnsavedChanges ? 'border-orange-400 bg-orange-50' : ''
                     }`}
                     value={endDateInput}
                     disabled={saving}
@@ -580,8 +569,8 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   />
                   {hasEndTimeUnsavedChanges && !saving && (
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                      <div className="flex items-center space-x-1 text-xs text-blue-400">
-                        <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
+                      <div className="flex items-center space-x-1 text-xs text-orange-600">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                         <span>Unsaved</span>
                       </div>
                     </div>
@@ -591,56 +580,54 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   <button
                     onClick={saveEndTime}
                     disabled={saving}
-                    className="mt-3 w-full px-4 py-3 bg-blue-500/20 text-blue-400 rounded-xl hover:bg-blue-500/30 focus:ring-2 focus:ring-blue-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 transition-all duration-300 border border-blue-400/30 hover:border-blue-400/50 backdrop-blur-sm relative overflow-hidden group"
+                    className="mt-3 w-full px-4 py-3 bg-orange-50 text-orange-700 rounded-xl hover:bg-orange-100 focus:ring-2 focus:ring-orange-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 transition-all duration-300 border border-orange-200 hover:border-orange-300"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
                     {saving ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent relative z-10"></div>
-                        <span className="relative z-10">Saving End Time...</span>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-orange-500 border-t-transparent"></div>
+                        <span>Saving End Time...</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="h-4 w-4 relative z-10" />
-                        <span className="relative z-10">Save End Time</span>
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Save End Time</span>
                       </>
                     )}
                   </button>
                 )}
               </div>
 
-              <div className="text-xs text-white/60 mt-2 relative z-10">
-                💡 Tip: Press <kbd className="px-1 py-0.5 bg-white/20 border border-white/30 rounded text-white/80">Enter</kbd> or click the save buttons to confirm your changes
+              <div className="text-xs text-gray-500 mt-2 relative z-10">
+                💡 Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click the save buttons to confirm your changes
               </div>
             </div>
           </div>
 
           {/* Summary when complete */}
           {isComplete && (
-            <div className="mt-6 p-4 bg-green-500/20 border border-green-400/30 rounded-xl backdrop-blur-sm relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse rounded-xl"></div>
+            <div className="mt-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl relative overflow-hidden">
               <div className="flex items-center space-x-2 mb-3 relative z-10">
-                <CheckCircle className="h-6 w-6 text-green-400" />
-                <span className="font-semibold text-green-400 text-lg">Booking Confirmed!</span>
+                <CheckCircle className="h-6 w-6 text-emerald-600" />
+                <span className="font-semibold text-emerald-700 text-lg">Booking Confirmed!</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm relative z-10">
                 <div>
-                  <span className="font-medium text-green-400">Service Fee:</span>
-                  <span className="text-white ml-2">
+                  <span className="font-medium text-emerald-700">Service Fee:</span>
+                  <span className="text-gray-900 ml-2">
                     {record.currency} {record.serviceFee?.toFixed(2)}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-green-400">Duration:</span>
-                  <span className="text-white ml-2">
-                    {record.startDate && record.endDate && 
+                  <span className="font-medium text-emerald-700">Duration:</span>
+                  <span className="text-gray-900 ml-2">
+                    {record.startDate && record.endDate &&
                       `${Math.ceil((new Date(record.endDate).getTime() - new Date(record.startDate).getTime()) / (1000 * 60 * 60))} hours`
                     }
                   </span>
                 </div>
                 <div className="md:col-span-2">
-                  <span className="font-medium text-green-400">Scheduled:</span>
-                  <span className="text-white ml-2">
+                  <span className="font-medium text-emerald-700">Scheduled:</span>
+                  <span className="text-gray-900 ml-2">
                     {record.startDate && new Date(record.startDate).toLocaleString()} -{' '}
                     {record.endDate && new Date(record.endDate).toLocaleString()}
                   </span>
@@ -651,14 +638,13 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
 
           {/* Incomplete warning for provider */}
           {isProvider && !isComplete && (partialConfirmed || hasDateTime) && (
-            <div className="mt-4 p-4 bg-orange-500/20 border border-orange-400/30 rounded-xl backdrop-blur-sm relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse rounded-xl"></div>
+            <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-xl relative overflow-hidden">
               <div className="flex items-center space-x-2 relative z-10">
-                <AlertCircle className="h-5 w-5 text-orange-400" />
-                <span className="font-medium text-orange-400">Action Required</span>
+                <AlertCircle className="h-5 w-5 text-orange-500" />
+                <span className="font-medium text-orange-700">Action Required</span>
               </div>
-              <p className="text-sm text-white/80 mt-1 relative z-10">
-                {!hasServiceFee ? 'Please set the service fee to complete the booking confirmation.' : 
+              <p className="text-sm text-gray-600 mt-1 relative z-10">
+                {!hasServiceFee ? 'Please set the service fee to complete the booking confirmation.' :
                  'Please confirm all details to finalize the booking.'}
               </p>
             </div>
@@ -666,13 +652,12 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
 
           {/* User Details and Rating Buttons - Moved inside scrollable area */}
           {(onViewUserDetails || onReviewClick) && (
-            <div className="mt-6 p-4 border-t border-white/20 bg-gradient-to-r from-white/5 to-white/10 backdrop-blur-sm relative z-10 space-y-3 rounded-xl">
+            <div className="mt-6 p-4 border-t border-gray-100 bg-gray-50 relative z-10 space-y-3 rounded-xl">
               {onViewUserDetails && (
                 <button
-                  className="w-full px-4 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 transition-all duration-300 font-medium border border-white/30 hover:border-white/40 backdrop-blur-sm relative overflow-hidden group"
+                  className="w-full px-4 py-3 bg-white text-gray-900 rounded-xl hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 font-medium border border-gray-200 shadow-sm"
                   onClick={onViewUserDetails}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
                   <span className="relative z-10">
                     {currentUserRole === 'USER'
                       ? 'View Service Provider'
@@ -683,10 +668,9 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
 
               {onReviewClick && (
                 <button
-                  className="w-full px-4 py-3 bg-white/20 text-white rounded-xl hover:bg-white/30 transition-all duration-300 font-medium border border-white/30 hover:border-white/40 backdrop-blur-sm relative overflow-hidden group"
+                  className="w-full px-4 py-3 bg-white text-gray-900 rounded-xl hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 font-medium border border-gray-200 shadow-sm"
                   onClick={onReviewClick}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
                   <span className="relative z-10">
                     {currentUserRole === 'USER'
                       ? 'Rate Service & Provider'

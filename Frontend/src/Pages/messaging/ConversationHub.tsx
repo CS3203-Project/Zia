@@ -185,10 +185,10 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
           <div className="mb-8 flex justify-center">
             <button
               onClick={() => setShowNewConversation(true)}
-              className="flex items-center space-x-3 rounded-xl bg-emerald-500 px-6 py-3 font-semibold text-emerald-950 transition hover:bg-emerald-400"
+              className="flex items-center space-x-3 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded-lg bg-black/20 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>

@@ -4,6 +4,7 @@ import { ArrowRight, Loader2, Search, Grid3X3, List, Sparkles, Users, RefreshCw,
 import { categoryApi, type Category } from '../../api/categoryApi';
 import { getCategoryIcon, getCategoryGradient } from '../../utils/categoryMapper';
 import { hybridSearchApi, type HybridSearchResult, type LocationParams } from '../../api/hybridSearchApi';
+import { serviceApi } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
 
 interface BrowseServicesState {
@@ -22,6 +23,7 @@ interface BrowseServicesState {
   searchType: 'hybrid' | 'semantic' | 'location' | 'general';
   hasServicesWithinRadius?: boolean;
   searchMessage?: string;
+  aiSearchEnabled: boolean;
 }
 
 const BrowseServicesEnhanced: React.FC = () => {
@@ -38,7 +40,8 @@ const BrowseServicesEnhanced: React.FC = () => {
     refreshing: false,
     locationFilter: null,
     showLocationFilter: false,
-    searchType: 'general'
+    searchType: 'general',
+    aiSearchEnabled: false
   });
   const navigate = useNavigate();
 
@@ -126,7 +129,11 @@ const BrowseServicesEnhanced: React.FC = () => {
       const hasLocation = state.locationFilter?.latitude !== undefined && state.locationFilter?.longitude !== undefined;
 
       if (hasQuery || hasLocation) {
-        await performHybridSearch();
+        if (state.aiSearchEnabled) {
+          await performHybridSearch();
+        } else {
+          await performKeywordSearch();
+        }
       } else {
         // Clear search results for short queries and no location
         setState(prev => ({ 
@@ -141,7 +148,7 @@ const BrowseServicesEnhanced: React.FC = () => {
     // Debounce search
     const timeoutId = setTimeout(performSearch, 500);
     return () => clearTimeout(timeoutId);
-  }, [state.searchTerm, state.locationFilter]);
+  }, [state.searchTerm, state.locationFilter, state.aiSearchEnabled]);
 
   // Filter and sort categories
   const filteredAndSortedCategories = React.useMemo(() => {
@@ -210,6 +217,67 @@ const BrowseServicesEnhanced: React.FC = () => {
     }
   };
 
+  const performKeywordSearch = async () => {
+    const query = state.searchTerm.trim();
+    if (!query) return;
+
+    try {
+      setState(prev => ({ ...prev, isSearching: true }));
+
+      const response = await serviceApi.getServices({
+        search: query,
+        isActive: true,
+        take: 20
+      });
+
+      if (response.success) {
+        const results: HybridSearchResult[] = response.data.map((service) => ({
+          id: service.id,
+          title: service.title || '',
+          description: service.description || '',
+          price: typeof service.price === 'string' ? parseFloat(service.price) : service.price,
+          currency: service.currency,
+          tags: service.tags,
+          images: service.images,
+          similarity: 1,
+          provider: {
+            id: service.provider?.id || '',
+            user: {
+              firstName: service.provider?.user?.firstName || '',
+              lastName: service.provider?.user?.lastName || ''
+            }
+          },
+          category: {
+            id: service.category?.id || '',
+            name: service.category?.name || ''
+          },
+          latitude: service.latitude,
+          longitude: service.longitude,
+          address: service.address,
+          city: service.city,
+          state: service.state,
+          country: service.country,
+          postalCode: service.postalCode,
+          serviceRadiusKm: service.serviceRadiusKm,
+          distance_km: null
+        }));
+
+        setState(prev => ({
+          ...prev,
+          hybridSearchResults: results,
+          isHybridSearchActive: true,
+          isSearching: false,
+          searchType: 'general',
+          hasServicesWithinRadius: undefined,
+          searchMessage: undefined
+        }));
+      }
+    } catch (error) {
+      console.error('Keyword search failed:', error);
+      setState(prev => ({ ...prev, isSearching: false }));
+    }
+  };
+
   const clearSearch = () => {
     setState(prev => ({ 
       ...prev, 
@@ -255,8 +323,8 @@ const BrowseServicesEnhanced: React.FC = () => {
 
   const getSearchTypeLabel = () => {
     switch (state.searchType) {
-      case 'hybrid': return 'Smart Search (Text + Location)';
-      case 'semantic': return 'Semantic Search';
+      case 'hybrid': return 'AI Search + Location';
+      case 'semantic': return 'AI Search';
       case 'location': return 'Location-based Search';
       case 'general': return 'General Browse';
       default: return 'Browse Services';
@@ -475,6 +543,21 @@ const BrowseServicesEnhanced: React.FC = () => {
                     </div>
                   )}
                 </div>
+
+                {/* AI Search Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setState(prev => ({ ...prev, aiSearchEnabled: !prev.aiSearchEnabled }))}
+                  aria-pressed={state.aiSearchEnabled}
+                  className={`px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-300 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)] hover:scale-105 flex items-center gap-1.5 ${
+                    state.aiSearchEnabled
+                      ? 'bg-orange-500 text-white border-orange-500'
+                      : 'bg-white/50 text-dark-primary border-white/30 hover:bg-white/70'
+                  }`}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  AI Search
+                </button>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">

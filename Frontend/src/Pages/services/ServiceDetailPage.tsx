@@ -681,14 +681,8 @@ const ServiceDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
-        {/* Background */}
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent rounded-full blur-3xl"></div>
-        </div>
-        
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col relative overflow-hidden">
+
         
         <main className="flex-1 mt-16 relative z-10">
           <div className="container mx-auto px-4 py-8">
@@ -895,7 +889,7 @@ const ServiceDetailPage: React.FC = () => {
 
   if (!service) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-dark-tertiary/30 to-blue-50/20 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
         <div className="flex-1 flex items-center justify-center mt-16">
           <div className="text-center bg-dark-card rounded-2xl p-8 shadow-lg border border-dark-primary">
             <div className="w-16 h-16 bg-gradient-to-r from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -943,18 +937,7 @@ const ServiceDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
-      {/* Homepage-style Background with Grid Pattern */}
-      <div className="fixed inset-0 pointer-events-none">
-        {/* Enhanced grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-        
-        {/* Enhanced gradient orbs with glass effect */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-orange-200/30 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-amber-200/20 to-transparent rounded-full blur-3xl"></div>
-      </div>
-      
-      
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col relative overflow-hidden">
       <main className="flex-1 mt-16 relative z-10">
         <div className="container mx-auto px-4 py-8">
           {/* Enhanced Glass Morphism Breadcrumb */}
@@ -1412,7 +1395,7 @@ const ServiceDetailPage: React.FC = () => {
                   <div className="space-y-3 mb-6">
                     <button
                       onClick={handlePayNow}
-                      className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 px-6 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl border border-orange-500/20 backdrop-blur-sm flex items-center justify-center"
+                      className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 px-6 rounded-full font-bold hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-xl hover:shadow-2xl border border-orange-500/20 backdrop-blur-sm flex items-center justify-center"
                       style={{ boxShadow: '0 4px 24px rgba(249,115,22,0.3)' }}
                     >
                       <CreditCard className="w-5 h-5 mr-2" />
@@ -1422,7 +1405,7 @@ const ServiceDetailPage: React.FC = () => {
                     <button
                       onClick={handleBookNow}
                       disabled={bookingLoading}
-                      className="w-full bg-white/80 text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-dark-card transition-all duration-300 shadow-xl border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-xl"
+                      className="w-full bg-white text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {bookingLoading ? (
                         <div className="flex items-center justify-center gap-2">
@@ -1440,7 +1423,7 @@ const ServiceDetailPage: React.FC = () => {
                     <button
                       onClick={handleBookNow}
                       disabled={bookingLoading}
-                      className="w-full bg-white/80 text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-dark-card transition-all duration-300 shadow-xl border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-xl"
+                      className="w-full bg-white text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {bookingLoading ? (
                         <div className="flex items-center justify-center gap-2">

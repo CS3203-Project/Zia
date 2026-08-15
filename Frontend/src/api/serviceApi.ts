@@ -128,6 +128,7 @@ export const serviceApi = {
     providerId?: string;
     categoryId?: string;
     isActive?: boolean;
+    search?: string;
     skip?: number;
     take?: number;
   }, abortSignal?: AbortSignal): Promise<ServiceListResponse> => {

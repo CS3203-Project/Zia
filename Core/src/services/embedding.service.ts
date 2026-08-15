@@ -17,7 +17,7 @@ export class EmbeddingService {
     // Use Gemini API for embeddings
     this.apiKey = process.env.GEMINI_API_KEY || '';
     this.apiUrl = process.env.EMBEDDING_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models';
-    this.model = process.env.EMBEDDING_MODEL || 'text-embedding-004'; // Gemini text embedding model
+    this.model = process.env.EMBEDDING_MODEL || 'gemini-embedding-001'; // Gemini text embedding model
   }
 
   /**
@@ -134,7 +134,8 @@ export class EmbeddingService {
           parts: [{
             text: text
           }]
-        }
+        },
+        outputDimensionality: 768
       })
     });
 

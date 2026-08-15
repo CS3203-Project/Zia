@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Search, Loader2, Sparkles, ArrowRight, Asterisk, Star, ShieldCheck, TrendingUp, Users, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { hybridSearchApi, type LocationParams } from '../../api/hybridSearchApi';
+import { serviceApi } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
 import Button from '../../components/shared/Button';
 
@@ -16,6 +17,7 @@ export default function Homepage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [locationFilter, setLocationFilter] = useState<LocationParams | null>(null);
+  const [aiSearchEnabled, setAiSearchEnabled] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const popularSearches: string[] = [
@@ -43,10 +45,71 @@ export default function Homepage() {
       return;
     }
 
+    // Plain keyword search is the default; AI Search only runs when explicitly toggled on
+    if (!aiSearchEnabled && !hasLocation) {
+      try {
+        setIsSearching(true);
+        const response = await serviceApi.getServices({
+          search: searchQuery.trim(),
+          isActive: true,
+          take: 20
+        });
+
+        if (response.success) {
+          const results = response.data.map((service) => ({
+            id: service.id,
+            title: service.title || '',
+            description: service.description || '',
+            price: typeof service.price === 'string' ? parseFloat(service.price) : service.price,
+            currency: service.currency,
+            tags: service.tags,
+            images: service.images,
+            similarity: 1,
+            provider: {
+              id: service.provider?.id || '',
+              user: {
+                firstName: service.provider?.user?.firstName || '',
+                lastName: service.provider?.user?.lastName || ''
+              }
+            },
+            category: {
+              id: service.category?.id || '',
+              name: service.category?.name || ''
+            },
+            latitude: service.latitude,
+            longitude: service.longitude,
+            address: service.address,
+            city: service.city,
+            state: service.state,
+            country: service.country,
+            postalCode: service.postalCode,
+            serviceRadiusKm: service.serviceRadiusKm,
+            distance_km: null
+          }));
+
+          navigate('/search-results-enhanced', {
+            state: {
+              results,
+              query: searchQuery.trim(),
+              searchType: 'general'
+            }
+          });
+        } else {
+          alert('Search failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('❌ Search error:', error);
+        alert('Search failed. Please try again.');
+      } finally {
+        setIsSearching(false);
+      }
+      return;
+    }
+
     try {
       setIsSearching(true);
-      console.log('🔍 Performing hybrid search for:', searchQuery, 'with location:', locationFilter);
-      
+      console.log('🔍 Performing AI search for:', searchQuery, 'with location:', locationFilter);
+
       const response = await hybridSearchApi.searchServices({
         query: hasQuery ? searchQuery.trim() : undefined,
         location: hasLocation ? locationFilter : undefined,
@@ -57,11 +120,11 @@ export default function Homepage() {
 
       if (response.success) {
         console.log('✅ Search results:', response.data);
-        
+
         // Navigate to enhanced search results page
-        navigate('/search-results-enhanced', { 
-          state: { 
-            results: response.data.results, 
+        navigate('/search-results-enhanced', {
+          state: {
+            results: response.data.results,
             query: hasQuery ? searchQuery.trim() : undefined,
             location: hasLocation ? {
               latitude: locationFilter.latitude,
@@ -69,7 +132,7 @@ export default function Homepage() {
               radius: locationFilter.radius || 10
             } : undefined,
             searchType: response.data.searchType
-          } 
+          }
         });
       } else {
         console.error('❌ Search failed:', response.message);
@@ -170,6 +233,23 @@ export default function Homepage() {
                     ) : (
                       <Search className="h-4 w-4" />
                     )}
+                  </button>
+                </div>
+
+                {/* AI Search Toggle */}
+                <div className="mt-2.5 flex justify-center lg:justify-start">
+                  <button
+                    type="button"
+                    onClick={() => setAiSearchEnabled((prev) => !prev)}
+                    aria-pressed={aiSearchEnabled}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 ${
+                      aiSearchEnabled
+                        ? 'bg-orange-500 border-orange-500 text-white shadow-sm'
+                        : 'bg-white border-gray-200 text-gray-500 hover:border-orange-300 hover:text-orange-600'
+                    }`}
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    AI Search
                   </button>
                 </div>
 

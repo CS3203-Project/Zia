@@ -129,10 +129,10 @@ const SearchResultsPageEnhanced: React.FC = () => {
 
   const getSearchTypeLabel = () => {
     switch (searchType) {
-      case 'hybrid': return 'Smart Search (Text + Location)';
-      case 'semantic': return 'Semantic Search';
+      case 'hybrid': return 'AI Search + Location';
+      case 'semantic': return 'AI Search';
       case 'location': return 'Location-based Search';
-      case 'general': return 'General Search';
+      case 'general': return 'Search Results';
       default: return 'Search Results';
     }
   };

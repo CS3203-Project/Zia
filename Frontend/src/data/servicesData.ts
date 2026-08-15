@@ -114,7 +114,7 @@ export const categoriesData: ServiceCategory[] = [
     title: "Creative Services",
     description: "Design, photography, writing",
     icon: Sparkles,
-    gradient: "from-purple-400 to-pink-500",
+    gradient: "from-orange-400 to-red-500",
     subcategories: [
         { id: 'c1', name: "Graphic Design", slug: "graphic-design", description: "Logos, branding, and illustrations.", icon: PenTool },
         { id: 'c2', name: "Photography", slug: "photography", description: "Portraits, events, and products.", icon: Camera },
@@ -126,7 +126,7 @@ export const categoriesData: ServiceCategory[] = [
     title: "Technical Services",
     description: "IT support, web development",
     icon: Globe,
-    gradient: "from-cyan-400 to-blue-500",
+    gradient: "from-amber-500 to-orange-600",
     subcategories: [
         { id: 't1', name: "Web Development", slug: "web-development", description: "Custom websites and applications.", icon: Code },
         { id: 't2', name: "IT Support", slug: "it-support", description: "Troubleshooting and tech help.", icon: Shield },
@@ -138,7 +138,7 @@ export const categoriesData: ServiceCategory[] = [
     title: "Personal Care",
     description: "Beauty, wellness, fitness",
     icon: UserCheck,
-    gradient: "from-pink-400 to-red-500",
+    gradient: "from-orange-400 to-amber-600",
     subcategories: [
         { id: 'pc1', name: "Fitness Training", slug: "fitness-training", description: "Personal trainers and workout plans.", icon: TrendingUp },
         { id: 'pc2', name: "Beauty Services", slug: "beauty-services", description: "Makeup, hair, and skin care.", icon: Sparkles },
@@ -150,7 +150,7 @@ export const categoriesData: ServiceCategory[] = [
     title: "Business Services",
     description: "Accounting, marketing, legal",
     icon: BarChart3,
-    gradient: "from-indigo-400 to-purple-500",
+    gradient: "from-red-400 to-orange-500",
     subcategories: [
         { id: 'b1', name: "Accounting", slug: "accounting", description: "Bookkeeping and financial advice.", icon: DollarSign },
         { id: 'b2', name: "Digital Marketing", slug: "digital-marketing", description: "SEO, social media, and ads.", icon: TrendingUp },

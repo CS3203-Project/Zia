@@ -144,26 +144,22 @@ const RatingModal: React.FC<RatingModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={handleClose}
       />
 
       {/* Modal */}
-      <div className="relative bg-black/90 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        {/* Background gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse rounded-2xl"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-
+      <div className="relative bg-white rounded-2xl border border-gray-100 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="relative z-10 p-6 border-b border-white/20">
+        <div className="relative z-10 p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-gray-900">
               {ratingType === 'customer' ? '⭐ Rate Customer' : '⭐ Rate Service'}
             </h2>
             <button
               onClick={handleClose}
               disabled={loading}
-              className="p-2 text-white/70 hover:text-white rounded-lg hover:bg-white/10 transition-all duration-300 disabled:opacity-50"
+              className="p-2 text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-100 transition-all duration-300 disabled:opacity-50"
             >
               <X className="w-5 h-5" />
             </button>
@@ -175,7 +171,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Rating Stars */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-white/80">
+              <label className="block text-sm font-medium text-gray-700">
                 Rating (1-5 stars)
               </label>
               <div className="flex items-center space-x-1">
@@ -191,14 +187,14 @@ const RatingModal: React.FC<RatingModalProps> = ({
                     <Star
                       className={`w-8 h-8 ${
                         star <= (hoverRating || rating)
-                          ? 'text-white fill-white'
-                          : 'text-white/30 hover:text-white/60'
+                          ? 'text-amber-400 fill-amber-400'
+                          : 'text-gray-300 hover:text-amber-300'
                       } transition-colors duration-200`}
                     />
                   </button>
                 ))}
               </div>
-              <div className="text-sm text-white/60">
+              <div className="text-sm text-gray-500">
                 {rating === 1 && 'Poor'}
                 {rating === 2 && 'Fair'}
                 {rating === 3 && 'Good'}
@@ -209,7 +205,7 @@ const RatingModal: React.FC<RatingModalProps> = ({
 
             {/* Comment */}
             <div className="space-y-3">
-              <label className="block text-sm font-medium text-white/80">
+              <label className="block text-sm font-medium text-gray-700">
                 Comment (Optional)
               </label>
               <textarea
@@ -217,20 +213,20 @@ const RatingModal: React.FC<RatingModalProps> = ({
                 onChange={(e) => setComment(e.target.value)}
                 placeholder={ratingType === 'customer' ? 'Share your experience with this customer...' : 'Share your experience with this service...'}
                 rows={4}
-                className="w-full p-4 border border-white/30 rounded-xl bg-white/10 text-white placeholder-white/50 backdrop-blur-sm focus:ring-2 focus:ring-blue-400 focus:border-blue-400 resize-none"
+                className="w-full p-4 border border-gray-300 rounded-xl bg-gray-50 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 resize-none"
               />
             </div>
 
             {/* Error/Success Messages */}
             {error && (
-              <div className="p-4 bg-red-500/20 border border-red-400/30 rounded-xl">
-                <p className="text-red-400 text-sm">{error}</p>
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                <p className="text-red-600 text-sm">{error}</p>
               </div>
             )}
 
             {success && (
-              <div className="p-4 bg-green-500/20 border border-green-400/30 rounded-xl">
-                <p className="text-green-400 text-sm">
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                <p className="text-emerald-600 text-sm">
                   {existingReview ? 'Review updated successfully!' : 'Review submitted successfully!'}
                 </p>
               </div>
@@ -242,14 +238,14 @@ const RatingModal: React.FC<RatingModalProps> = ({
                 type="button"
                 onClick={handleClose}
                 disabled={loading}
-                className="flex-1 px-4 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-300 font-medium border border-white/30 hover:border-white/40 disabled:opacity-50"
+                className="flex-1 px-4 py-3 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition-all duration-300 font-medium border border-gray-200 hover:border-gray-300 disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-4 py-3 bg-blue-500/20 text-blue-400 rounded-xl hover:bg-blue-500/30 transition-all duration-300 font-medium border border-blue-400/30 hover:border-blue-400/50 disabled:opacity-50 flex items-center justify-center space-x-2"
+                className="flex-1 px-4 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all duration-300 font-medium border border-orange-500 disabled:opacity-50 flex items-center justify-center space-x-2"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 <span>{loading ? 'Submitting...' : (existingReview ? 'Update Review' : 'Submit Review')}</span>

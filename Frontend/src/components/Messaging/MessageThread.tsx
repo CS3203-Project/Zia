@@ -206,8 +206,8 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
 
   const renderEmptyState = (title: string, description: string) => (
     <div className="flex h-full items-center justify-center p-6">
-      <div className="max-w-sm rounded-lg border border-white/10 bg-white/5 p-8 text-center shadow-lg">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white/70">
+      <div className="max-w-sm rounded-lg border border-gray-100 bg-gray-50 p-8 text-center shadow-sm">
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-50 text-orange-500">
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
@@ -217,15 +217,15 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
             />
           </svg>
         </div>
-        <p className="text-base font-semibold text-white">{title}</p>
-        <p className="mt-2 text-sm text-white/60">{description}</p>
+        <p className="text-base font-semibold text-gray-900">{title}</p>
+        <p className="mt-2 text-sm text-gray-500">{description}</p>
       </div>
     </div>
   );
 
   if (!activeConversation) {
     return (
-      <div className={`flex h-full flex-col bg-neutral-950 ${className}`}>
+      <div className={`flex h-full flex-col bg-white ${className}`}>
         {renderEmptyState('No conversation selected', 'Choose a conversation to start messaging.')}
       </div>
     );
@@ -233,14 +233,14 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
 
   if (error) {
     return (
-      <div className={`flex h-full flex-col bg-neutral-950 ${className}`}>
+      <div className={`flex h-full flex-col bg-white ${className}`}>
         <div className="flex h-full items-center justify-center p-6">
-          <div className="max-w-sm rounded-lg border border-red-400/20 bg-red-500/10 p-8 text-center">
-            <p className="text-base font-semibold text-white">Connection error</p>
-            <p className="mt-2 text-sm text-white/70">{error}</p>
+          <div className="max-w-sm rounded-lg border border-red-200 bg-red-50 p-8 text-center">
+            <p className="text-base font-semibold text-gray-900">Connection error</p>
+            <p className="mt-2 text-sm text-gray-600">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-5 rounded-md border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/15"
+              className="mt-5 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               Retry
             </button>
@@ -255,21 +255,21 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
     : `User ${otherUserId?.slice(-8) ?? 'Unknown'}`;
 
   return (
-    <div className={`flex h-full flex-col bg-neutral-950 ${className}`}>
-      <div className="border-b border-white/10 bg-neutral-900/80 px-4 py-3 backdrop-blur">
+    <div className={`flex h-full flex-col bg-white ${className}`}>
+      <div className="border-b border-gray-100 bg-white px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-sm font-semibold text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-sm font-semibold text-orange-700">
             {contactName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <h3 className="truncate text-sm font-semibold text-white">{contactName}</h3>
+            <h3 className="truncate text-sm font-semibold text-gray-900">{contactName}</h3>
             <div className="mt-1 flex items-center gap-2 text-xs">
               <span
                 className={`h-2 w-2 rounded-full ${
-                  isContactOnline ? 'bg-emerald-400' : 'bg-white/25'
+                  isContactOnline ? 'bg-emerald-500' : 'bg-gray-300'
                 }`}
               />
-              <span className={isContactOnline ? 'text-emerald-300' : 'text-white/55'}>
+              <span className={isContactOnline ? 'text-emerald-600' : 'text-gray-400'}>
                 {isContactOnline ? 'Online' : 'Offline'}
               </span>
             </div>
@@ -282,11 +282,11 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
         onScroll={() => {
           void handleScroll();
         }}
-        className="flex-1 overflow-y-auto bg-neutral-950 px-4 py-4"
+        className="flex-1 overflow-y-auto bg-gradient-to-b from-orange-50/40 to-white px-4 py-4"
       >
         {loading && messages.length > 0 && (
           <div className="mb-4 flex justify-center">
-            <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
+            <div className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs text-gray-500 shadow-sm">
               Loading older messages...
             </div>
           </div>
@@ -296,9 +296,9 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
           <div className="space-y-3">
             {[0, 1, 2].map((row) => (
               <div key={row} className={`flex ${row % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
-                <div className="w-full max-w-xs rounded-2xl bg-white/6 px-4 py-3 md:max-w-md">
-                  <div className="h-3 animate-pulse rounded bg-white/10" />
-                  <div className="mt-2 h-3 w-3/4 animate-pulse rounded bg-white/10" />
+                <div className="w-full max-w-xs rounded-2xl bg-gray-100 px-4 py-3 md:max-w-md">
+                  <div className="h-3 animate-pulse rounded bg-gray-200" />
+                  <div className="mt-2 h-3 w-3/4 animate-pulse rounded bg-gray-200" />
                 </div>
               </div>
             ))}
@@ -310,7 +310,7 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
             {messageGroups.map((group) => (
               <section key={group.date} className="space-y-3">
                 <div className="flex justify-center">
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/50">
+                  <span className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs text-gray-500 shadow-sm">
                     {formatDate(group.date)}
                   </span>
                 </div>
@@ -327,8 +327,8 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
                         <div
                           className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm md:max-w-[70%] ${
                             isOwnMessage
-                              ? 'bg-emerald-500 text-emerald-950'
-                              : 'border border-white/10 bg-white/6 text-white'
+                              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                              : 'border border-gray-100 bg-white text-gray-900'
                           }`}
                         >
                           <p className="whitespace-pre-wrap break-words text-sm leading-6">
@@ -336,7 +336,7 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
                           </p>
                           <div
                             className={`mt-2 flex items-center justify-end gap-2 text-[11px] ${
-                              isOwnMessage ? 'text-emerald-950/70' : 'text-white/45'
+                              isOwnMessage ? 'text-white/70' : 'text-gray-400'
                             }`}
                           >
                             <span>{formatTime(message.createdAt)}</span>
@@ -355,7 +355,7 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t border-white/10 bg-neutral-900/80 px-4 py-3 backdrop-blur">
+      <div className="border-t border-gray-100 bg-white px-4 py-3">
         <form onSubmit={handleSendMessage} className="flex items-end gap-3">
           <textarea
             ref={textAreaRef}
@@ -365,17 +365,17 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
             placeholder="Type your message"
             rows={1}
             disabled={sending}
-            className="min-h-[44px] max-h-[140px] flex-1 resize-none rounded-xl border border-white/10 bg-white/6 px-3 py-3 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-emerald-400/50 focus:bg-white/8"
+            className="min-h-[44px] max-h-[140px] flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white"
           />
           <button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="flex h-11 min-w-[88px] items-center justify-center rounded-xl bg-emerald-500 px-4 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/35"
+            className="flex h-11 min-w-[88px] items-center justify-center rounded-xl bg-orange-500 px-4 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
           >
             {sending ? 'Sending...' : 'Send'}
           </button>
         </form>
-        <p className="mt-2 text-xs text-white/40">Enter to send. Shift+Enter for a new line.</p>
+        <p className="mt-2 text-xs text-gray-400">Enter to send. Shift+Enter for a new line.</p>
       </div>
     </div>
   );

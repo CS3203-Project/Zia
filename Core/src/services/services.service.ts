@@ -31,6 +31,7 @@ interface ServiceFilters {
   providerId?: string;
   categoryId?: string;
   isActive?: boolean;
+  search?: string;
   skip?: number;
   take?: number;
 }
@@ -188,15 +189,23 @@ export const getServices = async (filters: ServiceFilters = {}) => {
       providerId,
       categoryId,
       isActive = true, // Default to active services only
+      search,
       skip = 0,
       take = 20 // Increased default for better UX
     } = filters;
 
     const whereClause: any = {};
-    
+
     if (providerId) whereClause.providerId = providerId;
     if (categoryId) whereClause.categoryId = categoryId;
     if (isActive !== undefined) whereClause.isActive = isActive;
+    if (search && search.trim()) {
+      whereClause.OR = [
+        { title: { contains: search.trim(), mode: 'insensitive' } },
+        { description: { contains: search.trim(), mode: 'insensitive' } },
+        { tags: { has: search.trim().toLowerCase() } }
+      ];
+    }
 
     const services = await prisma.service.findMany({
       where: whereClause,

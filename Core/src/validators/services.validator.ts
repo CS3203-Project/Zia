@@ -222,6 +222,7 @@ export const getServicesQuerySchema = Joi.object({
   providerId: Joi.string().optional(),
   categoryId: Joi.string().optional(),
   isActive: Joi.string().valid('true', 'false').optional(),
+  search: Joi.string().optional(),
   skip: Joi.number().integer().min(0).optional().default(0),
   take: Joi.number().integer().min(1).max(100).optional().default(10)
 });
