@@ -1084,10 +1084,10 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-amber-50 rounded-2xl p-4">
+                <div className="bg-white rounded-2xl p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-amber-700" />
+                    <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-orange-700" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-gray-500">Location</p>
@@ -1097,7 +1097,7 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-orange-50 rounded-2xl p-4">
+                <div className="bg-white rounded-2xl p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
                       <User className="w-4 h-4 text-orange-700" />
