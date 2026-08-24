@@ -136,7 +136,7 @@ export default function Articles() {
   const featuredArticles = articles.filter(article => article.featured)
 
   return (
-    <div className="min-h-screen bg-dark-primary">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       
       {/* Header Section */}
       <div className="bg-gradient-to-br from-dark-900 via-dark-800 to-black text-white">

@@ -283,7 +283,7 @@ const ServiceCategoryPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-primary relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
         {/* Square Grid Background with fade */}
         <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
         
@@ -363,7 +363,7 @@ const ServiceCategoryPage: React.FC = () => {
 
   if (error || !category) {
     return (
-      <div className="min-h-screen bg-dark-primary relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
         {/* Enhanced Square Grid Background with fade effect */}
         <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
         
@@ -420,7 +420,7 @@ const ServiceCategoryPage: React.FC = () => {
     : category.name;
 
   return (
-    <div className="min-h-screen bg-dark-primary relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
       {/* Enhanced Square Grid Background with fade effect */}
       <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
       

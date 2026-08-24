@@ -407,7 +407,7 @@ const BrowseServices: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-primary relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
       {/* Square Grid Background - Subtle with Smooth Fade */}
       <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
 

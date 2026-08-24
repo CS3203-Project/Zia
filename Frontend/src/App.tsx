@@ -31,6 +31,7 @@ const PaymentHistory = lazy(() => import('./Pages/payments/PaymentHistory.tsx'))
 const ProviderEarnings = lazy(() => import('./Pages/provider/ProviderEarnings.tsx'));
 const CheckoutPage = lazy(() => import('./Pages/payments/CheckoutPage.tsx'));
 const NotificationsPage = lazy(() => import('./Pages/account/NotificationsPage'));
+const NotFound = lazy(() => import('./Pages/marketing/NotFound.tsx'));
 
 function App() {
   return (
@@ -72,6 +73,8 @@ function App() {
             <Route path="/payment-history" element={<PaymentHistory />} />
             <Route path="/provider-earnings" element={<ProviderEarnings />} />
             <Route path="/notifications" element={<NotificationsPage />} />
+
+            <Route path="*" element={<NotFound />} />
 
           </Routes>
           </Suspense>

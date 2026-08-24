@@ -1,13 +1,13 @@
 import ServicesGrid from '../../components/shared/ServicesGrid';
 import useServices from '../../hooks/useServices';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Search, Loader2, Sparkles, ArrowRight, Asterisk, Star, ShieldCheck, TrendingUp, Users, Clock } from 'lucide-react';
+import { Hammer, Wrench, Zap, SprayCan, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { hybridSearchApi, type LocationParams } from '../../api/hybridSearchApi';
-import { serviceApi } from '../../api/serviceApi';
+import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
 import Button from '../../components/shared/Button';
-import Card from '../../components/shared/Card';
 import Chip from '../../components/shared/Chip';
 
 export default function Homepage() {
@@ -21,6 +21,100 @@ export default function Homepage() {
   const [locationFilter, setLocationFilter] = useState<LocationParams | null>(null);
   const [aiSearchEnabled, setAiSearchEnabled] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const jobCategories = [
+    {
+      icon: Hammer,
+      title: 'Carpenter',
+      image: '/images/categories/carpenter.webp',
+      body: 'Custom furniture, repairs, and woodwork crafted by skilled, experienced hands.',
+      services: ['Custom furniture', 'Cabinet installation', 'Furniture repair', 'Decks & framing']
+    },
+    {
+      icon: Wrench,
+      title: 'Plumber',
+      image: '/images/categories/plumber.webp',
+      body: 'Leak fixes, pipe installations, and water systems handled with expertise.',
+      services: ['Leak repairs', 'Pipe installation', 'Drain cleaning', 'Water heater setup']
+    },
+    {
+      icon: Zap,
+      title: 'Electrician',
+      image: '/images/categories/electrician.webp',
+      body: 'Wiring, solar installs, and electrical repairs done safely and fast.',
+      services: ['Wiring & rewiring', 'Solar panel install', 'Fuse box repair', 'Lighting setup']
+    },
+    {
+      icon: SprayCan,
+      title: 'Cleaner',
+      image: '/images/categories/cleaner.webp',
+      body: 'Spotless homes and offices with reliable, thorough cleaning services.',
+      services: ['Home deep cleaning', 'Office cleaning', 'Move-in / move-out', 'Window washing']
+    }
+  ];
+
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [categoryResults, setCategoryResults] = useState<ServiceResponse[]>([]);
+  const [categoryResultsLoading, setCategoryResultsLoading] = useState(false);
+  const [categoryResultsError, setCategoryResultsError] = useState<string | null>(null);
+
+  const searchCategory = async (title: string) => {
+    setCategoryFilter(title);
+    setCategoryResultsLoading(true);
+    setCategoryResultsError(null);
+    try {
+      const response = await serviceApi.getServices({
+        search: title,
+        isActive: true,
+        take: 20
+      });
+      if (response.success) {
+        setCategoryResults(response.data);
+      } else {
+        setCategoryResultsError(response.message || 'Failed to load services');
+      }
+    } catch (err) {
+      console.error('Category search error:', err);
+      setCategoryResultsError('Failed to load services');
+    } finally {
+      setCategoryResultsLoading(false);
+    }
+    document.getElementById('featured-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const clearCategoryFilter = () => {
+    setCategoryFilter(null);
+    setCategoryResults([]);
+    setCategoryResultsError(null);
+  };
+
+  const [activeCategory, setActiveCategory] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (isCarouselPaused) return;
+    const timer = setInterval(() => {
+      setActiveCategory((prev) => (prev + 1) % jobCategories.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isCarouselPaused, jobCategories.length]);
+
+  const goToCategory = (index: number) => {
+    setActiveCategory((index + jobCategories.length) % jobCategories.length);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (delta > 50) goToCategory(activeCategory - 1);
+    else if (delta < -50) goToCategory(activeCategory + 1);
+    touchStartX.current = null;
+  };
 
   const popularSearches: string[] = [
     'Web Development',
@@ -36,84 +130,33 @@ export default function Homepage() {
     doSearch();
   };
 
-  const doSearch = async () => {
-    const hasQuery = searchQuery.trim().length > 0;
+  const doSearch = async (overrideQuery?: string) => {
+    const query = overrideQuery ?? searchQuery;
+    const hasQuery = query.trim().length > 0;
     const hasLocation = locationFilter?.latitude !== undefined && locationFilter?.longitude !== undefined;
 
     // Allow search with just query OR just location OR both
     if (!hasQuery && !hasLocation) {
-      console.log('No search query or location provided - redirecting to browse');
-      navigate('/services');
+      clearCategoryFilter();
+      document.getElementById('featured-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
 
-    // Plain keyword search is the default; AI Search only runs when explicitly toggled on
+    // Plain keyword search is the default; AI Search only runs when explicitly toggled on.
+    // Shown in-place in the Featured Services section rather than navigating away.
     if (!aiSearchEnabled && !hasLocation) {
-      try {
-        setIsSearching(true);
-        const response = await serviceApi.getServices({
-          search: searchQuery.trim(),
-          isActive: true,
-          take: 20
-        });
-
-        if (response.success) {
-          const results = response.data.map((service) => ({
-            id: service.id,
-            title: service.title || '',
-            description: service.description || '',
-            price: typeof service.price === 'string' ? parseFloat(service.price) : service.price,
-            currency: service.currency,
-            tags: service.tags,
-            images: service.images,
-            similarity: 1,
-            provider: {
-              id: service.provider?.id || '',
-              user: {
-                firstName: service.provider?.user?.firstName || '',
-                lastName: service.provider?.user?.lastName || ''
-              }
-            },
-            category: {
-              id: service.category?.id || '',
-              name: service.category?.name || ''
-            },
-            latitude: service.latitude,
-            longitude: service.longitude,
-            address: service.address,
-            city: service.city,
-            state: service.state,
-            country: service.country,
-            postalCode: service.postalCode,
-            serviceRadiusKm: service.serviceRadiusKm,
-            distance_km: null
-          }));
-
-          navigate('/services/search', {
-            state: {
-              results,
-              query: searchQuery.trim(),
-              searchType: 'general'
-            }
-          });
-        } else {
-          alert('Search failed. Please try again.');
-        }
-      } catch (error) {
-        console.error('❌ Search error:', error);
-        alert('Search failed. Please try again.');
-      } finally {
-        setIsSearching(false);
-      }
+      setIsSearching(true);
+      await searchCategory(query.trim());
+      setIsSearching(false);
       return;
     }
 
     try {
       setIsSearching(true);
-      console.log('🔍 Performing AI search for:', searchQuery, 'with location:', locationFilter);
+      console.log('🔍 Performing AI search for:', query, 'with location:', locationFilter);
 
       const response = await hybridSearchApi.searchServices({
-        query: hasQuery ? searchQuery.trim() : undefined,
+        query: hasQuery ? query.trim() : undefined,
         location: hasLocation ? locationFilter : undefined,
         threshold: 0.4,
         limit: 20,
@@ -127,7 +170,7 @@ export default function Homepage() {
         navigate('/services/search', {
           state: {
             results: response.data.results,
-            query: hasQuery ? searchQuery.trim() : undefined,
+            query: hasQuery ? query.trim() : undefined,
             location: hasLocation ? {
               latitude: locationFilter.latitude,
               longitude: locationFilter.longitude,
@@ -149,7 +192,7 @@ export default function Homepage() {
   };
 
   return (
-    <div className="min-h-screen bg-dark-primary relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
       {/* Content Overlay */}
       <div className="relative">
         {/* Hero Section - fits one viewport height on desktop (no scroll); flows naturally on mobile */}
@@ -264,14 +307,7 @@ export default function Homepage() {
                       key={search}
                       onClick={() => {
                         setSearchQuery(search);
-                        setTimeout(() => {
-                          const hasQuery = search.trim().length > 0;
-                          const hasLocation = locationFilter?.latitude !== undefined && locationFilter?.longitude !== undefined;
-
-                          if (hasQuery || hasLocation) {
-                            doSearch();
-                          }
-                        }, 100);
+                        doSearch(search);
                       }}
                       className="h-7 px-3 text-xs"
                     >
@@ -369,86 +405,149 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Feature Cards Section */}
+        {/* Job Categories Section */}
         <section className="py-14 px-4 sm:px-6 lg:px-8 bg-white">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
             <div className="text-center mb-10">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Why Choose Our Platform
+                Popular Job Categories
               </h2>
               <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-                Experience a seamless way to connect with professionals and grow your business
+                Browse skilled professionals across our most in-demand trades
               </p>
             </div>
 
-            {/* Feature Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  icon: Sparkles,
-                  title: 'AI-Powered Search',
-                  body: "Find exactly what you need with our intelligent search algorithm that understands your requirements and delivers relevant results instantly."
-                },
-                {
-                  icon: Search,
-                  title: 'Location-Based Discovery',
-                  body: "Connect with service providers near you. Our advanced geolocation features help you find local professionals within your preferred radius."
-                },
-                {
-                  icon: ShieldCheck,
-                  title: 'Verified Professionals',
-                  body: "Every service provider is thoroughly vetted and verified. Work with confidence knowing you're hiring trusted and qualified professionals."
-                }
-              ].map(({ icon: Icon, title, body }) => (
-                <Card key={title} interactive className="h-full flex flex-col">
-                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
-                    <Icon className="w-7 h-7 text-orange-700" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {title}
-                  </h3>
-                  <p className="text-gray-500 leading-relaxed flex-grow">
-                    {body}
-                  </p>
-                </Card>
-              ))}
+            {/* Job Category Carousel */}
+            <div
+              onMouseEnter={() => setIsCarouselPaused(true)}
+              onMouseLeave={() => setIsCarouselPaused(false)}
+            >
+              {/* Slide track */}
+              <div
+                className="relative overflow-hidden rounded-3xl shadow-xl shadow-orange-500/20"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                <div
+                  className="flex transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(-${activeCategory * 100}%)` }}
+                >
+                  {jobCategories.map(({ title, image, body, services }) => (
+                    <div
+                      key={title}
+                      className="w-full flex-shrink-0 grid grid-cols-1 md:grid-cols-2 items-center gap-8 p-6 sm:p-12 bg-gradient-to-br from-orange-500 to-amber-600"
+                    >
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => searchCategory(title)}
+                        onKeyDown={(e) => e.key === 'Enter' && searchCategory(title)}
+                        aria-label={`Search for ${title} services`}
+                        className="flex items-center justify-center h-80 sm:h-[32rem] order-1 cursor-pointer"
+                      >
+                        <img
+                          src={image}
+                          alt={`Illustration of a professional ${title.toLowerCase()}`}
+                          className="h-full w-auto max-w-full object-contain select-none pointer-events-none"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="order-2 text-center md:text-left">
+                        <p className="text-orange-50 leading-relaxed mb-7 text-xl sm:text-2xl">
+                          {body}
+                        </p>
+
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4 text-lg text-white max-w-md mx-auto md:mx-0">
+                          {services.map((service) => (
+                            <li key={service} className="flex items-center gap-2.5">
+                              <Check className="h-5 w-5 text-white flex-shrink-0" />
+                              {service}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Prev/Next arrows */}
+                <button
+                  onClick={() => goToCategory(activeCategory - 1)}
+                  aria-label="Previous category"
+                  className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition-colors"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => goToCategory(activeCategory + 1)}
+                  aria-label="Next category"
+                  className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition-colors"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Dot indicators */}
+              <div className="flex items-center justify-center gap-2 mt-6">
+                {jobCategories.map(({ title }, index) => (
+                  <button
+                    key={title}
+                    onClick={() => goToCategory(index)}
+                    aria-label={`Go to ${title} slide`}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === activeCategory ? 'w-6 bg-orange-600' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
         
         {/* Services Section */}
-        <section className="py-14 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <section id="featured-services" className="py-14 px-4 sm:px-6 lg:px-8 bg-gray-50 scroll-mt-20">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-10">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Featured Services
+                {categoryFilter ? `${categoryFilter} Services` : 'Featured Services'}
               </h2>
               <p className="text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">
-                Discover professional services from our verified providers.
-                Quality guaranteed, satisfaction assured.
+                {categoryFilter
+                  ? `Showing results for "${categoryFilter}"`
+                  : 'Discover professional services from our verified providers. Quality guaranteed, satisfaction assured.'}
               </p>
+              {categoryFilter && (
+                <button
+                  onClick={clearCategoryFilter}
+                  className="mt-4 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold bg-white border border-gray-200 text-gray-600 hover:border-orange-300 hover:text-orange-700 transition-colors"
+                >
+                  Clear filter
+                </button>
+              )}
             </div>
 
-            <ServicesGrid 
-              services={services} 
-              loading={loading} 
-              error={error} 
+            <ServicesGrid
+              services={categoryFilter ? categoryResults : services}
+              loading={categoryFilter ? categoryResultsLoading : loading}
+              error={categoryFilter ? categoryResultsError : error}
             />
-            
+
             {/* Refresh Button - Show for both errors AND when no services found */}
-            {(error || (!loading && services.length === 0)) && (
+            {((categoryFilter ? categoryResultsError : error) ||
+              (!(categoryFilter ? categoryResultsLoading : loading) &&
+                (categoryFilter ? categoryResults : services).length === 0)) && (
               <div className="text-center mt-12">
                 <Button
-                  onClick={refetch}
+                  onClick={() => (categoryFilter ? searchCategory(categoryFilter) : refetch())}
                   size="lg"
                   className="px-8 py-4 rounded-full text-lg shadow-lg shadow-orange-500/30 hover:scale-105 transition-all duration-300"
                 >
-                  {error ? 'Try Again' : 'Refresh Services'}
+                  {(categoryFilter ? categoryResultsError : error) ? 'Try Again' : 'Refresh Services'}
                 </Button>
-                {error && (
+                {(categoryFilter ? categoryResultsError : error) && (
                   <p className="text-red-500 text-lg mt-4 font-medium">
-                    Error: {error}
+                    Error: {categoryFilter ? categoryResultsError : error}
                   </p>
                 )}
               </div>

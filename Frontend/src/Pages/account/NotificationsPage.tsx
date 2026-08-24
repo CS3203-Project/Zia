@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Bell, Check, CheckCheck, Clock, AlertCircle, ShoppingCart, MessageSquare, Star } from 'lucide-react';
+import { Bell, Check, CheckCheck, Clock, AlertCircle, ShoppingCart, MessageSquare } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
 import { cn } from '../../utils/utils';
+import Button from '../../components/shared/Button';
 
 const NotificationsPage: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
@@ -23,15 +24,15 @@ const NotificationsPage: React.FC = () => {
   const getNotificationIcon = (emailType: string) => {
     switch (emailType) {
       case 'BOOKING_CONFIRMATION':
-        return <ShoppingCart className="h-5 w-5 text-dark-primary" />;
+        return <ShoppingCart className="h-5 w-5 text-orange-600" />;
       case 'BOOKING_REMINDER':
-        return <Clock className="h-5 w-5 text-dark-primary" />;
+        return <Clock className="h-5 w-5 text-orange-600" />;
       case 'BOOKING_CANCELLATION_MODIFICATION':
-        return <AlertCircle className="h-5 w-5 text-dark-primary" />;
+        return <AlertCircle className="h-5 w-5 text-orange-600" />;
       case 'NEW_MESSAGE_OR_REVIEW':
-        return <MessageSquare className="h-5 w-5 text-dark-primary" />;
+        return <MessageSquare className="h-5 w-5 text-orange-600" />;
       default:
-        return <Bell className="h-5 w-5 text-dark-secondary" />;
+        return <Bell className="h-5 w-5 text-orange-600" />;
     }
   };
 
@@ -47,12 +48,6 @@ const NotificationsPage: React.FC = () => {
     if (diffInDays < 7) return `${diffInDays}d ago`;
 
     return date.toLocaleDateString();
-  };
-
-  const stripHtmlTags = (html: string) => {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
   };
 
   const handleMarkAsRead = async (notificationId: string) => {
@@ -73,39 +68,21 @@ const NotificationsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative pt-20">
-        {/* Background Pattern */}
-        <div className="fixed inset-0 -z-10">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-black/10 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-dark-secondary/10 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl"></div>
-        </div>
-
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white pt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-4">
             {/* Skeleton Header */}
-            <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-              <div className="h-8 bg-gradient-to-r from-black/20 via-gray-400/30 to-black/20 rounded w-1/4 mb-4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
-              </div>
-              <div className="h-4 bg-gradient-to-r from-black/20 via-gray-400/30 to-black/20 rounded w-1/2 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
-              </div>
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 animate-pulse">
+              <div className="h-8 bg-gray-100 rounded-full w-1/4 mb-4" />
+              <div className="h-4 bg-gray-100 rounded-full w-1/2" />
             </div>
-            
+
             {/* Skeleton Notifications */}
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                <div className="h-6 bg-gradient-to-r from-black/20 via-gray-400/30 to-black/20 rounded w-3/4 mb-3 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
-                </div>
-                <div className="h-4 bg-gradient-to-r from-black/20 via-gray-400/30 to-black/20 rounded w-full mb-2 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
-                </div>
-                <div className="h-4 bg-gradient-to-r from-black/20 via-gray-400/30 to-black/20 rounded w-2/3 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer"></div>
-                </div>
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 animate-pulse">
+                <div className="h-6 bg-gray-100 rounded-full w-3/4 mb-3" />
+                <div className="h-4 bg-gray-100 rounded-full w-full mb-2" />
+                <div className="h-4 bg-gray-100 rounded-full w-2/3" />
               </div>
             ))}
           </div>
@@ -115,49 +92,45 @@ const NotificationsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen relative pt-20">
-      {/* Background Pattern */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-black/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-dark-secondary/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white pt-20">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8 bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-dark-primary flex items-center">
-                <Bell className="h-8 w-8 mr-3 text-dark-primary" />
-                Notifications
-              </h1>
-              <p className="mt-2 text-dark-secondary">
-                Stay updated with your service bookings and messages
-              </p>
+        <div className="mb-8 bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100">
+                <Bell className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Notifications
+                </h1>
+                <p className="mt-1 text-gray-500">
+                  Stay updated with your service bookings and messages
+                </p>
+              </div>
             </div>
 
             {/* Stats */}
             {stats && (
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-dark-primary">
+                  <div className="text-2xl font-bold text-gray-900">
                     {stats.total}
                   </div>
-                  <div className="text-sm text-dark-secondary">Total</div>
+                  <div className="text-sm text-gray-500">Total</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-dark-primary">
+                  <div className="text-2xl font-bold text-orange-600">
                     {stats.unread}
                   </div>
-                  <div className="text-sm text-dark-secondary">Unread</div>
+                  <div className="text-sm text-gray-500">Unread</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-dark-primary">
+                  <div className="text-2xl font-bold text-gray-900">
                     {stats.read}
                   </div>
-                  <div className="text-sm text-dark-secondary">Read</div>
+                  <div className="text-sm text-gray-500">Read</div>
                 </div>
               </div>
             )}
@@ -165,8 +138,8 @@ const NotificationsPage: React.FC = () => {
         </div>
 
         {/* Filters and Actions */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div className="flex gap-2">
             {[
               { key: 'all', label: 'All' },
               { key: 'unread', label: 'Unread' },
@@ -176,10 +149,10 @@ const NotificationsPage: React.FC = () => {
                 key={key}
                 onClick={() => setFilter(key as any)}
                 className={cn(
-                  'px-4 py-2 rounded-full font-medium transition-all duration-300',
+                  'px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200',
                   filter === key
-                    ? 'bg-orange-500 text-white shadow-xl'
-                    : 'bg-white/70 text-dark-secondary border border-white/20 backdrop-blur-xl hover:scale-105'
+                    ? 'bg-orange-600 text-white shadow-sm'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-700'
                 )}
               >
                 {label}
@@ -188,22 +161,19 @@ const NotificationsPage: React.FC = () => {
           </div>
 
           {stats && stats.unread > 0 && (
-            <button
-              onClick={handleMarkAllAsRead}
-              className="flex items-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl"
-            >
+            <Button onClick={handleMarkAllAsRead} className="px-6">
               <CheckCheck className="h-4 w-4 mr-2" />
               Mark All as Read
-            </button>
+            </Button>
           )}
         </div>
 
         {/* Error State */}
         {error && (
-          <div className="bg-white/60 backdrop-blur-xl border border-white/20 rounded-3xl p-6 mb-6 shadow-xl">
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-6 mb-6">
             <div className="flex items-center">
-              <AlertCircle className="h-5 w-5 text-dark-primary mr-2" />
-              <span className="text-dark-primary font-medium">{error}</span>
+              <AlertCircle className="h-5 w-5 text-red-500 mr-2 flex-shrink-0" />
+              <span className="text-red-700 font-medium">{error}</span>
             </div>
           </div>
         )}
@@ -211,12 +181,14 @@ const NotificationsPage: React.FC = () => {
         {/* Notifications List */}
         <div className="space-y-4">
           {filteredNotifications.length === 0 ? (
-            <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-12 text-center">
-              <Bell className="h-16 w-16 text-dark-muted mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-dark-primary mb-2">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 mx-auto mb-4">
+                <Bell className="h-8 w-8 text-orange-300" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 {filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
               </h3>
-              <p className="text-dark-secondary">
+              <p className="text-gray-500">
                 {filter === 'unread'
                   ? 'You have read all your notifications!'
                   : 'When you receive notifications, they will appear here.'
@@ -228,50 +200,51 @@ const NotificationsPage: React.FC = () => {
               <div
                 key={notification.id}
                 className={cn(
-                  'bg-white/70 backdrop-blur-2xl rounded-3xl border transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]',
+                  'relative bg-white rounded-2xl border transition-all duration-200 hover:shadow-md overflow-hidden',
                   notification.isRead
-                    ? 'border-white/20 shadow-xl'
-                    : 'border-white/30 shadow-2xl ring-2 ring-black/10'
+                    ? 'border-gray-100 shadow-sm'
+                    : 'border-orange-200 shadow-sm'
                 )}
               >
+                {!notification.isRead && (
+                  <span className="absolute left-0 top-0 h-full w-1 bg-orange-500" />
+                )}
                 <div className="p-6">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-4 flex-1">
-                      <div className="flex-shrink-0 mt-1">
+                    <div className="flex items-start space-x-4 flex-1 min-w-0">
+                      <div className="flex-shrink-0 mt-0.5 flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 relative">
                         {getNotificationIcon(notification.emailType)}
+                        {!notification.isRead && (
+                          <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-rose-500 ring-2 ring-white" />
+                        )}
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-4">
                           <h3
                             className={cn(
-                              'text-lg font-semibold truncate',
+                              'text-lg truncate',
                               notification.isRead
-                                ? 'text-dark-primary'
-                                : 'text-dark-primary font-bold'
+                                ? 'font-semibold text-gray-700'
+                                : 'font-bold text-gray-900'
                             )}
                           >
                             {notification.subject}
                           </h3>
-                          <span className="text-sm text-dark-secondary whitespace-nowrap ml-4">
+                          <span className="text-sm text-gray-400 whitespace-nowrap flex-shrink-0">
                             {formatDate(notification.createdAt)}
                           </span>
                         </div>
 
                         <div
-                          className={cn(
-                            'mt-2 text-sm prose prose-sm max-w-none',
-                            notification.isRead
-                              ? 'text-dark-secondary'
-                              : 'text-dark-secondary'
-                          )}
+                          className="mt-2 text-sm prose prose-sm max-w-none text-gray-500"
                           dangerouslySetInnerHTML={{ __html: notification.html }}
                         />
 
                         {!notification.isRead && (
                           <button
                             onClick={() => handleMarkAsRead(notification.id)}
-                            className="mt-3 flex items-center text-sm text-dark-primary hover:opacity-80 transition-all font-medium"
+                            className="mt-3 inline-flex items-center text-sm text-orange-600 hover:text-orange-700 transition-colors font-semibold"
                           >
                             <Check className="h-4 w-4 mr-1" />
                             Mark as read
@@ -291,5 +264,3 @@ const NotificationsPage: React.FC = () => {
 };
 
 export default NotificationsPage;
-
-

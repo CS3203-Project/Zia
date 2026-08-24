@@ -171,40 +171,42 @@ export default function SignupForm() {
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-center">
 
           {/* Left Side - Feature panel */}
-          <div className="hidden lg:flex lg:col-span-2 flex-col justify-center bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-8 text-white shadow-xl shadow-orange-500/20 h-full max-h-[640px]">
-            <h1 className="text-2xl xl:text-3xl font-bold leading-tight mb-3">
-              Join Zia and get
-              <br />
-              started today.
-            </h1>
-            <p className="text-orange-50 mb-8 leading-relaxed text-sm">
-              Create your account to book trusted professionals or start offering your own services.
-            </p>
+          <div className="hidden lg:flex lg:col-span-2 flex-col justify-center overflow-hidden bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-8 text-white shadow-xl shadow-orange-500/20 h-full max-h-[640px]">
+            <div className="relative z-10">
+              <h1 className="text-2xl xl:text-3xl font-bold leading-tight mb-3">
+                Join Zia and get
+                <br />
+                started today.
+              </h1>
+              <p className="text-orange-50 mb-8 leading-relaxed text-sm">
+                Create your account to book trusted professionals or start offering your own services.
+              </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <Compass className="h-4 w-4 text-white" />
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <Compass className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-sm text-white">Browse every service, no account needed to look around</p>
                 </div>
-                <p className="text-sm text-white">Browse every service, no account needed to look around</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <Zap className="h-4 w-4 text-white" />
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <Zap className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-sm text-white">Instant booking confirmations sent straight to your inbox</p>
                 </div>
-                <p className="text-sm text-white">Instant booking confirmations sent straight to your inbox</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <Award className="h-4 w-4 text-white" />
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <Award className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-sm text-white">Earn trust and reviews with every completed booking</p>
                 </div>
-                <p className="text-sm text-white">Earn trust and reviews with every completed booking</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <ShieldCheck className="h-4 w-4 text-white" />
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <ShieldCheck className="h-4 w-4 text-white" />
+                  </div>
+                  <p className="text-sm text-white">Secure checkout on every transaction</p>
                 </div>
-                <p className="text-sm text-white">Secure checkout on every transaction</p>
               </div>
             </div>
           </div>
