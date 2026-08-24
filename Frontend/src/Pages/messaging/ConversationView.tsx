@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, MessageCircle } from 'lucide-react';
 import { MessagingProvider, MessageThread, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
@@ -8,7 +7,12 @@ import type { UserProfile } from '../../api/userApi';
 import ConfirmationPanel from '../../components/Messaging/ConfirmationPanel';
 import RatingModal from '../../components/Messaging/RatingModal';
 import UserDetailsModal from '../../components/Messaging/UserDetailsModal';
-import Button from '../../components/shared/Button';
+import ConversationThreadHeader from '../../components/Messaging/ConversationThreadHeader';
+import MobileViewToggle from '../../components/Messaging/MobileViewToggle';
+import ConversationLoadingSkeleton from '../../components/Messaging/ConversationLoadingSkeleton';
+import ConversationNotFound from '../../components/Messaging/ConversationNotFound';
+import ConversationErrorState from '../../components/Messaging/ConversationErrorState';
+import ConversationPageSkeleton from '../../components/Messaging/ConversationPageSkeleton';
 
 const ConversationViewContent: React.FC<{ currentUser: UserProfile; conversationId: string }> = ({ currentUser, conversationId }) => {
   const [currentUserRole, setCurrentUserRole] = useState<'USER' | 'PROVIDER'>('USER');
@@ -34,10 +38,10 @@ const ConversationViewContent: React.FC<{ currentUser: UserProfile; conversation
 
   return (
     <MessagingProvider userId={currentUser.id}>
-      <ConversationViewInner 
-        conversationId={conversationId} 
-        currentUserRole={currentUserRole} 
-        currentUserId={currentUser.id} 
+      <ConversationViewInner
+        conversationId={conversationId}
+        currentUserRole={currentUserRole}
+        currentUserId={currentUser.id}
       />
     </MessagingProvider>
   );
@@ -56,26 +60,26 @@ const ConversationViewInner: React.FC<{
     loading
   } = useMessaging();
   const navigate = useNavigate();
-  const [conversationLoading, setConversationLoading] = useState(true);
+  const [isConversationLoading, setIsConversationLoading] = useState(true);
   const [conversationError, setConversationError] = useState<string | null>(null);
-  const [ratingModalOpen, setRatingModalOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratingType, setRatingType] = useState<'customer' | 'service'>('customer');
   const [serviceData, setServiceData] = useState<any>(null);
-  const [userDetailsModalOpen, setUserDetailsModalOpen] = useState(false);
-  const [showChatOnMobile, setShowChatOnMobile] = useState(true); // Default to showing chat on mobile
+  const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
+  const [isChatVisibleOnMobile, setIsChatVisibleOnMobile] = useState(true); // Default to showing chat on mobile
 
   // Auto-select conversation based on URL parameter
   useEffect(() => {
     const handleConversationSelection = async () => {
       if (!conversationId) {
         setConversationError('No conversation ID provided');
-        setConversationLoading(false);
+        setIsConversationLoading(false);
         return;
       }
 
       // If we already have the right conversation active, we're done
       if (activeConversation?.id === conversationId) {
-        setConversationLoading(false);
+        setIsConversationLoading(false);
         return;
       }
 
@@ -86,11 +90,11 @@ const ConversationViewInner: React.FC<{
           console.log('Selecting conversation from existing list:', conversationId);
           try {
             await selectConversation(targetConversation);
-            setConversationLoading(false);
+            setIsConversationLoading(false);
           } catch (error) {
             console.error('Failed to select conversation:', error);
             setConversationError('Failed to load conversation');
-            setConversationLoading(false);
+            setIsConversationLoading(false);
           }
         } else {
           // Conversation not found, try to refresh
@@ -100,7 +104,7 @@ const ConversationViewInner: React.FC<{
           } catch (error) {
             console.error('Failed to refresh conversations:', error);
             setConversationError('Conversation not found');
-            setConversationLoading(false);
+            setIsConversationLoading(false);
           }
         }
       }
@@ -111,23 +115,23 @@ const ConversationViewInner: React.FC<{
 
   // Handle conversation selection after conversations are loaded
   useEffect(() => {
-    if (conversationId && conversations.length > 0 && !activeConversation && conversationLoading) {
+    if (conversationId && conversations.length > 0 && !activeConversation && isConversationLoading) {
       const targetConversation = conversations.find((conv: any) => conv.id === conversationId);
       if (targetConversation) {
         console.log('Selecting conversation after conversations update:', conversationId);
         selectConversation(targetConversation).then(() => {
-          setConversationLoading(false);
+          setIsConversationLoading(false);
         }).catch((error) => {
           console.error('Failed to select conversation after update:', error);
           setConversationError('Failed to load conversation');
-          setConversationLoading(false);
+          setIsConversationLoading(false);
         });
       } else if (!loading) {
         setConversationError('Conversation not found');
-        setConversationLoading(false);
+        setIsConversationLoading(false);
       }
     }
-  }, [conversations, conversationId, activeConversation, conversationLoading, loading]);
+  }, [conversations, conversationId, activeConversation, isConversationLoading, loading]);
 
   const handleBackToHub = () => {
     navigate('/conversation-hub');
@@ -152,7 +156,7 @@ const ConversationViewInner: React.FC<{
             if (serviceResponse.success && serviceResponse.data) {
               setServiceData(serviceResponse.data);
               setRatingType('service');
-              setRatingModalOpen(true);
+              setIsRatingModalOpen(true);
             } else {
               setConversationError('Service information not found for this conversation.');
             }
@@ -163,235 +167,57 @@ const ConversationViewInner: React.FC<{
         } else if (currentUserRole === 'PROVIDER') {
           // Rate customer - modal will handle finding customer ID
           setRatingType('customer');
-          setRatingModalOpen(true);
+          setIsRatingModalOpen(true);
         }
       } else {
         setConversationError('Both customer and provider must confirm the booking before rating.');
       }
-    } catch (error) {
+    } catch {
       setConversationError('Failed to check confirmation status. Please try again.');
     }
   };
 
   const handleCloseRatingModal = () => {
-    setRatingModalOpen(false);
+    setIsRatingModalOpen(false);
     setServiceData(null);
   };
 
   const handleViewUserDetails = () => {
-    setUserDetailsModalOpen(true);
+    setIsUserDetailsModalOpen(true);
   };
 
   const handleCloseUserDetailsModal = () => {
-    setUserDetailsModalOpen(false);
+    setIsUserDetailsModalOpen(false);
   };
 
   if (conversationError) {
-    return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
-        <main className="flex-grow flex items-center justify-center px-4 py-6 mt-16">
-          <div className="text-center p-8 rounded-2xl bg-white border border-gray-100 shadow-xl max-w-md w-full">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center">
-              <AlertTriangle className="w-8 h-8 text-orange-500" />
-            </div>
-            <p className="text-lg font-medium text-gray-900 mb-2">Error loading conversation</p>
-            <p className="text-sm text-gray-500 mb-6">{conversationError}</p>
-            <Button onClick={handleBackToHub} variant="outline" size="lg">
-              Back to Hub
-            </Button>
-          </div>
-        </main>
-      </div>
-    );
+    return <ConversationErrorState error={conversationError} onBackToHub={handleBackToHub} />;
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <main className="flex-grow px-4 py-6 mt-16">
         <div className="h-[calc(100vh-8rem)] flex flex-col">
-          {/* Header */}
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button onClick={handleBackToHub} variant="outline" className="group">
-                <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" />
-                Back to Hub
-              </Button>
+          <ConversationThreadHeader title={activeConversation?.title} onBack={handleBackToHub} />
 
-              {activeConversation?.title &&
-               !activeConversation.title.includes('Chat with') && (
-                <div className="px-4 py-2 rounded-xl bg-orange-50 border border-orange-100">
-                  <h1 className="text-xl font-semibold text-gray-900">{activeConversation.title}</h1>
-                </div>
-              )}
-            </div>
-          </div>
-          
           {/* Main Content */}
           <div className="bg-white rounded-2xl shadow-xl flex-1 flex flex-col md:flex-row overflow-hidden border border-gray-100 relative">
-            {conversationLoading || loading ? (
-              <div className="flex-1 flex flex-col relative z-10">
-                {/* Mobile Toggle Buttons - Only visible on small screens during loading */}
-                <div className="md:hidden flex border-b border-gray-100 bg-gray-50">
-                  <button
-                    onClick={() => setShowChatOnMobile(false)}
-                    className={`flex-1 py-3 px-4 text-sm font-medium transition-all duration-300 ${
-                      !showChatOnMobile
-                        ? 'bg-orange-50 text-orange-700 border-b-2 border-orange-500'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-orange-50/60'
-                    }`}
-                  >
-                    Confirmation
-                  </button>
-                  <button
-                    onClick={() => setShowChatOnMobile(true)}
-                    className={`flex-1 py-3 px-4 text-sm font-medium transition-all duration-300 ${
-                      showChatOnMobile
-                        ? 'bg-orange-50 text-orange-700 border-b-2 border-orange-500'
-                        : 'text-gray-500 hover:text-gray-900 hover:bg-orange-50/60'
-                    }`}
-                  >
-                    Chat
-                  </button>
-                </div>
-
-                {/* Mobile responsive skeleton loading */}
-                <div className="flex flex-col h-full">
-                  {/* Left Side Skeleton - Confirmation Panel */}
-                  <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 border-b md:border-b-0 md:border-r border-gray-100 p-4 md:p-6 space-y-4 overflow-y-auto h-full md:max-h-none ${
-                    showChatOnMobile ? 'hidden md:flex' : 'flex'
-                  }`}>
-                    {/* User info skeleton */}
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-orange-50 rounded-full animate-pulse"></div>
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-50 rounded-lg animate-pulse"></div>
-                        <div className="h-3 bg-gray-50 rounded-lg animate-pulse w-3/4"></div>
-                      </div>
-                    </div>
-                    
-                    {/* Service info skeleton */}
-                    <div className="space-y-3">
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse"></div>
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse w-5/6"></div>
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse w-4/6"></div>
-                    </div>
-                    
-                    {/* Confirmation buttons skeleton */}
-                    <div className="space-y-3 mt-6">
-                      <div className="h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-                      <div className="h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-                    </div>
-                  </div>
-                  
-                  {/* Right Side Skeleton - Message Thread */}
-                  <div className={`flex-1 min-w-0 flex flex-col p-4 md:p-6 space-y-4 ${
-                    !showChatOnMobile ? 'hidden md:flex' : 'flex'
-                  }`}>
-                    {/* User info skeleton */}
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-orange-50 rounded-full animate-pulse"></div>
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-50 rounded-lg animate-pulse"></div>
-                        <div className="h-3 bg-gray-50 rounded-lg animate-pulse w-3/4"></div>
-                      </div>
-                    </div>
-                    
-                    {/* Service info skeleton */}
-                    <div className="space-y-3">
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse"></div>
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse w-5/6"></div>
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse w-4/6"></div>
-                    </div>
-                    
-                    {/* Confirmation buttons skeleton */}
-                    <div className="space-y-3 mt-6">
-                      <div className="h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-                      <div className="h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-                    </div>
-                  </div>
-                  
-                  {/* Right Side Skeleton - Message Thread */}
-                  <div className="flex-1 min-w-0 flex flex-col p-4 md:p-6 space-y-4">
-                    {/* Message input skeleton */}
-                    <div className="flex space-x-3">
-                      <div className="flex-1 h-12 bg-gray-50 rounded-xl animate-pulse"></div>
-                      <div className="w-12 h-12 bg-orange-50 rounded-xl animate-pulse"></div>
-                    </div>
-                    
-                    {/* Messages skeleton */}
-                    <div className="flex-1 space-y-4 overflow-hidden">
-                      {/* Incoming message */}
-                      <div className="flex justify-start">
-                        <div className="max-w-xs lg:max-w-md px-4 py-3 bg-gray-50 rounded-2xl animate-pulse">
-                          <div className="space-y-2">
-                            <div className="h-4 bg-orange-50 rounded-lg"></div>
-                            <div className="h-4 bg-orange-50 rounded-lg w-3/4"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Outgoing message */}
-                      <div className="flex justify-end">
-                        <div className="max-w-xs lg:max-w-md px-4 py-3 bg-orange-50 rounded-2xl animate-pulse">
-                          <div className="space-y-2">
-                            <div className="h-4 bg-gray-50 rounded-lg"></div>
-                            <div className="h-4 bg-gray-50 rounded-lg w-5/6"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Another incoming message */}
-                      <div className="flex justify-start">
-                        <div className="max-w-xs lg:max-w-md px-4 py-3 bg-gray-50 rounded-2xl animate-pulse">
-                          <div className="space-y-2">
-                            <div className="h-4 bg-orange-50 rounded-lg"></div>
-                            <div className="h-4 bg-orange-50 rounded-lg w-4/6"></div>
-                            <div className="h-4 bg-orange-50 rounded-lg w-2/6"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Typing indicator skeleton */}
-                      <div className="flex justify-start">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-orange-100 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-orange-100 rounded-full animate-bounce [animation-delay:0.1s]"></div>
-                            <div className="w-2 h-2 bg-orange-100 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                          </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {isConversationLoading || loading ? (
+              <ConversationLoadingSkeleton
+                isChatVisibleOnMobile={isChatVisibleOnMobile}
+                onToggleMobileView={setIsChatVisibleOnMobile}
+              />
             ) : activeConversation ? (
               <>
-                {/* Mobile Toggle Buttons - Only visible on small screens */}
-                <div className="md:hidden flex border-b border-gray-200 bg-gray-50 backdrop-blur-sm">
-                  <button
-                    onClick={() => setShowChatOnMobile(false)}
-                    className={`flex-1 py-3 px-4 text-sm font-medium transition-all duration-300 ${
-                      !showChatOnMobile 
-                        ? 'bg-orange-100 text-gray-900 border-b-2 border-orange-500' 
-                        : 'text-gray-900/60 hover:text-gray-900 hover:bg-orange-50'
-                    }`}
-                  >
-                    Confirmation
-                  </button>
-                  <button
-                    onClick={() => setShowChatOnMobile(true)}
-                    className={`flex-1 py-3 px-4 text-sm font-medium transition-all duration-300 ${
-                      showChatOnMobile 
-                        ? 'bg-orange-100 text-gray-900 border-b-2 border-orange-500' 
-                        : 'text-gray-900/60 hover:text-gray-900 hover:bg-orange-50'
-                    }`}
-                  >
-                    Chat
-                  </button>
-                </div>
+                <MobileViewToggle
+                  isChatVisibleOnMobile={isChatVisibleOnMobile}
+                  onToggle={setIsChatVisibleOnMobile}
+                  variant="active"
+                />
 
                 {/* Left Side - Confirmation Panel */}
                 <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 backdrop-blur-sm border-b md:border-b-0 md:border-r border-gray-200 overflow-y-auto h-full md:max-h-none ${
-                  showChatOnMobile ? 'hidden md:flex' : 'flex'
+                  isChatVisibleOnMobile ? 'hidden md:flex' : 'flex'
                 }`}>
                   <ConfirmationPanel
                     key={activeConversation.id}
@@ -401,33 +227,16 @@ const ConversationViewInner: React.FC<{
                     onViewUserDetails={handleViewUserDetails}
                   />
                 </div>
-                
+
                 {/* Right Side - Message Thread */}
                 <div className={`flex-1 min-w-0 flex flex-col overflow-hidden relative z-10 ${
-                  !showChatOnMobile ? 'hidden md:flex' : 'flex'
+                  !isChatVisibleOnMobile ? 'hidden md:flex' : 'flex'
                 }`}>
                   <MessageThread />
                 </div>
               </>
             ) : (
-              <div className="flex items-center justify-center h-full w-full text-gray-900/70 relative z-10">
-                <div className="text-center p-8 rounded-xl bg-orange-50 backdrop-blur-sm border border-gray-200">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-100 flex items-center justify-center">
-                    <svg className="w-8 h-8 text-gray-900/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                  </div>
-                  <p className="text-lg font-medium text-gray-900 mb-2">Conversation not found</p>
-                  <p className="text-sm text-gray-900/60 mb-4">The conversation you're looking for doesn't exist or you don't have access to it</p>
-                  <button
-                    onClick={handleBackToHub}
-                    className="px-6 py-3 bg-orange-100 text-gray-900 rounded-xl hover:bg-orange-100 transition-all duration-300 font-medium border border-gray-300 hover:border-orange-300 relative overflow-hidden group"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                    <span className="relative z-10">Back to Conversations</span>
-                  </button>
-                </div>
-              </div>
+              <ConversationNotFound onBackToHub={handleBackToHub} />
             )}
           </div>
         </div>
@@ -435,7 +244,7 @@ const ConversationViewInner: React.FC<{
 
       {/* Rating Modal */}
       <RatingModal
-        isOpen={ratingModalOpen}
+        isOpen={isRatingModalOpen}
         onClose={handleCloseRatingModal}
         ratingType={ratingType}
         conversation={activeConversation || undefined}
@@ -446,7 +255,7 @@ const ConversationViewInner: React.FC<{
 
       {/* User Details Modal */}
       <UserDetailsModal
-        isOpen={userDetailsModalOpen}
+        isOpen={isUserDetailsModalOpen}
         onClose={handleCloseUserDetailsModal}
         userRole={currentUserRole as 'USER' | 'PROVIDER'}
         conversationId={conversationId}
@@ -495,90 +304,7 @@ const ConversationView: React.FC = () => {
   }, [loading, error, currentUser, navigate]);
 
   if (loading || error || !currentUser) {
-    return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
-        <main className="flex-grow px-4 py-6 mt-16">
-          <div className="h-[calc(100vh-8rem)] flex flex-col">
-            {/* Header Skeleton */}
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-32 h-10 bg-orange-50 rounded-xl animate-pulse"></div>
-                <div className="w-48 h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-              </div>
-            </div>
-            
-            {/* Main Content Skeleton */}
-            <div className="bg-white rounded-2xl shadow-2xl flex-1 flex flex-col md:flex-row overflow-hidden border border-gray-200 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse rounded-2xl"></div>
-              
-              <div className="flex-1 flex flex-col relative z-10">
-                <div className="flex flex-col h-full">
-                  {/* Left Side Skeleton - Confirmation Panel */}
-                  <div className="w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 backdrop-blur-sm border-b md:border-b-0 md:border-r border-gray-200 p-4 md:p-6 space-y-4 overflow-y-auto h-full md:max-h-none">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-orange-50 rounded-full animate-pulse"></div>
-                      <div className="flex-1 space-y-2">
-                        <div className="h-4 bg-gray-50 rounded-lg animate-pulse"></div>
-                        <div className="h-3 bg-gray-50 rounded-lg animate-pulse w-3/4"></div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse"></div>
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse w-5/6"></div>
-                      <div className="h-4 bg-gray-50 rounded-lg animate-pulse w-4/6"></div>
-                    </div>
-                    
-                    <div className="space-y-3 mt-6">
-                      <div className="h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-                      <div className="h-10 bg-gray-50 rounded-xl animate-pulse"></div>
-                    </div>
-                  </div>
-                  
-                  {/* Right Side Skeleton - Message Thread */}
-                  <div className="flex-1 min-w-0 flex flex-col p-4 md:p-6 space-y-4">
-                    <div className="flex space-x-3">
-                      <div className="flex-1 h-12 bg-gray-50 rounded-xl animate-pulse"></div>
-                      <div className="w-12 h-12 bg-orange-50 rounded-xl animate-pulse"></div>
-                    </div>
-                    
-                    <div className="flex-1 space-y-4 overflow-hidden">
-                      <div className="flex justify-start">
-                        <div className="max-w-xs lg:max-w-md px-4 py-3 bg-gray-50 rounded-2xl animate-pulse">
-                          <div className="space-y-2">
-                            <div className="h-4 bg-orange-50 rounded-lg"></div>
-                            <div className="h-4 bg-orange-50 rounded-lg w-3/4"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-end">
-                        <div className="max-w-xs lg:max-w-md px-4 py-3 bg-orange-50 rounded-2xl animate-pulse">
-                          <div className="space-y-2">
-                            <div className="h-4 bg-gray-50 rounded-lg"></div>
-                            <div className="h-4 bg-gray-50 rounded-lg w-5/6"></div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex justify-start">
-                        <div className="max-w-xs lg:max-w-md px-4 py-3 bg-gray-50 rounded-2xl animate-pulse">
-                          <div className="space-y-2">
-                            <div className="h-4 bg-orange-50 rounded-lg"></div>
-                            <div className="h-4 bg-orange-50 rounded-lg w-4/6"></div>
-                            <div className="h-4 bg-orange-50 rounded-lg w-2/6"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    return <ConversationPageSkeleton />;
   }
 
   if (!conversationId) {

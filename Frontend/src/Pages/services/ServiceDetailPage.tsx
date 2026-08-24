@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Star, Heart, MapPin, Clock, MessageCircle, Phone, Mail, ArrowLeft, Calendar,
-  Shield, Award, ChevronLeft, ChevronRight, Send, Bookmark, Eye,
-  CheckCircle, Users, ThumbsUp, User, GraduationCap, CreditCard, Github, Linkedin, Twitter, ArrowUpRight, QrCode, Download, Share2,
+  Star, Heart, MapPin, Clock, Phone, Mail, Calendar,
+  ChevronLeft, ChevronRight, Bookmark, Eye,
+  CheckCircle, User, CreditCard, ArrowUpRight, QrCode, Download, Share2,
   DollarSign, Image as ImageIcon
 } from 'lucide-react';
 import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
@@ -17,14 +17,15 @@ import { PaymentModal } from '../../components/Payment';
 import toast, { Toaster } from 'react-hot-toast';
 import { cn } from '../../utils/utils';
 import { confirmationApi } from '../../api/confirmationApi';
-import GlassmorphismProfileCard from '../../components/ui/ProfileCard';
 import Button from '@/components/shared/Button';
 import Chip from '@/components/shared/Chip';
 import Skeleton from '@/components/shared/Skeleton';
 import QRCode from 'react-qr-code';
 import * as QRCodeLib from 'qrcode';
+import ServiceDetailSkeleton from '../../components/services/detail/ServiceDetailSkeleton';
+import ServiceReviewsCarousel from '../../components/services/detail/ServiceReviewsCarousel';
 
-interface DetailedService {
+export interface DetailedService {
   id: string;
   title: string;
   description?: string;
@@ -61,16 +62,6 @@ interface DetailedService {
   updatedAt?: string;
 }
 
-interface ChatMessage {
-  id: string;
-  sender: 'user' | 'provider';
-  message: string;
-  timestamp: string;
-  read: boolean;
-}
-
-type TabType = 'overview';
-
 const ServiceDetailPage: React.FC = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
@@ -86,20 +77,8 @@ const ServiceDetailPage: React.FC = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [autoSlide, setAutoSlide] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Track if video is currently playing
-  
-  // Chat state
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      sender: 'provider',
-      message: 'Hello! I\'d be happy to help you with your project. Feel free to ask any questions!',
-      timestamp: '2025-08-21T10:00:00Z',
-      read: true
-    }
-  ]);
-  const [newMessage, setNewMessage] = useState('');
-  
-  // Reviews state  
+
+  // Reviews state
   const [reviews, setReviews] = useState<ServiceReview[]>([]);
   const [reviewStats, setReviewStats] = useState<ReviewStats>({
     averageRating: 0,
@@ -107,7 +86,6 @@ const ServiceDetailPage: React.FC = () => {
     ratingDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
   });
   const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [reviewFilter, setReviewFilter] = useState('all');
   
   // Reviews carousel state
   const reviewsScrollRef = React.useRef<HTMLDivElement>(null);
@@ -123,9 +101,6 @@ const ServiceDetailPage: React.FC = () => {
   // Schedule state
   const [currentSchedules, setCurrentSchedules] = useState<{ startTime: string; endTime: string }[]>([]);
   const [scheduleLoading, setScheduleLoading] = useState(false);
-
-  // Calculate total media items (video + images)
-  const totalMediaItems = service ? (service.videoUrl ? 1 : 0) + service.images.length : 0;
 
   // Auto-slide effect for images only (video is now separate)
   useEffect(() => {
@@ -264,12 +239,10 @@ const ServiceDetailPage: React.FC = () => {
   const fetchServiceReviews = async (serviceId: string) => {
     try {
       setReviewsLoading(true);
-      const ratingFilter = reviewFilter === 'all' ? undefined : parseInt(reviewFilter);
-      
+
       const response = await serviceReviewApi.getServiceReviewsDetailed(serviceId, {
         page: 1,
-        limit: 20,
-        rating: ratingFilter
+        limit: 20
       });
       
       if (response.success) {
@@ -307,12 +280,12 @@ const ServiceDetailPage: React.FC = () => {
     }
   };
 
-  // Refetch reviews when filter changes
+  // Fetch reviews once the service loads
   useEffect(() => {
     if (service) {
       fetchServiceReviews(service.id);
     }
-  }, [reviewFilter, service?.id]);
+  }, [service?.id]);
 
   useEffect(() => {
     const fetchService = async () => {
@@ -366,21 +339,6 @@ const ServiceDetailPage: React.FC = () => {
 
     fetchService();
   }, [serviceId, navigate]);
-
-  const handleContactProvider = () => {
-    console.log('Service object:', service); // Debug log
-    console.log('Provider ID:', service?.provider?.id); // Debug log
-    
-    if (service?.provider?.id) {
-      console.log('Navigating to provider page with ID:', service.provider.id); // Debug log
-      // Navigate to the specific provider page with the provider ID
-      navigate(`/provider/${service.provider.id}`);
-    } else {
-      // When provider ID is not available, show an error
-      console.log('No provider ID available'); // Debug log
-      toast.error('Provider information not available');
-    }
-  };
 
   const handleBookNow = async () => {
     // Check if user is logged in
@@ -560,33 +518,6 @@ const ServiceDetailPage: React.FC = () => {
     }
   };
 
-  // Chat handlers
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const message: ChatMessage = {
-        id: Date.now().toString(),
-        sender: 'user',
-        message: newMessage.trim(),
-        timestamp: new Date().toISOString(),
-        read: false
-      };
-      setChatMessages(prev => [...prev, message]);
-      setNewMessage('');
-      
-      // Simulate provider response
-      setTimeout(() => {
-        const response: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          sender: 'provider',
-          message: 'Thank you for your message! I\'ll get back to you soon with more details.',
-          timestamp: new Date().toISOString(),
-          read: false
-        };
-        setChatMessages(prev => [...prev, response]);
-      }, 2000);
-    }
-  };
-
   // Share service handler
   const handleShareService = async () => {
     if (!service) return;
@@ -666,157 +597,10 @@ const ServiceDetailPage: React.FC = () => {
     }
   };
 
-  // Review helpers
-  const filteredReviews = reviewFilter === 'all' 
-    ? reviews 
-    : reviews.filter(review => review.rating === parseInt(reviewFilter));
-
   const averageRating = reviewStats.averageRating;
 
-  const ratingDistribution = [5, 4, 3, 2, 1].map(rating => ({
-    rating,
-    count: reviewStats.ratingDistribution[rating as keyof typeof reviewStats.ratingDistribution],
-    percentage: reviewStats.totalReviews > 0 
-      ? (reviewStats.ratingDistribution[rating as keyof typeof reviewStats.ratingDistribution] / reviewStats.totalReviews) * 100 
-      : 0
-  }));
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col relative overflow-hidden">
-
-        
-        <main className="flex-1 mt-16 relative z-10">
-          <div className="container mx-auto px-4 py-8">
-            {/* Skeleton Breadcrumb */}
-            <div className="mb-8 bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-              <Skeleton className="h-4 w-1/3" />
-            </div>
-
-            {/* Main Content Skeleton */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column Skeleton */}
-              <div className="lg:col-span-2 space-y-4">
-                {/* Media Gallery Skeleton */}
-                <div className="bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100">
-                  <Skeleton className="aspect-[16/9] rounded-none" />
-                  <div className="p-4 flex gap-2">
-                    {[1, 2, 3, 4].map((i) => (
-                      <Skeleton key={i} className="w-14 h-14 rounded-xl" />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Service Info Skeleton */}
-                <div className="py-8 px-6 space-y-4">
-                  <Skeleton className="h-10 w-2/3" />
-                  <div className="flex gap-2">
-                    {[1, 2, 3].map((i) => (
-                      <Skeleton key={i} className="h-8 rounded-full w-20" />
-                    ))}
-                  </div>
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                    <Skeleton className="h-4 w-4/6" />
-                  </div>
-                  <Skeleton className="h-6 w-1/4 mt-4" />
-
-                  {/* Location Card Skeleton */}
-                  <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mt-6">
-                    <Skeleton className="h-6 w-1/3 mb-4" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-4/6" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column Skeleton */}
-              <div className="lg:col-span-1">
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 sticky top-24">
-                  {/* Avatar Skeleton */}
-                  <div className="flex flex-col items-center mb-8 pb-8 border-b border-gray-100">
-                    <Skeleton className="w-20 h-20 rounded-full mb-4" />
-                    <Skeleton className="h-6 w-32 mb-2" />
-                    <Skeleton className="h-4 w-24" />
-
-                    {/* Contact Info Skeleton */}
-                    <div className="mt-4 w-full space-y-2">
-                      <Skeleton className="h-10 rounded-xl" />
-                      <Skeleton className="h-10 rounded-xl" />
-                    </div>
-
-                    <div className="flex gap-4 mt-4">
-                      <Skeleton className="h-4 w-16" />
-                      <Skeleton className="h-4 w-16" />
-                    </div>
-                  </div>
-
-                  {/* Price Skeleton */}
-                  <div className="text-center mb-6 space-y-3">
-                    <Skeleton className="h-10 w-32 mx-auto" />
-                    <Skeleton className="h-4 w-24 mx-auto" />
-                    <Skeleton className="h-8 rounded-full w-32 mx-auto" />
-                  </div>
-
-                  {/* Buttons Skeleton */}
-                  <div className="space-y-3 mb-6">
-                    <Skeleton className="h-14 rounded-full" />
-                    <Skeleton className="h-14 rounded-full" />
-                  </div>
-
-                  {/* Working Hours Skeleton */}
-                  <div className="pt-6 border-t border-gray-100 space-y-3">
-                    <Skeleton className="h-5 w-32" />
-                    {[1, 2, 3].map((i) => (
-                      <Skeleton key={i} className="h-12 rounded-xl" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Reviews Skeleton */}
-            <div className="mb-6 mt-6">
-              <div className="flex items-center justify-between mb-8">
-                <Skeleton className="h-8 w-48" />
-                <Skeleton className="h-10 rounded-full w-32" />
-              </div>
-
-              <div className="flex gap-6 overflow-hidden pb-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex-shrink-0 w-[90%] sm:w-[45%] lg:w-[32%]">
-                    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
-                      <div className="flex items-start gap-4 mb-6">
-                        <Skeleton className="w-16 h-16 rounded-full" />
-                        <div className="flex-1 space-y-2">
-                          <Skeleton className="h-5 w-3/4" />
-                          <Skeleton className="h-4 w-1/2" />
-                        </div>
-                      </div>
-                      <div className="flex gap-1 mb-4">
-                        {[1, 2, 3, 4, 5].map((j) => (
-                          <Skeleton key={j} className="w-5 h-5" />
-                        ))}
-                      </div>
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-5/6" />
-                        <Skeleton className="h-4 w-4/6" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </main>
-
-      </div>
-    );
+    return <ServiceDetailSkeleton />;
   }
 
   if (!service) {
@@ -1218,6 +1002,13 @@ const ServiceDetailPage: React.FC = () => {
                   className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 sticky top-24"
                 >
                   {/* Provider Profile Section */}
+                  {providerLoading && !provider && (
+                    <div className="mb-8 pb-8 border-b border-gray-100 flex flex-col items-center">
+                      <Skeleton className="w-20 h-20 rounded-full mb-4" />
+                      <Skeleton className="h-5 w-32 mb-2" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  )}
                   {provider && (
                     <div className="mb-8 pb-8 border-b border-gray-100">
                       <div className="flex flex-col items-center">
@@ -1449,167 +1240,15 @@ const ServiceDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Reviews Carousel Section */}
-          {reviews.length > 0 && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-bold text-gray-900">
-                  Customer Reviews
-                </h2>
-                <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-                  <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-                  <span className="text-lg font-semibold text-gray-900">
-                    {averageRating.toFixed(1)}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    ({reviewStats.totalReviews})
-                  </span>
-                </div>
-              </div>
-
-              {/* Enhanced Reviews Slider */}
-              <div className="relative">
-                <div 
-                  ref={reviewsScrollRef}
-                  className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 scroll-smooth"
-                  onScroll={(e) => {
-                    const scrollLeft = e.currentTarget.scrollLeft;
-                    const cardWidth = e.currentTarget.scrollWidth / reviews.length;
-                    const newIndex = Math.round(scrollLeft / cardWidth);
-                    setCurrentReviewIndex(newIndex);
-                  }}
-                >
-                  {reviews.map((review, index) => (
-                    <div 
-                      key={review.id}
-                      className="flex-shrink-0 w-[90%] sm:w-[45%] lg:w-[32%] snap-start"
-                    >
-                      <div className={cn(
-                        "bg-white rounded-3xl p-8 border border-gray-100 h-full transition-all duration-500",
-                        index === currentReviewIndex
-                          ? "shadow-xl scale-105 border-orange-200"
-                          : "shadow-sm hover:shadow-lg"
-                      )}>
-                        {/* Review Header */}
-                        <div className="flex items-start gap-4 mb-6">
-                          <div className="relative flex-shrink-0">
-                            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 shadow-lg">
-                              {review.clientAvatar ? (
-                                <img 
-                                  src={review.clientAvatar} 
-                                  alt={review.clientName}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center">
-                                  <span className="text-2xl text-gray-900 font-bold">
-                                    {review.clientName?.[0]?.toUpperCase() || 'U'}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                            {/* Verified badge */}
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
-                              <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            </div>
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="text-lg font-bold text-gray-900 mb-1">
-                              {review.clientName || 'Anonymous'}
-                            </h4>
-                            <p className="text-sm text-gray-400">
-                              {new Date(review.createdAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Rating Stars - White */}
-                        <div className="flex items-center gap-1 mb-4">
-                          {[...Array(5)].map((_, starIndex) => (
-                            <Star
-                              key={starIndex}
-                              className={cn(
-                                "w-5 h-5 transition-all",
-                                starIndex < review.rating
-                                  ? "fill-amber-400 text-amber-400 drop-shadow-lg"
-                                  : "fill-none text-gray-300"
-                              )}
-                            />
-                          ))}
-                          <span className="ml-2 text-sm font-semibold text-gray-900">
-                            {review.rating}.0
-                          </span>
-                        </div>
-
-                        {/* Review Comment */}
-                        {review.comment && (
-                          <div className="relative">
-                            <p className="text-base text-gray-500 leading-relaxed line-clamp-5 italic">
-                              "{review.comment}"
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Helpful indicator */}
-                        {review.helpful > 0 && (
-                          <div className="mt-4 pt-4 border-t border-gray-100">
-                            <span className="text-sm text-gray-500 flex items-center gap-2">
-                              <ThumbsUp className="w-4 h-4" />
-                              {review.helpful} found this helpful
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Navigation Dots */}
-                {reviews.length > 1 && (
-                  <div className="flex justify-center gap-2 mt-6">
-                    {reviews.map((_, index) => (
-                      <button
-                        key={index}
-                        aria-label={`Go to review ${index + 1}`}
-                        onClick={() => {
-                          setCurrentReviewIndex(index);
-                          if (reviewsScrollRef.current) {
-                            const cardWidth = reviewsScrollRef.current.scrollWidth / reviews.length;
-                            reviewsScrollRef.current.scrollTo({
-                              left: cardWidth * index,
-                              behavior: 'smooth'
-                            });
-                          }
-                        }}
-                        className={cn(
-                          "transition-all duration-300 rounded-full",
-                          index === currentReviewIndex
-                            ? "w-8 h-2 bg-orange-500"
-                            : "w-2 h-2 bg-gray-200 hover:bg-gray-400"
-                        )}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* No Reviews Message */}
-          {reviews.length === 0 && !reviewsLoading && (
-            <div className="mb-6 text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
-              <Star className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-500 text-lg">
-                No reviews yet. Be the first to review this service!
-              </p>
-            </div>
-          )}
+          <ServiceReviewsCarousel
+            reviews={reviews}
+            reviewStats={reviewStats}
+            averageRating={averageRating}
+            reviewsLoading={reviewsLoading}
+            currentReviewIndex={currentReviewIndex}
+            onReviewIndexChange={setCurrentReviewIndex}
+            reviewsScrollRef={reviewsScrollRef}
+          />
 
           {/* Disabled tabs removed */}
 

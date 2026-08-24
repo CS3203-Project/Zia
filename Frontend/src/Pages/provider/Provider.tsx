@@ -1,20 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  User,
   Mail,
   Phone,
   MapPin,
   Calendar,
   Shield,
-  Star,
   Award,
-  Briefcase,
   ExternalLink,
-  Clock,
-  DollarSign,
-  MessageCircle,
-  ChevronRight
+  Clock
 } from 'lucide-react';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
@@ -25,6 +19,11 @@ import type { ProviderServiceReview, ReviewStats } from '../../api/serviceReview
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 import Button from '../../components/shared/Button';
+import ProviderTabs, { type ProviderTabId } from '../../components/provider/ProviderTabs';
+import ProviderStatsGrid from '../../components/provider/ProviderStatsGrid';
+import ProviderServicesGrid from '../../components/provider/ProviderServicesGrid';
+import ProviderReviewsPanel from '../../components/provider/ProviderReviewsPanel';
+import ProviderRecentReviews from '../../components/provider/ProviderRecentReviews';
 
 const skillPillClasses = "inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-orange-50 text-orange-700 border border-orange-100";
 
@@ -36,7 +35,7 @@ export default function Provider() {
   const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
   const [services, setServices] = useState<ServiceResponse[]>([]);
   const [servicesLoading, setServicesLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<ProviderTabId>('overview');
   const [reviewFilter, setReviewFilter] = useState('all');
 
   // Real review data state
@@ -306,31 +305,7 @@ export default function Provider() {
 
         {/* Only show tabs for verified providers */}
         {providerProfile && providerProfile.isVerified && (
-          <div className="mb-8">
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100">
-              <div className="flex flex-wrap">
-                {[
-                  { id: 'overview', label: 'Overview', icon: <User className="w-4 h-4" /> },
-                  { id: 'services', label: 'Services', icon: <DollarSign className="w-4 h-4" /> },
-                  { id: 'reviews', label: 'Reviews', icon: <Star className="w-4 h-4" /> },
-                  { id: 'about', label: 'About', icon: <MessageCircle className="w-4 h-4" /> }
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center px-6 py-4 text-sm font-medium transition-all duration-300 border-b-2 ${
-                      activeTab === tab.id
-                        ? "border-orange-600 text-orange-600 bg-orange-50"
-                        : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
-                  >
-                    {tab.icon}
-                    <span className="ml-2">{tab.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <ProviderTabs activeTab={activeTab} onTabChange={setActiveTab} />
         )}
 
         {/* Profile Content */}
@@ -493,37 +468,11 @@ export default function Provider() {
                   {activeTab === 'overview' && (
                     <>
                       {/* Provider Stats */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 mx-auto mb-3">
-                            <Star className="h-6 w-6 text-yellow-600" />
-                          </div>
-                          <p className="text-2xl font-bold text-gray-900">
-                            {reviewStats?.averageRating?.toFixed(1) || 'N/A'}
-                          </p>
-                          <p className="text-sm text-gray-500">Average Rating</p>
-                        </div>
-
-                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 mx-auto mb-3">
-                            <Award className="h-6 w-6 text-orange-600" />
-                          </div>
-                          <p className="text-2xl font-bold text-gray-900">
-                            {reviewStats?.totalReviews || 0}
-                          </p>
-                          <p className="text-sm text-gray-500">Total Reviews</p>
-                        </div>
-
-                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 mx-auto mb-3">
-                            <Briefcase className="h-6 w-6 text-emerald-600" />
-                          </div>
-                          <p className="text-2xl font-bold text-gray-900">
-                            {services.filter(s => s.isActive).length}
-                          </p>
-                          <p className="text-sm text-gray-500">Active Services</p>
-                        </div>
-                      </div>
+                      <ProviderStatsGrid
+                        averageRating={reviewStats?.averageRating}
+                        totalReviews={reviewStats?.totalReviews}
+                        activeServicesCount={services.filter(s => s.isActive).length}
+                      />
 
                       {/* Bio */}
                       {providerProfile.bio && (
@@ -563,313 +512,32 @@ export default function Provider() {
                       )}
 
                       {/* Recent Reviews */}
-                      {reviews && reviews.length > 0 && (
-                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-semibold text-gray-900">Recent Reviews</h2>
-                            <button
-                              onClick={() => setActiveTab('reviews')}
-                              className="flex items-center text-orange-600 hover:text-orange-700 text-sm font-semibold transition-colors"
-                            >
-                              View All
-                              <ChevronRight className="w-4 h-4 ml-1" />
-                            </button>
-                          </div>
-                          <div className="space-y-4">
-                            {reviews.slice(0, 2).map((review) => (
-                              <div key={review.id} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
-                                <div className="flex items-start space-x-3">
-                                  <img
-                                    src={review.clientAvatar}
-                                    alt={review.clientName}
-                                    className="w-10 h-10 rounded-full object-cover border border-gray-200"
-                                    onError={(e) => {
-                                      e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
-                                    }}
-                                  />
-                                  <div className="flex-1">
-                                    <div className="flex items-center space-x-2 mb-1">
-                                      <span className="font-semibold text-gray-900">{review.clientName}</span>
-                                      <div className="flex items-center">
-                                        {[...Array(5)].map((_, i) => (
-                                          <Star
-                                            key={i}
-                                            className={`h-4 w-4 ${
-                                              i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
-                                            }`}
-                                          />
-                                        ))}
-                                      </div>
-                                    </div>
-                                    <p className="text-gray-600 text-sm mb-1">{review.comment}</p>
-                                    <div className="flex items-center justify-between text-xs text-gray-400">
-                                      <span>
-                                        Service: {typeof review.service === 'object' ? review.service?.title : review.service}
-                                      </span>
-                                      <span>{review.date}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      <ProviderRecentReviews reviews={reviews} onViewAll={() => setActiveTab('reviews')} />
                     </>
                   )}
 
                   {/* Services Tab */}
                   {activeTab === 'services' && (
-                    <>
-                      {servicesLoading ? (
-                        <div className="flex items-center justify-center py-12">
-                          <div className="flex space-x-2">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                          </div>
-                        </div>
-                      ) : services.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {services.map((service) => (
-                            <div
-                              key={service.id}
-                              className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1"
-                              onClick={() => navigate(`/service/${service.id}`)}
-                            >
-                              <div className="relative">
-                                {service.images && service.images.length > 0 ? (
-                                  <img
-                                    src={service.images[0]}
-                                    alt={service.title || 'Service image'}
-                                    className="w-full h-48 object-cover"
-                                    onError={(e) => {
-                                      // Fallback to placeholder if image fails to load
-                                      e.currentTarget.src = `https://picsum.photos/seed/${service.id}/400/300`;
-                                    }}
-                                  />
-                                ) : (
-                                  <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-                                    <div className="text-gray-400 text-center">
-                                      <Briefcase className="w-12 h-12 mx-auto mb-2" />
-                                      <p className="text-sm">No image available</p>
-                                    </div>
-                                  </div>
-                                )}
-                                <span className="absolute top-4 left-4 px-3 py-1 bg-white text-gray-700 border border-gray-200 text-xs font-semibold rounded-full shadow-sm">
-                                  {service.category?.name || 'Category'}
-                                </span>
-                                <span className={`absolute top-4 right-4 px-2 py-1 text-xs rounded-full font-medium ${
-                                  service.isActive
-                                    ? 'bg-emerald-100 text-emerald-700'
-                                    : 'bg-gray-100 text-gray-500'
-                                }`}>
-                                  {service.isActive ? 'Active' : 'Inactive'}
-                                </span>
-                              </div>
-                              <div className="p-6">
-                                <div className="flex items-center justify-between mb-3">
-                                  <h3 className="text-lg font-semibold text-gray-900 truncate">
-                                    {service.title || 'Untitled Service'}
-                                  </h3>
-                                  <span className="text-xl font-bold text-gray-900">
-                                    {service.currency} {service.price}
-                                  </span>
-                                </div>
-                                <p className="text-gray-500 text-sm mb-4 line-clamp-2">
-                                  {service.description || 'No description available'}
-                                </p>
-                                <div className="flex items-center justify-between text-sm text-gray-400">
-                                  <div className="flex items-center">
-                                    <Clock className="w-4 h-4 mr-1" />
-                                    <span>Contact for timing</span>
-                                  </div>
-                                  <div className="flex flex-wrap gap-1">
-                                    {service.tags && service.tags.length > 0 ?
-                                      service.tags.slice(0, 2).map((tag: string, index: number) => (
-                                        <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                                          {tag}
-                                        </span>
-                                      )) :
-                                      <span className="text-xs text-gray-400">No tags</span>
-                                    }
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
-                          <div className="text-center py-12">
-                            <div className="text-gray-400">
-                              <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                              <h3 className="text-lg font-medium text-gray-900 mb-2">No Services Yet</h3>
-                              <p className="text-gray-500 mb-4">
-                                This provider hasn't created any services yet.
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </>
+                    <ProviderServicesGrid
+                      services={services}
+                      loading={servicesLoading}
+                      onServiceClick={(serviceId) => navigate(`/service/${serviceId}`)}
+                    />
                   )}
 
 
 
                   {/* Reviews Tab */}
                   {activeTab === 'reviews' && (
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                      <div className="p-6 border-b border-gray-100">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                          <div>
-                            <h3 className="text-xl font-bold text-gray-900">
-                              Reviews ({reviewStats?.totalReviews || 0})
-                            </h3>
-                            <div className="flex items-center space-x-2 mt-2">
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`w-5 h-5 ${
-                                      i < Math.floor(reviewStats?.averageRating || 0)
-                                        ? "text-yellow-400 fill-current"
-                                        : "text-gray-300"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-sm text-gray-500">
-                                {reviewStats?.averageRating?.toFixed(1) || 0} out of 5
-                              </span>
-                            </div>
-                          </div>
-                          <div className="mt-4 md:mt-0">
-                            <select
-                              value={reviewFilter}
-                              onChange={(e) => setReviewFilter(e.target.value)}
-                              className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white text-gray-900"
-                              disabled={reviewsLoading}
-                            >
-                              <option value="all">All Reviews</option>
-                              <option value="5">5 Stars</option>
-                              <option value="4">4 Stars</option>
-                              <option value="3">3 Stars</option>
-                              <option value="2">2 Stars</option>
-                              <option value="1">1 Star</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Loading State */}
-                      {reviewsLoading && (
-                        <div className="flex items-center justify-center py-12">
-                          <div className="flex space-x-2">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Reviews List */}
-                      {!reviewsLoading && (
-                        <div className="divide-y divide-gray-100">
-                          {reviews.length > 0 ? (
-                            reviews.map((review) => (
-                              <div key={review.id} className="p-6 hover:bg-gray-50 transition-colors">
-                                <div className="flex items-start space-x-4">
-                                  <img
-                                    src={review.clientAvatar}
-                                    alt={review.clientName}
-                                    className="w-12 h-12 rounded-full border border-gray-200 object-cover"
-                                    onError={(e) => {
-                                      e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
-                                    }}
-                                  />
-                                  <div className="flex-1">
-                                    <div className="flex items-start justify-between mb-2">
-                                      <div className="flex-1">
-                                        <h4 className="font-semibold text-gray-900">{review.clientName}</h4>
-                                        <div className="flex items-center space-x-2 mt-1">
-                                          <div className="flex items-center">
-                                            {[...Array(5)].map((_, i) => (
-                                              <Star
-                                                key={i}
-                                                className={`w-4 h-4 ${
-                                                  i < review.rating
-                                                    ? "text-yellow-400 fill-current"
-                                                    : "text-gray-300"
-                                                }`}
-                                              />
-                                            ))}
-                                          </div>
-                                          <span className="text-sm text-gray-400">{review.date}</span>
-                                        </div>
-                                      </div>
-                                      {/* Service Info */}
-                                      {typeof review.service === 'object' && review.service && (
-                                        <div className="ml-4 text-right">
-                                          <div className="flex items-center space-x-2">
-                                            {review.service.image && (
-                                              <img
-                                                src={review.service.image}
-                                                alt={review.service.title}
-                                                className="w-8 h-8 rounded object-cover"
-                                                onError={(e) => {
-                                                  e.currentTarget.style.display = 'none';
-                                                }}
-                                              />
-                                            )}
-                                            <div>
-                                              <p className="text-sm font-medium text-gray-900 truncate max-w-32">
-                                                {review.service.title}
-                                              </p>
-                                              <p className="text-xs text-gray-400">{review.service.category}</p>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                    <p className="text-gray-600 text-sm leading-relaxed mb-3">{review.comment}</p>
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-sm text-gray-400">
-                                        Service: {typeof review.service === 'object' ? review.service?.title : review.service}
-                                      </span>
-                                      <button className="text-sm text-gray-400 hover:text-gray-900 transition-colors">
-                                        Helpful ({review.helpful})
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="text-center py-12">
-                              <div className="text-gray-400">
-                                <Star className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">No Reviews Yet</h3>
-                                <p className="text-gray-500 mb-4">
-                                  This provider hasn't received any reviews yet.
-                                </p>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Load More Button */}
-                          {hasMoreReviews && !reviewsLoading && (
-                            <div className="p-6 text-center border-t border-gray-100">
-                              <Button
-                                onClick={() => fetchProviderReviews(providerProfile?.id!, reviewPage + 1, false)}
-                              >
-                                Load More Reviews
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    <ProviderReviewsPanel
+                      reviews={reviews}
+                      reviewStats={reviewStats}
+                      reviewFilter={reviewFilter}
+                      onFilterChange={setReviewFilter}
+                      reviewsLoading={reviewsLoading}
+                      hasMoreReviews={hasMoreReviews}
+                      onLoadMore={() => providerProfile?.id && fetchProviderReviews(providerProfile.id, reviewPage + 1, false)}
+                    />
                   )}
 
                   {/* About Tab */}

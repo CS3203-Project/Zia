@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Sparkles, Grid3X3, List, MapPin, SlidersHorizontal, Navigation2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, Grid3X3, List, MapPin, SlidersHorizontal } from 'lucide-react';
 import type { HybridSearchResult } from '../../api/hybridSearchApi';
 import { hybridSearchApi } from '../../api/hybridSearchApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
@@ -35,7 +35,10 @@ const SearchResultsPage: React.FC = () => {
   // Price range filter
   const [priceRange, setPriceRange] = useState<{ min?: number; max?: number }>({});
   
-  const state = location.state as LocationState;
+  const state = location.state as LocationState | undefined;
+  const results = state?.results;
+  const query = state?.query;
+  const searchType = state?.searchType;
 
   useEffect(() => {
     // If no search results, redirect back to browse services
@@ -53,20 +56,15 @@ const SearchResultsPage: React.FC = () => {
     }
   }, [state, navigate]);
 
-  if (!state || !state.results) {
-    return null;
-  }
-
-  const { results, query, searchType } = state;
-
   // Filter results based on price range
   const filteredResults = useMemo(() => {
+    if (!results) return [];
     return results.filter(service => {
       const price = typeof service.price === 'string' ? parseFloat(service.price) : service.price;
-      
+
       if (priceRange.min !== undefined && price < priceRange.min) return false;
       if (priceRange.max !== undefined && price > priceRange.max) return false;
-      
+
       return true;
     });
   }, [results, priceRange]);
@@ -75,16 +73,18 @@ const SearchResultsPage: React.FC = () => {
   const sortedResults = useMemo(() => {
     return [...filteredResults].sort((a, b) => {
       switch (sortBy) {
-        case 'distance':
+        case 'distance': {
           // Services without location (distance_km = null) go to end
           if (a.distance_km === null && b.distance_km === null) return 0;
           if (a.distance_km === null) return 1;
           if (b.distance_km === null) return -1;
           return (a.distance_km || 0) - (b.distance_km || 0);
-        case 'price':
+        }
+        case 'price': {
           const priceA = typeof a.price === 'string' ? parseFloat(a.price) : a.price;
           const priceB = typeof b.price === 'string' ? parseFloat(b.price) : b.price;
           return priceA - priceB;
+        }
         case 'rating':
           // Since we don't have ratings yet, sort by similarity
           return b.similarity - a.similarity;
@@ -94,6 +94,10 @@ const SearchResultsPage: React.FC = () => {
       }
     });
   }, [filteredResults, sortBy]);
+
+  if (!state || !state.results) {
+    return null;
+  }
 
   const handleRefineSearch = async () => {
     if (!query && !locationFilter) return;

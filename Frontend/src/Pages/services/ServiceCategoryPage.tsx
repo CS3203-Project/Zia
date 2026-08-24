@@ -7,17 +7,15 @@ import { categoryApi } from '../../api/categoryApi';
 import type { ServiceResponse } from '../../api/serviceApi';
 import type { Category } from '../../api/categoryApi';
 import { ChevronDown, Loader2 } from 'lucide-react';
-import Orb from '../../components/shared/Orb';
 import Button from '../../components/shared/Button';
 
 const SubCategorySidebar: React.FC<{
   category: Category;
   selectedSubCategory: string | null;
   onSelectSubCategory: (categoryId: string | null) => void;
-  services: ServiceResponse[];
   allServices: ServiceResponse[];
   isLoading?: boolean;
-}> = ({ category, selectedSubCategory, onSelectSubCategory, services, allServices, isLoading }) => {
+}> = ({ category, selectedSubCategory, onSelectSubCategory, allServices, isLoading }) => {
   
   // Calculate service counts for each subcategory using allServices to maintain accurate counts
   const getSubcategoryServiceCount = (subcategoryId: string) => {
@@ -217,7 +215,7 @@ const ServiceCategoryPage: React.FC = () => {
         const responses = await Promise.all(servicePromises);
         
         // Combine all services from different categories
-        let fetchedServices: ServiceResponse[] = [];
+        const fetchedServices: ServiceResponse[] = [];
         responses.forEach(response => {
           if (response.success) {
             fetchedServices.push(...response.data);
@@ -449,7 +447,6 @@ const ServiceCategoryPage: React.FC = () => {
               category={category}
               selectedSubCategory={selectedSubCategory}
               onSelectSubCategory={setSelectedSubCategory}
-              services={services}
               allServices={allServices}
               isLoading={servicesLoading}
             />
