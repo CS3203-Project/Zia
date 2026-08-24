@@ -5,10 +5,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import { LoaderProvider } from './components/shared/LoaderContext';
 import Layout from './components/layout/Layout';
 import ScrollToTop from './components/shared/ScrollToTop';
-import HomepageEnhanced from './Pages/marketing/HomepageEnhanced';
+import Homepage from './Pages/marketing/Homepage';
 import Signup from './Pages/auth/Signup.tsx'
 import SignIn from './Pages/auth/SignIn.tsx'
-import BrowseServicesEnhanced from './Pages/services/BrowseServicesEnhanced';
+import BrowseServices from './Pages/services/BrowseServices';
 import AdminLogin from "./Pages/auth/AdminLogin.tsx";
 
 const Articles = lazy(() => import('./Pages/marketing/Articles.tsx'));
@@ -16,12 +16,12 @@ const OnlineServiceProviderProfile = lazy(() => import('./Pages/provider/OnlineS
 const PrintingServiceProviderProfile = lazy(() => import('./Pages/provider/PrintingServiceProviderProfile'));
 const ServiceCategoryPage = lazy(() => import('./Pages/services/ServiceCategoryPage'));
 const ServiceDetailPage = lazy(() => import('./Pages/services/ServiceDetailPage'));
-const SearchResultsPageEnhanced = lazy(() => import('./Pages/services/SearchResultsPageEnhanced'));
+const SearchResultsPage = lazy(() => import('./Pages/services/SearchResultsPage'));
 const Profile = lazy(() => import('./Pages/account/Profile.tsx'));
 const BecomeProvider = lazy(() => import('./Pages/marketing/BecomeProvider.tsx'));
 const Provider = lazy(() => import('./Pages/provider/Provider.tsx'));
 const CreateService = lazy(() => import('./Pages/services/CreateService.tsx'));
-const MessagingPage = lazy(() => import('./Pages/messaging/NewMessagingPage.tsx'));
+const MessagingPage = lazy(() => import('./Pages/messaging/MessagingPage.tsx'));
 const ConversationHub = lazy(() => import('./Pages/messaging/ConversationHub.tsx'));
 const ConversationView = lazy(() => import('./Pages/messaging/ConversationView.tsx'));
 const AdminDashboard = lazy(() => import('./Pages/admin/AdminDashboard.tsx'));
@@ -39,17 +39,18 @@ function App() {
         <Router>
           <ScrollToTop />
           <Layout>
-            <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white/80">Loading...</div>}>
+            <Suspense fallback={
+              <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="h-8 w-8 rounded-full border-2 border-orange-200 border-t-orange-600 animate-spin" />
+              </div>
+            }>
             <Routes>
-            <Route path="/" element={<HomepageEnhanced />} />
-            {/* <Route path="/homepage-original" element={<Homepage />} /> */}
+            <Route path="/" element={<Homepage />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/signin" element={<SignIn />} />
-            <Route path="/services" element={<BrowseServicesEnhanced />} />
-            {/* <Route path="/services-original" element={<BrowseServices />} /> */}
-            {/* <Route path="/services/search" element={<SearchResultsPage />} /> */}
-            <Route path="/search-results-enhanced" element={<SearchResultsPageEnhanced />} />
+            <Route path="/services" element={<BrowseServices />} />
+            <Route path="/services/search" element={<SearchResultsPage />} />
             <Route path="/services/:categorySlug" element={<ServiceCategoryPage />} />
             <Route path="/service/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/profile" element={<Profile />} />

@@ -18,6 +18,7 @@ interface LocationPickerProps {
   disabled?: boolean;
   allowManualRadius?: boolean; // Allow manual radius input instead of slider
   showMap?: boolean; // New prop to show/hide map integration
+  bordered?: boolean; // Set false when embedded in a compound field that owns its own border/focus ring
 }
 
 interface LocationSuggestion {
@@ -37,7 +38,8 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
   autoDetect = false,
   disabled = false,
   allowManualRadius = true,
-  showMap = true
+  showMap = true,
+  bordered = true
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -257,10 +259,10 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           placeholder={placeholder}
           disabled={disabled || isLoading || isGettingLocation}
           className={`
-            block w-full pl-10 pr-20 py-3 border border-gray-300 rounded-lg
-            placeholder-gray-500 focus:ring-2 focus:ring-orange-500 focus:border-orange-500
-            disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-            ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
+            block w-full pl-10 pr-20 py-3 rounded-lg
+            placeholder-gray-500 disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
+            ${bordered ? 'border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-orange-500' : 'border-none bg-transparent focus:ring-0'}
+            ${error && bordered ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
           `}
           style={{ outline: 'none' }}
         />

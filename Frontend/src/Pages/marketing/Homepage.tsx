@@ -7,6 +7,8 @@ import { hybridSearchApi, type LocationParams } from '../../api/hybridSearchApi'
 import { serviceApi } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
 import Button from '../../components/shared/Button';
+import Card from '../../components/shared/Card';
+import Chip from '../../components/shared/Chip';
 
 export default function Homepage() {
   const { services, loading, error, refetch } = useServices({
@@ -87,7 +89,7 @@ export default function Homepage() {
             distance_km: null
           }));
 
-          navigate('/search-results-enhanced', {
+          navigate('/services/search', {
             state: {
               results,
               query: searchQuery.trim(),
@@ -122,7 +124,7 @@ export default function Homepage() {
         console.log('✅ Search results:', response.data);
 
         // Navigate to enhanced search results page
-        navigate('/search-results-enhanced', {
+        navigate('/services/search', {
           state: {
             results: response.data.results,
             query: hasQuery ? searchQuery.trim() : undefined,
@@ -217,6 +219,7 @@ export default function Homepage() {
                       defaultRadius={10}
                       maxRadius={50}
                       autoDetect={false}
+                      bordered={false}
                       className="w-full"
                     />
                   </div>
@@ -254,31 +257,26 @@ export default function Homepage() {
                 </div>
 
                 {/* Popular Searches */}
-                <div className="mt-2.5 flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-1 text-xs">
-                  <span className="text-gray-500">Popular:</span>
-                  {popularSearches.map((search, index) => (
-                    <span key={index} className="flex items-center gap-x-2">
-                      <button
-                        onClick={() => {
-                          setSearchQuery(search);
-                          // Auto-search after a short delay to allow state to update
-                          setTimeout(() => {
-                            const hasQuery = search.trim().length > 0;
-                            const hasLocation = locationFilter?.latitude !== undefined && locationFilter?.longitude !== undefined;
+                <div className="mt-3 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                  <span className="text-xs text-gray-500 mr-0.5">Popular:</span>
+                  {popularSearches.map((search) => (
+                    <Chip
+                      key={search}
+                      onClick={() => {
+                        setSearchQuery(search);
+                        setTimeout(() => {
+                          const hasQuery = search.trim().length > 0;
+                          const hasLocation = locationFilter?.latitude !== undefined && locationFilter?.longitude !== undefined;
 
-                            if (hasQuery || hasLocation) {
-                              doSearch();
-                            }
-                          }, 100);
-                        }}
-                        className="font-medium text-gray-700 hover:text-orange-600 transition-colors duration-200 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-                      >
-                        {search}
-                      </button>
-                      {index < popularSearches.length - 1 && (
-                        <span className="text-gray-300">&middot;</span>
-                      )}
-                    </span>
+                          if (hasQuery || hasLocation) {
+                            doSearch();
+                          }
+                        }, 100);
+                      }}
+                      className="h-7 px-3 text-xs"
+                    >
+                      {search}
+                    </Chip>
                   ))}
                 </div>
               </div>
@@ -371,81 +369,63 @@ export default function Homepage() {
           </div>
         </section>
 
-        {/* Interactive Feature Cards Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-card relative">
+        {/* Feature Cards Section */}
+        <section className="py-14 px-4 sm:px-6 lg:px-8 bg-white">
           <div className="max-w-7xl mx-auto">
             {/* Section Header */}
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-dark-primary mb-4">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 Why Choose Our Platform
               </h2>
-              <p className="text-lg text-dark-secondary max-w-2xl mx-auto">
+              <p className="text-lg text-gray-500 max-w-2xl mx-auto">
                 Experience a seamless way to connect with professionals and grow your business
               </p>
             </div>
 
             {/* Feature Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Card 1 - Smart Search */}
-              <div className="group relative h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative h-full backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
-                  <div className="mb-6 inline-block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 w-fit">
-                    <Sparkles className="w-8 h-8 text-dark-primary" />
+              {[
+                {
+                  icon: Sparkles,
+                  title: 'AI-Powered Search',
+                  body: "Find exactly what you need with our intelligent search algorithm that understands your requirements and delivers relevant results instantly."
+                },
+                {
+                  icon: Search,
+                  title: 'Location-Based Discovery',
+                  body: "Connect with service providers near you. Our advanced geolocation features help you find local professionals within your preferred radius."
+                },
+                {
+                  icon: ShieldCheck,
+                  title: 'Verified Professionals',
+                  body: "Every service provider is thoroughly vetted and verified. Work with confidence knowing you're hiring trusted and qualified professionals."
+                }
+              ].map(({ icon: Icon, title, body }) => (
+                <Card key={title} interactive className="h-full flex flex-col">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
+                    <Icon className="w-7 h-7 text-orange-700" />
                   </div>
-                  <h3 className="text-2xl font-bold text-dark-primary mb-4">
-                    AI-Powered Search
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    {title}
                   </h3>
-                  <p className="text-dark-secondary leading-relaxed flex-grow">
-                    Find exactly what you need with our intelligent search algorithm that understands your requirements and delivers relevant results instantly.
+                  <p className="text-gray-500 leading-relaxed flex-grow">
+                    {body}
                   </p>
-                </div>
-              </div>
-
-              {/* Card 2 - Location Based */}
-              <div className="group relative h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative h-full backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
-                  <div className="mb-6 inline-block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 w-fit">
-                    <Search className="w-8 h-8 text-dark-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-dark-primary mb-4">
-                    Location-Based Discovery
-                  </h3>
-                  <p className="text-dark-secondary leading-relaxed flex-grow">
-                    Connect with service providers near you. Our advanced geolocation features help you find local professionals within your preferred radius.
-                  </p>
-                </div>
-              </div>
-
-              {/* Card 3 - Verified Professionals */}
-              <div className="group relative h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-black/10 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100" />
-                <div className="relative h-full backdrop-blur-md bg-white/70 border border-white/20 rounded-3xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 flex flex-col">
-                  <div className="mb-6 inline-block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 w-fit">
-                    <ArrowRight className="w-8 h-8 text-dark-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-dark-primary mb-4">
-                    Verified Professionals
-                  </h3>
-                  <p className="text-dark-secondary leading-relaxed flex-grow">
-                    Every service provider is thoroughly vetted and verified. Work with confidence knowing you're hiring trusted and qualified professionals.
-                  </p>
-                </div>
-              </div>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
         
         {/* Services Section */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-dark-card">
+        <section className="py-14 px-4 sm:px-6 lg:px-8 bg-gray-50">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-dark-primary mb-6">
+            <div className="text-center mb-10">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                 Featured Services
               </h2>
-              <p className="text-xl text-dark-secondary max-w-3xl mx-auto leading-relaxed">
-                Discover professional services from our verified providers. 
+              <p className="text-xl text-gray-500 max-w-3xl mx-auto leading-relaxed">
+                Discover professional services from our verified providers.
                 Quality guaranteed, satisfaction assured.
               </p>
             </div>

@@ -29,16 +29,16 @@ const SubCategorySidebar: React.FC<{
   
   return (
     <div className="w-full md:w-1/4 lg:w-1/5 p-4">
-      <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
-        <h3 className="text-xl font-bold mb-4 text-dark-primary border-b border-white/30 pb-3">Subcategories</h3>
-        <ul className="space-y-3">
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <h3 className="text-xs font-semibold uppercase tracking-wide mb-3 text-gray-500">Subcategories</h3>
+        <ul className="space-y-1">
           <li>
             <button
               onClick={() => onSelectSubCategory(null)}
-              className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 ${
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
                 selectedSubCategory === null
-                  ? 'bg-orange-500 text-white font-semibold shadow-lg border border-orange-500'
-                  : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600 border border-white/30'
+                  ? 'bg-orange-500 text-white font-semibold'
+                  : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600'
               }`}
             >
               <div className="flex items-center justify-between">
@@ -69,10 +69,10 @@ const SubCategorySidebar: React.FC<{
               <li key={sub.id}>
                 <button
                   onClick={() => onSelectSubCategory(sub.id)}
-                  className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 ${
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
                     selectedSubCategory === sub.id
-                      ? 'bg-orange-500 text-white font-semibold shadow-lg border border-orange-500'
-                      : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600 border border-white/30'
+                      ? 'bg-orange-500 text-white font-semibold'
+                      : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -272,7 +272,7 @@ const ServiceCategoryPage: React.FC = () => {
         {/* Square Grid Background with fade */}
         <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
         
-        <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className="container mx-auto px-4 pt-20 pb-8 relative z-10">
           {/* Header Skeleton */}
           <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10 border border-white/30">
             <div className="animate-pulse">
@@ -352,7 +352,7 @@ const ServiceCategoryPage: React.FC = () => {
         {/* Enhanced Square Grid Background with fade effect */}
         <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
         
-        <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className="container mx-auto px-4 pt-20 pb-8 relative z-10">
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
               <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30">
@@ -409,31 +409,24 @@ const ServiceCategoryPage: React.FC = () => {
       {/* Enhanced Square Grid Background with fade effect */}
       <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
       
-      <div className="container mx-auto px-4 py-8 relative z-10">
-        {/* Enhanced Header Section */}
-        <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10 border border-white/30 relative overflow-hidden">
-          {/* Header Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-dark-secondary/5 to-black/5 opacity-50"></div>
-          
-          <div className="relative z-10">
-            <Breadcrumb items={breadcrumbItems} />
-            <div className="mt-6">
-              <h1 className="text-4xl md:text-5xl font-bold text-dark-primary mb-2">
-                <span className="bg-gradient-to-r from-black via-dark-700 to-black bg-clip-text text-transparent">
-                  {category.name || category.slug}
-                </span>
-              </h1>
-              {category.description && (
-                <p className="text-lg text-dark-secondary leading-relaxed">{category.description}</p>
-              )}
-            </div>
+      <div className="container mx-auto px-4 pt-20 pb-4 relative z-10">
+        {/* Header */}
+        <div className="mb-6">
+          <Breadcrumb items={breadcrumbItems} />
+          <div className="mt-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+            <h1 className="text-2xl md:text-3xl font-bold text-dark-primary">
+              {category.name || category.slug}
+            </h1>
           </div>
+          {category.description && (
+            <p className="text-sm text-dark-secondary mt-1 max-w-2xl">{category.description}</p>
+          )}
         </div>
 
         <div className="flex flex-col md:flex-row -mx-4">
           {/* Sidebar for Subcategories */}
           {category.children && category.children.length > 0 && (
-            <SubCategorySidebar 
+            <SubCategorySidebar
               category={category}
               selectedSubCategory={selectedSubCategory}
               onSelectSubCategory={setSelectedSubCategory}
@@ -445,14 +438,14 @@ const ServiceCategoryPage: React.FC = () => {
 
           {/* Main Content */}
           <div className={`w-full p-4 ${category.children && category.children.length > 0 ? 'md:w-3/4 lg:w-4/5' : ''}`}>
-            <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 mb-8">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-white rounded-xl px-5 py-3 shadow-sm mb-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold text-dark-primary mb-2">
+                  <h2 className="text-base font-semibold text-dark-primary">
                     {currentCategoryName}
                   </h2>
                   {!selectedSubCategory && category.children && category.children.length > 0 && (
-                    <span className="text-sm text-dark-secondary">
+                    <span className="text-xs text-dark-secondary">
                       Including all subcategories
                     </span>
                   )}
@@ -460,28 +453,28 @@ const ServiceCategoryPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   {servicesLoading ? (
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="w-5 h-5 animate-spin text-dark-primary" />
-                      <span className="text-dark-secondary">
+                      <Loader2 className="w-4 h-4 animate-spin text-dark-primary" />
+                      <span className="text-xs text-dark-secondary">
                         {selectedSubCategory ? 'Loading services...' : 'Loading all services...'}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-dark-secondary font-medium">{sortedServices.length} services</span>
+                    <span className="text-xs text-dark-secondary font-medium">{sortedServices.length} services</span>
                   )}
                   <div className="relative">
-                    <select 
+                    <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
                       title="Sort services"
-                      className="appearance-none bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl py-3 pl-4 pr-12 text-sm text-dark-primary focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent hover:bg-white/70 transition-all duration-300"
+                      className="appearance-none bg-gray-50 border border-gray-200 rounded-lg py-1.5 pl-3 pr-9 text-xs text-dark-primary focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent hover:bg-gray-100 transition-all duration-300"
                     >
-                      <option value="relevance" className="bg-dark-card text-dark-primary">Sort by: Relevance</option>
-                      <option value="price-low" className="bg-dark-card text-dark-primary">Sort by: Price (Low to High)</option>
-                      <option value="price-high" className="bg-dark-card text-dark-primary">Sort by: Price (High to Low)</option>
-                      <option value="newest" className="bg-dark-card text-dark-primary">Sort by: Newest First</option>
-                      <option value="oldest" className="bg-dark-card text-dark-primary">Sort by: Oldest First</option>
+                      <option value="relevance" className="bg-white text-dark-primary">Sort by: Relevance</option>
+                      <option value="price-low" className="bg-white text-dark-primary">Sort by: Price (Low to High)</option>
+                      <option value="price-high" className="bg-white text-dark-primary">Sort by: Price (High to Low)</option>
+                      <option value="newest" className="bg-white text-dark-primary">Sort by: Newest First</option>
+                      <option value="oldest" className="bg-white text-dark-primary">Sort by: Oldest First</option>
                     </select>
-                    <ChevronDown className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-dark-secondary pointer-events-none" />
+                    <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-dark-secondary pointer-events-none" />
                   </div>
                 </div>
               </div>

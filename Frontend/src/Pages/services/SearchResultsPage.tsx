@@ -20,7 +20,7 @@ interface LocationState {
   message?: string;
 }
 
-const SearchResultsPageEnhanced: React.FC = () => {
+const SearchResultsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<'relevance' | 'distance' | 'price' | 'rating'>('relevance');
@@ -108,7 +108,7 @@ const SearchResultsPageEnhanced: React.FC = () => {
       });
 
       if (response.success) {
-        navigate('/search-results-enhanced', {
+        navigate('/services/search', {
           state: {
             results: response.data.results,
             query: response.data.query,
@@ -466,7 +466,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
   );
 };
 
-export default SearchResultsPageEnhanced;
+export default SearchResultsPage;
 
 
 

@@ -11,14 +11,14 @@ const categoryIconMap: Record<string, any> = {
   'business-services': BarChart3,
 };
 
-// Gradient mapping for categories
+// Gradient mapping for categories — orange family throughout, per brand
 const categoryGradientMap: Record<string, string> = {
-  'home-services': 'from-green-400 to-blue-500',
-  'professional-services': 'from-blue-400 to-purple-500',
-  'creative-services': 'from-purple-400 to-pink-500',
-  'technical-services': 'from-cyan-400 to-blue-500',
-  'personal-care': 'from-pink-400 to-red-500',
-  'business-services': 'from-indigo-400 to-purple-500',
+  'home-services': 'from-orange-400 to-amber-500',
+  'professional-services': 'from-amber-400 to-orange-500',
+  'creative-services': 'from-orange-400 to-red-500',
+  'technical-services': 'from-amber-500 to-orange-600',
+  'personal-care': 'from-orange-400 to-amber-600',
+  'business-services': 'from-red-400 to-orange-500',
 };
 
 // Sub-category icon mapping
@@ -87,7 +87,7 @@ export const mapCategoriesToNavbarFormat = (categories: Category[]): NavbarCateg
     title: category.name || category.slug,
     description: category.description || `Services related to ${category.name || category.slug}`,
     icon: categoryIconMap[category.slug] || Briefcase,
-    gradient: categoryGradientMap[category.slug] || 'from-gray-400 to-gray-600',
+    gradient: categoryGradientMap[category.slug] || 'from-orange-400 to-amber-500',
     subcategories: (category.children || []).map(subcategory => ({
       id: subcategory.id,
       name: subcategory.name || subcategory.slug,
@@ -104,7 +104,7 @@ export const getCategoryIcon = (slug: string) => {
 };
 
 export const getCategoryGradient = (slug: string) => {
-  return categoryGradientMap[slug] || 'from-gray-400 to-gray-600';
+  return categoryGradientMap[slug] || 'from-orange-400 to-amber-500';
 };
 
 export const getSubcategoryIcon = (slug: string) => {

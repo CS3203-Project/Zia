@@ -26,7 +26,7 @@ interface BrowseServicesState {
   aiSearchEnabled: boolean;
 }
 
-const BrowseServicesEnhanced: React.FC = () => {
+const BrowseServices: React.FC = () => {
   const [state, setState] = useState<BrowseServicesState>({
     categories: [],
     loading: true,
@@ -296,7 +296,7 @@ const BrowseServicesEnhanced: React.FC = () => {
 
   const handleViewSearchResults = () => {
     if (state.hybridSearchResults.length > 0) {
-      navigate('/search-results-enhanced', {
+      navigate('/services/search', {
         state: {
           results: state.hybridSearchResults,
           query: state.searchTerm || undefined,
@@ -468,9 +468,6 @@ const BrowseServicesEnhanced: React.FC = () => {
         <main className="flex-1 container mx-auto px-4 py-8 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="text-center mb-12 pt-20">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/70 backdrop-blur-lg rounded-full mb-4 border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]">
-              <Sparkles className="w-8 h-8 text-dark-primary" />
-            </div>
             <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-4">
               {getSearchTypeLabel()}
             </h1>
@@ -875,140 +872,34 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, viewMode, getTota
   const totalServices = getTotalServiceCount(category);
   const Icon = getCategoryIcon(category.slug || '');
   const gradient = getCategoryGradient(category.slug || '');
-  const [imageError, setImageError] = useState(false);
-
-  // Get category-specific background pattern
-  const getCategoryPattern = (slug: string) => {
-    const patterns: { [key: string]: string } = {
-      'technology': '💻',
-      'design': '🎨',
-      'writing': '✍️',
-      'marketing': '📱',
-      'business': '💼',
-      'business-services': '💼',
-      'lifestyle': '🌟',
-      'music': '🎵',
-      'video': '🎬',
-      'photography': '📷',
-      'programming': '⚡',
-      'consulting': '🎯',
-      'education': '📚',
-      'health': '❤️',
-      'fitness': '💪',
-      'legal': '⚖️',
-      'finance': '💰',
-      'real-estate': '🏠',
-      'creative-services': '�',
-      'automotive': '🚗',
-      'construction': '🏗️',
-      'home-services': '🔧',
-      'personal-care': '💆',
-      'professional-services': '👔',
-      'general-services': '🎯'
-    };
-    return patterns[slug] || '🌐';
-  };
-
-  // Get category-specific image URLs (using Pixabay-style CDN URLs)
-  const getCategoryImage = (slug: string) => {
-    const images: { [key: string]: string } = {
-      'technology': 'https://cdn.pixabay.com/photo/2018/05/08/08/44/artificial-intelligence-3382507_640.jpg',
-      'design': 'https://cdn.pixabay.com/photo/2017/05/19/06/22/desk-2325627_640.jpg',
-      'writing': 'https://cdn.pixabay.com/photo/2015/07/17/22/43/student-849825_640.jpg',
-      'marketing': 'https://cdn.pixabay.com/photo/2015/02/05/08/06/macbook-624707_640.jpg',
-      'business': 'https://cdn.pixabay.com/photo/2015/01/09/11/08/startup-594090_640.jpg',
-      'business-services': 'https://cdn.pixabay.com/photo/2015/01/09/11/08/startup-594090_640.jpg',
-      'lifestyle': 'https://cdn.pixabay.com/photo/2016/11/29/03/53/athletes-1867185_640.jpg',
-      'music': 'https://cdn.pixabay.com/photo/2015/05/07/11/02/guitar-756326_640.jpg',
-      'video': 'https://cdn.pixabay.com/photo/2016/11/29/08/41/apple-1868496_640.jpg',
-      'photography': 'https://cdn.pixabay.com/photo/2016/11/19/15/40/camera-1839924_640.jpg',
-      'programming': 'https://cdn.pixabay.com/photo/2015/09/17/17/25/code-944499_640.jpg',
-      'consulting': 'https://cdn.pixabay.com/photo/2015/01/08/18/29/entrepreneur-593358_640.jpg',
-      'education': 'https://cdn.pixabay.com/photo/2016/09/08/18/45/cube-1655118_640.jpg',
-      'health': 'https://cdn.pixabay.com/photo/2017/08/25/15/10/healthcare-2680421_640.jpg',
-      'fitness': 'https://cdn.pixabay.com/photo/2017/08/07/14/02/man-2604149_640.jpg',
-      'legal': 'https://cdn.pixabay.com/photo/2017/07/10/23/49/club-2492011_640.jpg',
-      'finance': 'https://cdn.pixabay.com/photo/2016/11/27/21/42/stock-1863880_640.jpg',
-      'real-estate': 'https://cdn.pixabay.com/photo/2016/11/18/17/20/living-room-1835923_640.jpg',
-      'automotive': 'https://cdn.pixabay.com/photo/2016/11/19/11/16/automobile-1838744_640.jpg',
-      'construction': 'https://cdn.pixabay.com/photo/2015/07/19/10/00/construction-site-850636_640.jpg',
-      'home-services': 'https://cdn.pixabay.com/photo/2018/01/25/20/53/lifestyle-3107041_1280.jpg',
-      'food': 'https://cdn.pixabay.com/photo/2017/08/06/06/43/breakfast-2589056_640.jpg',
-      'travel': 'https://cdn.pixabay.com/photo/2015/07/11/23/02/plane-841441_640.jpg',
-      'creative-services': 'https://cdn.pixabay.com/photo/2017/05/19/06/22/desk-2325627_640.jpg',
-      'beauty': 'https://cdn.pixabay.com/photo/2016/03/26/22/21/books-1281581_640.jpg',
-      'fashion': 'https://cdn.pixabay.com/photo/2016/11/19/18/06/feet-1840619_640.jpg',
-      'sports': 'https://cdn.pixabay.com/photo/2016/11/29/05/45/adventure-1867797_640.jpg',
-      'entertainment': 'https://cdn.pixabay.com/photo/2015/11/24/11/09/audience-1056764_640.jpg',
-      'pets': 'https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg',
-      'gardening': 'https://cdn.pixabay.com/photo/2016/11/21/16/03/gardening-1846137_640.jpg',
-      'cleaning': 'https://cdn.pixabay.com/photo/2015/09/21/14/24/cleaning-949352_640.jpg',
-      'personal-care': 'https://cdn.pixabay.com/photo/2017/03/14/03/20/woman-2141808_1280.jpg',
-      'professional-services': 'https://cdn.pixabay.com/photo/2015/01/08/18/29/entrepreneur-593358_640.jpg',
-      'general-services': 'https://cdn.pixabay.com/photo/2015/01/09/11/08/startup-594090_640.jpg'
-    };
-    return images[slug] || 'https://cdn.pixabay.com/photo/2015/05/28/14/53/ux-788002_1280.jpg';
-  };
-
-  const categoryImage = getCategoryImage(category.slug || '');
 
   return (
     <Link
       to={`/services/${category.slug}`}
-      className={`group block transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 ${
-        viewMode === 'list' ? '' : ''
-      }`}
+      className="group block"
     >
-      <div className={`relative rounded-2xl bg-white/70 backdrop-blur-lg border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] hover:border-white/50 transition-all duration-300 overflow-hidden ${
+      <div className={`relative rounded-2xl bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_2px_6px_2px_rgba(0,0,0,0.15)] transition-shadow duration-200 overflow-hidden ${
         viewMode === 'list' ? 'h-28' : 'h-64'
       }`}>
-        {/* Category Image Background - Enhanced with MORE visible images */}
-        {categoryImage && !imageError && viewMode === 'grid' && (
-          <div className="absolute inset-0 overflow-hidden">
-            <img
-              src={categoryImage}
-              alt={category.name}
-              onError={() => setImageError(true)}
-              loading="lazy"
-              className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-all duration-500 group-hover:scale-110 transform filter grayscale-[20%] group-hover:grayscale-0"
-            />
-            {/* Lighter gradient overlay for better image visibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-white/50 to-white/10"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-white/20"></div>
-          </div>
-        )}
-
-        {/* Background Pattern/Emoji - Fallback when no image or in list view - MORE VISIBLE */}
-        {(!categoryImage || imageError || viewMode === 'list') && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            <div className="text-[12rem] opacity-[0.15] group-hover:opacity-[0.25] transition-opacity duration-300 group-hover:scale-110 transform">
-              {getCategoryPattern(category.slug || '')}
-            </div>
-          </div>
-        )}
-
-        {/* Background Gradient */}
-        <div className={`absolute inset-0 opacity-5 group-hover:opacity-10 transition-opacity duration-300 ${gradient}`}></div>
-
-        <div className={`relative z-10 h-full flex ${viewMode === 'list' ? 'flex-row items-center space-x-4 px-4' : 'flex-col p-6'}`}>
-          {/* Icon */}
-          <div className={`flex-shrink-0 ${viewMode === 'list' ? 'w-14 h-14' : 'w-16 h-16 mb-4'}`}>
-            <div className={`w-full h-full bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-              <Icon className={`${viewMode === 'list' ? 'w-6 h-6' : 'w-8 h-8'} text-dark-primary`} />
+        <div className={`relative z-10 h-full flex ${viewMode === 'list' ? 'flex-row items-center space-x-4 px-5' : 'flex-col p-6'}`}>
+          {/* Icon tile */}
+          <div className={`flex-shrink-0 ${viewMode === 'list' ? 'w-12 h-12' : 'w-14 h-14 mb-4'}`}>
+            <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+              <Icon className={`${viewMode === 'list' ? 'w-5 h-5' : 'w-7 h-7'} text-white`} />
             </div>
           </div>
 
           {/* Content */}
-          <div className={`flex-1 flex flex-col ${viewMode === 'list' ? 'justify-center' : 'justify-between'}`}>
-            <div className="flex-grow">
-              <h3 className={`font-bold text-dark-primary group-hover:text-dark-secondary transition-colors mb-2 ${
-                viewMode === 'list' ? 'text-base line-clamp-1' : 'text-xl line-clamp-2'
+          <div className={`flex-1 flex flex-col min-w-0 ${viewMode === 'list' ? 'justify-center' : 'justify-between'}`}>
+            <div className="flex-grow min-w-0">
+              <h3 className={`font-bold text-gray-900 mb-1.5 ${
+                viewMode === 'list' ? 'text-base line-clamp-1' : 'text-lg line-clamp-2'
               }`}>
                 {category.name}
               </h3>
-              
+
               {category.description && (
-                <p className={`text-dark-secondary text-sm leading-relaxed ${
+                <p className={`text-gray-500 text-sm leading-relaxed ${
                   viewMode === 'list' ? 'line-clamp-1' : 'line-clamp-3 mb-4'
                 }`}>
                   {category.description}
@@ -1019,19 +910,19 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, viewMode, getTota
             {/* Footer Section - Always at bottom */}
             <div className="mt-auto">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-1 text-dark-primary">
+                <div className="flex items-center space-x-1.5 text-gray-600">
                   <Users className="w-4 h-4" />
-                  <span className="text-sm font-semibold">
+                  <span className="text-sm font-medium">
                     {totalServices} {totalServices === 1 ? 'service' : 'services'}
                   </span>
                 </div>
-                
-                <ArrowRight className="w-5 h-5 text-dark-secondary group-hover:text-dark-primary group-hover:translate-x-1 transition-all duration-300" />
+
+                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-orange-600 group-hover:translate-x-0.5 transition-all duration-200" />
               </div>
 
               {/* Subcategories indicator */}
               {category.children && category.children.length > 0 && (
-                <div className="mt-2 text-xs text-dark-muted font-medium">
+                <div className="mt-1.5 text-xs text-gray-400 font-medium">
                   +{category.children.length} subcategories
                 </div>
               )}
@@ -1043,7 +934,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, viewMode, getTota
   );
 };
 
-export default BrowseServicesEnhanced;
+export default BrowseServices;
 
 
 

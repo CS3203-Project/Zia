@@ -19,6 +19,7 @@ import { cn } from '../../utils/utils';
 import { confirmationApi } from '../../api/confirmationApi';
 import GlassmorphismProfileCard from '../../components/ui/ProfileCard';
 import Button from '@/components/shared/Button';
+import Chip from '@/components/shared/Chip';
 import QRCode from 'react-qr-code';
 import * as QRCodeLib from 'qrcode';
 
@@ -694,7 +695,7 @@ const ServiceDetailPage: React.FC = () => {
             {/* Main Content Skeleton */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left Column Skeleton */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4">
                 {/* Media Gallery Skeleton */}
                 <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20">
                   <div className="aspect-[16/9] bg-gradient-to-br from-black/10 via-dark-tertiary/20 to-black/10 animate-pulse relative overflow-hidden">
@@ -939,9 +940,9 @@ const ServiceDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col relative overflow-hidden">
       <main className="flex-1 mt-16 relative z-10">
-        <div className="container mx-auto px-4 py-8">
-          {/* Enhanced Glass Morphism Breadcrumb */}
-          <div className="mb-8 bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20">
+        <div className="container mx-auto px-4 py-4">
+          {/* Breadcrumb */}
+          <div className="mb-4 bg-white rounded-xl px-4 py-2.5 shadow-sm">
             <Breadcrumb items={breadcrumbItems} />
           </div>
 
@@ -1002,23 +1003,23 @@ const ServiceDetailPage: React.FC = () => {
           {/* Main Content Layout - Grid System */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Images and Service Info */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4">
               {/* Hero Banner - image with category badge + title overlay */}
               {service.images.length > 0 && (
-                <div className="relative rounded-3xl overflow-hidden shadow-xl group">
-                  <div className="aspect-[16/9] relative bg-gray-100">
+                <div className="relative rounded-2xl overflow-hidden shadow-md group">
+                  <div className="h-44 sm:h-56 md:h-64 relative bg-gray-100">
                     <img
                       src={service.images[selectedImage]}
                       alt={service.title}
                       className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.03]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
                   </div>
 
                   {/* Category badge */}
                   {service.category?.name && (
-                    <div className="absolute top-5 left-5">
-                      <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-orange-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
                         {service.category.name}
                       </span>
                     </div>
@@ -1026,8 +1027,8 @@ const ServiceDetailPage: React.FC = () => {
 
                   {/* Image counter */}
                   {service.images.length > 1 && (
-                    <div className="absolute top-5 right-5 flex items-center space-x-2 bg-white/90 backdrop-blur-md rounded-full px-3 py-1.5 shadow-lg">
-                      <Eye className="w-3.5 h-3.5 text-gray-600" />
+                    <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-white/90 backdrop-blur-md rounded-full px-2.5 py-1 shadow-sm">
+                      <Eye className="w-3 h-3 text-gray-600" />
                       <span className="text-gray-700 text-xs font-medium">
                         {selectedImage + 1}/{service.images.length}
                       </span>
@@ -1035,12 +1036,12 @@ const ServiceDetailPage: React.FC = () => {
                   )}
 
                   {/* Title overlay */}
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <h1 className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-md">
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 drop-shadow-md line-clamp-1">
                       {service.title}
                     </h1>
                     {service.description && (
-                      <p className="text-white/90 text-sm md:text-base max-w-2xl line-clamp-1">
+                      <p className="text-white/90 text-xs sm:text-sm max-w-2xl line-clamp-1">
                         {service.description}
                       </p>
                     )}
@@ -1051,17 +1052,17 @@ const ServiceDetailPage: React.FC = () => {
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-sm"
                         title="Previous image"
                       >
-                        <ChevronLeft className="w-5 h-5" />
+                        <ChevronLeft className="w-4 h-4" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-sm"
                         title="Next image"
                       >
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRight className="w-4 h-4" />
                       </button>
                     </>
                   )}
@@ -1070,10 +1071,10 @@ const ServiceDetailPage: React.FC = () => {
 
               {/* Info cards row: Price / Location / Provider */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                <div className="bg-white rounded-2xl p-4 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
-                      <DollarSign className="w-4 h-4 text-orange-600" />
+                      <DollarSign className="w-4 h-4 text-orange-700" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Price</p>
@@ -1083,10 +1084,10 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+                <div className="bg-blue-50 rounded-2xl p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-blue-600" />
+                      <MapPin className="w-4 h-4 text-blue-700" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-gray-500">Location</p>
@@ -1096,10 +1097,10 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
+                <div className="bg-emerald-50 rounded-2xl p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                      <User className="w-4 h-4 text-emerald-600" />
+                      <User className="w-4 h-4 text-emerald-700" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-gray-500">Provider</p>
@@ -1149,12 +1150,9 @@ const ServiceDetailPage: React.FC = () => {
                   {service.tags && service.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {service.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="text-xs px-3 py-1.5 rounded-full text-gray-600 bg-gray-100 hover:bg-orange-50 hover:text-orange-700 transition-all duration-300"
-                        >
+                        <Chip key={index} className="h-7 px-3 text-xs pointer-events-none">
                           #{tag}
-                        </span>
+                        </Chip>
                       ))}
                     </div>
                   )}
