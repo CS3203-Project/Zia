@@ -25,6 +25,7 @@ import ServiceBookingSidebar from '../../components/services/detail/ServiceBooki
 import ServiceVideoBanner from '../../components/services/detail/ServiceVideoBanner';
 import ServiceHeroGallery from '../../components/services/detail/ServiceHeroGallery';
 import ServicePhotoGallery from '../../components/services/detail/ServicePhotoGallery';
+import ServiceLocationMap from '../../components/shared/ServiceLocationMap';
 
 export interface DetailedService {
   id: string;
@@ -781,6 +782,24 @@ const ServiceDetailPage: React.FC = () => {
                       </Chip>
                     ))}
                   </div>
+                )}
+              </div>
+
+              {/* Location - interactive map when coordinates are available, text fallback otherwise */}
+              <div className="bg-white rounded-2xl p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+                <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-orange-600" />
+                  Location
+                </h2>
+                {typeof service.latitude === 'number' && typeof service.longitude === 'number' ? (
+                  <ServiceLocationMap
+                    destination={{ latitude: service.latitude, longitude: service.longitude }}
+                    destinationLabel={service.title}
+                  />
+                ) : (
+                  <p className="text-sm text-gray-600">
+                    {[service.address, service.city, service.state, service.country].filter(Boolean).join(', ') || 'Location not specified'}
+                  </p>
                 )}
               </div>
 

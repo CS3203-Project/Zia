@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as serviceService from '../services/services.service.js';
 import { semanticSearchService } from '../services/semantic-search.service.js';
-import googleMapsService from '../services/googleMaps.service.js';
+import geocodingService from '../services/geocoding.service.js';
 
 /**
  * Create a new service
@@ -17,31 +17,31 @@ export const createService = async (req: Request, res: Response, next: NextFunct
         
         if (serviceData.latitude && serviceData.longitude) {
           // Manual coordinates provided - validate and reverse geocode
-          if (!googleMapsService.validateCoordinates(serviceData.latitude, serviceData.longitude)) {
+          if (!geocodingService.validateCoordinates(serviceData.latitude, serviceData.longitude)) {
             return res.status(400).json({
               success: false,
               message: 'Invalid coordinates provided'
             });
           }
           
-          locationData = await googleMapsService.reverseGeocode(
+          locationData = await geocodingService.reverseGeocode(
             serviceData.latitude, 
             serviceData.longitude
           );
         } else if (serviceData.address) {
           // Address provided - geocode to get coordinates
-          locationData = await googleMapsService.geocodeAddress(serviceData.address);
+          locationData = await geocodingService.geocodeAddress(serviceData.address);
         }
 
         if (locationData) {
           // Merge location data into service data
-          serviceData.latitude = locationData.lat;
-          serviceData.longitude = locationData.lng;
-          serviceData.address = locationData.formatted_address;
+          serviceData.latitude = locationData.latitude;
+          serviceData.longitude = locationData.longitude;
+          serviceData.address = locationData.address;
           serviceData.city = locationData.city;
           serviceData.state = locationData.state;
           serviceData.country = locationData.country;
-          serviceData.postalCode = locationData.postal_code;
+          serviceData.postalCode = locationData.postalCode;
           serviceData.locationLastUpdated = new Date();
         }
       } catch (locationError) {
@@ -137,31 +137,31 @@ export const updateService = async (req: Request, res: Response, next: NextFunct
 
         if (updateData.latitude && updateData.longitude) {
           // Manual coordinates provided - validate and reverse geocode
-          if (!googleMapsService.validateCoordinates(updateData.latitude, updateData.longitude)) {
+          if (!geocodingService.validateCoordinates(updateData.latitude, updateData.longitude)) {
             return res.status(400).json({
               success: false,
               message: 'Invalid coordinates provided'
             });
           }
 
-          locationData = await googleMapsService.reverseGeocode(
+          locationData = await geocodingService.reverseGeocode(
             updateData.latitude,
             updateData.longitude
           );
         } else if (updateData.address) {
           // Address provided - geocode to get coordinates
-          locationData = await googleMapsService.geocodeAddress(updateData.address);
+          locationData = await geocodingService.geocodeAddress(updateData.address);
         }
 
         if (locationData) {
           // Merge location data into update data
-          updateData.latitude = locationData.lat;
-          updateData.longitude = locationData.lng;
-          updateData.address = locationData.formatted_address;
+          updateData.latitude = locationData.latitude;
+          updateData.longitude = locationData.longitude;
+          updateData.address = locationData.address;
           updateData.city = locationData.city;
           updateData.state = locationData.state;
           updateData.country = locationData.country;
-          updateData.postalCode = locationData.postal_code;
+          updateData.postalCode = locationData.postalCode;
           updateData.locationLastUpdated = new Date();
         }
       } catch (locationError) {
@@ -273,9 +273,9 @@ export const hybridSearchServices = async (req: Request, res: Response, next: Ne
       locationProvided = true;
     } else if (address) {
       try {
-        const locationData = await googleMapsService.geocodeAddress(address as string);
-        userLat = locationData.lat;
-        userLng = locationData.lng;
+        const locationData = await geocodingService.geocodeAddress(address as string);
+        userLat = locationData.latitude;
+        userLng = locationData.longitude;
         locationProvided = true;
       } catch (error) {
         console.warn('Geocoding failed for address:', address, error);
@@ -326,7 +326,7 @@ export const hybridSearchServices = async (req: Request, res: Response, next: Ne
 
         if (fullService && fullService.latitude !== null && fullService.longitude !== null && fullService.latitude !== undefined && fullService.longitude !== undefined) {
           // Calculate distance
-          const distance = googleMapsService.calculateDistance(
+          const distance = geocodingService.calculateDistance(
             userLat,
             userLng,
             fullService.latitude,
@@ -372,7 +372,7 @@ export const hybridSearchServices = async (req: Request, res: Response, next: Ne
           if (fullService) {
             if (fullService.latitude !== null && fullService.longitude !== null && fullService.latitude !== undefined && fullService.longitude !== undefined) {
               // Calculate distance even though outside radius
-              const distance = googleMapsService.calculateDistance(
+              const distance = geocodingService.calculateDistance(
                 userLat,
                 userLng,
                 fullService.latitude,
@@ -651,7 +651,7 @@ export const searchServicesByLocation = async (req: Request, res: Response, next
       userLat = parseFloat(lat as string);
       userLng = parseFloat(lng as string);
       
-      if (!googleMapsService.validateCoordinates(userLat, userLng)) {
+      if (!geocodingService.validateCoordinates(userLat, userLng)) {
         return res.status(400).json({
           success: false,
           message: 'Invalid coordinates provided'
@@ -659,9 +659,9 @@ export const searchServicesByLocation = async (req: Request, res: Response, next
       }
     } else if (address) {
       try {
-        const locationData = await googleMapsService.geocodeAddress(address as string);
-        userLat = locationData.lat;
-        userLng = locationData.lng;
+        const locationData = await geocodingService.geocodeAddress(address as string);
+        userLat = locationData.latitude;
+        userLng = locationData.longitude;
       } catch (error) {
         return res.status(400).json({
           success: false,
@@ -723,7 +723,7 @@ export const getLocationFromIP = async (req: Request, res: Response, next: NextF
     const clientIP = req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'] as string;
     
     try {
-      const locationData = await googleMapsService.getLocationFromIP(clientIP);
+      const locationData = await geocodingService.getLocationFromIP(clientIP);
       
       res.status(200).json({
         success: true,
@@ -757,7 +757,7 @@ export const geocodeAddress = async (req: Request, res: Response, next: NextFunc
     }
 
     try {
-      const locationData = await googleMapsService.geocodeAddress(address);
+      const locationData = await geocodingService.geocodeAddress(address);
       
       res.status(200).json({
         success: true,
@@ -796,7 +796,7 @@ export const reverseGeocode = async (req: Request, res: Response, next: NextFunc
     const latParsed = parseFloat(latValue);
     const lngParsed = parseFloat(lngValue);
 
-    if (!googleMapsService.validateCoordinates(latParsed, lngParsed)) {
+    if (!geocodingService.validateCoordinates(latParsed, lngParsed)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid coordinates provided'
@@ -804,7 +804,7 @@ export const reverseGeocode = async (req: Request, res: Response, next: NextFunc
     }
 
     try {
-      const locationData = await googleMapsService.reverseGeocode(latParsed, lngParsed);
+      const locationData = await geocodingService.reverseGeocode(latParsed, lngParsed);
       
       res.status(200).json({
         success: true,
@@ -817,6 +817,28 @@ export const reverseGeocode = async (req: Request, res: Response, next: NextFunc
         message: 'Could not reverse geocode the provided coordinates'
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Search for address suggestions (type-ahead autocomplete)
+ */
+export const searchAddressSuggestions = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { q, limit } = req.query;
+
+    const suggestions = await geocodingService.searchAddress(
+      q as string,
+      limit ? parseInt(limit as string, 10) : undefined
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Address suggestions retrieved successfully',
+      data: suggestions
+    });
   } catch (error) {
     next(error);
   }

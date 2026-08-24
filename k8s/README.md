@@ -66,7 +66,6 @@ kubectl create secret generic core-secrets -n zia \
   --from-literal=JWT_SECRET=<value from Core/.env> \
   --from-literal=JWT_EXPIRES_IN=24h \
   --from-literal=INTERNAL_API_KEY=<value from Core/.env> \
-  --from-literal=GOOGLE_MAPS_API_KEY=<value from Core/.env> \
   --from-literal=GEMINI_API_KEY= \
   --from-literal=EMBEDDING_API_URL= \
   --from-literal=EMBEDDING_MODEL=

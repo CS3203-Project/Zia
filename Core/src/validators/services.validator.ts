@@ -282,6 +282,18 @@ export const geocodeAddressSchema = Joi.object({
 });
 
 /**
+ * Validation schema for address search suggestions (type-ahead)
+ */
+export const searchAddressSchema = Joi.object({
+  q: Joi.string().min(2).max(200).required().messages({
+    'string.min': 'Search query must be at least 2 characters long',
+    'string.max': 'Search query must not exceed 200 characters',
+    'any.required': 'Search query is required'
+  }),
+  limit: Joi.number().integer().min(1).max(10).optional()
+});
+
+/**
  * Validation schema for reverse geocoding coordinates
  */
 export const reverseGeocodeSchema = Joi.object({

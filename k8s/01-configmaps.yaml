@@ -1,5 +1,5 @@
-# Non-secret configuration. Real secrets (JWT_SECRET, INTERNAL_API_KEY, PayHere/Gmail/
-# Google Maps credentials) are created separately as Kubernetes Secrets — see k8s/README.md.
+# Non-secret configuration. Real secrets (JWT_SECRET, INTERNAL_API_KEY, PayHere/Gmail
+# credentials) are created separately as Kubernetes Secrets — see k8s/README.md.
 #
 # Service DNS: any Service in this namespace is reachable by other pods using just its
 # name (e.g. "postgres-core"), since they share the "zia" namespace.

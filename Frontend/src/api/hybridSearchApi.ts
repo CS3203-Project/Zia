@@ -68,6 +68,18 @@ export interface LocationResponse {
   data: LocationInfo | null;
 }
 
+export interface AddressSuggestion {
+  lat: number;
+  lng: number;
+  displayName: string;
+}
+
+export interface AddressSuggestionsResponse {
+  success: boolean;
+  message: string;
+  data: AddressSuggestion[];
+}
+
 // Hybrid Search API functions
 export const hybridSearchApi = {
   // Perform hybrid search for services (combines semantic search with geolocation)
@@ -140,9 +152,17 @@ export const hybridSearchApi = {
 
   // Reverse geocode coordinates to address
   reverseGeocode: async (latitude: number, longitude: number): Promise<LocationResponse> => {
-    const response = await apiClient.post<LocationResponse>('/services/location/reverse-geocode', { 
-      latitude, 
-      longitude 
+    const response = await apiClient.post<LocationResponse>('/services/location/reverse-geocode', {
+      latitude,
+      longitude
+    });
+    return response.data;
+  },
+
+  // Search for address suggestions (type-ahead autocomplete)
+  searchAddressSuggestions: async (query: string, limit = 5): Promise<AddressSuggestionsResponse> => {
+    const response = await apiClient.get<AddressSuggestionsResponse>('/services/location/search', {
+      params: { q: query, limit }
     });
     return response.data;
   },

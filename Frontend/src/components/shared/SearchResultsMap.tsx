@@ -1,7 +1,10 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
-import { MapPin, Loader2, Navigation2, Eye } from 'lucide-react';
-import type { HybridSearchResult } from '../../api/hybridSearchApi';
+import React, { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import '../../utils/leafletSetup';
+import { MapPin, Navigation2, Eye } from 'lucide-react';
+import { hybridSearchApi, type HybridSearchResult } from '../../api/hybridSearchApi';
 
 interface SearchResultsMapProps {
   services: HybridSearchResult[];
@@ -10,351 +13,173 @@ interface SearchResultsMapProps {
     longitude: number;
   };
   className?: string;
-  googleMapsApiKey?: string;
 }
 
-// Google Maps Component for Search Results
-const GoogleMap: React.FC<{
-  center: google.maps.LatLngLiteral;
-  zoom: number;
-  services: HybridSearchResult[];
-  userLocation?: { latitude: number; longitude: number };
-  onServiceClick?: (service: HybridSearchResult) => void;
-  className?: string;
-}> = ({ center, zoom, services, userLocation, onServiceClick, className }) => {
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [markers, setMarkers] = useState<google.maps.Marker[]>([]);
-  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
+// Build a numbered pin icon (service marker) rendered as HTML/CSS via L.divIcon.
+const createServiceIcon = (index: number): L.DivIcon => {
+  return L.divIcon({
+    className: '',
+    html: `
+      <div style="
+        width: 32px;
+        height: 32px;
+        border-radius: 50% 50% 50% 0;
+        background: #10b981;
+        border: 3px solid #ffffff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <span style="
+          transform: rotate(45deg);
+          color: #ffffff;
+          font-size: 12px;
+          font-weight: bold;
+          font-family: sans-serif;
+        ">${index + 1}</span>
+      </div>
+    `,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+  });
+};
+
+// Distinct pin icon for the user's own location.
+const userLocationIcon = L.divIcon({
+  className: '',
+  html: `
+    <div style="
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #2563eb;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    "></div>
+  `,
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
+  popupAnchor: [0, -13]
+});
+
+// Fits the map viewport to all provided coordinates using Leaflet's built-in bounds logic.
+const FitBoundsToMarkers: React.FC<{ positions: L.LatLngExpression[] }> = ({ positions }) => {
+  const map = useMap();
+  const positionsKey = JSON.stringify(positions);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (positions.length === 0) return;
 
-    // Ensure container is empty and valid
-    mapRef.current.innerHTML = '';
-
-    try {
-      const newMap = new google.maps.Map(mapRef.current, {
-        center: { lat: center.lat || 6.9271, lng: center.lng || 79.8612 }, // Default fallback
-        zoom: zoom || 10,
-        mapTypeControl: false,
-        streetViewControl: false,
-        fullscreenControl: false,
-        zoomControl: true,
-        gestureHandling: 'greedy',
-        styles: [
-          {
-            featureType: 'poi',
-            stylers: [{ visibility: 'off' }]
-          }
-        ]
-      });
-
-      setMap(newMap);
-
-      // Create info window for service details
-      const newInfoWindow = new google.maps.InfoWindow();
-      setInfoWindow(newInfoWindow);
-
-      return () => {
-        if (newMap) {
-          try {
-            newMap.unbindAll();
-            markers.forEach(marker => {
-              if (marker && marker.setMap) marker.setMap(null);
-            });
-            if (newInfoWindow && newInfoWindow.close) newInfoWindow.close();
-          } catch (error) {
-            // Silent cleanup error handling
-            console.warn('Map cleanup warning:', error);
-          }
-        }
-      };
-    } catch (error) {
-      console.error('Failed to initialize map:', error);
+    if (positions.length === 1) {
+      map.setView(positions[0], 14);
       return;
     }
-  }, []);
 
-  useEffect(() => {
-    if (!map) return;
-    map.setCenter({ lat: center.lat || 6.9271, lng: center.lng || 79.8612 });
-    map.setZoom(zoom || 10);
-  }, [map, center, zoom]);
+    const bounds = L.latLngBounds(positions);
+    map.fitBounds(bounds, { padding: [40, 40] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, positionsKey]);
 
-  // Add markers for services
-  useEffect(() => {
-    if (!map) return;
+  return null;
+};
 
-    // Clear existing markers
-    markers.forEach(marker => {
-      if (marker) marker.setMap(null);
-    });
+const ServiceMarker: React.FC<{
+  service: HybridSearchResult;
+  index: number;
+  userLocation?: { latitude: number; longitude: number };
+}> = ({ service, index, userLocation }) => {
+  const navigate = useNavigate();
 
-    // Create new markers
-    const newMarkers: google.maps.Marker[] = [];
+  if (service.latitude === undefined || service.latitude === null ||
+      service.longitude === undefined || service.longitude === null) {
+    return null;
+  }
 
-    services.forEach((service, index) => {
-      if (service.latitude !== undefined && service.latitude !== null && service.longitude !== undefined && service.longitude !== null) {
-        const markerPosition: google.maps.LatLngLiteral = {
-          lat: service.latitude,
-          lng: service.longitude
-        };
+  const distanceText = service.distance_km !== null && service.distance_km !== undefined
+    ? hybridSearchApi.formatDistance(service.distance_km)
+    : null;
 
-        // Create service marker
-        const marker = new google.maps.Marker({
-          position: markerPosition,
-          map,
-          title: service.title,
-          animation: google.maps.Animation.DROP,
-          icon: {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="20" cy="20" r="16" fill="#10b981" stroke="#ffffff" stroke-width="4"/>
-                <circle cx="20" cy="16.5" r="3.5" fill="#ffffff"/>
-                <circle cx="20" cy="23.5" r="3.5" fill="#ffffff"/>
-                <text x="20" y="28" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">${index + 1}</text>
-              </svg>
-            `),
-            anchor: new google.maps.Point(20, 40),
-            scaledSize: new google.maps.Size(40, 40)
-          },
-          label: {
-            text: (index + 1).toString(),
-            color: 'white',
-            fontSize: '12px',
-            fontWeight: 'bold'
-          }
-        });
+  return (
+    <Marker
+      position={[service.latitude, service.longitude]}
+      icon={createServiceIcon(index)}
+    >
+      <Popup minWidth={240} maxWidth={280}>
+        <div className="p-1">
+          <h3 className="font-bold text-base mb-1 text-gray-900">{service.title}</h3>
+          <p className="text-sm text-gray-500 mb-2">
+            by {service.provider.user.firstName} {service.provider.user.lastName}
+          </p>
 
-        marker.addListener('click', () => {
-          if (infoWindow && onServiceClick) {
-            const distanceText = service.distance_km !== null && service.distance_km !== undefined
-              ? ` • ${service.distance_km.toFixed(1)} km ${userLocation ? 'from your location' : ''}`
-              : '';
+          {service.images && service.images.length > 0 && (
+            <img
+              src={service.images[0]}
+              alt={service.title}
+              className="w-full h-28 object-cover rounded-lg mb-2"
+            />
+          )}
 
-            const content = `
-              <div style="max-width: 280px; padding: 12px;">
-                <div style="margin-bottom: 8px;">
-                  <h3 style="font-weight: bold; font-size: 16px; margin: 0 0 4px 0; color: #1f2937;">${service.title}</h3>
-                  <p style="font-size: 14px; margin: 0; color: #6b7280;">by ${service.provider.user.firstName} ${service.provider.user.lastName}</p>
-                </div>
+          {service.description && (
+            <p className="text-sm text-gray-600 mb-2 leading-snug">
+              {service.description.length > 100
+                ? `${service.description.substring(0, 100)}...`
+                : service.description}
+            </p>
+          )}
 
-                ${service.images && service.images.length > 0 ? `
-                  <img
-                    src="${service.images[0]}"
-                    alt="${service.title}"
-                    style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;"
-                  />
-                ` : ''}
-
-                ${service.description ? `
-                  <p style="font-size: 14px; margin: 0 0 8px 0; color: #4b5563; line-height: 1.4;">
-                    ${service.description.length > 100 ? service.description.substring(0, 100) + '...' : service.description}
-                  </p>
-                ` : ''}
-
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                  <div style="font-weight: bold; font-size: 16px; color: #059669;">
-                    ${service.currency || 'LKR'} ${service.price}
-                  </div>
-                  ${distanceText ? `
-                    <div style="font-size: 12px; color: #6b7280;">
-                      📍 ${distanceText}
-                    </div>
-                  ` : ''}
-                </div>
-
-                <button
-                  onclick="window.open('/service/${service.id}', '_blank')"
-                  style="
-                    margin-top: 8px;
-                    width: 100%;
-                    padding: 8px 16px;
-                    background-color: #059669;
-                    color: white;
-                    border: none;
-                    border-radius: 6px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    font-size: 14px;
-                  "
-                >
-                  View Service
-                </button>
+          <div className="flex items-center justify-between mb-2">
+            <div className="font-bold text-base text-emerald-600">
+              {service.currency || 'LKR'} {service.price}
+            </div>
+            {distanceText && (
+              <div className="text-xs text-gray-500">
+                {distanceText}{userLocation ? ' from your location' : ''}
               </div>
-            `;
+            )}
+          </div>
 
-            infoWindow.setContent(content);
-            infoWindow.open(map, marker);
-          }
-        });
-
-        newMarkers.push(marker);
-      }
-    });
-
-    // Add user location marker if provided
-    if (userLocation) {
-      const userMarker = new google.maps.Marker({
-        position: { lat: userLocation.latitude, lng: userLocation.longitude },
-        map,
-        title: 'Your Location',
-        icon: {
-          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="12" fill="#2563eb" stroke="#ffffff" stroke-width="3"/>
-              <circle cx="16" cy="13.5" r="3.5" fill="#ffffff"/>
-              <circle cx="16" cy="20.5" r="3.5" fill="#ffffff"/>
-            </svg>
-          `),
-          anchor: new google.maps.Point(16, 32),
-          scaledSize: new google.maps.Size(32, 32)
-        },
-        // Add a pulsing animation
-        animation: google.maps.Animation.BOUNCE
-      });
-
-      newMarkers.push(userMarker);
-    }
-
-    setMarkers(newMarkers);
-  }, [map, services, userLocation, infoWindow, onServiceClick]);
-
-  return <div ref={mapRef} className={`w-full h-full rounded-lg ${className}`} />;
+          <button
+            onClick={() => navigate(`/service/${service.id}`)}
+            className="w-full mt-1 py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md font-medium text-sm transition-colors"
+          >
+            View Service
+          </button>
+        </div>
+      </Popup>
+    </Marker>
+  );
 };
 
 const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
   services,
   userLocation,
-  className = '',
-  googleMapsApiKey
+  className = ''
 }) => {
-  // Calculate map center based on services and user location
-  const mapCenter = useMemo((): google.maps.LatLngLiteral => {
-    if (services.length === 0) {
-      return { lat: 6.9271, lng: 79.8612 }; // Default to Colombo
-    }
-
-    if (userLocation) {
-      return { lat: userLocation.latitude, lng: userLocation.longitude };
-    }
-
-    // Calculate center of all services
-    let totalLat = 0, totalLng = 0;
-    let validServices = 0;
-
-    services.forEach(service => {
-      if (service.latitude !== undefined && service.latitude !== null && service.longitude !== undefined && service.longitude !== null) {
-        totalLat += service.latitude;
-        totalLng += service.longitude;
-        validServices++;
-      }
-    });
-
-    if (validServices > 0) {
-      return {
-        lat: totalLat / validServices,
-        lng: totalLng / validServices
-      };
-    }
-
-    return { lat: 6.9271, lng: 79.8612 };
-  }, [services, userLocation]);
-
-  // Calculate appropriate zoom level
-  const calculateZoom = useMemo((): number => {
-    if (services.length === 0) return 12;
-
-    if (userLocation) {
-      const distances = services
-        .filter(service => service.latitude !== undefined && service.latitude !== null && service.longitude !== undefined && service.longitude !== null)
-        .map(service => {
-          const R = 6371; // Earth's radius in km
-          const dLat = (service.latitude! - userLocation.latitude) * Math.PI / 180;
-          const dLon = (service.longitude! - userLocation.longitude) * Math.PI / 180;
-          const a =
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(userLocation.latitude * Math.PI / 180) * Math.cos(service.latitude! * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-          return R * c;
-        });
-
-      if (distances.length === 0) return 12;
-      const maxDistance = Math.max(...distances);
-
-      if (maxDistance < 5) return 13;
-      if (maxDistance < 10) return 11;
-      if (maxDistance < 25) return 9;
-      if (maxDistance < 50) return 8;
-      return 7;
-    }
-
-    // If no user location, zoom to fit all services
-    if (services.length === 1) return 14;
-
-    let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
-    services.forEach(service => {
-      if (service.latitude !== undefined && service.latitude !== null && service.longitude !== undefined && service.longitude !== null) {
-        minLat = Math.min(minLat, service.latitude);
-        maxLat = Math.max(maxLat, service.latitude);
-        minLng = Math.min(minLng, service.longitude);
-        maxLng = Math.max(maxLng, service.longitude);
-      }
-    });
-
-    const latRange = maxLat - minLat;
-    const lngRange = maxLng - minLng;
-
-    if (latRange < 0.01 && lngRange < 0.01) return 16;
-    if (latRange < 0.1 && lngRange < 0.1) return 13;
-    if (latRange < 0.5 && lngRange < 0.5) return 11;
-    return 9;
-  }, [services, userLocation]);
-
-  const renderMap = (status: Status) => {
-    if (status === Status.FAILURE) {
-      return (
-        <div className="w-full h-full bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center">
-          <div className="text-center p-4">
-            <Navigation2 className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-red-600 font-medium">Failed to load map</p>
-            <p className="text-gray-600 text-sm">Services will be listed below</p>
-            <p className="text-gray-500 text-xs mt-2">Check your Google Maps API key</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (status === Status.LOADING) {
-      return (
-        <div className="w-full h-full bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-gray-400 mx-auto mb-2" />
-            <p className="text-gray-600">Loading map...</p>
-          </div>
-        </div>
-      );
-    }
-
-    const center = mapCenter;
-    const zoom = calculateZoom;
-
-    return (
-      <GoogleMap
-        center={center}
-        zoom={zoom}
-        services={services}
-        userLocation={userLocation}
-        className="border border-gray-300"
-      />
-    );
-  };
-
-  const servicesWithLocation = services.filter(
-    service => service.latitude !== undefined && service.latitude !== null && service.longitude !== undefined && service.longitude !== null
+  const servicesWithLocation = useMemo(
+    () => services.filter(
+      service => service.latitude !== undefined && service.latitude !== null &&
+        service.longitude !== undefined && service.longitude !== null
+    ),
+    [services]
   );
+
+  const markerPositions = useMemo((): L.LatLngExpression[] => {
+    const positions: L.LatLngExpression[] = servicesWithLocation.map(
+      service => [service.latitude as number, service.longitude as number]
+    );
+    if (userLocation) {
+      positions.push([userLocation.latitude, userLocation.longitude]);
+    }
+    return positions;
+  }, [servicesWithLocation, userLocation]);
+
+  // Default fallback center (Colombo) used only until markers are available.
+  const defaultCenter: L.LatLngExpression = userLocation
+    ? [userLocation.latitude, userLocation.longitude]
+    : markerPositions[0] || [6.9271, 79.8612];
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -373,12 +198,38 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
       </div>
 
       {/* Map Container */}
-      <div className="w-full h-96 relative rounded-lg overflow-hidden shadow-lg">
-        <Wrapper
-          apiKey={googleMapsApiKey || import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'your-api-key-here'}
-          libraries={['geometry']}
-          render={renderMap}
-        />
+      <div className="w-full h-96 relative rounded-lg overflow-hidden shadow-lg border border-gray-300">
+        <MapContainer
+          center={defaultCenter}
+          zoom={10}
+          scrollWheelZoom
+          style={{ width: '100%', height: '100%' }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+
+          {servicesWithLocation.map((service, index) => (
+            <ServiceMarker
+              key={service.id}
+              service={service}
+              index={index}
+              userLocation={userLocation}
+            />
+          ))}
+
+          {userLocation && (
+            <Marker
+              position={[userLocation.latitude, userLocation.longitude]}
+              icon={userLocationIcon}
+            >
+              <Popup>Your Location</Popup>
+            </Marker>
+          )}
+
+          <FitBoundsToMarkers positions={markerPositions} />
+        </MapContainer>
       </div>
 
       {/* Map Instructions */}

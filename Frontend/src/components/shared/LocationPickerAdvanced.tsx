@@ -1,9 +1,9 @@
 //locationPickerAdvanced
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { MapPin, Target, Search, Loader2, Navigation, X, Map } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { MapPin, Target, Search, Loader2, Navigation, X } from 'lucide-react';
 import { hybridSearchApi } from '../../api/hybridSearchApi';
-import type { LocationParams } from '../../api/hybridSearchApi';
+import type { LocationParams, AddressSuggestion } from '../../api/hybridSearchApi';
 import LocationPickerMap from './LocationPickerMap';
 
 interface LocationPickerProps {
@@ -21,19 +21,12 @@ interface LocationPickerProps {
   bordered?: boolean; // Set false when embedded in a compound field that owns its own border/focus ring
 }
 
-interface LocationSuggestion {
-  description: string;
-  placeId: string;
-  types: string[];
-}
-
 const LocationPicker: React.FC<LocationPickerProps> = ({
   value,
   onChange,
   placeholder = "Enter location or use current location",
   className = '',
   showRadius = true,
-  defaultRadius = 10,
   maxRadius = 50,
   autoDetect = false,
   disabled = false,
@@ -43,8 +36,9 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRadiusInput, setShowRadiusInput] = useState(false);
@@ -59,6 +53,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     if (autoDetect && !value) {
       handleCurrentLocation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoDetect, value]);
 
   // Update manual radius input when value changes externally
@@ -75,78 +70,74 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     } else if (value?.latitude !== undefined && value?.longitude !== undefined && !value.address) {
       setInputValue(`${value.latitude.toFixed(4)}, ${value.longitude.toFixed(4)}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
-
-  // Declare google maps types for autocomplete
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-
-  // Initialize Google Places Autocomplete for the main input field
-  const initializeAutocomplete = useCallback(() => {
-    if (!inputRef.current || !window.google) return;
-
-    autocompleteRef.current = new google.maps.places.Autocomplete(inputRef.current, {
-      types: ['geocode'],
-      fields: ['place_id', 'geometry', 'formatted_address', 'name']
-    });
-
-    autocompleteRef.current.addListener('place_changed', () => {
-      const place = autocompleteRef.current?.getPlace();
-      if (place?.geometry?.location) {
-        const location: LocationParams = {
-          latitude: place.geometry.location.lat(),
-          longitude: place.geometry.location.lng(),
-          address: place.formatted_address || place.name,
-          radius: undefined
-        };
-        onChange(location);
-        setIsOpen(false);
-        setSuggestions([]);
-      }
-    });
-  }, [onChange]);
-
-  // Initialize autocomplete when component mounts (wait for Google Maps to load)
-  useEffect(() => {
-    const checkGoogleMaps = () => {
-      if (window.google && window.google.maps && window.google.maps.places) {
-        initializeAutocomplete();
-      } else {
-        // Retry after a short delay if Google Maps not yet loaded
-        setTimeout(checkGoogleMaps, 100);
-      }
-    };
-    checkGoogleMaps();
-  }, [initializeAutocomplete]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     setError(null);
 
-    if (newValue.trim()) {
-      // Google Places Autocomplete will handle suggestions automatically
-      setIsOpen(false);
-    } else {
+    if (searchTimeoutRef.current) {
+      window.clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!newValue.trim()) {
       setSuggestions([]);
       setIsOpen(false);
       onChange(null);
+      return;
     }
+
+    // Debounce address suggestion lookups against the Nominatim-backed API,
+    // which has a strict rate limit on the public server.
+    searchTimeoutRef.current = window.setTimeout(async () => {
+      try {
+        setIsSuggesting(true);
+        const response = await hybridSearchApi.searchAddressSuggestions(newValue);
+        if (response.success) {
+          setSuggestions(response.data);
+          setIsOpen(response.data.length > 0);
+        }
+      } catch (err) {
+        console.error('Address suggestion error:', err);
+      } finally {
+        setIsSuggesting(false);
+      }
+    }, 400);
   };
 
-  const handleSuggestionSelect = async (suggestion: LocationSuggestion) => {
-    setInputValue(suggestion.description);
+  const handleSuggestionSelect = (suggestion: AddressSuggestion) => {
+    setInputValue(suggestion.displayName);
+    setIsOpen(false);
+    setSuggestions([]);
+    setError(null);
+
+    // Nominatim suggestions already include lat/lng, so no extra
+    // "place details" lookup is needed before calling onChange.
+    const location: LocationParams = {
+      latitude: suggestion.lat,
+      longitude: suggestion.lng,
+      address: suggestion.displayName,
+      radius: undefined // Start without radius, let user add it if needed
+    };
+    onChange(location);
+  };
+
+  // Fallback for manual Enter-key submission when no suggestion is selected
+  const handleManualGeocode = async (address: string) => {
     setIsOpen(false);
     setSuggestions([]);
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await hybridSearchApi.geocodeAddress(suggestion.description);
+      const response = await hybridSearchApi.geocodeAddress(address);
       if (response.success && response.data) {
         const location: LocationParams = {
           latitude: response.data.latitude,
           longitude: response.data.longitude,
-          address: response.data.address || suggestion.description,
+          address: response.data.address || address,
           radius: undefined // Start without radius, let user add it if needed
         };
         onChange(location);
@@ -172,7 +163,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 
       // Reverse geocode to get address
       const response = await hybridSearchApi.reverseGeocode(latitude, longitude);
-      
+
       const location: LocationParams = {
         latitude,
         longitude,
@@ -182,7 +173,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
 
       setInputValue(location.address || 'Current location');
       onChange(location);
-    } catch (err) {
+    } catch {
       // Fallback to IP-based location
       try {
         const response = await hybridSearchApi.getLocationFromIP();
@@ -198,15 +189,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         } else {
           throw new Error('IP location failed');
         }
-      } catch (ipErr) {
+      } catch {
         setError('Unable to detect current location. Please enter manually.');
       }
     } finally {
       setIsGettingLocation(false);
     }
   };
-
-  // Remove the old handleRadiusChange function that references undefined setRadius
 
   const handleClear = () => {
     setInputValue('');
@@ -220,6 +209,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
     if (e.key === 'Escape') {
       setIsOpen(false);
       setSuggestions([]);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isOpen && suggestions.length > 0) {
+        handleSuggestionSelect(suggestions[0]);
+      } else if (inputValue.trim()) {
+        handleManualGeocode(inputValue.trim());
+      }
     }
   };
 
@@ -246,7 +242,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <MapPin className="h-5 w-5 text-gray-400" />
         </div>
-        
+
         <input
           ref={inputRef}
           type="text"
@@ -266,12 +262,12 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           `}
           style={{ outline: 'none' }}
         />
-        
+
         <div className="absolute inset-y-0 right-0 flex items-center space-x-1 pr-3">
-          {(isLoading || isGettingLocation) && (
+          {(isLoading || isGettingLocation || isSuggesting) && (
             <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
           )}
-          
+
           {inputValue && !isLoading && !isGettingLocation && (
             <button
               onClick={handleClear}
@@ -281,7 +277,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
               <X className="h-3 w-3" />
             </button>
           )}
-          
+
           <button
             onClick={handleCurrentLocation}
             disabled={disabled || isLoading || isGettingLocation}
@@ -304,9 +300,9 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           ref={dropdownRef}
           className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto"
         >
-          {suggestions.map((suggestion) => (
+          {suggestions.map((suggestion, index) => (
             <button
-              key={suggestion.placeId}
+              key={`${suggestion.lat}-${suggestion.lng}-${index}`}
               onClick={() => handleSuggestionSelect(suggestion)}
               className="w-full px-4 py-3 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-lg last:rounded-b-lg"
             >
@@ -314,7 +310,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
                 <Search className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-gray-900 truncate">
-                    {suggestion.description}
+                    {suggestion.displayName}
                   </div>
                 </div>
               </div>
@@ -399,7 +395,6 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           <LocationPickerMap
             value={value}
             onChange={onChange}
-            googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
             allowManualRadius={allowManualRadius}
             className="w-full"
           />

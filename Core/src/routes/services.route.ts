@@ -14,7 +14,8 @@ import {
   searchServicesByLocation,
   getLocationFromIP,
   geocodeAddress,
-  reverseGeocode
+  reverseGeocode,
+  searchAddressSuggestions
 } from '../controllers/services.controller.js';
 import validate from '../middlewares/validation.middleware.js';
 import {
@@ -25,7 +26,8 @@ import {
   conversationIdSchema,
   searchServicesByLocationSchema,
   geocodeAddressSchema,
-  reverseGeocodeSchema
+  reverseGeocodeSchema,
+  searchAddressSchema
 } from '../validators/services.validator.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
@@ -79,6 +81,13 @@ router.post('/location/geocode', validate(geocodeAddressSchema), geocodeAddress)
  * @access  Public
  */
 router.post('/location/reverse-geocode', validate(reverseGeocodeSchema), reverseGeocode);
+
+/**
+ * @route   GET /api/services/location/search
+ * @desc    Search for address suggestions (type-ahead autocomplete)
+ * @access  Public
+ */
+router.get('/location/search', validate(searchAddressSchema, 'query'), searchAddressSuggestions);
 
 /**
  * @route   POST /api/services/embeddings/batch

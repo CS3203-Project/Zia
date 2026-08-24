@@ -13,12 +13,14 @@ import {
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
 import { serviceReviewApi } from '../../api/serviceReviewApi';
+import { hybridSearchApi } from '../../api/hybridSearchApi';
 import type { UserProfile, ProviderProfile } from '../../api/userApi';
 import type { ServiceResponse } from '../../api/serviceApi';
 import type { ProviderServiceReview, ReviewStats } from '../../api/serviceReviewApi';
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 import Button from '../../components/shared/Button';
+import ServiceLocationMap from '../../components/shared/ServiceLocationMap';
 import ProviderTabs, { type ProviderTabId } from '../../components/provider/ProviderTabs';
 import ProviderStatsGrid from '../../components/provider/ProviderStatsGrid';
 import ProviderServicesGrid from '../../components/provider/ProviderServicesGrid';
@@ -45,7 +47,9 @@ export default function Provider() {
   const [reviewPage, setReviewPage] = useState(1);
   const [hasMoreReviews, setHasMoreReviews] = useState(false);
 
-
+  // Provider address geocoded to coordinates for the directions map (there's no stored
+  // lat/lng for users/providers, only a free-text address, unlike services).
+  const [geocodedLocation, setGeocodedLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   // Fetch services for the current provider
   const fetchServices = async (providerId: string) => {
@@ -165,6 +169,37 @@ export default function Provider() {
   useEffect(() => {
     fetchProfile();
   }, [providerId, fetchProfile]);
+
+  // Geocode the provider's free-text address once it's loaded, so a directions map can be
+  // shown. Runs once per address (not on every render), and only when an address exists.
+  useEffect(() => {
+    const address = user?.address || user?.location;
+    if (!address) {
+      setGeocodedLocation(null);
+      return;
+    }
+
+    let cancelled = false;
+    hybridSearchApi
+      .geocodeAddress(address)
+      .then((response) => {
+        if (cancelled) return;
+        if (response.success && response.data?.latitude !== undefined && response.data?.longitude !== undefined) {
+          setGeocodedLocation({ latitude: response.data.latitude, longitude: response.data.longitude });
+        } else {
+          setGeocodedLocation(null);
+        }
+      })
+      .catch((error) => {
+        // Background lookup — fail quietly and just keep the text-only address display.
+        console.error('Failed to geocode provider address:', error);
+        if (!cancelled) setGeocodedLocation(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.address, user?.location]);
 
   // Effect to refetch reviews when filter changes
   useEffect(() => {
@@ -352,6 +387,13 @@ export default function Provider() {
                       <p className="text-gray-900 font-medium">{user.address}</p>
                     </div>
                   </div>
+                )}
+
+                {geocodedLocation && (
+                  <ServiceLocationMap
+                    destination={geocodedLocation}
+                    destinationLabel={`${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Provider'}
+                  />
                 )}
 
                 <div className="flex items-center space-x-3">
