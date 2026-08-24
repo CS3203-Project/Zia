@@ -315,9 +315,9 @@ const SearchResultsPage: React.FC = () => {
         {/* Results */}
         {sortedResults.length === 0 ? (
           <div className="text-center py-12">
-            <Sparkles className="w-16 h-16 text-dark-muted mx-auto mb-4" />
+            <Sparkles className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No results found</h3>
-            <p className="text-dark-muted mb-4">
+            <p className="text-gray-400 mb-4">
               Try adjusting your search terms, location, or price range
             </p>
             <Link
@@ -407,14 +407,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
           </div>
 
           {service.description && (
-            <p className="text-dark-muted text-sm mb-3 line-clamp-2">
+            <p className="text-gray-500 text-sm mb-3 line-clamp-2">
               {service.description}
             </p>
           )}
 
           {/* Location and Distance */}
           {(service.address || service.distance_km !== null) && (
-            <div className="flex items-center space-x-2 mb-2 text-xs text-dark-muted">
+            <div className="flex items-center space-x-2 mb-2 text-xs text-gray-400">
               <MapPin className="w-3 h-3" />
               <span>
                 {service.address || 'Location available'}
@@ -433,13 +433,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
               {service.tags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-orange-50 text-dark-muted text-xs rounded-full"
+                  className="px-2 py-1 bg-orange-50 text-orange-700 text-xs rounded-full"
                 >
                   {tag}
                 </span>
               ))}
               {service.tags.length > 3 && (
-                <span className="px-2 py-1 bg-orange-50 text-dark-muted text-xs rounded-full">
+                <span className="px-2 py-1 bg-orange-50 text-orange-700 text-xs rounded-full">
                   +{service.tags.length - 3} more
                 </span>
               )}
@@ -448,7 +448,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
 
           {/* Footer */}
           <div className="flex items-center justify-between">
-            <div className="text-sm text-dark-muted">
+            <div className="text-sm text-gray-500">
               By {service.provider.user.firstName} {service.provider.user.lastName}
             </div>
             <div className="text-right">

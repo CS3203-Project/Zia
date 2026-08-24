@@ -20,6 +20,7 @@ import { confirmationApi } from '../../api/confirmationApi';
 import GlassmorphismProfileCard from '../../components/ui/ProfileCard';
 import Button from '@/components/shared/Button';
 import Chip from '@/components/shared/Chip';
+import Skeleton from '@/components/shared/Skeleton';
 import QRCode from 'react-qr-code';
 import * as QRCodeLib from 'qrcode';
 
@@ -688,8 +689,8 @@ const ServiceDetailPage: React.FC = () => {
         <main className="flex-1 mt-16 relative z-10">
           <div className="container mx-auto px-4 py-8">
             {/* Skeleton Breadcrumb */}
-            <div className="mb-8 bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20 animate-pulse">
-              <div className="h-4 bg-gradient-to-r from-black/20 via-dark-muted/30 to-black/20 rounded w-1/3 animate-shimmer"></div>
+            <div className="mb-8 bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+              <Skeleton className="h-4 w-1/3" />
             </div>
 
             {/* Main Content Skeleton */}
@@ -697,61 +698,37 @@ const ServiceDetailPage: React.FC = () => {
               {/* Left Column Skeleton */}
               <div className="lg:col-span-2 space-y-4">
                 {/* Media Gallery Skeleton */}
-                <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20">
-                  <div className="aspect-[16/9] bg-gradient-to-br from-black/10 via-dark-tertiary/20 to-black/10 animate-pulse relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                  </div>
+                <div className="bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100">
+                  <Skeleton className="aspect-[16/9] rounded-none" />
                   <div className="p-4 flex gap-2">
                     {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="w-14 h-14 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
+                      <Skeleton key={i} className="w-14 h-14 rounded-xl" />
                     ))}
                   </div>
                 </div>
 
                 {/* Service Info Skeleton */}
                 <div className="py-8 px-6 space-y-4">
-                  <div className="h-10 bg-gradient-to-r from-black/20 via-dark-muted/30 to-black/20 rounded w-2/3 animate-pulse relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                  </div>
+                  <Skeleton className="h-10 w-2/3" />
                   <div className="flex gap-2">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-8 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-full w-20 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
+                      <Skeleton key={i} className="h-8 rounded-full w-20" />
                     ))}
                   </div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 rounded w-full animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 rounded w-5/6 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 via-dark-muted/25 to-black/15 rounded w-4/6 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-4 w-4/6" />
                   </div>
-                  <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-1/4 mt-4 animate-pulse relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                  </div>
-                  
+                  <Skeleton className="h-6 w-1/4 mt-4" />
+
                   {/* Location Card Skeleton */}
-                  <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mt-6">
-                    <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-1/3 mb-4 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
+                  <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mt-6">
+                    <Skeleton className="h-6 w-1/3 mb-4" />
                     <div className="space-y-2">
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-full animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-3/4 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-4/6 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-4 w-4/6" />
                     </div>
                   </div>
                 </div>
@@ -759,71 +736,43 @@ const ServiceDetailPage: React.FC = () => {
 
               {/* Right Column Skeleton */}
               <div className="lg:col-span-1">
-                <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 sticky top-24">
+                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 sticky top-24">
                   {/* Avatar Skeleton */}
-                  <div className="flex flex-col items-center mb-8 pb-8 border-b border-white/20">
-                    <div className="w-20 h-20 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded-full mb-4 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-6 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-32 mb-2 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-24 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    
+                  <div className="flex flex-col items-center mb-8 pb-8 border-b border-gray-100">
+                    <Skeleton className="w-20 h-20 rounded-full mb-4" />
+                    <Skeleton className="h-6 w-32 mb-2" />
+                    <Skeleton className="h-4 w-24" />
+
                     {/* Contact Info Skeleton */}
                     <div className="mt-4 w-full space-y-2">
-                      <div className="h-10 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
-                      <div className="h-10 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
+                      <Skeleton className="h-10 rounded-xl" />
+                      <Skeleton className="h-10 rounded-xl" />
                     </div>
-                    
+
                     <div className="flex gap-4 mt-4">
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-16 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
-                      <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-16 animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-16" />
                     </div>
                   </div>
 
                   {/* Price Skeleton */}
                   <div className="text-center mb-6 space-y-3">
-                    <div className="h-10 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-32 mx-auto animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-24 mx-auto animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-8 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-full w-32 mx-auto animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
+                    <Skeleton className="h-10 w-32 mx-auto" />
+                    <Skeleton className="h-4 w-24 mx-auto" />
+                    <Skeleton className="h-8 rounded-full w-32 mx-auto" />
                   </div>
 
                   {/* Buttons Skeleton */}
                   <div className="space-y-3 mb-6">
-                    <div className="h-14 bg-gradient-to-r from-black/30 to-dark-secondary/40 rounded-full animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
-                    </div>
-                    <div className="h-14 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded-full animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
+                    <Skeleton className="h-14 rounded-full" />
+                    <Skeleton className="h-14 rounded-full" />
                   </div>
 
                   {/* Working Hours Skeleton */}
-                  <div className="pt-6 border-t border-white/20 space-y-3">
-                    <div className="h-5 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-32 animate-pulse relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                    </div>
+                  <div className="pt-6 border-t border-gray-100 space-y-3">
+                    <Skeleton className="h-5 w-32" />
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-12 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded-xl animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                      </div>
+                      <Skeleton key={i} className="h-12 rounded-xl" />
                     ))}
                   </div>
                 </div>
@@ -833,48 +782,30 @@ const ServiceDetailPage: React.FC = () => {
             {/* Reviews Skeleton */}
             <div className="mb-6 mt-6">
               <div className="flex items-center justify-between mb-8">
-                <div className="h-8 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-48 animate-pulse relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                </div>
-                <div className="h-10 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded-full w-32 animate-pulse relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                </div>
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-10 rounded-full w-32" />
               </div>
-              
+
               <div className="flex gap-6 overflow-hidden pb-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex-shrink-0 w-[90%] sm:w-[45%] lg:w-[32%]">
-                    <div className="bg-white/70 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-xl">
+                    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
                       <div className="flex items-start gap-4 mb-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded-full animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                        </div>
+                        <Skeleton className="w-16 h-16 rounded-full" />
                         <div className="flex-1 space-y-2">
-                          <div className="h-5 bg-gradient-to-r from-black/20 to-dark-muted/30 rounded w-3/4 animate-pulse relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                          </div>
-                          <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-1/2 animate-pulse relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                          </div>
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-1/2" />
                         </div>
                       </div>
                       <div className="flex gap-1 mb-4">
                         {[1, 2, 3, 4, 5].map((j) => (
-                          <div key={j} className="w-5 h-5 bg-gradient-to-br from-black/20 to-dark-muted/30 rounded animate-pulse relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                          </div>
+                          <Skeleton key={j} className="w-5 h-5" />
                         ))}
                       </div>
                       <div className="space-y-2">
-                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-full animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                        </div>
-                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-5/6 animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                        </div>
-                        <div className="h-4 bg-gradient-to-r from-black/15 to-dark-muted/25 rounded w-4/6 animate-pulse relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
-                        </div>
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                        <Skeleton className="h-4 w-4/6" />
                       </div>
                     </div>
                   </div>
@@ -883,7 +814,7 @@ const ServiceDetailPage: React.FC = () => {
             </div>
           </div>
         </main>
-        
+
       </div>
     );
   }
@@ -892,17 +823,14 @@ const ServiceDetailPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
         <div className="flex-1 flex items-center justify-center mt-16">
-          <div className="text-center bg-dark-card rounded-2xl p-8 shadow-lg border border-dark-primary">
+          <div className="text-center bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-r from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl text-red-500">×</span>
             </div>
-            <h3 className="text-xl font-semibold text-dark-secondary mb-4">Service not found</h3>
-            <button 
-              onClick={() => navigate('/services')}
-              className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
+            <h3 className="text-xl font-semibold text-gray-500 mb-4">Service not found</h3>
+            <Button onClick={() => navigate('/services')} size="lg">
               Back to Services
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -948,8 +876,8 @@ const ServiceDetailPage: React.FC = () => {
 
           {/* Full-width Video Section - Outside Grid Container */}
           {service.videoUrl && (
-            <div className="-mx-4 mb-8 bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 group">
-              <div className="relative bg-gradient-to-br from-white via-dark-secondary to-white">
+            <div className="-mx-4 mb-8 bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100 group">
+              <div className="relative bg-gradient-to-br from-white via-gray-100 to-white">
                 <video
                   autoPlay
                   muted
@@ -983,14 +911,14 @@ const ServiceDetailPage: React.FC = () => {
                       "p-3 rounded-full backdrop-blur-md border transition-all duration-300 hover:scale-110 shadow-lg",
                       isWishlisted
                         ? 'bg-orange-500 text-white border-orange-500/10'
-                        : 'bg-white/70 text-dark-primary border-white/5 hover:bg-dark-card'
+                        : 'bg-white/70 text-gray-900 border-white/5 hover:bg-white'
                     )}
                     title="Add to wishlist"
                   >
                     <Heart className={cn("w-4 h-4", isWishlisted && "fill-current")} />
                   </button>
                   <button
-                    className="p-3 rounded-full bg-white/70 backdrop-blur-md border border-white/5 text-dark-primary hover:bg-dark-card transition-all duration-300 hover:scale-110 shadow-lg"
+                    className="p-3 rounded-full bg-white/70 backdrop-blur-md border border-white/5 text-gray-900 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
                     title="Bookmark service"
                   >
                     <Bookmark className="w-4 h-4" />
@@ -1286,13 +1214,12 @@ const ServiceDetailPage: React.FC = () => {
             <div className="lg:col-span-1 space-y-6 pb-10">
               {/* Unified Glass Morphism Card */}
               <div className="relative">
-                <div 
-                  className="bg-white/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 sticky top-24"
-                  style={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)' }}
+                <div
+                  className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 sticky top-24"
                 >
                   {/* Provider Profile Section */}
                   {provider && (
-                    <div className="mb-8 pb-8 border-b border-white/20">
+                    <div className="mb-8 pb-8 border-b border-gray-100">
                       <div className="flex flex-col items-center">
                         {/* Avatar */}
                         <div className="w-20 h-20 mb-4 rounded-full p-1 border-2 border-white/10 relative">
@@ -1316,10 +1243,10 @@ const ServiceDetailPage: React.FC = () => {
                         </div>
 
                         {/* Name and Title */}
-                        <h3 className="text-xl font-bold text-dark-primary text-center">
+                        <h3 className="text-xl font-bold text-gray-900 text-center">
                           {provider?.user ? `${provider.user.firstName || ''} ${provider.user.lastName || ''}`.trim() || provider.user.email || 'Provider' : 'Provider'}
                         </h3>
-                        <p className="mt-1 text-sm font-medium text-dark-secondary">
+                        <p className="mt-1 text-sm font-medium text-gray-500">
                           {provider?.isVerified ? 'Verified Provider' : 'Service Provider'}
                         </p>
 
@@ -1329,15 +1256,15 @@ const ServiceDetailPage: React.FC = () => {
                           return (provider?.user?.email || provider?.user?.phone) && (
                             <div className="mt-4 w-full space-y-2">
                               {provider?.user?.email && (
-                                <div className="flex flex-col items-center justify-center gap-1 text-sm bg-white/50 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20">
+                                <div className="flex flex-col items-center justify-center gap-1 text-sm bg-gray-50 rounded-xl px-4 py-2.5 border border-gray-100">
                                   <div className="flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-dark-primary" />
-                                    <span className="text-dark-secondary truncate">{provider.user.email}</span>
+                                    <Mail className="w-4 h-4 text-gray-900" />
+                                    <span className="text-gray-500 truncate">{provider.user.email}</span>
                                   </div>
                                   {provider?.user?.phone && (
                                     <div className="flex items-center gap-2">
-                                      <Phone className="w-4 h-4 text-dark-primary" />
-                                      <span className="text-dark-secondary">{provider.user.phone}</span>
+                                      <Phone className="w-4 h-4 text-gray-900" />
+                                      <span className="text-gray-500">{provider.user.phone}</span>
                                     </div>
                                   )}
                                 </div>
@@ -1352,16 +1279,16 @@ const ServiceDetailPage: React.FC = () => {
                             {provider?.averageRating !== undefined && provider?.averageRating !== null && (
                               <div className="flex items-center gap-1">
                                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                                <span className="text-sm font-semibold text-dark-primary">{provider.averageRating.toFixed(1)}</span>
+                                <span className="text-sm font-semibold text-gray-900">{provider.averageRating.toFixed(1)}</span>
                                 {provider?.totalReviews !== undefined && provider?.totalReviews !== null && (
-                                  <span className="text-xs text-dark-muted">({provider.totalReviews})</span>
+                                  <span className="text-xs text-gray-400">({provider.totalReviews})</span>
                                 )}
                               </div>
                             )}
-                            
+
                             {provider?.services?.length !== undefined && provider?.services?.length !== null && (
-                              <div className="flex items-center gap-1 text-sm text-dark-secondary">
-                                <span className="font-semibold text-dark-primary">{provider.services.length}</span>
+                              <div className="flex items-center gap-1 text-sm text-gray-500">
+                                <span className="font-semibold text-gray-900">{provider.services.length}</span>
                                 <span className="text-xs">Service{provider.services.length !== 1 ? 's' : ''}</span>
                               </div>
                             )}
@@ -1377,7 +1304,7 @@ const ServiceDetailPage: React.FC = () => {
                             }
                             navigate(`/provider/${provider.id}`);
                           }}
-                          className="mt-4 text-sm text-dark-primary hover:underline flex items-center gap-1"
+                          className="mt-4 text-sm text-orange-600 hover:underline flex items-center gap-1"
                         >
                           View Full Profile
                           <ArrowUpRight className="w-4 h-4" />
@@ -1388,11 +1315,11 @@ const ServiceDetailPage: React.FC = () => {
 
                   {/* Price Section */}
                   <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-dark-primary mb-2">
+                    <div className="text-4xl font-bold text-gray-900 mb-2">
                       {service.currency} {service.price.toLocaleString()}
                     </div>
-                    <div className="text-sm text-dark-muted mb-4">Starting price</div>
-                    <div className="flex items-center justify-center text-dark-primary bg-white/80 backdrop-blur-xl rounded-full px-4 py-2 border border-white/20 shadow-lg">
+                    <div className="text-sm text-gray-400 mb-4">Starting price</div>
+                    <div className="flex items-center justify-center text-gray-900 bg-gray-50 rounded-full px-4 py-2 border border-gray-100 shadow-sm">
                       <CheckCircle className="w-4 h-4 mr-1" />
                       <span className="text-sm font-medium">Available now</span>
                     </div>
@@ -1412,7 +1339,7 @@ const ServiceDetailPage: React.FC = () => {
                     <button
                       onClick={handleBookNow}
                       disabled={bookingLoading}
-                      className="w-full bg-white text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {bookingLoading ? (
                         <div className="flex items-center justify-center gap-2">
@@ -1430,7 +1357,7 @@ const ServiceDetailPage: React.FC = () => {
                     <button
                       onClick={handleBookNow}
                       disabled={bookingLoading}
-                      className="w-full bg-white text-dark-primary py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                      className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {bookingLoading ? (
                         <div className="flex items-center justify-center gap-2">
@@ -1448,14 +1375,14 @@ const ServiceDetailPage: React.FC = () => {
                   </div>
 
                   {/* QR Code Section */}
-                  <div className="pt-6 border-t border-white/20">
-                    <h4 className="text-sm font-semibold text-dark-primary mb-4 flex items-center">
+                  <div className="pt-6 border-t border-gray-100">
+                    <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
                       <QrCode className="w-4 h-4 mr-2" />
                       QR Code
                     </h4>
                     <div className="flex flex-col items-center space-y-3">
                       {/* QR Code */}
-                      <div className="bg-white/60 backdrop-blur-xl p-4 rounded-xl border border-white/20 shadow-sm">
+                      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm">
                         <div className="w-24 h-24 flex items-center justify-center">
                           {qrCodeUrl ? (
                             <QRCode
@@ -1467,7 +1394,7 @@ const ServiceDetailPage: React.FC = () => {
                               bgColor="transparent"
                             />
                           ) : (
-                            <div className="w-full h-full bg-black/20 rounded animate-pulse"></div>
+                            <div className="w-full h-full bg-gray-200 rounded animate-pulse"></div>
                           )}
                         </div>
                       </div>
@@ -1476,7 +1403,7 @@ const ServiceDetailPage: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={handleDownloadQR}
-                          className="flex items-center space-x-1 bg-white/60 backdrop-blur-xl hover:bg-white/80 text-dark-primary border border-white/20 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
+                          className="flex items-center space-x-1 bg-gray-50 hover:bg-gray-100 text-gray-900 border border-gray-100 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
                           title="Download QR Code"
                         >
                           <Download className="w-3 h-3" />
@@ -1484,7 +1411,7 @@ const ServiceDetailPage: React.FC = () => {
                         </button>
                         <button
                           onClick={handleShareService}
-                          className="flex items-center space-x-1 bg-white/60 backdrop-blur-xl hover:bg-white/80 text-dark-primary border border-white/20 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
+                          className="flex items-center space-x-1 bg-gray-50 hover:bg-gray-100 text-gray-900 border border-gray-100 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
                           title="Share Service"
                         >
                           <Share2 className="w-3 h-3" />
@@ -1497,18 +1424,18 @@ const ServiceDetailPage: React.FC = () => {
                   {/* Working Hours Section */}
                   {service.workingTime && service.workingTime.length > 0 && (
                     <div >
-                      <h4 className="text-sm font-semibold text-dark-primary mb-3 flex items-center">
+                      <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
                         <Clock className="w-4 h-4 mr-2" />
                         Working Hours
                       </h4>
                       <div className="space-y-2">
                         {service.workingTime.map((time, index) => (
-                          <div 
+                          <div
                             key={index}
-                            className="flex items-center bg-white/60 backdrop-blur-xl rounded-xl p-3 border border-white/20 shadow-sm"
+                            className="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-100 shadow-sm"
                           >
-                            <Calendar className="w-3.5 h-3.5 text-dark-primary/60 mr-2" />
-                            <span className="text-sm text-dark-primary font-medium">{time}</span>
+                            <Calendar className="w-3.5 h-3.5 text-gray-500 mr-2" />
+                            <span className="text-sm text-gray-900 font-medium">{time}</span>
                           </div>
                         ))}
                       </div>
@@ -1526,15 +1453,15 @@ const ServiceDetailPage: React.FC = () => {
           {reviews.length > 0 && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-bold text-dark-primary">
+                <h2 className="text-3xl font-bold text-gray-900">
                   Customer Reviews
                 </h2>
-                <div className="flex items-center gap-2 bg-white/70 backdrop-blur-xl px-4 py-2 rounded-full border border-white/20 shadow-lg">
+                <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
                   <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
-                  <span className="text-lg font-semibold text-dark-primary">
+                  <span className="text-lg font-semibold text-gray-900">
                     {averageRating.toFixed(1)}
                   </span>
-                  <span className="text-sm text-dark-secondary">
+                  <span className="text-sm text-gray-500">
                     ({reviewStats.totalReviews})
                   </span>
                 </div>
@@ -1558,10 +1485,10 @@ const ServiceDetailPage: React.FC = () => {
                       className="flex-shrink-0 w-[90%] sm:w-[45%] lg:w-[32%] snap-start"
                     >
                       <div className={cn(
-                        "bg-white/70 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 h-full transition-all duration-500",
-                        index === currentReviewIndex 
-                          ? "shadow-2xl scale-105 border-white/30" 
-                          : "shadow-xl hover:shadow-2xl"
+                        "bg-white rounded-3xl p-8 border border-gray-100 h-full transition-all duration-500",
+                        index === currentReviewIndex
+                          ? "shadow-xl scale-105 border-orange-200"
+                          : "shadow-sm hover:shadow-lg"
                       )}>
                         {/* Review Header */}
                         <div className="flex items-start gap-4 mb-6">
@@ -1575,24 +1502,24 @@ const ServiceDetailPage: React.FC = () => {
                                 />
                               ) : (
                                 <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center">
-                                  <span className="text-2xl text-dark-primary font-bold">
+                                  <span className="text-2xl text-gray-900 font-bold">
                                     {review.clientName?.[0]?.toUpperCase() || 'U'}
                                   </span>
                                 </div>
                               )}
                             </div>
                             {/* Verified badge */}
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-black rounded-full flex items-center justify-center border-2 border-white shadow-lg">
+                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg">
                               <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                             </svg>
                             </div>
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-lg font-bold text-dark-primary mb-1">
+                            <h4 className="text-lg font-bold text-gray-900 mb-1">
                               {review.clientName || 'Anonymous'}
                             </h4>
-                            <p className="text-sm text-dark-muted">
+                            <p className="text-sm text-gray-400">
                               {new Date(review.createdAt).toLocaleDateString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
@@ -1611,11 +1538,11 @@ const ServiceDetailPage: React.FC = () => {
                                 "w-5 h-5 transition-all",
                                 starIndex < review.rating
                                   ? "fill-amber-400 text-amber-400 drop-shadow-lg"
-                                  : "fill-none text-dark-muted"
+                                  : "fill-none text-gray-300"
                               )}
                             />
                           ))}
-                          <span className="ml-2 text-sm font-semibold text-dark-primary">
+                          <span className="ml-2 text-sm font-semibold text-gray-900">
                             {review.rating}.0
                           </span>
                         </div>
@@ -1623,7 +1550,7 @@ const ServiceDetailPage: React.FC = () => {
                         {/* Review Comment */}
                         {review.comment && (
                           <div className="relative">
-                            <p className="text-base text-dark-secondary leading-relaxed line-clamp-5 italic">
+                            <p className="text-base text-gray-500 leading-relaxed line-clamp-5 italic">
                               "{review.comment}"
                             </p>
                           </div>
@@ -1631,8 +1558,8 @@ const ServiceDetailPage: React.FC = () => {
 
                         {/* Helpful indicator */}
                         {review.helpful > 0 && (
-                          <div className="mt-4 pt-4 border-t border-white/5">
-                            <span className="text-sm text-dark-secondary flex items-center gap-2">
+                          <div className="mt-4 pt-4 border-t border-gray-100">
+                            <span className="text-sm text-gray-500 flex items-center gap-2">
                               <ThumbsUp className="w-4 h-4" />
                               {review.helpful} found this helpful
                             </span>
@@ -1664,7 +1591,7 @@ const ServiceDetailPage: React.FC = () => {
                           "transition-all duration-300 rounded-full",
                           index === currentReviewIndex
                             ? "w-8 h-2 bg-orange-500"
-                            : "w-2 h-2 bg-dark-tertiary hover:bg-gray-400"
+                            : "w-2 h-2 bg-gray-200 hover:bg-gray-400"
                         )}
                       />
                     ))}
@@ -1676,9 +1603,9 @@ const ServiceDetailPage: React.FC = () => {
 
           {/* No Reviews Message */}
           {reviews.length === 0 && !reviewsLoading && (
-            <div className="mb-6 text-center py-12 bg-white/70 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg">
-              <Star className="w-16 h-16 mx-auto mb-4 text-dark-muted" />
-              <p className="text-dark-secondary text-lg">
+            <div className="mb-6 text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
+              <Star className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+              <p className="text-gray-500 text-lg">
                 No reviews yet. Be the first to review this service!
               </p>
             </div>

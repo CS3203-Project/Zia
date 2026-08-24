@@ -381,16 +381,16 @@ const BrowseServices: React.FC = () => {
 
   if (state.error) {
     return (
-      <div className="bg-dark-card min-h-screen relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
         {/* Square Grid Background */}
         <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30" />
-        
+
         <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center pt-20">
             <h1 className="text-4xl font-extrabold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-4">
               Something went wrong
             </h1>
-            <p className="text-lg text-dark-secondary mb-6">
+            <p className="text-lg text-gray-500 mb-6">
               {state.error}
             </p>
             <button
@@ -419,7 +419,7 @@ const BrowseServices: React.FC = () => {
             <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-4">
               {getSearchTypeLabel()}
             </h1>
-            <p className="text-lg text-dark-secondary">
+            <p className="text-lg text-gray-500">
               {state.isHybridSearchActive
                 ? `Found ${state.hybridSearchResults.length} matching services`
                 : 'Discover amazing services from verified providers'
@@ -437,22 +437,22 @@ const BrowseServices: React.FC = () => {
 
           {/* Enhanced Search Section */}
           <div className="max-w-4xl mx-auto mb-12">
-            <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
+            <div className="bg-white rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] border border-gray-100 p-6">
               {/* Main Search Bar */}
               <div className="relative mb-4">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-dark-muted" />
+                  <Search className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
                   type="text"
                   placeholder="Search for services (e.g., 'web development', 'plumbing', 'graphic design')"
                   value={state.searchTerm}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-4 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl text-dark-primary placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-lg"
+                  className="block w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-lg transition-all duration-200"
                 />
                 {state.isSearching && (
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-                    <Loader2 className="h-5 w-5 text-dark-muted animate-spin" />
+                    <Loader2 className="h-5 w-5 text-gray-400 animate-spin" />
                   </div>
                 )}
               </div>
@@ -463,16 +463,16 @@ const BrowseServices: React.FC = () => {
                 <div className="flex-1">
                   <button
                     onClick={() => setState(prev => ({ ...prev, showLocationFilter: !prev.showLocationFilter }))}
-                    className={`w-full sm:w-auto px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-300 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)] hover:scale-105 ${
+                    className={`w-full sm:w-auto px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-300 hover:scale-105 ${
                       state.showLocationFilter || state.locationFilter
                         ? 'bg-orange-500 text-white border-orange-500'
-                        : 'bg-white/50 text-dark-primary border-white/30 hover:bg-white/70'
+                        : 'bg-white text-gray-700 border-gray-200 hover:bg-orange-50 hover:border-orange-300'
                     }`}
                   >
                     <MapPin className="w-4 h-4 mr-2 inline" />
                     {state.locationFilter ? 'Location Set' : 'Add Location'}
                   </button>
-                  
+
                   {state.showLocationFilter && (
                     <div className="mt-4">
           <LocationPickerAdvanced
@@ -494,10 +494,10 @@ const BrowseServices: React.FC = () => {
                   type="button"
                   onClick={() => setState(prev => ({ ...prev, aiSearchEnabled: !prev.aiSearchEnabled }))}
                   aria-pressed={state.aiSearchEnabled}
-                  className={`px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-300 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)] hover:scale-105 flex items-center gap-1.5 ${
+                  className={`px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-1.5 ${
                     state.aiSearchEnabled
                       ? 'bg-orange-500 text-white border-orange-500'
-                      : 'bg-white/50 text-dark-primary border-white/30 hover:bg-white/70'
+                      : 'bg-white text-gray-700 border-gray-200 hover:bg-orange-50 hover:border-orange-300'
                   }`}
                 >
                   <Sparkles className="w-4 h-4" />
@@ -509,12 +509,12 @@ const BrowseServices: React.FC = () => {
                   {(state.searchTerm || state.locationFilter) && (
                     <button
                       onClick={clearSearch}
-                      className="px-4 py-2 bg-white/50 hover:bg-white/70 text-dark-primary rounded-xl transition-all duration-300 text-sm border border-white/30 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)] hover:scale-105 font-medium"
+                      className="px-4 py-2 bg-white hover:bg-orange-50 text-gray-700 rounded-xl transition-all duration-300 text-sm border border-gray-200 hover:border-orange-300 hover:scale-105 font-medium"
                     >
                       Clear
                     </button>
                   )}
-                  
+
                   {state.isHybridSearchActive && state.hybridSearchResults.length > 0 && (
                     <button
                       onClick={handleViewSearchResults}
@@ -533,27 +533,27 @@ const BrowseServices: React.FC = () => {
           {state.isHybridSearchActive && state.hybridSearchResults.length > 0 && (
             <div className="mb-12">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-dark-primary flex items-center gap-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
                   <Sparkles className="w-6 h-6" />
                   Search Results
                 </h2>
-                <span className="text-dark-secondary text-sm md:text-base">
+                <span className="text-gray-500 text-sm md:text-base">
                   Showing {Math.min(6, state.hybridSearchResults.length)} of {state.hybridSearchResults.length} results
                 </span>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {state.isSearching ? (
                   [...Array(6)].map((_, index) => (
                     <div key={index} className="animate-pulse">
-                      <div className="bg-white/50 backdrop-blur-lg border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
-                        <div className="w-full h-48 bg-dark-tertiary rounded-xl mb-4"></div>
-                        <div className="h-4 bg-dark-tertiary rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-dark-tertiary rounded w-full mb-1"></div>
-                        <div className="h-3 bg-dark-tertiary rounded w-2/3 mb-3"></div>
+                      <div className="bg-white border border-gray-100 rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] p-6">
+                        <div className="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+                        <div className="h-3 bg-gray-200 rounded w-2/3 mb-3"></div>
                         <div className="flex items-center justify-between">
-                          <div className="h-3 bg-dark-tertiary rounded w-1/3"></div>
-                          <div className="h-4 bg-dark-tertiary rounded w-1/4"></div>
+                          <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
                         </div>
                       </div>
                     </div>
@@ -590,29 +590,29 @@ const BrowseServices: React.FC = () => {
               {/* Controls */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-dark-secondary">Sort by:</span>
+                  <span className="text-sm font-medium text-gray-500">Sort by:</span>
                   <select
                     value={state.sortBy}
                     onChange={(e) => handleSortChange(e.target.value as 'name' | 'services' | 'popular')}
                     title="Sort categories"
-                    className="px-3 py-2 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl text-sm text-dark-primary focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                    className="px-3 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
                   >
-                    <option value="name" className="bg-dark-card text-dark-primary">Name</option>
-                    <option value="services" className="bg-dark-card text-dark-primary">Most Services</option>
-                    <option value="popular" className="bg-dark-card text-dark-primary">Most Popular</option>
+                    <option value="name">Name</option>
+                    <option value="services">Most Services</option>
+                    <option value="popular">Most Popular</option>
                   </select>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-dark-secondary">View:</span>
-                  <div className="flex items-center bg-white/50 backdrop-blur-sm rounded-xl p-1 border border-white/30 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+                  <span className="text-sm font-medium text-gray-500">View:</span>
+                  <div className="flex items-center bg-white rounded-xl p-1 border border-gray-200 shadow-sm">
                     <button
                       onClick={() => handleViewModeChange('grid')}
                       title="Grid view"
                       className={`p-2 rounded-lg transition-all duration-300 ${
-                        state.viewMode === 'grid' 
-                          ? 'bg-orange-500 text-white shadow-sm' 
-                          : 'text-dark-secondary hover:text-dark-primary'
+                        state.viewMode === 'grid'
+                          ? 'bg-orange-500 text-white shadow-sm'
+                          : 'text-gray-500 hover:text-gray-900'
                       }`}
                     >
                       <Grid3X3 className="w-4 h-4" />
@@ -621,9 +621,9 @@ const BrowseServices: React.FC = () => {
                       onClick={() => handleViewModeChange('list')}
                       title="List view"
                       className={`p-2 rounded-lg transition-all duration-300 ${
-                        state.viewMode === 'list' 
-                          ? 'bg-orange-500 text-white shadow-sm' 
-                          : 'text-dark-secondary hover:text-dark-primary'
+                        state.viewMode === 'list'
+                          ? 'bg-orange-500 text-white shadow-sm'
+                          : 'text-gray-500 hover:text-gray-900'
                       }`}
                     >
                       <List className="w-4 h-4" />
@@ -640,16 +640,16 @@ const BrowseServices: React.FC = () => {
                 }>
                   {[...Array(state.viewMode === 'grid' ? 6 : 4)].map((_, index) => (
                     <div key={index} className="animate-pulse">
-                      <div className={`bg-white/50 backdrop-blur-lg border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] ${state.viewMode === 'grid' ? 'p-6' : 'p-4'}`}>
+                      <div className={`bg-white border border-gray-100 rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] ${state.viewMode === 'grid' ? 'p-6' : 'p-4'}`}>
                         <div className={`flex items-start ${state.viewMode === 'list' ? 'space-x-4' : ''}`}>
-                          <div className={`flex-shrink-0 ${state.viewMode === 'list' ? 'w-16 h-16' : 'w-14 h-14'} bg-dark-tertiary rounded-xl`}></div>
+                          <div className={`flex-shrink-0 ${state.viewMode === 'list' ? 'w-16 h-16' : 'w-14 h-14'} bg-gray-200 rounded-xl`}></div>
                           <div className={`flex-1 ${state.viewMode === 'list' ? '' : 'ml-4'}`}>
-                            <div className="h-4 bg-dark-tertiary rounded w-3/4 mb-2"></div>
-                            <div className="h-3 bg-dark-tertiary rounded w-1/2 mb-3"></div>
+                            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                            <div className="h-3 bg-gray-200 rounded w-1/2 mb-3"></div>
                             {state.viewMode === 'grid' && (
                               <>
-                                <div className="h-3 bg-dark-tertiary rounded w-full mb-1"></div>
-                                <div className="h-3 bg-dark-tertiary rounded w-2/3"></div>
+                                <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
+                                <div className="h-3 bg-gray-200 rounded w-2/3"></div>
                               </>
                             )}
                           </div>
@@ -660,14 +660,14 @@ const BrowseServices: React.FC = () => {
                 </div>
               ) : filteredAndSortedCategories.length === 0 ? (
                 <div className="text-center py-12">
-                  <Sparkles className="w-16 h-16 text-dark-muted mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-dark-primary mb-2">No categories found</h3>
-                  <p className="text-dark-secondary mb-4">
+                  <Sparkles className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No categories found</h3>
+                  <p className="text-gray-500 mb-4">
                     Try adjusting your search terms or clear the search to see all categories
                   </p>
                   <button
                     onClick={clearSearch}
-                    className="inline-flex items-center px-6 py-3 bg-white/70 hover:bg-white/90 text-dark-primary rounded-full border border-white/30 hover:border-white/50 transition-all duration-300 shadow-[0_4px_16px_0_rgba(0,0,0,0.08)] hover:scale-105 font-medium"
+                    className="inline-flex items-center px-6 py-3 bg-white hover:bg-orange-50 text-gray-700 rounded-full border border-gray-200 hover:border-orange-300 transition-all duration-300 hover:scale-105 font-medium"
                   >
                     Clear Search
                   </button>
@@ -708,14 +708,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
   return (
     <Link
       to={`/service/${service.id}`}
-      className={`group block bg-white/70 backdrop-blur-lg rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 hover:border-white/50 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 ${
+      className={`group block bg-white rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] border border-gray-100 hover:border-orange-200 hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_2px_6px_2px_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 ${
         viewMode === 'list' ? 'p-4' : 'p-6'
       }`}
     >
       <div className={`${viewMode === 'list' ? 'flex items-start space-x-4' : ''}`}>
         {/* Service Image */}
         <div className={`flex-shrink-0 ${viewMode === 'list' ? 'w-24 h-24' : 'w-full h-48 mb-4'}`}>
-          <div className={`w-full h-full bg-gradient-to-br from-dark-tertiary/50 to-dark-tertiary/50 rounded-xl overflow-hidden ${
+          <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-100 rounded-xl overflow-hidden ${
             viewMode === 'list' ? '' : ''
           }`}>
             {service.images && service.images.length > 0 ? (
@@ -739,7 +739,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
         {/* Service Content */}
         <div className={`flex-1 ${viewMode === 'list' ? '' : ''}`}>
           <div className="flex items-start justify-between mb-2">
-            <h3 className="text-lg font-semibold text-dark-primary group-hover:text-dark-secondary transition-colors line-clamp-2">
+            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2">
               {service.title}
             </h3>
             {service.similarity && (
@@ -749,7 +749,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
             )}
           </div>
 
-          <p className="text-dark-secondary text-sm mb-3 line-clamp-3">
+          <p className="text-gray-500 text-sm mb-3 line-clamp-3">
             {service.description}
           </p>
 
@@ -759,13 +759,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
               {service.tags.slice(0, 3).map((tag, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-white/50 text-dark-secondary text-xs rounded-full border border-white/30"
+                  className="px-2 py-1 bg-gray-50 text-gray-500 text-xs rounded-full border border-gray-100"
                 >
                   {tag}
                 </span>
               ))}
               {service.tags.length > 3 && (
-                <span className="px-2 py-1 bg-white/50 text-dark-secondary text-xs rounded-full border border-white/30">
+                <span className="px-2 py-1 bg-gray-50 text-gray-500 text-xs rounded-full border border-gray-100">
                   +{service.tags.length - 3} more
                 </span>
               )}
@@ -773,7 +773,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
           )}
 
           {/* Provider and Category */}
-          <div className="flex items-center text-sm text-dark-secondary mb-3">
+          <div className="flex items-center text-sm text-gray-500 mb-3">
             <span>
               by {service.provider.user.firstName} {service.provider.user.lastName}
             </span>
@@ -785,19 +785,19 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistan
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {showDistance && service.distance_km !== undefined && service.distance_km !== null && (
-                <div className="flex items-center text-sm text-dark-primary">
+                <div className="flex items-center text-sm text-gray-900">
                   <MapPin className="w-4 h-4 mr-1" />
                   <span>{service.distance_km.toFixed(1)} km away</span>
                 </div>
               )}
             </div>
-            
+
             <div className="text-right">
-              <div className="text-lg font-bold text-dark-primary">
+              <div className="text-lg font-bold text-gray-900">
                 {service.currency} {price?.toLocaleString()}
               </div>
               {service.address && (
-                <div className="text-xs text-dark-secondary line-clamp-1">
+                <div className="text-xs text-gray-500 line-clamp-1">
                   {service.address}
                 </div>
               )}

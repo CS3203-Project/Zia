@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  Shield, 
-  Star, 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Shield,
+  Star,
   Award,
   Briefcase,
   ExternalLink,
@@ -24,6 +24,9 @@ import type { ServiceResponse } from '../../api/serviceApi';
 import type { ProviderServiceReview, ReviewStats } from '../../api/serviceReviewApi';
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
+import Button from '../../components/shared/Button';
+
+const skillPillClasses = "inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-orange-50 text-orange-700 border border-orange-100";
 
 export default function Provider() {
   const navigate = useNavigate();
@@ -35,7 +38,7 @@ export default function Provider() {
   const [servicesLoading, setServicesLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [reviewFilter, setReviewFilter] = useState('all');
-  
+
   // Real review data state
   const [reviews, setReviews] = useState<ProviderServiceReview[]>([]);
   const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null);
@@ -69,14 +72,14 @@ export default function Provider() {
   const fetchProviderReviews = async (providerId: string, page = 1, reset = false) => {
     try {
       setReviewsLoading(true);
-      
+
       const ratingFilter = reviewFilter === 'all' ? undefined : parseInt(reviewFilter);
       const response = await serviceReviewApi.getProviderServiceReviews(providerId, {
         page,
         limit: 10,
         rating: ratingFilter
       });
-      
+
       if (response.success) {
         if (reset) {
           setReviews(response.data.reviews);
@@ -115,9 +118,9 @@ export default function Provider() {
   const fetchProfile = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       console.log('Provider ID from URL:', providerId); // Debug log
-      
+
       if (!providerId) {
         console.log('No provider ID found'); // Debug log
         toast.error('Provider ID is required');
@@ -132,7 +135,7 @@ export default function Provider() {
         console.log('Provider data received:', providerData); // Debug log
         setProviderProfile(providerData);
         setUser(providerData.user as UserProfile);
-        
+
         // Fetch services for this provider
         if (providerData.id) {
           await fetchServices(providerData.id);
@@ -145,7 +148,7 @@ export default function Provider() {
         // Instead of immediately redirecting, show an error state
         // toast.error('Provider not found');
         // navigate('/');
-        
+
         // Let's see what the actual error is
         console.error('Error details:', error);
         toast.error('Failed to load provider profile. Please try again.');
@@ -173,21 +176,15 @@ export default function Provider() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
-        {/* Background */}
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent rounded-full blur-3xl"></div>
-        </div>
-        <div className="flex-1 flex items-center justify-center mt-16 relative z-10">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
+        <div className="flex-1 flex items-center justify-center mt-16">
           <div className="text-center">
             <div className="flex gap-1 justify-center mb-4">
               <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
               <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
               <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
             </div>
-            <p className="mt-4 text-dark-secondary font-medium">Loading profile...</p>
+            <p className="mt-4 text-gray-500 font-medium">Loading profile...</p>
           </div>
         </div>
       </div>
@@ -196,32 +193,20 @@ export default function Provider() {
 
   if (!user && !loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
-        {/* Background */}
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent rounded-full blur-3xl"></div>
-        </div>
-        <div className="flex-1 flex items-center justify-center mt-16 relative z-10">
-          <div className="text-center bg-white/70 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl border border-white/20 max-w-md">
-            <h3 className="text-2xl font-bold text-dark-primary mb-4">Provider Not Found</h3>
-            <p className="text-dark-secondary mb-6">
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
+        <div className="flex-1 flex items-center justify-center mt-16">
+          <div className="text-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100 max-w-md">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Provider Not Found</h3>
+            <p className="text-gray-500 mb-6">
               The provider profile you're looking for could not be found.
             </p>
             <div className="flex gap-3 justify-center">
-              <button 
-                onClick={() => navigate('/services')}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl"
-              >
+              <Button onClick={() => navigate('/services')}>
                 Browse Services
-              </button>
-              <button 
-                onClick={() => navigate('/')}
-                className="bg-white/80 text-dark-primary px-6 py-3 rounded-full font-bold hover:bg-dark-card transition-all duration-300 shadow-xl border border-white/20 backdrop-blur-xl"
-              >
+              </Button>
+              <Button onClick={() => navigate('/')} variant="outline">
                 Go Home
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -234,21 +219,12 @@ export default function Provider() {
     return null; // This should not happen due to the check above, but satisfies TypeScript
   }
    return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-secondary via-white to-dark-secondary flex flex-col relative overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808018_1px,transparent_1px),linear-gradient(to_bottom,#80808018_1px,transparent_1px)] bg-[size:32px_32px]"></div>
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-white/10 via-white/5 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-black/10 via-black/5 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl"></div>
-      </div>
-      
-      
-      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-8 relative z-10">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
+      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-8 w-full">
         {/* Profile Header */}
-        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden mb-8 border border-white/20">
+        <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-8 border border-gray-100">
           {/* Banner */}
-          <div className="relative h-36 bg-gradient-to-r from-black/90 via-dark-800/90 to-black/90">
+          <div className="relative h-36 bg-gradient-to-r from-orange-500 to-amber-600">
         <img
           src="https://4kwallpapers.com/images/walls/thumbs_3t/8728.jpg"
           alt="Profile Banner"
@@ -264,7 +240,7 @@ export default function Provider() {
           <img
             src={user.imageUrl}
             alt={`${user.firstName} ${user.lastName}`}
-            className="w-32 h-32 rounded-full border-4 border-white shadow-2xl object-cover bg-dark-card"
+            className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover bg-gray-100"
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.style.display = 'none';
@@ -274,7 +250,7 @@ export default function Provider() {
           />
             ) : null}
             <div
-          className={`w-32 h-32 rounded-full border-4 border-white shadow-2xl bg-gradient-to-br from-black/90 via-dark-700/90 to-black/90 flex items-center justify-center text-white text-3xl font-bold ${
+          className={`w-32 h-32 rounded-full border-4 border-white shadow-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white text-3xl font-bold ${
             user.imageUrl && user.imageUrl.trim() ? 'hidden' : 'flex'
           }`}
             >
@@ -293,34 +269,28 @@ export default function Provider() {
           <div className="flex-1 text-center lg:text-left ml-5 mt-13 lg:mt-0">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-dark-primary mt-4 mb-1">
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-4 mb-1">
               {user.firstName || 'First'} {user.lastName || 'Last'}
             </h1>
-            <p className="text-dark-secondary text-lg mb-1">{user.email}</p>
+            <p className="text-gray-500 text-lg mb-1">{user.email}</p>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
-              <span
-            className={`px-4 py-2 rounded-full text-sm font-medium backdrop-blur-md border ${
-              user.role === 'PROVIDER'
-                ? 'bg-white/60 text-dark-primary border-white/20'
-                : 'bg-white/60 text-dark-primary border-white/20'
-            }`}
-              >
+              <span className="px-4 py-2 rounded-full text-sm font-medium bg-orange-50 text-orange-700 border border-orange-100">
             {user.role === 'PROVIDER' ? 'Service Provider' : 'User'}
               </span>
               {user.isEmailVerified && (
-            <span className="flex items-center text-dark-primary bg-white/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+            <span className="flex items-center text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
               <Shield className="h-4 w-4 mr-1" />
               <span className="text-sm font-medium">Verified</span>
             </span>
               )}
               {user.phone && (
-            <span className="flex items-center text-dark-secondary bg-white/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/15">
+            <span className="flex items-center text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
               <Phone className="h-4 w-4 mr-1" />
               <span className="text-xs">{user.phone}</span>
             </span>
               )}
               {user.location && (
-            <span className="flex items-center text-dark-secondary bg-white/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/15">
+            <span className="flex items-center text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
               <MapPin className="h-4 w-4 mr-1" />
               <span className="text-xs">{user.location}</span>
             </span>
@@ -337,7 +307,7 @@ export default function Provider() {
         {/* Only show tabs for verified providers */}
         {providerProfile && providerProfile.isVerified && (
           <div className="mb-8">
-            <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-xl border border-white/20">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100">
               <div className="flex flex-wrap">
                 {[
                   { id: 'overview', label: 'Overview', icon: <User className="w-4 h-4" /> },
@@ -350,8 +320,8 @@ export default function Provider() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center px-6 py-4 text-sm font-medium transition-all duration-300 border-b-2 ${
                       activeTab === tab.id
-                        ? "border-black text-dark-primary bg-white/50 backdrop-blur-md"
-                        : "border-transparent text-dark-secondary hover:text-dark-primary hover:bg-white/30 backdrop-blur-sm"
+                        ? "border-orange-600 text-orange-600 bg-orange-50"
+                        : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                     }`}
                   >
                     {tab.icon}
@@ -368,52 +338,52 @@ export default function Provider() {
           {/* Left Column - Basic Info */}
           <div className="lg:col-span-1 space-y-6">
             {/* Contact Information */}
-            <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl p-6 border border-white/20">
-              <h2 className="text-xl font-semibold text-dark-primary mb-4">Contact Information</h2>
+            <div className="bg-white rounded-3xl shadow-sm p-6 border border-gray-100">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-dark-secondary" />
+                  <Mail className="h-5 w-5 text-gray-400" />
                   <div>
-                    <p className="text-sm text-dark-secondary">Email</p>
-                    <p className="text-dark-primary font-medium">{user.email}</p>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-gray-900 font-medium">{user.email}</p>
                   </div>
                 </div>
-                
+
                 {user.phone && (
                   <div className="flex items-center space-x-3">
-                    <Phone className="h-5 w-5 text-dark-secondary" />
+                    <Phone className="h-5 w-5 text-gray-400" />
                     <div>
-                      <p className="text-sm text-dark-secondary">Phone</p>
-                      <p className="text-dark-primary font-medium">{user.phone}</p>
+                      <p className="text-sm text-gray-500">Phone</p>
+                      <p className="text-gray-900 font-medium">{user.phone}</p>
                     </div>
                   </div>
                 )}
-                
+
                 {user.location && (
                   <div className="flex items-center space-x-3">
-                    <MapPin className="h-5 w-5 text-dark-secondary" />
+                    <MapPin className="h-5 w-5 text-gray-400" />
                     <div>
-                      <p className="text-sm text-dark-secondary">Location</p>
-                      <p className="text-dark-primary font-medium">{user.location}</p>
+                      <p className="text-sm text-gray-500">Location</p>
+                      <p className="text-gray-900 font-medium">{user.location}</p>
                     </div>
                   </div>
                 )}
 
                 {user.address && (
                   <div className="flex items-start space-x-3">
-                    <MapPin className="h-5 w-5 text-dark-secondary mt-0.5" />
+                    <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-dark-secondary">Address</p>
-                      <p className="text-dark-primary font-medium">{user.address}</p>
+                      <p className="text-sm text-gray-500">Address</p>
+                      <p className="text-gray-900 font-medium">{user.address}</p>
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex items-center space-x-3">
-                  <Calendar className="h-5 w-5 text-dark-secondary" />
+                  <Calendar className="h-5 w-5 text-gray-400" />
                   <div>
-                    <p className="text-sm text-dark-secondary">Member since</p>
-                    <p className="text-dark-primary font-medium">
+                    <p className="text-sm text-gray-500">Member since</p>
+                    <p className="text-gray-900 font-medium">
                       {new Date(user.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -425,9 +395,9 @@ export default function Provider() {
 
                 {user.socialmedia && user.socialmedia.length > 0 && (
                   <div className="flex items-start space-x-3">
-                    <ExternalLink className="h-5 w-5 text-dark-secondary mt-0.5" />
+                    <ExternalLink className="h-5 w-5 text-gray-400 mt-0.5" />
                     <div>
-                      <p className="text-sm text-dark-secondary mb-2">Social Media</p>
+                      <p className="text-sm text-gray-500 mb-2">Social Media</p>
                       <div className="space-y-2">
                         {user.socialmedia.map((link, index) => (
                           <a
@@ -435,7 +405,7 @@ export default function Provider() {
                             href={link.startsWith('http') ? link : `https://${link}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center text-dark-primary hover:underline text-sm font-medium"
+                            className="flex items-center text-orange-600 hover:underline text-sm font-medium"
                           >
                             <ExternalLink className="h-3 w-3 mr-2" />
                             {link}
@@ -455,61 +425,58 @@ export default function Provider() {
               // Check if provider is verified
               providerProfile.isVerified === false ? (
                 /* Unverified Provider */
-                <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8 text-center">
+                <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 text-center">
                   <div className="max-w-md mx-auto">
-                    <div className="p-3 bg-dark-tertiary rounded-full inline-flex mb-4">
-                      <Clock className="h-12 w-12 text-yellow-600" />
+                    <div className="p-3 bg-amber-100 rounded-full inline-flex mb-4">
+                      <Clock className="h-12 w-12 text-amber-600" />
                     </div>
-                    <h2 className="text-2xl font-semibold text-dark-primary mb-2">Verification in Progress</h2>
-                    <p className="text-dark-secondary mb-6">
-                      Your provider profile has been submitted and is currently under review. 
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Verification in Progress</h2>
+                    <p className="text-gray-500 mb-6">
+                      Your provider profile has been submitted and is currently under review.
                       Our team is verifying your information and credentials.
                     </p>
-                    <div className="bg-white/50 backdrop-blur-md border border-white/20 rounded-lg p-4 mb-6">
-                      <h3 className="font-semibold text-dark-primary mb-2">What's Next?</h3>
-                      <ul className="text-sm text-dark-secondary space-y-1 text-left">
+                    <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6 text-left">
+                      <h3 className="font-semibold text-gray-900 mb-2">What's Next?</h3>
+                      <ul className="text-sm text-gray-600 space-y-1">
                         <li>• We'll review your profile and credentials</li>
                         <li>• You'll receive an email once verification is complete</li>
                         <li>• Verification typically takes 1-3 business days</li>
                         <li>• Once verified, you can start adding services</li>
                       </ul>
                     </div>
-                    
+
                     {/* Show basic provider info */}
                     <div className="mt-8 text-left">
-                      <h3 className="text-lg font-semibold text-dark-primary mb-4">Your Submitted Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Submitted Information</h3>
                       <div className="space-y-4">
                         {providerProfile.bio && (
                           <div>
-                            <h4 className="font-medium text-dark-primary mb-1">Bio</h4>
-                            <p className="text-dark-secondary text-sm">{providerProfile.bio}</p>
+                            <h4 className="font-medium text-gray-900 mb-1">Bio</h4>
+                            <p className="text-gray-500 text-sm">{providerProfile.bio}</p>
                           </div>
                         )}
-                        
+
                         {providerProfile.skills && providerProfile.skills.length > 0 && (
                           <div>
-                            <h4 className="font-medium text-dark-primary mb-2">Skills</h4>
+                            <h4 className="font-medium text-gray-900 mb-2">Skills</h4>
                             <div className="flex flex-wrap gap-2">
                               {providerProfile.skills.map((skill, index) => (
-                                <span
-                                  key={index}
-                                  className="px-3 py-1 bg-white/60 text-dark-primary backdrop-blur-md border border-white/20 rounded-full text-sm"
-                                >
+                                <span key={index} className={skillPillClasses}>
                                   {skill}
                                 </span>
                               ))}
                             </div>
                           </div>
                         )}
-                        
+
                         {providerProfile.qualifications && providerProfile.qualifications.length > 0 && (
                           <div>
-                            <h4 className="font-medium text-dark-primary mb-2">Qualifications</h4>
+                            <h4 className="font-medium text-gray-900 mb-2">Qualifications</h4>
                             <div className="space-y-1">
                               {providerProfile.qualifications.map((qualification, index) => (
                                 <div key={index} className="flex items-center space-x-2">
-                                  <Award className="h-4 w-4 text-dark-primary" />
-                                  <span className="text-dark-secondary text-sm">{qualification}</span>
+                                  <Award className="h-4 w-4 text-orange-600" />
+                                  <span className="text-gray-600 text-sm">{qualification}</span>
                                 </div>
                               ))}
                             </div>
@@ -527,49 +494,52 @@ export default function Provider() {
                     <>
                       {/* Provider Stats */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6 text-center">
-                          <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
-                          <p className="text-2xl font-bold text-dark-primary">
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 mx-auto mb-3">
+                            <Star className="h-6 w-6 text-yellow-600" />
+                          </div>
+                          <p className="text-2xl font-bold text-gray-900">
                             {reviewStats?.averageRating?.toFixed(1) || 'N/A'}
                           </p>
-                          <p className="text-sm text-dark-muted">Average Rating</p>
+                          <p className="text-sm text-gray-500">Average Rating</p>
                         </div>
-                        
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6 text-center">
-                          <Award className="h-8 w-8 text-dark-primary mx-auto mb-2" />
-                          <p className="text-2xl font-bold text-dark-primary">
+
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 mx-auto mb-3">
+                            <Award className="h-6 w-6 text-orange-600" />
+                          </div>
+                          <p className="text-2xl font-bold text-gray-900">
                             {reviewStats?.totalReviews || 0}
                           </p>
-                          <p className="text-sm text-dark-muted">Total Reviews</p>
+                          <p className="text-sm text-gray-500">Total Reviews</p>
                         </div>
-                        
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6 text-center">
-                          <Briefcase className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                          <p className="text-2xl font-bold text-dark-primary">
+
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 mx-auto mb-3">
+                            <Briefcase className="h-6 w-6 text-emerald-600" />
+                          </div>
+                          <p className="text-2xl font-bold text-gray-900">
                             {services.filter(s => s.isActive).length}
                           </p>
-                          <p className="text-sm text-dark-muted">Active Services</p>
+                          <p className="text-sm text-gray-500">Active Services</p>
                         </div>
                       </div>
 
                       {/* Bio */}
                       {providerProfile.bio && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                          <h2 className="text-xl font-semibold text-dark-primary mb-4">About</h2>
-                          <p className="text-dark-secondary">{providerProfile.bio}</p>
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                          <h2 className="text-xl font-semibold text-gray-900 mb-4">About</h2>
+                          <p className="text-gray-600">{providerProfile.bio}</p>
                         </div>
                       )}
 
                       {/* Skills */}
                       {providerProfile.skills && providerProfile.skills.length > 0 && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                          <h2 className="text-xl font-semibold text-dark-primary mb-4">Skills</h2>
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                          <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills</h2>
                           <div className="flex flex-wrap gap-2">
                             {providerProfile.skills.map((skill, index) => (
-                              <span
-                                key={index}
-                                className="px-3 py-1 bg-white/60 text-dark-primary backdrop-blur-md border border-white/20 rounded-full text-sm font-medium"
-                              >
+                              <span key={index} className={skillPillClasses}>
                                 {skill}
                               </span>
                             ))}
@@ -579,13 +549,13 @@ export default function Provider() {
 
                       {/* Qualifications */}
                       {providerProfile.qualifications && providerProfile.qualifications.length > 0 && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                          <h2 className="text-xl font-semibold text-dark-primary mb-4">Qualifications</h2>
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                          <h2 className="text-xl font-semibold text-gray-900 mb-4">Qualifications</h2>
                           <div className="space-y-2">
                             {providerProfile.qualifications.map((qualification, index) => (
                               <div key={index} className="flex items-center space-x-2">
-                                <Award className="h-4 w-4 text-dark-primary" />
-                                <span className="text-dark-secondary">{qualification}</span>
+                                <Award className="h-4 w-4 text-orange-600" />
+                                <span className="text-gray-600">{qualification}</span>
                               </div>
                             ))}
                           </div>
@@ -594,12 +564,12 @@ export default function Provider() {
 
                       {/* Recent Reviews */}
                       {reviews && reviews.length > 0 && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
                           <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-semibold text-dark-primary">Recent Reviews</h2>
-                            <button 
+                            <h2 className="text-xl font-semibold text-gray-900">Recent Reviews</h2>
+                            <button
                               onClick={() => setActiveTab('reviews')}
-                              className="flex items-center text-dark-primary hover:opacity-80 text-sm font-semibold transition-colors"
+                              className="flex items-center text-orange-600 hover:text-orange-700 text-sm font-semibold transition-colors"
                             >
                               View All
                               <ChevronRight className="w-4 h-4 ml-1" />
@@ -607,32 +577,32 @@ export default function Provider() {
                           </div>
                           <div className="space-y-4">
                             {reviews.slice(0, 2).map((review) => (
-                              <div key={review.id} className="border-b border-white/15 pb-4 last:border-b-0 last:pb-0">
+                              <div key={review.id} className="border-b border-gray-100 pb-4 last:border-b-0 last:pb-0">
                                 <div className="flex items-start space-x-3">
-                                  <img 
-                                    src={review.clientAvatar} 
+                                  <img
+                                    src={review.clientAvatar}
                                     alt={review.clientName}
-                                    className="w-10 h-10 rounded-full object-cover border border-white/15"
+                                    className="w-10 h-10 rounded-full object-cover border border-gray-200"
                                     onError={(e) => {
                                       e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
                                     }}
                                   />
                                   <div className="flex-1">
                                     <div className="flex items-center space-x-2 mb-1">
-                                      <span className="font-semibold text-dark-primary">{review.clientName}</span>
+                                      <span className="font-semibold text-gray-900">{review.clientName}</span>
                                       <div className="flex items-center">
                                         {[...Array(5)].map((_, i) => (
                                           <Star
                                             key={i}
                                             className={`h-4 w-4 ${
-                                              i < review.rating ? 'text-yellow-400 fill-current' : 'text-dark-muted'
+                                              i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
                                             }`}
                                           />
                                         ))}
                                       </div>
                                     </div>
-                                    <p className="text-dark-secondary text-sm mb-1">{review.comment}</p>
-                                    <div className="flex items-center justify-between text-xs text-dark-muted">
+                                    <p className="text-gray-600 text-sm mb-1">{review.comment}</p>
+                                    <div className="flex items-center justify-between text-xs text-gray-400">
                                       <span>
                                         Service: {typeof review.service === 'object' ? review.service?.title : review.service}
                                       </span>
@@ -662,15 +632,15 @@ export default function Provider() {
                       ) : services.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                           {services.map((service) => (
-                            <div 
+                            <div
                               key={service.id}
-                              className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 border border-white/15 overflow-hidden hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1"
+                              className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1"
                               onClick={() => navigate(`/service/${service.id}`)}
                             >
                               <div className="relative">
                                 {service.images && service.images.length > 0 ? (
-                                  <img 
-                                    src={service.images[0]} 
+                                  <img
+                                    src={service.images[0]}
                                     alt={service.title || 'Service image'}
                                     className="w-full h-48 object-cover"
                                     onError={(e) => {
@@ -679,49 +649,49 @@ export default function Provider() {
                                     }}
                                   />
                                 ) : (
-                                  <div className="w-full h-48 bg-gradient-to-br from-dark-tertiary to-dark-tertiary flex items-center justify-center">
-                                    <div className="text-dark-muted text-center">
+                                  <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                                    <div className="text-gray-400 text-center">
                                       <Briefcase className="w-12 h-12 mx-auto mb-2" />
                                       <p className="text-sm">No image available</p>
                                     </div>
                                   </div>
                                 )}
-                                <span className="absolute top-4 left-4 px-3 py-1 bg-white/60 text-dark-primary backdrop-blur-md border border-white/20 text-xs font-semibold rounded-full">
+                                <span className="absolute top-4 left-4 px-3 py-1 bg-white text-gray-700 border border-gray-200 text-xs font-semibold rounded-full shadow-sm">
                                   {service.category?.name || 'Category'}
                                 </span>
-                                <span className={`absolute top-4 right-4 px-2 py-1 text-xs rounded-full ${
-                                  service.isActive 
-                                    ? 'bg-white/60 text-dark-primary backdrop-blur-md border border-white/20' 
-                                    : 'bg-white/30 text-dark-secondary backdrop-blur-sm border border-white/15'
+                                <span className={`absolute top-4 right-4 px-2 py-1 text-xs rounded-full font-medium ${
+                                  service.isActive
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : 'bg-gray-100 text-gray-500'
                                 }`}>
                                   {service.isActive ? 'Active' : 'Inactive'}
                                 </span>
                               </div>
                               <div className="p-6">
                                 <div className="flex items-center justify-between mb-3">
-                                  <h3 className="text-lg font-semibold text-dark-primary truncate">
+                                  <h3 className="text-lg font-semibold text-gray-900 truncate">
                                     {service.title || 'Untitled Service'}
                                   </h3>
-                                  <span className="text-xl font-bold text-dark-primary">
+                                  <span className="text-xl font-bold text-gray-900">
                                     {service.currency} {service.price}
                                   </span>
                                 </div>
-                                <p className="text-dark-secondary text-sm mb-4 line-clamp-2">
+                                <p className="text-gray-500 text-sm mb-4 line-clamp-2">
                                   {service.description || 'No description available'}
                                 </p>
-                                <div className="flex items-center justify-between text-sm text-dark-muted">
+                                <div className="flex items-center justify-between text-sm text-gray-400">
                                   <div className="flex items-center">
                                     <Clock className="w-4 h-4 mr-1" />
                                     <span>Contact for timing</span>
                                   </div>
                                   <div className="flex flex-wrap gap-1">
-                                    {service.tags && service.tags.length > 0 ? 
+                                    {service.tags && service.tags.length > 0 ?
                                       service.tags.slice(0, 2).map((tag: string, index: number) => (
-                                        <span key={index} className="px-2 py-1 bg-white/40 text-dark-secondary text-xs rounded backdrop-blur-sm border border-white/15">
+                                        <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
                                           {tag}
                                         </span>
-                                      )) : 
-                                      <span className="text-xs text-dark-muted">No tags</span>
+                                      )) :
+                                      <span className="text-xs text-gray-400">No tags</span>
                                     }
                                   </div>
                                 </div>
@@ -730,12 +700,12 @@ export default function Provider() {
                           ))}
                         </div>
                       ) : (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6 text-center">
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 text-center">
                           <div className="text-center py-12">
-                            <div className="text-dark-muted">
-                              <Briefcase className="w-16 h-16 mx-auto mb-4 text-dark-muted" />
-                              <h3 className="text-lg font-medium text-dark-primary mb-2">No Services Yet</h3>
-                              <p className="text-dark-secondary mb-4">
+                            <div className="text-gray-400">
+                              <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                              <h3 className="text-lg font-medium text-gray-900 mb-2">No Services Yet</h3>
+                              <p className="text-gray-500 mb-4">
                                 This provider hasn't created any services yet.
                               </p>
                             </div>
@@ -749,36 +719,36 @@ export default function Provider() {
 
                   {/* Reviews Tab */}
                   {activeTab === 'reviews' && (
-                    <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 border border-white/15">
-                      <div className="p-6 border-b border-white/15">
+                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                      <div className="p-6 border-b border-gray-100">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                           <div>
-                            <h3 className="text-xl font-bold text-dark-primary">
+                            <h3 className="text-xl font-bold text-gray-900">
                               Reviews ({reviewStats?.totalReviews || 0})
                             </h3>
                             <div className="flex items-center space-x-2 mt-2">
                               <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
-                                  <Star 
-                                    key={i} 
+                                  <Star
+                                    key={i}
                                     className={`w-5 h-5 ${
-                                      i < Math.floor(reviewStats?.averageRating || 0) 
-                                        ? "text-yellow-400 fill-current" 
-                                        : "text-dark-muted"
-                                    }`} 
+                                      i < Math.floor(reviewStats?.averageRating || 0)
+                                        ? "text-yellow-400 fill-current"
+                                        : "text-gray-300"
+                                    }`}
                                   />
                                 ))}
                               </div>
-                              <span className="text-sm text-dark-secondary">
+                              <span className="text-sm text-gray-500">
                                 {reviewStats?.averageRating?.toFixed(1) || 0} out of 5
                               </span>
                             </div>
                           </div>
                           <div className="mt-4 md:mt-0">
-                            <select 
+                            <select
                               value={reviewFilter}
                               onChange={(e) => setReviewFilter(e.target.value)}
-                              className="px-4 py-2 border border-white/15 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent bg-white/70 backdrop-blur-xl text-dark-primary"
+                              className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white text-gray-900"
                               disabled={reviewsLoading}
                             >
                               <option value="all">All Reviews</option>
@@ -791,7 +761,7 @@ export default function Provider() {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Loading State */}
                       {reviewsLoading && (
                         <div className="flex items-center justify-center py-12">
@@ -802,18 +772,18 @@ export default function Provider() {
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Reviews List */}
                       {!reviewsLoading && (
-                        <div className="divide-y divide-white/10">
+                        <div className="divide-y divide-gray-100">
                           {reviews.length > 0 ? (
                             reviews.map((review) => (
-                              <div key={review.id} className="p-6 hover:bg-white/30 backdrop-blur-sm transition-colors">
+                              <div key={review.id} className="p-6 hover:bg-gray-50 transition-colors">
                                 <div className="flex items-start space-x-4">
-                                  <img 
-                                    src={review.clientAvatar} 
+                                  <img
+                                    src={review.clientAvatar}
                                     alt={review.clientName}
-                                    className="w-12 h-12 rounded-full border border-white/15 object-cover"
+                                    className="w-12 h-12 rounded-full border border-gray-200 object-cover"
                                     onError={(e) => {
                                       e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
                                     }}
@@ -821,21 +791,21 @@ export default function Provider() {
                                   <div className="flex-1">
                                     <div className="flex items-start justify-between mb-2">
                                       <div className="flex-1">
-                                        <h4 className="font-semibold text-dark-primary">{review.clientName}</h4>
+                                        <h4 className="font-semibold text-gray-900">{review.clientName}</h4>
                                         <div className="flex items-center space-x-2 mt-1">
                                           <div className="flex items-center">
                                             {[...Array(5)].map((_, i) => (
-                                              <Star 
-                                                key={i} 
+                                              <Star
+                                                key={i}
                                                 className={`w-4 h-4 ${
-                                                  i < review.rating 
-                                                    ? "text-yellow-400 fill-current" 
-                                                    : "text-dark-muted"
-                                                }`} 
+                                                  i < review.rating
+                                                    ? "text-yellow-400 fill-current"
+                                                    : "text-gray-300"
+                                                }`}
                                               />
                                             ))}
                                           </div>
-                                          <span className="text-sm text-dark-muted">{review.date}</span>
+                                          <span className="text-sm text-gray-400">{review.date}</span>
                                         </div>
                                       </div>
                                       {/* Service Info */}
@@ -843,8 +813,8 @@ export default function Provider() {
                                         <div className="ml-4 text-right">
                                           <div className="flex items-center space-x-2">
                                             {review.service.image && (
-                                              <img 
-                                                src={review.service.image} 
+                                              <img
+                                                src={review.service.image}
                                                 alt={review.service.title}
                                                 className="w-8 h-8 rounded object-cover"
                                                 onError={(e) => {
@@ -853,21 +823,21 @@ export default function Provider() {
                                               />
                                             )}
                                             <div>
-                                              <p className="text-sm font-medium text-dark-primary truncate max-w-32">
+                                              <p className="text-sm font-medium text-gray-900 truncate max-w-32">
                                                 {review.service.title}
                                               </p>
-                                              <p className="text-xs text-dark-muted">{review.service.category}</p>
+                                              <p className="text-xs text-gray-400">{review.service.category}</p>
                                             </div>
                                           </div>
                                         </div>
                                       )}
                                     </div>
-                                    <p className="text-dark-secondary text-sm leading-relaxed mb-3">{review.comment}</p>
+                                    <p className="text-gray-600 text-sm leading-relaxed mb-3">{review.comment}</p>
                                     <div className="flex items-center justify-between">
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">
                                         Service: {typeof review.service === 'object' ? review.service?.title : review.service}
                                       </span>
-                                      <button className="text-sm text-dark-muted hover:text-dark-primary transition-colors">
+                                      <button className="text-sm text-gray-400 hover:text-gray-900 transition-colors">
                                         Helpful ({review.helpful})
                                       </button>
                                     </div>
@@ -877,25 +847,24 @@ export default function Provider() {
                             ))
                           ) : (
                             <div className="text-center py-12">
-                              <div className="text-dark-muted">
-                                <Star className="w-16 h-16 mx-auto mb-4 text-dark-muted" />
-                                <h3 className="text-lg font-medium text-dark-primary mb-2">No Reviews Yet</h3>
-                                <p className="text-dark-secondary mb-4">
+                              <div className="text-gray-400">
+                                <Star className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                                <h3 className="text-lg font-medium text-gray-900 mb-2">No Reviews Yet</h3>
+                                <p className="text-gray-500 mb-4">
                                   This provider hasn't received any reviews yet.
                                 </p>
                               </div>
                             </div>
                           )}
-                          
+
                           {/* Load More Button */}
                           {hasMoreReviews && !reviewsLoading && (
-                            <div className="p-6 text-center border-t border-white/15">
-                              <button
+                            <div className="p-6 text-center border-t border-gray-100">
+                              <Button
                                 onClick={() => fetchProviderReviews(providerProfile?.id!, reviewPage + 1, false)}
-                                className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl"
                               >
                                 Load More Reviews
-                              </button>
+                              </Button>
                             </div>
                           )}
                         </div>
@@ -908,22 +877,19 @@ export default function Provider() {
                     <div className="space-y-6">
                       {/* About Profile */}
                       {providerProfile.bio && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                          <h3 className="text-xl font-bold text-dark-primary mb-4">About Profile</h3>
-                          <p className="text-dark-secondary leading-relaxed">{providerProfile.bio}</p>
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                          <h3 className="text-xl font-bold text-gray-900 mb-4">About Profile</h3>
+                          <p className="text-gray-600 leading-relaxed">{providerProfile.bio}</p>
                         </div>
                       )}
 
                       {/* Skills */}
                       {providerProfile.skills && providerProfile.skills.length > 0 && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                          <h3 className="text-xl font-bold text-dark-primary mb-4">Skills</h3>
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                          <h3 className="text-xl font-bold text-gray-900 mb-4">Skills</h3>
                           <div className="flex flex-wrap gap-2">
                             {providerProfile.skills.map((skill, index) => (
-                              <span
-                                key={index}
-                                className="px-3 py-2 bg-white/60 text-dark-primary backdrop-blur-md border border-white/20 rounded-full text-sm font-medium"
-                              >
+                              <span key={index} className={skillPillClasses}>
                                 {skill}
                               </span>
                             ))}
@@ -933,13 +899,13 @@ export default function Provider() {
 
                       {/* Qualifications */}
                       {providerProfile.qualifications && providerProfile.qualifications.length > 0 && (
-                        <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                          <h3 className="text-xl font-bold text-dark-primary mb-4">Qualifications</h3>
+                        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                          <h3 className="text-xl font-bold text-gray-900 mb-4">Qualifications</h3>
                           <div className="space-y-3">
                             {providerProfile.qualifications.map((qualification, index) => (
-                              <div key={index} className="flex items-center space-x-3 p-3 bg-white/30 backdrop-blur-sm rounded-lg">
-                                <Award className="h-5 w-5 text-dark-primary" />
-                                <span className="text-dark-secondary">{qualification}</span>
+                              <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                <Award className="h-5 w-5 text-orange-600" />
+                                <span className="text-gray-600">{qualification}</span>
                               </div>
                             ))}
                           </div>
@@ -947,11 +913,11 @@ export default function Provider() {
                       )}
 
                       {/* Member Since */}
-                      <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-6">
-                        <h3 className="text-xl font-bold text-dark-primary mb-4">Member Since</h3>
+                      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">Member Since</h3>
                         <div className="flex items-center space-x-3 mb-3">
-                          <Calendar className="w-5 h-5 text-dark-muted" />
-                          <span className="text-dark-secondary">
+                          <Calendar className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-600">
                             {new Date(user.createdAt).toLocaleDateString('en-US', {
                               year: 'numeric',
                               month: 'long',
@@ -960,8 +926,8 @@ export default function Provider() {
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <Clock className="w-5 h-5 text-dark-muted" />
-                          <span className="text-dark-secondary">Last active: Recently</span>
+                          <Clock className="w-5 h-5 text-gray-400" />
+                          <span className="text-gray-600">Last active: Recently</span>
                         </div>
                       </div>
                     </div>
@@ -970,9 +936,9 @@ export default function Provider() {
               )
             ) : (
               /* Loading provider data */
-              <div className="bg-white/70 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 p-8 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                <p className="text-dark-secondary">Loading provider profile...</p>
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                <p className="text-gray-500">Loading provider profile...</p>
               </div>
             )}
           </div>
@@ -986,8 +952,3 @@ export default function Provider() {
   );
 
 }
-
-
-
-
-
