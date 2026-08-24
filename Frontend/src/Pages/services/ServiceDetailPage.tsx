@@ -1001,7 +1001,7 @@ const ServiceDetailPage: React.FC = () => {
           )}
 
           {/* Main Content Layout - Grid System */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
             {/* Left Column - Images and Service Info */}
             <div className="lg:col-span-2 space-y-4">
               {/* Hero Banner - image with category badge + title overlay */}
@@ -1084,10 +1084,10 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-blue-50 rounded-2xl p-4">
+                <div className="bg-amber-50 rounded-2xl p-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-4 h-4 text-blue-700" />
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-4 h-4 text-amber-700" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-gray-500">Location</p>
@@ -1097,10 +1097,10 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="bg-emerald-50 rounded-2xl p-4">
+                <div className="bg-orange-50 rounded-2xl p-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                      <User className="w-4 h-4 text-emerald-700" />
+                    <div className="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-orange-700" />
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs text-gray-500">Provider</p>
@@ -1137,60 +1137,70 @@ const ServiceDetailPage: React.FC = () => {
               </div>
 
               {/* About This Service */}
-              <div className="py-2 px-1">
-                <div className="max-w-4xl">
-                  <h2 className="text-xl font-bold text-gray-900 mb-3">About This Service</h2>
+              <div className="bg-white rounded-2xl p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+                <h2 className="text-base font-semibold text-gray-900 mb-2">About This Service</h2>
 
-                  {service.description && (
-                    <p className="text-base text-gray-600 mb-4 leading-relaxed">
-                      {service.description}
-                    </p>
-                  )}
+                {service.description && (
+                  <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                    {service.description}
+                  </p>
+                )}
 
-                  {service.tags && service.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {service.tags.map((tag, index) => (
-                        <Chip key={index} className="h-7 px-3 text-xs pointer-events-none">
-                          #{tag}
-                        </Chip>
+                {service.tags && service.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {service.tags.map((tag, index) => (
+                      <Chip key={index} className="h-7 px-3 text-xs pointer-events-none">
+                        #{tag}
+                      </Chip>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Photo Gallery - thumbnails above, large preview below */}
+              {service.images.length > 0 && (
+                <div className="bg-white rounded-2xl p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+                  <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-orange-500" />
+                    Photos
+                    <span className="text-gray-400 font-normal text-sm">({service.images.length})</span>
+                  </h2>
+
+                  {service.images.length > 1 && (
+                    <div className="flex gap-2.5 overflow-x-auto pb-1 mb-4 scrollbar-hide">
+                      {service.images.map((image, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImage(index)}
+                          className={cn(
+                            "flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border-2 transition-all duration-200",
+                            selectedImage === index
+                              ? 'border-orange-500 ring-2 ring-orange-200'
+                              : 'border-transparent opacity-70 hover:opacity-100'
+                          )}
+                          title={`View photo ${index + 1}`}
+                        >
+                          <img src={image} alt={`${service.title} thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+                        </button>
                       ))}
                     </div>
                   )}
 
-                  {/* Gallery */}
-                  {service.images.length > 1 && (
-                    <div className="mt-8">
-                      <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <ImageIcon className="w-5 h-5 text-orange-500" />
-                        Gallery
-                      </h2>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {service.images.map((image, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              setSelectedImage(index);
-                              setAutoSlide(false);
-                              setTimeout(() => setAutoSlide(true), 10000);
-                            }}
-                            className={cn(
-                              "aspect-video rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-[1.02]",
-                              selectedImage === index
-                                ? 'border-orange-500 ring-2 ring-orange-200 shadow-lg'
-                                : 'border-transparent hover:border-orange-300 shadow-sm'
-                            )}
-                            title={`Image ${index + 1}`}
-                          >
-                            <img src={image} alt={`${service.title} ${index + 1}`} className="w-full h-full object-cover" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                  <div className="w-full h-72 sm:h-96 md:h-[28rem] rounded-2xl overflow-hidden bg-gray-100">
+                    <img
+                      src={service.images[selectedImage]}
+                      alt={`${service.title} - photo ${selectedImage + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
 
+              {/* Schedule + Gallery wrapper (kept inside the same left column) */}
+              <div className="space-y-4">
                   {/* Current Schedule Section */}
                   {currentSchedules.length > 0 && (
-                    <div className="mt-6 bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm">
+                    <div className="bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <Calendar className="w-5 h-5 mr-2 text-orange-500" />
                         Confirmed Schedule
@@ -1269,7 +1279,6 @@ const ServiceDetailPage: React.FC = () => {
                       )}
                     </div>
                   )}
-                </div>
               </div>
             </div>
 

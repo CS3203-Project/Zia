@@ -1,6 +1,7 @@
 import React from 'react';
 import { PlaceCard } from '../ui/card-22';
 import type { ServiceResponse } from '../../api/serviceApi';
+import Skeleton from './Skeleton';
 
 interface ServicesGridProps {
   services: ServiceResponse[];
@@ -8,14 +9,32 @@ interface ServicesGridProps {
   error?: string | null;
 }
 
-const ServicesGrid: React.FC<ServicesGridProps> = ({ services, loading, error }) => {
-  console.log('ServicesGrid render:', { servicesCount: services?.length, loading, error });
+const ServiceCardSkeleton: React.FC = () => (
+  <div className="rounded-2xl overflow-hidden bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+    <Skeleton className="aspect-[4/3] rounded-none" />
+    <div className="p-5 space-y-3">
+      <Skeleton className="h-5 w-3/4" />
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-3.5 w-20" />
+        <Skeleton className="h-3.5 w-16" />
+      </div>
+      <Skeleton className="h-3.5 w-full" />
+      <Skeleton className="h-3.5 w-2/3" />
+      <div className="flex items-center justify-between pt-2">
+        <Skeleton className="h-5 w-20" />
+        <Skeleton className="h-9 w-24 rounded-full" />
+      </div>
+    </div>
+  </div>
+);
 
+const ServicesGrid: React.FC<ServicesGridProps> = ({ services, loading, error }) => {
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-        <span className="ml-3 text-gray-600">Loading services...</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <ServiceCardSkeleton key={i} />
+        ))}
       </div>
     );
   }
@@ -23,7 +42,7 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({ services, loading, error })
   if (error) {
     return (
       <div className="text-center py-12">
-        <div className="bg-red-500/10 backdrop-blur-lg border border-red-500/30 rounded-2xl p-6 max-w-md mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 max-w-md mx-auto">
           <h3 className="text-lg font-semibold text-red-600 mb-2">Error Loading Services</h3>
           <p className="text-red-500">{error}</p>
         </div>
@@ -34,9 +53,9 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({ services, loading, error })
   if (!services || services.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="backdrop-blur-md bg-white/70 border border-white/20 rounded-2xl p-6 max-w-md mx-auto">
-          <h3 className="text-lg font-semibold text-black mb-2">No Services Found</h3>
-          <p className="text-gray-600">There are currently no services available.</p>
+        <div className="bg-white shadow-sm rounded-2xl p-6 max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No Services Found</h3>
+          <p className="text-gray-500">There are currently no services available.</p>
         </div>
       </div>
     );

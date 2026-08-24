@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import ServiceCard from '../../components/services/ServiceCard';
 import Breadcrumb from '../../components/services/Breadcrumb';
@@ -115,6 +115,21 @@ const ServiceCategoryPage: React.FC = () => {
   const [servicesLoading, setServicesLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>('relevance');
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+  const isFirstSubCategoryRender = useRef(true);
+
+  // On mobile the subcategory sidebar sits above the results, so picking a
+  // subcategory can leave the list scrolled out of view — bring it into view.
+  // Desktop shows them side by side, so skip there to avoid a pointless jump.
+  useEffect(() => {
+    if (isFirstSubCategoryRender.current) {
+      isFirstSubCategoryRender.current = false;
+      return;
+    }
+    if (window.innerWidth < 768) {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selectedSubCategory]);
 
   // Fetch category data
   useEffect(() => {
@@ -292,7 +307,7 @@ const ServiceCategoryPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row -mx-4">
+          <div className="flex flex-col md:flex-row md:-mx-4">
             {/* Sidebar Skeleton */}
             <div className="w-full md:w-1/4 lg:w-1/5 p-4">
               <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
@@ -423,7 +438,7 @@ const ServiceCategoryPage: React.FC = () => {
           )}
         </div>
 
-        <div className="flex flex-col md:flex-row -mx-4">
+        <div className="flex flex-col md:flex-row md:-mx-4">
           {/* Sidebar for Subcategories */}
           {category.children && category.children.length > 0 && (
             <SubCategorySidebar
@@ -437,7 +452,7 @@ const ServiceCategoryPage: React.FC = () => {
           )}
 
           {/* Main Content */}
-          <div className={`w-full p-4 ${category.children && category.children.length > 0 ? 'md:w-3/4 lg:w-4/5' : ''}`}>
+          <div ref={resultsRef} className={`w-full p-4 ${category.children && category.children.length > 0 ? 'md:w-3/4 lg:w-4/5' : ''}`}>
             <div className="bg-white rounded-xl px-5 py-3 shadow-sm mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>

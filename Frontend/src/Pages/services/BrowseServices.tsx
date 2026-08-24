@@ -6,6 +6,7 @@ import { getCategoryIcon, getCategoryGradient } from '../../utils/categoryMapper
 import { hybridSearchApi, type HybridSearchResult, type LocationParams } from '../../api/hybridSearchApi';
 import { serviceApi } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
+import Skeleton from '../../components/shared/Skeleton';
 
 interface BrowseServicesState {
   categories: Category[];
@@ -333,100 +334,47 @@ const BrowseServices: React.FC = () => {
 
   if (state.loading) {
     return (
-      <div className="min-h-screen bg-dark-primary relative overflow-hidden">
-        {/* Square Grid Background */}
-        <div className="absolute inset-0 w-full h-full bg-[linear-gradient(to_right,#e5e7eb_0.5px,transparent_0.5px),linear-gradient(to_bottom,#e5e7eb_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-30 [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)]" />
+      <div className="min-h-screen bg-white">
+        <main className="container mx-auto px-4 pt-20 pb-8 sm:px-6 lg:px-8">
+          {/* Header Section */}
+          <div className="text-center mb-10">
+            <Skeleton className="h-10 w-72 mx-auto mb-3" />
+            <Skeleton className="h-5 w-96 max-w-full mx-auto" />
+          </div>
 
-        {/* Content Overlay */}
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <main className="flex-1 container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-            {/* Header Section */}
-            <div className="text-center mb-12 pt-20">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/70 backdrop-blur-lg rounded-full mb-4 border border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]">
-                <Loader2 className="w-8 h-8 text-dark-primary animate-spin" />
-              </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-4">
-                Loading Services
-              </h1>
-              <p className="text-lg text-dark-secondary">
-                Please wait while we fetch the latest categories...
-              </p>
-            </div>
-
-            {/* Enhanced Search Section Skeleton */}
-            <div className="max-w-4xl mx-auto mb-12">
-              <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
-                {/* Main Search Bar Skeleton */}
-                <div className="relative mb-4">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <div className="w-5 h-5 bg-dark-tertiary rounded"></div>
-                  </div>
-                  <div className="block w-full pl-12 pr-4 py-4 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl">
-                    <div className="h-5 bg-dark-tertiary rounded w-3/4"></div>
-                  </div>
-                </div>
-
-                {/* Location and Filters Row Skeleton */}
-                <div className="flex flex-col sm:flex-row gap-4 items-end">
-                  {/* Location Filter Skeleton */}
-                  <div className="flex-1">
-                    <div className="w-full sm:w-auto px-4 py-2 rounded-xl border border-white/30 bg-white/50">
-                      <div className="h-4 bg-dark-tertiary rounded w-24"></div>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons Skeleton */}
-                  <div className="flex gap-2">
-                    <div className="px-4 py-2 bg-white/50 rounded-xl">
-                      <div className="h-4 bg-dark-tertiary rounded w-12"></div>
-                    </div>
-                  </div>
-                </div>
+          {/* Search Section Skeleton */}
+          <div className="max-w-4xl mx-auto mb-10">
+            <div className="bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] rounded-2xl p-6">
+              <Skeleton className="h-14 w-full rounded-xl mb-4" />
+              <div className="flex gap-3">
+                <Skeleton className="h-9 w-32 rounded-xl" />
+                <Skeleton className="h-9 w-28 rounded-xl" />
               </div>
             </div>
+          </div>
 
-            {/* Controls Skeleton */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-              <div className="flex items-center gap-4">
-                <div className="h-4 bg-dark-tertiary rounded w-16"></div>
-                <div className="px-3 py-2 bg-white/50 backdrop-blur-sm border border-white/30 rounded-xl">
-                  <div className="h-4 bg-dark-tertiary rounded w-16"></div>
+          {/* Controls Skeleton */}
+          <div className="flex items-center justify-between mb-6">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-9 w-20 rounded-lg" />
+          </div>
+
+          {/* Categories Grid Skeleton */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="rounded-2xl bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] p-6">
+                <Skeleton className="w-14 h-14 rounded-2xl mb-4" />
+                <Skeleton className="h-5 w-3/4 mb-2" />
+                <Skeleton className="h-3.5 w-full mb-1.5" />
+                <Skeleton className="h-3.5 w-2/3 mb-4" />
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-3.5 w-20" />
+                  <Skeleton className="h-4 w-4 rounded-full" />
                 </div>
               </div>
-
-              <div className="flex items-center gap-2">
-                <div className="h-4 bg-dark-tertiary rounded w-12"></div>
-                <div className="flex items-center bg-white/50 backdrop-blur-sm rounded-xl p-1 border border-white/30">
-                  <div className="p-2 rounded-lg">
-                    <div className="w-4 h-4 bg-dark-tertiary rounded"></div>
-                  </div>
-                  <div className="p-2 rounded-lg">
-                    <div className="w-4 h-4 bg-dark-tertiary rounded"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Categories Grid Skeleton */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {[...Array(6)].map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="rounded-2xl bg-white/50 backdrop-blur-lg border border-white/30 p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)]">
-                    <div className="flex items-start">
-                      <div className="w-14 h-14 bg-dark-tertiary rounded-xl"></div>
-                      <div className="ml-4 flex-1">
-                        <div className="h-4 bg-dark-tertiary rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-dark-tertiary rounded w-1/2 mb-3"></div>
-                        <div className="h-3 bg-dark-tertiary rounded w-full mb-1"></div>
-                        <div className="h-3 bg-dark-tertiary rounded w-2/3"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </main>
-        </div>
+            ))}
+          </div>
+        </main>
       </div>
     );
   }

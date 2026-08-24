@@ -59,10 +59,10 @@ export default function SignIn() {
       />
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-center">
 
           {/* Left Side - Feature panel */}
-          <div className="hidden lg:flex flex-col justify-center bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-10 text-white shadow-xl shadow-orange-500/20">
+          <div className="hidden lg:flex lg:col-span-2 flex-col justify-center bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl p-10 text-white shadow-xl shadow-orange-500/20">
             <h1 className="text-3xl font-bold leading-tight mb-4">
               Connect with trusted
               <br />
@@ -101,7 +101,7 @@ export default function SignIn() {
           </div>
 
           {/* Right Side - Sign In Form */}
-          <div className="flex flex-col justify-center">
+          <div className="lg:col-span-3 flex flex-col justify-center max-w-md mx-auto w-full">
             {/* Logo */}
             <div className="flex items-center gap-2.5 mb-6">
               <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-sm shadow-orange-500/30">
