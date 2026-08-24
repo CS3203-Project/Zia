@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Loader2, Search, Grid3X3, List, Sparkles, Users, RefreshCw, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Loader2, Search, Grid3X3, List, Sparkles, RefreshCw, MapPin } from 'lucide-react';
 import { categoryApi, type Category } from '../../api/categoryApi';
-import { getCategoryIcon, getCategoryGradient } from '../../utils/categoryMapper';
 import { hybridSearchApi, type HybridSearchResult, type LocationParams } from '../../api/hybridSearchApi';
 import { serviceApi } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
-import Skeleton from '../../components/shared/Skeleton';
+import BrowseServicesLoadingSkeleton from '../../components/services/BrowseServicesLoadingSkeleton';
+import SearchResultServiceCard from '../../components/services/SearchResultServiceCard';
+import SearchResultCardSkeleton from '../../components/services/SearchResultCardSkeleton';
+import CategoryCard from '../../components/services/CategoryCard';
+import CategoryCardSkeleton from '../../components/services/CategoryCardSkeleton';
 
 interface BrowseServicesState {
   categories: Category[];
@@ -333,50 +336,7 @@ const BrowseServices: React.FC = () => {
   };
 
   if (state.loading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <main className="container mx-auto px-4 pt-20 pb-8 sm:px-6 lg:px-8">
-          {/* Header Section */}
-          <div className="text-center mb-10">
-            <Skeleton className="h-10 w-72 mx-auto mb-3" />
-            <Skeleton className="h-5 w-96 max-w-full mx-auto" />
-          </div>
-
-          {/* Search Section Skeleton */}
-          <div className="max-w-4xl mx-auto mb-10">
-            <div className="bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] rounded-2xl p-6">
-              <Skeleton className="h-14 w-full rounded-xl mb-4" />
-              <div className="flex gap-3">
-                <Skeleton className="h-9 w-32 rounded-xl" />
-                <Skeleton className="h-9 w-28 rounded-xl" />
-              </div>
-            </div>
-          </div>
-
-          {/* Controls Skeleton */}
-          <div className="flex items-center justify-between mb-6">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-9 w-20 rounded-lg" />
-          </div>
-
-          {/* Categories Grid Skeleton */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="rounded-2xl bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] p-6">
-                <Skeleton className="w-14 h-14 rounded-2xl mb-4" />
-                <Skeleton className="h-5 w-3/4 mb-2" />
-                <Skeleton className="h-3.5 w-full mb-1.5" />
-                <Skeleton className="h-3.5 w-2/3 mb-4" />
-                <div className="flex items-center justify-between">
-                  <Skeleton className="h-3.5 w-20" />
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </main>
-      </div>
-    );
+    return <BrowseServicesLoadingSkeleton />;
   }
 
   if (state.error) {
@@ -545,22 +505,11 @@ const BrowseServices: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 {state.isSearching ? (
                   [...Array(6)].map((_, index) => (
-                    <div key={index} className="animate-pulse">
-                      <div className="bg-white border border-gray-100 rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] p-6">
-                        <div className="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-                        <div className="h-3 bg-gray-200 rounded w-2/3 mb-3"></div>
-                        <div className="flex items-center justify-between">
-                          <div className="h-3 bg-gray-200 rounded w-1/3"></div>
-                          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                        </div>
-                      </div>
-                    </div>
+                    <SearchResultCardSkeleton key={index} />
                   ))
                 ) : (
                   state.hybridSearchResults.slice(0, 6).map((service) => (
-                    <ServiceCard
+                    <SearchResultServiceCard
                       key={service.id}
                       service={service}
                       viewMode="grid"
@@ -639,23 +588,7 @@ const BrowseServices: React.FC = () => {
                   : 'space-y-4'
                 }>
                   {[...Array(state.viewMode === 'grid' ? 6 : 4)].map((_, index) => (
-                    <div key={index} className="animate-pulse">
-                      <div className={`bg-white border border-gray-100 rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] ${state.viewMode === 'grid' ? 'p-6' : 'p-4'}`}>
-                        <div className={`flex items-start ${state.viewMode === 'list' ? 'space-x-4' : ''}`}>
-                          <div className={`flex-shrink-0 ${state.viewMode === 'list' ? 'w-16 h-16' : 'w-14 h-14'} bg-gray-200 rounded-xl`}></div>
-                          <div className={`flex-1 ${state.viewMode === 'list' ? '' : 'ml-4'}`}>
-                            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                            <div className="h-3 bg-gray-200 rounded w-1/2 mb-3"></div>
-                            {state.viewMode === 'grid' && (
-                              <>
-                                <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-                                <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <CategoryCardSkeleton key={index} viewMode={state.viewMode} />
                   ))}
                 </div>
               ) : filteredAndSortedCategories.length === 0 ? (
@@ -692,193 +625,6 @@ const BrowseServices: React.FC = () => {
         </main>
       </div>
     </div>
-  );
-};
-
-// Service Card Component for search results preview
-interface ServiceCardProps {
-  service: HybridSearchResult;
-  viewMode: 'grid' | 'list';
-  showDistance: boolean;
-}
-
-const ServiceCard: React.FC<ServiceCardProps> = ({ service, viewMode, showDistance }) => {
-  const price = typeof service.price === 'string' ? parseFloat(service.price) : service.price;
-
-  return (
-    <Link
-      to={`/service/${service.id}`}
-      className={`group block bg-white rounded-2xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] border border-gray-100 hover:border-orange-200 hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_2px_6px_2px_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-2 ${
-        viewMode === 'list' ? 'p-4' : 'p-6'
-      }`}
-    >
-      <div className={`${viewMode === 'list' ? 'flex items-start space-x-4' : ''}`}>
-        {/* Service Image */}
-        <div className={`flex-shrink-0 ${viewMode === 'list' ? 'w-24 h-24' : 'w-full h-48 mb-4'}`}>
-          <div className={`w-full h-full bg-gradient-to-br from-gray-100 to-gray-100 rounded-xl overflow-hidden ${
-            viewMode === 'list' ? '' : ''
-          }`}>
-            {service.images && service.images.length > 0 ? (
-              <img
-                src={service.images[0]}
-                alt={service.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  target.nextElementSibling?.classList.remove('hidden');
-                }}
-              />
-            ) : null}
-            <div className={`w-full h-full flex items-center justify-center ${service.images && service.images.length > 0 ? 'hidden' : ''}`}>
-              <span className="text-4xl">🎯</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Service Content */}
-        <div className={`flex-1 ${viewMode === 'list' ? '' : ''}`}>
-          <div className="flex items-start justify-between mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2">
-              {service.title}
-            </h3>
-            {service.similarity && (
-              <div className="ml-2 px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded-full font-medium">
-                {Math.round(service.similarity * 100)}% match
-              </div>
-            )}
-          </div>
-
-          <p className="text-gray-500 text-sm mb-3 line-clamp-3">
-            {service.description}
-          </p>
-
-          {/* Tags */}
-          {service.tags && service.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {service.tags.slice(0, 3).map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-1 bg-gray-50 text-gray-500 text-xs rounded-full border border-gray-100"
-                >
-                  {tag}
-                </span>
-              ))}
-              {service.tags.length > 3 && (
-                <span className="px-2 py-1 bg-gray-50 text-gray-500 text-xs rounded-full border border-gray-100">
-                  +{service.tags.length - 3} more
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Provider and Category */}
-          <div className="flex items-center text-sm text-gray-500 mb-3">
-            <span>
-              by {service.provider.user.firstName} {service.provider.user.lastName}
-            </span>
-            <span className="mx-2">•</span>
-            <span>{service.category.name}</span>
-          </div>
-
-          {/* Distance and Price */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              {showDistance && service.distance_km !== undefined && service.distance_km !== null && (
-                <div className="flex items-center text-sm text-gray-900">
-                  <MapPin className="w-4 h-4 mr-1" />
-                  <span>{service.distance_km.toFixed(1)} km away</span>
-                </div>
-              )}
-            </div>
-
-            <div className="text-right">
-              <div className="text-lg font-bold text-gray-900">
-                {service.currency} {price?.toLocaleString()}
-              </div>
-              {service.address && (
-                <div className="text-xs text-gray-500 line-clamp-1">
-                  {service.address}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-};
-
-// Category Card Component
-interface CategoryCardProps {
-  category: Category;
-  viewMode: 'grid' | 'list';
-  getTotalServiceCount: (category: Category) => number;
-}
-
-const CategoryCard: React.FC<CategoryCardProps> = ({ category, viewMode, getTotalServiceCount }) => {
-  const totalServices = getTotalServiceCount(category);
-  const Icon = getCategoryIcon(category.slug || '');
-  const gradient = getCategoryGradient(category.slug || '');
-
-  return (
-    <Link
-      to={`/services/${category.slug}`}
-      className="group block"
-    >
-      <div className={`relative rounded-2xl bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_2px_6px_2px_rgba(0,0,0,0.15)] transition-shadow duration-200 overflow-hidden ${
-        viewMode === 'list' ? 'h-28' : 'h-64'
-      }`}>
-        <div className={`relative z-10 h-full flex ${viewMode === 'list' ? 'flex-row items-center space-x-4 px-5' : 'flex-col p-6'}`}>
-          {/* Icon tile */}
-          <div className={`flex-shrink-0 ${viewMode === 'list' ? 'w-12 h-12' : 'w-14 h-14 mb-4'}`}>
-            <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-              <Icon className={`${viewMode === 'list' ? 'w-5 h-5' : 'w-7 h-7'} text-white`} />
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className={`flex-1 flex flex-col min-w-0 ${viewMode === 'list' ? 'justify-center' : 'justify-between'}`}>
-            <div className="flex-grow min-w-0">
-              <h3 className={`font-bold text-gray-900 mb-1.5 ${
-                viewMode === 'list' ? 'text-base line-clamp-1' : 'text-lg line-clamp-2'
-              }`}>
-                {category.name}
-              </h3>
-
-              {category.description && (
-                <p className={`text-gray-500 text-sm leading-relaxed ${
-                  viewMode === 'list' ? 'line-clamp-1' : 'line-clamp-3 mb-4'
-                }`}>
-                  {category.description}
-                </p>
-              )}
-            </div>
-
-            {/* Footer Section - Always at bottom */}
-            <div className="mt-auto">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-1.5 text-gray-600">
-                  <Users className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    {totalServices} {totalServices === 1 ? 'service' : 'services'}
-                  </span>
-                </div>
-
-                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-orange-600 group-hover:translate-x-0.5 transition-all duration-200" />
-              </div>
-
-              {/* Subcategories indicator */}
-              {category.children && category.children.length > 0 && (
-                <div className="mt-1.5 text-xs text-gray-400 font-medium">
-                  +{category.children.length} subcategories
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </Link>
   );
 };
 

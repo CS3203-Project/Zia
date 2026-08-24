@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Star, Heart, MapPin, Clock, Phone, Mail, Calendar,
-  ChevronLeft, ChevronRight, Bookmark, Eye,
-  CheckCircle, User, CreditCard, ArrowUpRight, QrCode, Download, Share2,
-  DollarSign, Image as ImageIcon
+  Star, MapPin, Calendar,
+  CheckCircle, User,
+  DollarSign
 } from 'lucide-react';
 import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { serviceReviewApi, type ServiceReview, type ReviewStats } from '../../api/serviceReviewApi';
@@ -19,11 +18,13 @@ import { cn } from '../../utils/utils';
 import { confirmationApi } from '../../api/confirmationApi';
 import Button from '@/components/shared/Button';
 import Chip from '@/components/shared/Chip';
-import Skeleton from '@/components/shared/Skeleton';
-import QRCode from 'react-qr-code';
 import * as QRCodeLib from 'qrcode';
 import ServiceDetailSkeleton from '../../components/services/detail/ServiceDetailSkeleton';
 import ServiceReviewsCarousel from '../../components/services/detail/ServiceReviewsCarousel';
+import ServiceBookingSidebar from '../../components/services/detail/ServiceBookingSidebar';
+import ServiceVideoBanner from '../../components/services/detail/ServiceVideoBanner';
+import ServiceHeroGallery from '../../components/services/detail/ServiceHeroGallery';
+import ServicePhotoGallery from '../../components/services/detail/ServicePhotoGallery';
 
 export interface DetailedService {
   id: string;
@@ -156,8 +157,8 @@ const ServiceDetailPage: React.FC = () => {
       console.log('    - Last Name:', apiService.provider.user.lastName);
       console.log('    - Email:', apiService.provider.user.email);
       console.log('    - Image URL:', apiService.provider.user.imageUrl);
-      console.log('    - Location:', (apiService.provider.user as any).location);
-      console.log('    - Phone:', (apiService.provider.user as any).phone);
+      console.log('    - Location:', (apiService.provider.user as { location?: string }).location);
+      console.log('    - Phone:', (apiService.provider.user as { phone?: string }).phone);
     }
     console.log('  - Average Rating:', apiService.provider?.averageRating);
     console.log('  - Total Reviews:', apiService.provider?.totalReviews);
@@ -470,6 +471,15 @@ const ServiceDetailPage: React.FC = () => {
     }
   };
 
+  const handleViewProviderProfile = () => {
+    if (!isLoggedIn || !user) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    if (!provider) return;
+    navigate(`/provider/${provider.id}`);
+  };
+
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
@@ -567,7 +577,7 @@ const ServiceDetailPage: React.FC = () => {
           dark: '#000000',
           light: '#ffffff'
         }
-      }, (error: any, canvas: HTMLCanvasElement) => {
+      }, (error: Error | null | undefined, canvas: HTMLCanvasElement) => {
         if (error) {
           console.error('QR Code generation error:', error);
           document.body.removeChild(tempDiv);
@@ -660,56 +670,15 @@ const ServiceDetailPage: React.FC = () => {
 
           {/* Full-width Video Section - Outside Grid Container */}
           {service.videoUrl && (
-            <div className="-mx-4 mb-8 bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100 group">
-              <div className="relative bg-gradient-to-br from-white via-gray-100 to-white">
-                <video
-                  autoPlay
-                  muted
-                  playsInline
-                  loop
-                  className="w-full max-h-[60vh] object-cover"
-                  onPlay={() => setIsVideoPlaying(true)}
-                  onEnded={() => setIsVideoPlaying(false)}
-                  onPause={() => setIsVideoPlaying(false)}
-                >
-                  <source src={service.videoUrl} type="video/mp4" />
-                  <source src={service.videoUrl} type="video/webm" />
-                </video>
-
-                {/* Dark overlay for video */}
-                <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/20 to-black/40"></div>
-
-                {/* Video indicator badge */}
-                <div className="absolute bottom-4 left-4 bg-black/40 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/20">
-                  <div className="flex items-center text-white text-sm font-medium">
-                    <Eye className="w-4 h-4 mr-2" />
-                    {isVideoPlaying ? 'Playing' : 'Demo Video'}
-                  </div>
-                </div>
-
-                {/* Floating Action Buttons with Glass Morphism */}
-                <div className="absolute top-4 right-4 flex space-x-2">
-                  <button
-                    onClick={toggleWishlist}
-                    className={cn(
-                      "p-3 rounded-full backdrop-blur-md border transition-all duration-300 hover:scale-110 shadow-lg",
-                      isWishlisted
-                        ? 'bg-orange-500 text-white border-orange-500/10'
-                        : 'bg-white/70 text-gray-900 border-white/5 hover:bg-white'
-                    )}
-                    title="Add to wishlist"
-                  >
-                    <Heart className={cn("w-4 h-4", isWishlisted && "fill-current")} />
-                  </button>
-                  <button
-                    className="p-3 rounded-full bg-white/70 backdrop-blur-md border border-white/5 text-gray-900 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
-                    title="Bookmark service"
-                  >
-                    <Bookmark className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ServiceVideoBanner
+              videoUrl={service.videoUrl}
+              isVideoPlaying={isVideoPlaying}
+              onVideoPlay={() => setIsVideoPlaying(true)}
+              onVideoEnded={() => setIsVideoPlaying(false)}
+              onVideoPause={() => setIsVideoPlaying(false)}
+              isWishlisted={isWishlisted}
+              onToggleWishlist={toggleWishlist}
+            />
           )}
 
           {/* Main Content Layout - Grid System */}
@@ -717,69 +686,15 @@ const ServiceDetailPage: React.FC = () => {
             {/* Left Column - Images and Service Info */}
             <div className="lg:col-span-2 space-y-4">
               {/* Hero Banner - image with category badge + title overlay */}
-              {service.images.length > 0 && (
-                <div className="relative rounded-2xl overflow-hidden shadow-md group">
-                  <div className="h-44 sm:h-56 md:h-64 relative bg-gray-100">
-                    <img
-                      src={service.images[selectedImage]}
-                      alt={service.title}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-[1.03]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
-                  </div>
-
-                  {/* Category badge */}
-                  {service.category?.name && (
-                    <div className="absolute top-3 left-3">
-                      <span className="bg-orange-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
-                        {service.category.name}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Image counter */}
-                  {service.images.length > 1 && (
-                    <div className="absolute top-3 right-3 flex items-center space-x-1.5 bg-white/90 backdrop-blur-md rounded-full px-2.5 py-1 shadow-sm">
-                      <Eye className="w-3 h-3 text-gray-600" />
-                      <span className="text-gray-700 text-xs font-medium">
-                        {selectedImage + 1}/{service.images.length}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Title overlay */}
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5 drop-shadow-md line-clamp-1">
-                      {service.title}
-                    </h1>
-                    {service.description && (
-                      <p className="text-white/90 text-xs sm:text-sm max-w-2xl line-clamp-1">
-                        {service.description}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Navigation arrows */}
-                  {service.images.length > 1 && (
-                    <>
-                      <button
-                        onClick={prevImage}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-sm"
-                        title="Previous image"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={nextImage}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 backdrop-blur-md rounded-full text-gray-700 hover:bg-white transition-all duration-300 hover:scale-110 shadow-sm"
-                        title="Next image"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
+              <ServiceHeroGallery
+                images={service.images}
+                selectedImage={selectedImage}
+                title={service.title}
+                description={service.description}
+                categoryName={service.category?.name}
+                onPrevImage={prevImage}
+                onNextImage={nextImage}
+              />
 
               {/* Info cards row: Price / Location / Provider */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -870,43 +785,12 @@ const ServiceDetailPage: React.FC = () => {
               </div>
 
               {/* Photo Gallery - thumbnails above, large preview below */}
-              {service.images.length > 0 && (
-                <div className="bg-white rounded-2xl p-5 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-                  <h2 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4 text-orange-500" />
-                    Photos
-                    <span className="text-gray-400 font-normal text-sm">({service.images.length})</span>
-                  </h2>
-
-                  {service.images.length > 1 && (
-                    <div className="flex gap-2.5 overflow-x-auto pb-1 mb-4 scrollbar-hide">
-                      {service.images.map((image, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setSelectedImage(index)}
-                          className={cn(
-                            "flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border-2 transition-all duration-200",
-                            selectedImage === index
-                              ? 'border-orange-500 ring-2 ring-orange-200'
-                              : 'border-transparent opacity-70 hover:opacity-100'
-                          )}
-                          title={`View photo ${index + 1}`}
-                        >
-                          <img src={image} alt={`${service.title} thumbnail ${index + 1}`} className="w-full h-full object-cover" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="w-full h-72 sm:h-96 md:h-[28rem] rounded-2xl overflow-hidden bg-gray-100">
-                    <img
-                      src={service.images[selectedImage]}
-                      alt={`${service.title} - photo ${selectedImage + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              )}
+              <ServicePhotoGallery
+                images={service.images}
+                title={service.title}
+                selectedImage={selectedImage}
+                onSelectImage={setSelectedImage}
+              />
 
               {/* Schedule + Gallery wrapper (kept inside the same left column) */}
               <div className="space-y-4">
@@ -994,250 +878,18 @@ const ServiceDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column - Unified Booking & Provider Card */}
-            <div className="lg:col-span-1 space-y-6 pb-10">
-              {/* Unified Glass Morphism Card */}
-              <div className="relative">
-                <div
-                  className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 sticky top-24"
-                >
-                  {/* Provider Profile Section */}
-                  {providerLoading && !provider && (
-                    <div className="mb-8 pb-8 border-b border-gray-100 flex flex-col items-center">
-                      <Skeleton className="w-20 h-20 rounded-full mb-4" />
-                      <Skeleton className="h-5 w-32 mb-2" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
-                  )}
-                  {provider && (
-                    <div className="mb-8 pb-8 border-b border-gray-100">
-                      <div className="flex flex-col items-center">
-                        {/* Avatar */}
-                        <div className="w-20 h-20 mb-4 rounded-full p-1 border-2 border-white/10 relative">
-                          <img 
-                            src={provider?.logoUrl || provider?.user?.imageUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(provider?.user ? `${provider.user.firstName || ''} ${provider.user.lastName || ''}`.trim() || provider.user.email || 'User' : 'Provider')}&background=000000&color=ffffff&size=96`}
-                            alt="Provider"
-                            className="w-full h-full rounded-full object-cover"
-                            onError={(e) => { 
-                              const target = e.target as HTMLImageElement;
-                              target.onerror = null; 
-                              target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent('P')}&background=000000&color=ffffff&size=96`;
-                            }}
-                          />
-                          {provider?.isVerified && (
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white">
-                              <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Name and Title */}
-                        <h3 className="text-xl font-bold text-gray-900 text-center">
-                          {provider?.user ? `${provider.user.firstName || ''} ${provider.user.lastName || ''}`.trim() || provider.user.email || 'Provider' : 'Provider'}
-                        </h3>
-                        <p className="mt-1 text-sm font-medium text-gray-500">
-                          {provider?.isVerified ? 'Verified Provider' : 'Service Provider'}
-                        </p>
-
-                        {/* Contact Information */}
-                        {(() => {
-                          console.log('Provider phone:', provider?.user?.phone);
-                          return (provider?.user?.email || provider?.user?.phone) && (
-                            <div className="mt-4 w-full space-y-2">
-                              {provider?.user?.email && (
-                                <div className="flex flex-col items-center justify-center gap-1 text-sm bg-gray-50 rounded-xl px-4 py-2.5 border border-gray-100">
-                                  <div className="flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-gray-900" />
-                                    <span className="text-gray-500 truncate">{provider.user.email}</span>
-                                  </div>
-                                  {provider?.user?.phone && (
-                                    <div className="flex items-center gap-2">
-                                      <Phone className="w-4 h-4 text-gray-900" />
-                                      <span className="text-gray-500">{provider.user.phone}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })()}
-
-                        {/* Stats */}
-                        {((provider?.averageRating !== undefined && provider?.averageRating !== null) || (provider?.services?.length !== undefined && provider?.services?.length !== null)) && (
-                          <div className="flex items-center gap-4 mt-4">
-                            {provider?.averageRating !== undefined && provider?.averageRating !== null && (
-                              <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                                <span className="text-sm font-semibold text-gray-900">{provider.averageRating.toFixed(1)}</span>
-                                {provider?.totalReviews !== undefined && provider?.totalReviews !== null && (
-                                  <span className="text-xs text-gray-400">({provider.totalReviews})</span>
-                                )}
-                              </div>
-                            )}
-
-                            {provider?.services?.length !== undefined && provider?.services?.length !== null && (
-                              <div className="flex items-center gap-1 text-sm text-gray-500">
-                                <span className="font-semibold text-gray-900">{provider.services.length}</span>
-                                <span className="text-xs">Service{provider.services.length !== 1 ? 's' : ''}</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {/* View Profile Button */}
-                        <button
-                          onClick={() => {
-                            if (!isLoggedIn || !user) {
-                              setShowLoginPrompt(true);
-                              return;
-                            }
-                            navigate(`/provider/${provider.id}`);
-                          }}
-                          className="mt-4 text-sm text-orange-600 hover:underline flex items-center gap-1"
-                        >
-                          View Full Profile
-                          <ArrowUpRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Price Section */}
-                  <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-gray-900 mb-2">
-                      {service.currency} {service.price.toLocaleString()}
-                    </div>
-                    <div className="text-sm text-gray-400 mb-4">Starting price</div>
-                    <div className="flex items-center justify-center text-gray-900 bg-gray-50 rounded-full px-4 py-2 border border-gray-100 shadow-sm">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      <span className="text-sm font-medium">Available now</span>
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="space-y-3 mb-6">
-                    <button
-                      onClick={handlePayNow}
-                      className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 px-6 rounded-full font-bold hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-xl hover:shadow-2xl border border-orange-500/20 backdrop-blur-sm flex items-center justify-center"
-                      style={{ boxShadow: '0 4px 24px rgba(249,115,22,0.3)' }}
-                    >
-                      <CreditCard className="w-5 h-5 mr-2" />
-                      Pay Now
-                    </button>
-                    
-                    <button
-                      onClick={handleBookNow}
-                      disabled={bookingLoading}
-                      className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    >
-                      {bookingLoading ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                          </div>
-                          <span>Creating conversation</span>
-                        </div>
-                      ) : (
-                        'Book Now'
-                      )}
-                    </button>
-                    <button
-                      onClick={handleBookNow}
-                      disabled={bookingLoading}
-                      className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    >
-                      {bookingLoading ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                          </div>
-                          <span>Creating conversation</span>
-                        </div>
-                      ) : (
-                        'Message Provider'
-                      )}
-                    </button>
-                  </div>
-
-                  {/* QR Code Section */}
-                  <div className="pt-6 border-t border-gray-100">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center">
-                      <QrCode className="w-4 h-4 mr-2" />
-                      QR Code
-                    </h4>
-                    <div className="flex flex-col items-center space-y-3">
-                      {/* QR Code */}
-                      <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 shadow-sm">
-                        <div className="w-24 h-24 flex items-center justify-center">
-                          {qrCodeUrl ? (
-                            <QRCode
-                              value={qrCodeUrl}
-                              size={96}
-                              style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                              viewBox={`0 0 256 256`}
-                              fgColor="currentColor"
-                              bgColor="transparent"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-200 rounded animate-pulse"></div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={handleDownloadQR}
-                          className="flex items-center space-x-1 bg-gray-50 hover:bg-gray-100 text-gray-900 border border-gray-100 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
-                          title="Download QR Code"
-                        >
-                          <Download className="w-3 h-3" />
-                          <span>Download</span>
-                        </button>
-                        <button
-                          onClick={handleShareService}
-                          className="flex items-center space-x-1 bg-gray-50 hover:bg-gray-100 text-gray-900 border border-gray-100 rounded-lg px-3 py-2 shadow-sm transition-all duration-200 text-xs"
-                          title="Share Service"
-                        >
-                          <Share2 className="w-3 h-3" />
-                          <span>Share</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Working Hours Section */}
-                  {service.workingTime && service.workingTime.length > 0 && (
-                    <div >
-                      <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                        <Clock className="w-4 h-4 mr-2" />
-                        Working Hours
-                      </h4>
-                      <div className="space-y-2">
-                        {service.workingTime.map((time, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center bg-gray-50 rounded-xl p-3 border border-gray-100 shadow-sm"
-                          >
-                            <Calendar className="w-3.5 h-3.5 text-gray-500 mr-2" />
-                            <span className="text-sm text-gray-900 font-medium">{time}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Enhanced Glassmorphism glow effect */}
-                <div className="absolute inset-0 rounded-3xl -z-10 transition-all duration-500 ease-out blur-3xl opacity-30 bg-gradient-to-br from-orange-300/40 via-amber-200/20 to-orange-300/40" />
-              </div>
-            </div>
+            <ServiceBookingSidebar
+              service={service}
+              provider={provider}
+              providerLoading={providerLoading}
+              onViewProviderProfile={handleViewProviderProfile}
+              onPayNow={handlePayNow}
+              onBookNow={handleBookNow}
+              bookingLoading={bookingLoading}
+              qrCodeUrl={qrCodeUrl}
+              onDownloadQR={handleDownloadQR}
+              onShareService={handleShareService}
+            />
           </div>
 
           <ServiceReviewsCarousel

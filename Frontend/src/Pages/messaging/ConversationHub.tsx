@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, X, AlertTriangle, MessageCircle, ChevronRight } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { MessagingProvider, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
-import { UserSearch } from '../../components/Messaging';
 import Button from '../../components/shared/Button';
+import ConversationListItem from '../../components/Messaging/ConversationListItem';
+import NewConversationModal from '../../components/Messaging/NewConversationModal';
+import ConversationListSkeleton from '../../components/Messaging/ConversationListSkeleton';
+import EmptyConversationsState from '../../components/Messaging/EmptyConversationsState';
+import ConversationHubError from '../../components/Messaging/ConversationHubError';
+import ConversationHubPageSkeleton from '../../components/Messaging/ConversationHubPageSkeleton';
 import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
 
@@ -17,17 +22,17 @@ const ConversationHubContent: React.FC<{ currentUser: UserProfile }> = ({ curren
 };
 
 const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUserId }) => {
-  const { 
-    conversations, 
-    loading, 
+  const {
+    conversations,
+    loading,
     error,
     startNewConversation,
     loadConversations,
     checkUserOnlineStatus
   } = useMessaging();
-  
+
   const navigate = useNavigate();
-  const [showNewConversation, setShowNewConversation] = useState(false);
+  const [isNewConversationModalOpen, setIsNewConversationModalOpen] = useState(false);
   const [userProfiles, setUserProfiles] = useState<Map<string, UserProfile>>(new Map());
   const [loadingProfiles, setLoadingProfiles] = useState<Set<string>>(new Set());
 
@@ -49,8 +54,8 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
           return { userId, profile };
         } catch (error) {
           console.error(`Failed to fetch profile for user ${userId}:`, error);
-          return { 
-            userId, 
+          return {
+            userId,
             profile: {
               id: userId,
               firstName: 'Unknown',
@@ -68,7 +73,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
       });
 
       const results = await Promise.all(profilePromises);
-      
+
       setUserProfiles(prev => {
         const newMap = new Map(prev);
         results.forEach(({ userId, profile }) => {
@@ -92,7 +97,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
   const handleStartNewConversation = async (otherUserId: string) => {
     try {
       const conversation = await startNewConversation(otherUserId);
-      setShowNewConversation(false);
+      setIsNewConversationModalOpen(false);
       await loadConversations();
       navigate(`/conversation/${conversation.id}`);
     } catch (error) {
@@ -108,57 +113,8 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
     return conversation.userIds.find(id => id !== currentUserId) || 'Unknown User';
   };
 
-  const getContactDisplayName = (conversation: ConversationWithLastMessage) => {
-    const otherUserId = getOtherParticipant(conversation);
-    const profile = userProfiles.get(otherUserId);
-    
-    if (profile) {
-      return `${profile.firstName} ${profile.lastName}`.trim();
-    }
-    
-    return `User ${otherUserId.slice(-8)}`;
-  };
-
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
-    if (days === 0) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else if (days === 1) {
-      return 'Yesterday';
-    } else if (days < 7) {
-      return date.toLocaleDateString([], { weekday: 'short' });
-    } else {
-      return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-    }
-  };
-
   if (error) {
-    return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-        
-        <main className="flex-grow flex items-center justify-center relative z-10 px-4">
-          <div className="text-center bg-white rounded-2xl border border-gray-100 p-8 shadow-xl max-w-md w-full relative overflow-hidden">
-            <div className="relative z-10">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-50 flex items-center justify-center border border-orange-100">
-                <AlertTriangle className="w-8 h-8 text-orange-500" />
-              </div>
-              <p className="text-lg font-medium text-gray-900 mb-2">Error loading conversations</p>
-              <p className="text-sm text-gray-500 mb-6">{error}</p>
-              <Button onClick={() => loadConversations()} size="lg" className="shadow-orange-500/30">
-                Retry
-              </Button>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    return <ConversationHubError error={error} onRetry={() => loadConversations()} />;
   }
 
   return (
@@ -180,167 +136,44 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
 
           {/* Actions */}
           <div className="mb-8 flex justify-center">
-            <Button onClick={() => setShowNewConversation(true)} size="lg" className="shadow-orange-500/30">
+            <Button onClick={() => setIsNewConversationModalOpen(true)} size="lg" className="shadow-orange-500/30">
               <Plus className="mr-2 h-4 w-4" />
               Start New Conversation
             </Button>
           </div>
 
           {/* New Conversation Modal */}
-          {showNewConversation && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-              <div className="w-full max-w-lg rounded-2xl border border-gray-100 bg-white p-8 shadow-2xl">
-                <div>
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-900">Start New Conversation</h3>
-                    <button
-                      onClick={() => setShowNewConversation(false)}
-                      className="p-2 text-gray-400 hover:text-gray-900 transition-colors duration-300 rounded-full hover:bg-orange-50"
-                      aria-label="Close modal"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-                  <UserSearch
-                    onSelectUser={handleStartNewConversation}
-                    placeholder="Search for users to message..."
-                  />
-                </div>
-              </div>
-            </div>
+          {isNewConversationModalOpen && (
+            <NewConversationModal
+              onClose={() => setIsNewConversationModalOpen(false)}
+              onSelectUser={handleStartNewConversation}
+            />
           )}
 
           {/* Conversations List */}
           <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
             <div>
               {loading && conversations.length === 0 ? (
-                <div className="divide-y divide-gray-100">
-                  {/* Skeleton Loaders */}
-                  {[1, 2, 3, 4, 5].map((index) => (
-                    <div key={index} className="p-6 animate-pulse">
-                      <div className="flex items-center space-x-4">
-                        {/* Avatar Skeleton */}
-                        <div className="flex-shrink-0">
-                          <div className="w-14 h-14 bg-orange-50 rounded-full"></div>
-                        </div>
-
-                        {/* Content Skeleton */}
-                        <div className="flex-1 min-w-0 space-y-3">
-                          {/* Name Skeleton */}
-                          <div className="h-5 bg-orange-50 rounded-lg w-1/3"></div>
-                          
-                          {/* Message Skeleton */}
-                          <div className="space-y-2">
-                            <div className="h-3 bg-gray-50 rounded-lg w-full"></div>
-                            <div className="h-3 bg-gray-50 rounded-lg w-2/3"></div>
-                          </div>
-                        </div>
-
-                        {/* Time Skeleton */}
-                        <div className="flex-shrink-0">
-                          <div className="h-3 bg-orange-50 rounded-lg w-12"></div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <ConversationListSkeleton />
               ) : conversations.length === 0 ? (
-                <div className="p-12 text-center text-gray-500">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-50 flex items-center justify-center border border-orange-100">
-                    <MessageCircle className="w-10 h-10 text-orange-500" />
-                  </div>
-                  <p className="text-xl font-semibold text-gray-900 mb-2">No conversations yet</p>
-                  <p className="text-gray-500">Start your first conversation to begin messaging with others</p>
-                  <Button onClick={() => setShowNewConversation(true)} size="lg" className="mt-6 shadow-orange-500/30">
-                    Start Messaging
-                  </Button>
-                </div>
+                <EmptyConversationsState onStartConversation={() => setIsNewConversationModalOpen(true)} />
               ) : (
                 <div className="divide-y divide-gray-100">
-                  {conversations.map((conversation) => (
-                    <div
-                      key={conversation.id}
-                      onClick={() => handleSelectConversation(conversation)}
-                      className="p-6 hover:bg-orange-50/60 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 border-transparent hover:border-orange-400"
-                    >
-                      <div className="flex items-center space-x-4 relative z-10">
-                        {/* Avatar with enhanced styling */}
-                        <div className="flex-shrink-0 relative">
-                          <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md ring-2 ring-white group-hover:shadow-lg transition-all duration-300">
-                            {getContactDisplayName(conversation).charAt(0).toUpperCase()}
-                          </div>
-                          {/* Enhanced online status indicator */}
-                          {checkUserOnlineStatus(getOtherParticipant(conversation)) && (
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white rounded-full shadow-lg animate-pulse">
-                              <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping"></div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Content with enhanced typography */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1 min-w-0">
-                              {/* Contact Name */}
-                              <div className="flex items-center space-x-2">
-                                <p className="text-xl font-bold text-gray-900 truncate">
-                                  {getContactDisplayName(conversation)}
-                                </p>
-                                {loadingProfiles.has(getOtherParticipant(conversation)) && (
-                                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
-                                )}
-                              </div>
-
-                              {/* Conversation Title */}
-                              {conversation.title &&
-                               !conversation.title.includes('Chat with') &&
-                               conversation.title !== getContactDisplayName(conversation) && (
-                                <p className="text-sm text-gray-700 truncate mt-1 font-medium">
-                                  {conversation.title}
-                                </p>
-                              )}
-
-                              {/* Last Message */}
-                              {conversation.lastMessage && (
-                                <p className="text-sm text-gray-500 truncate mt-2 leading-relaxed">
-                                  {conversation.lastMessage.fromId === currentUserId ? (
-                                    <span className="text-gray-900 font-medium">You: </span>
-                                  ) : ''}
-                                  {conversation.lastMessage.content}
-                                </p>
-                              )}
-
-                              {!conversation.lastMessage && (
-                                <p className="text-sm text-gray-400 italic mt-2">No messages yet - start the conversation!</p>
-                              )}
-                            </div>
-
-                            {/* Time and Unread with enhanced styling */}
-                            <div className="flex flex-col items-end ml-4 space-y-2">
-                              {conversation.lastMessage && (
-                                <p className="text-xs text-gray-400 font-medium">
-                                  {formatTime(conversation.lastMessage.createdAt)}
-                                </p>
-                              )}
-
-                              {conversation.unreadCount && conversation.unreadCount > 0 && (
-                                <div className="bg-orange-500 text-white text-xs rounded-full h-7 w-7 flex items-center justify-center font-bold shadow-md">
-                                  {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Enhanced Arrow */}
-                        <div className="flex-shrink-0">
-                          <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
-                            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-orange-600 transition-colors duration-300" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  {conversations.map((conversation) => {
+                    const otherParticipantId = getOtherParticipant(conversation);
+                    return (
+                      <ConversationListItem
+                        key={conversation.id}
+                        conversation={conversation}
+                        currentUserId={currentUserId}
+                        otherParticipantId={otherParticipantId}
+                        userProfile={userProfiles.get(otherParticipantId)}
+                        isLoadingProfile={loadingProfiles.has(otherParticipantId)}
+                        isOnline={checkUserOnlineStatus(otherParticipantId)}
+                        onSelect={handleSelectConversation}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -382,71 +215,10 @@ const ConversationHub: React.FC = () => {
   }, [loading, error, currentUser, navigate]);
 
   if (loading || error || !currentUser) {
-    return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse"></div>
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-        
-        {/* Floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-orange-50 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-48 h-48 bg-gray-50 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
-        
-        <main className="flex-grow container mx-auto px-4 py-8 mt-16 relative z-10">
-          <div className="max-w-4xl mx-auto">
-            {/* Header Skeleton */}
-            <div className="mb-8 text-center animate-pulse">
-              <div className="h-12 bg-orange-50 rounded-lg w-96 mx-auto mb-4"></div>
-              <div className="h-6 bg-gray-50 rounded-lg w-2/3 mx-auto"></div>
-            </div>
-
-            {/* Button Skeleton */}
-            <div className="mb-8 flex justify-center animate-pulse">
-              <div className="h-14 bg-orange-50 rounded-2xl w-72"></div>
-            </div>
-
-            {/* Conversations List Skeleton */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
-              <div className="relative z-10 divide-y divide-gray-100">
-                {[1, 2, 3, 4, 5, 6].map((index) => (
-                  <div key={index} className="p-6 animate-pulse">
-                    <div className="flex items-center space-x-4">
-                      {/* Avatar Skeleton */}
-                      <div className="flex-shrink-0">
-                        <div className="w-14 h-14 bg-orange-100 rounded-full"></div>
-                      </div>
-
-                      {/* Content Skeleton */}
-                      <div className="flex-1 min-w-0 space-y-3">
-                        {/* Name Skeleton */}
-                        <div className="h-6 bg-orange-100 rounded-lg w-1/3"></div>
-                        
-                        {/* Message Skeleton */}
-                        <div className="space-y-2">
-                          <div className="h-4 bg-orange-50 rounded-lg w-full"></div>
-                          <div className="h-4 bg-orange-50 rounded-lg w-3/4"></div>
-                        </div>
-                      </div>
-
-                      {/* Right side Skeleton */}
-                      <div className="flex flex-col items-end space-y-2">
-                        <div className="h-3 bg-orange-50 rounded-lg w-16"></div>
-                        <div className="w-7 h-7 bg-orange-100 rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
+    return <ConversationHubPageSkeleton />;
   }
 
   return <ConversationHubContent currentUser={currentUser} />;
 };
 
 export default ConversationHub;
-
-

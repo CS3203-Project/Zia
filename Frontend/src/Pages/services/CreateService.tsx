@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/shared/Button';
-import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
 import { serviceApi } from '../../api/serviceApi';
 import { categoryApi } from '../../api/categoryApi';
 import { userApi } from '../../api/userApi';
@@ -11,64 +10,22 @@ import type { CreateServiceRequest } from '../../api/serviceApi';
 import type { Category } from '../../api/categoryApi';
 import type { ProviderProfile } from '../../api/userApi';
 import type { LocationInfo } from '../../services/locationService';
-import { FiUpload, FiX, FiClock, FiEye, FiChevronDown, FiPlus } from 'react-icons/fi';
+import { FiPlus } from 'react-icons/fi';
 import Orb from '../../components/shared/Orb';
-
-interface FormData {
-  categoryId: string;
-  subcategoryId: string;
-  title: string;
-  description: string;
-  price: string;
-  currency: string;
-  tags: string[];
-  images: File[];
-  uploadedImageUrls: string[];
-  video: File | null;
-  uploadedVideoUrl: string;
-  workingTime: WorkingHours;
-  isActive: boolean;
-  // Location fields
-  location: LocationInfo & { serviceRadiusKm?: number };
-}
-
-interface FormErrors {
-  categoryId?: string;
-  title?: string;
-  description?: string;
-  price?: string;
-  images?: string;
-}
-
-interface WorkingHours {
-  monday: { enabled: boolean; startTime: string; endTime: string };
-  tuesday: { enabled: boolean; startTime: string; endTime: string };
-  wednesday: { enabled: boolean; startTime: string; endTime: string };
-  thursday: { enabled: boolean; startTime: string; endTime: string };
-  friday: { enabled: boolean; startTime: string; endTime: string };
-  saturday: { enabled: boolean; startTime: string; endTime: string };
-  sunday: { enabled: boolean; startTime: string; endTime: string };
-}
-
-const defaultWorkingHours: WorkingHours = {
-  monday: { enabled: false, startTime: '09:00', endTime: '17:00' },
-  tuesday: { enabled: false, startTime: '09:00', endTime: '17:00' },
-  wednesday: { enabled: false, startTime: '09:00', endTime: '17:00' },
-  thursday: { enabled: false, startTime: '09:00', endTime: '17:00' },
-  friday: { enabled: false, startTime: '09:00', endTime: '17:00' },
-  saturday: { enabled: false, startTime: '10:00', endTime: '16:00' },
-  sunday: { enabled: false, startTime: '10:00', endTime: '16:00' },
-};
-
-const daysOfWeek = [
-  { key: 'monday', label: 'Monday' },
-  { key: 'tuesday', label: 'Tuesday' },
-  { key: 'wednesday', label: 'Wednesday' },
-  { key: 'thursday', label: 'Thursday' },
-  { key: 'friday', label: 'Friday' },
-  { key: 'saturday', label: 'Saturday' },
-  { key: 'sunday', label: 'Sunday' },
-];
+import CategorySection from '../../components/services/create/CategorySection';
+import ServiceDetailsSection from '../../components/services/create/ServiceDetailsSection';
+import ImagesSection from '../../components/services/create/ImagesSection';
+import VideoSection from '../../components/services/create/VideoSection';
+import TagsSection from '../../components/services/create/TagsSection';
+import WorkingHoursSection from '../../components/services/create/WorkingHoursSection';
+import ServiceStatusSection from '../../components/services/create/ServiceStatusSection';
+import LocationSection from '../../components/services/create/LocationSection';
+import {
+  defaultWorkingHours,
+  type CreateServiceFormData,
+  type CreateServiceFormErrors,
+  type WorkingHours,
+} from '../../components/services/create/types';
 
 export default function CreateService() {
   const navigate = useNavigate();
@@ -80,8 +37,8 @@ export default function CreateService() {
   const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  const [formData, setFormData] = useState<FormData>({
+
+  const [formData, setFormData] = useState<CreateServiceFormData>({
     categoryId: '',
     subcategoryId: '',
     title: '',
@@ -98,7 +55,7 @@ export default function CreateService() {
     location: {}
   });
 
-  const [errors, setErrors] = useState<Partial<FormErrors>>({});
+  const [errors, setErrors] = useState<Partial<CreateServiceFormErrors>>({});
 
   // Fetch categories and provider profile on component mount
   useEffect(() => {
@@ -150,7 +107,7 @@ export default function CreateService() {
   }, [formData.categoryId]);
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<FormErrors> = {};
+    const newErrors: Partial<CreateServiceFormErrors> = {};
 
     if (!formData.categoryId) newErrors.categoryId = 'Category is required';
     if (!formData.title) newErrors.title = 'Title is required';
@@ -178,7 +135,7 @@ export default function CreateService() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       if (response.data && response.data.imageUrl) {
         console.log(`Successfully uploaded ${file.name} to S3:`, response.data.imageUrl);
         return response.data.imageUrl;
@@ -187,7 +144,7 @@ export default function CreateService() {
       }
     } catch (error: any) {
       console.error('Error uploading image to S3:', error);
-      
+
       if (error.response) {
         // Server responded with error status
         if (error.response.status === 401) {
@@ -220,7 +177,7 @@ export default function CreateService() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       if (response.data && response.data.videoUrl) {
         console.log(`Successfully uploaded ${file.name} to S3:`, response.data.videoUrl);
         return response.data.videoUrl;
@@ -229,7 +186,7 @@ export default function CreateService() {
       }
     } catch (error: any) {
       console.error('Error uploading video to S3:', error);
-      
+
       if (error.response) {
         // Server responded with error status
         if (error.response.status === 401) {
@@ -255,9 +212,9 @@ export default function CreateService() {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
-    if (errors[name as keyof FormErrors]) {
+    if (errors[name as keyof CreateServiceFormErrors]) {
       setErrors(prev => ({
         ...prev,
         [name]: undefined
@@ -311,7 +268,7 @@ export default function CreateService() {
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }));
-    
+
     // Clean up preview URL
     if (previewImages[index]) {
       URL.revokeObjectURL(previewImages[index]);
@@ -321,7 +278,7 @@ export default function CreateService() {
 
   const handleAddTag = () => {
     const trimmedTag = currentTag.trim();
-    
+
     // Validation checks
     if (!trimmedTag) return;
     if (trimmedTag.length > 30) {
@@ -332,7 +289,7 @@ export default function CreateService() {
       showErrorToast('Tag already exists');
       return;
     }
-    
+
     setFormData(prev => ({
       ...prev,
       tags: [...prev.tags, trimmedTag]
@@ -362,7 +319,7 @@ export default function CreateService() {
 
   const formatWorkingHoursForAPI = (workingHours: WorkingHours): string[] => {
     const result: string[] = [];
-    
+
     // Helper function to convert 24-hour time to 12-hour format with AM/PM
     const convertTo12Hour = (time24: string): string => {
       const [hours, minutes] = time24.split(':');
@@ -380,13 +337,13 @@ export default function CreateService() {
         result.push(`${formattedDay}: ${startTime12} - ${endTime12}`);
       }
     });
-    
+
     return result;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       showErrorToast('Please fix the errors in the form');
       return;
@@ -398,13 +355,13 @@ export default function CreateService() {
     }
 
     setLoading(true);
-    
+
     try {
       // Upload images and video to S3 first
       setUploading(true);
       const uploadedUrls: string[] = [...formData.uploadedImageUrls];
       let videoUrl = formData.uploadedVideoUrl;
-      
+
       // Upload video if present
       if (formData.video) {
         showSuccessToast('Uploading video to S3...');
@@ -421,10 +378,10 @@ export default function CreateService() {
           return;
         }
       }
-      
+
       if (formData.images.length > 0) {
         showSuccessToast(`Uploading ${formData.images.length} image(s) to S3...`);
-        
+
         for (let i = 0; i < formData.images.length; i++) {
           const file = formData.images[i];
           try {
@@ -439,7 +396,7 @@ export default function CreateService() {
           }
         }
       }
-      
+
       setUploading(false);
 
       if (uploadedUrls.length === 0) {
@@ -478,7 +435,7 @@ export default function CreateService() {
       console.log('Sending service data:', serviceData);
 
       const response = await serviceApi.createService(serviceData);
-      
+
       if (response.success) {
         showSuccessToast('Service created successfully!');
         navigate('/profile');
@@ -487,11 +444,11 @@ export default function CreateService() {
       }
     } catch (error: unknown) {
       console.error('Error creating service:', error);
-      
+
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: { message?: string; error?: string; details?: unknown } } };
         console.log('Full error response:', axiosError.response?.data);
-        
+
         if (axiosError.response?.data?.message) {
           showErrorToast(axiosError.response.data.message);
         } else if (axiosError.response?.data?.error) {
@@ -592,6 +549,10 @@ export default function CreateService() {
     }));
   };
 
+  const handleToggleActive = (isActive: boolean) => {
+    setFormData(prev => ({ ...prev, isActive }));
+  };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-orange-50 to-white overflow-hidden">
       {/* Background accent - matches homepage */}
@@ -618,572 +579,69 @@ export default function CreateService() {
           </div>
 
           <form onSubmit={handleSubmit} className="relative p-8 space-y-8">
-            {/* Category Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+            <CategorySection
+              categories={categories}
+              subcategories={subcategories}
+              categoryId={formData.categoryId}
+              subcategoryId={formData.subcategoryId}
+              categoryError={errors.categoryId}
+              onInputChange={handleInputChange}
+            />
 
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center">
-                <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
-                Category Selection
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Main Category */}
-                <div>
-                  <label htmlFor="categoryId" className="block text-sm font-semibold text-gray-900 mb-3">
-                    Category <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="categoryId"
-                      name="categoryId"
-                      value={formData.categoryId}
-                      onChange={handleInputChange}
-                      className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 appearance-none text-gray-900 ${
-                        errors.categoryId ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <option value="">Select a category</option>
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name || category.slug}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <FiChevronDown className="text-gray-500 w-5 h-5" />
-                    </div>
-                  </div>
-                  {errors.categoryId && <p className="mt-2 text-sm text-red-500 flex items-center">
-                    <FiX className="w-4 h-4 mr-1" />
-                    {errors.categoryId}
-                  </p>}
-                </div>
+            <ServiceDetailsSection
+              title={formData.title}
+              description={formData.description}
+              price={formData.price}
+              currency={formData.currency}
+              titleError={errors.title}
+              descriptionError={errors.description}
+              priceError={errors.price}
+              onInputChange={handleInputChange}
+            />
 
-                {/* Subcategory */}
-                {subcategories.length > 0 && (
-                  <div>
-                    <label htmlFor="subcategoryId" className="block text-sm font-semibold text-gray-900 mb-3">
-                      Subcategory
-                    </label>
-                    <div className="relative">
-                      <select
-                        id="subcategoryId"
-                        name="subcategoryId"
-                        value={formData.subcategoryId}
-                        onChange={handleInputChange}
-                        disabled={!formData.categoryId || subcategories.length === 0}
-                        className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 appearance-none text-gray-900 ${
-                          !formData.categoryId || subcategories.length === 0
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <option value="">
-                          {!formData.categoryId
-                            ? 'Select a category first'
-                            : subcategories.length === 0
-                              ? 'No subcategories available'
-                              : 'Select a subcategory (optional)'
-                          }
-                        </option>
-                        {subcategories.map((subcategory) => (
-                          <option key={subcategory.id} value={subcategory.id}>
-                            {subcategory.name || subcategory.slug}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <FiChevronDown className={!formData.categoryId || subcategories.length === 0 ? 'text-gray-300 w-5 h-5' : 'text-gray-500 w-5 h-5'} />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <ImagesSection
+              images={formData.images}
+              uploadedImageUrls={formData.uploadedImageUrls}
+              previewImages={previewImages}
+              isUploading={uploading}
+              imagesError={errors.images}
+              fileInputRef={fileInputRef}
+              onFileChange={handleFileChange}
+              onRemoveImage={handleRemoveImage}
+            />
 
-            {/* Service Details Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+            <VideoSection
+              video={formData.video}
+              uploadedVideoUrl={formData.uploadedVideoUrl}
+              isUploading={uploading}
+              onVideoChange={handleVideoChange}
+              onRemoveVideo={handleRemoveVideo}
+            />
 
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center">
-                <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
-                Service Details
-              </h2>
-              <div className="space-y-8">
-                {/* Title */}
-                <div className="relative">
-                  <label htmlFor="title" className="block text-sm font-semibold text-gray-900 mb-3">
-                    Service Title <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      placeholder="Enter a descriptive title for your service"
-                      className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400 ${
-                        errors.title ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    /></div>
-                  {errors.title && <p className="mt-2 text-sm text-red-500 flex items-center">
-                    <FiX className="w-4 h-4 mr-1" />
-                    {errors.title}
-                  </p>}
-                </div>
+            <TagsSection
+              tags={formData.tags}
+              currentTag={currentTag}
+              onCurrentTagChange={setCurrentTag}
+              onAddTag={handleAddTag}
+              onRemoveTag={handleRemoveTag}
+            />
 
-                {/* Description */}
-                <div className="relative">
-                  <label htmlFor="description" className="block text-sm font-semibold text-gray-900 mb-3">
-                    Description <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={6}
-                      placeholder="Describe your service in detail. Include what's included, your experience, and what makes your service unique."
-                      className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none text-gray-900 placeholder-gray-400 ${
-                        errors.description ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    />
-                  </div>
-                  {errors.description && <p className="mt-2 text-sm text-red-500 flex items-center">
-                    <FiX className="w-4 h-4 mr-1" />
-                    {errors.description}
-                  </p>}
-                </div>
+            <WorkingHoursSection
+              workingTime={formData.workingTime}
+              previewLines={formatWorkingHoursForAPI(formData.workingTime)}
+              onWorkingHoursChange={handleWorkingHoursChange}
+            />
 
-                {/* Price and Currency */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="relative">
-                    <label htmlFor="price" className="block text-sm font-semibold text-gray-900 mb-3">
-                      Price <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                        className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400 ${
-                          errors.price ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      /></div>
-                    {errors.price && <p className="mt-2 text-sm text-red-500 flex items-center">
-                      <FiX className="w-4 h-4 mr-1" />
-                      {errors.price}
-                    </p>}
-                  </div>
+            <ServiceStatusSection
+              isActive={formData.isActive}
+              onToggleActive={handleToggleActive}
+            />
 
-                  <div className="relative">
-                    <label htmlFor="currency" className="block text-sm font-semibold text-gray-900 mb-3">
-                      Currency
-                    </label>
-                    <div className="relative">
-                      <select
-                        id="currency"
-                        name="currency"
-                        value={formData.currency}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-4 bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 appearance-none text-gray-900"
-                      >
-                        <option value="USD">USD ($)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="GBP">GBP (£)</option>
-                        <option value="LKR">LKR (₨)</option>
-                      </select>
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                        <div className="flex items-center space-x-1">
-                          <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
-                          <FiChevronDown className="text-gray-500 w-5 h-5" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Images Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Images</span>
-                <span className="text-red-500 ml-2">*</span>
-                <span className="ml-4 text-sm font-normal text-gray-400">(Max 5 images, 5MB each)</span>
-              </h2>
-
-              {/* Upload Area */}
-              <div className="mb-6 relative z-10">
-                {uploading ? (
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center bg-gray-50">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-                    <p className="mt-4 text-lg font-medium text-gray-900">
-                      Uploading images to Amazon S3...
-                    </p>
-                    <p className="mt-2 text-sm text-gray-500">
-                      {formData.images.length > 0 ? `Processing ${formData.images.length} image(s)` : 'Please wait...'}
-                    </p>
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-orange-300 hover:bg-orange-50/50 transition-all duration-300 cursor-pointer group relative overflow-hidden"
-                  >
-                    {/* Glowing effect on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-orange-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    <FiUpload className="mx-auto h-12 w-12 text-gray-400 group-hover:text-orange-500 transition-colors duration-200 relative z-10" />
-                    <p className="mt-4 text-lg font-medium text-gray-900 relative z-10">
-                      Click to upload images
-                    </p>
-                    <p className="mt-2 text-sm text-gray-500 relative z-10">
-                      PNG, JPG, WEBP up to 5MB each
-                    </p>
-                    {formData.images.length + formData.uploadedImageUrls.length > 0 && (
-                      <p className="mt-2 text-sm text-gray-500 font-medium relative z-10">
-                        {formData.images.length + formData.uploadedImageUrls.length}/5 images selected
-                      </p>
-                    )}
-                  </div>
-                )}
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    aria-label="Upload service images"
-                  />
-                {errors.images && <p className="mt-2 text-sm text-red-500 flex items-center">
-                  <FiX className="w-4 h-4 mr-1" />
-                  At least one image is required
-                </p>}
-              </div>
-
-              {/* Image Previews */}
-              {(formData.images.length > 0 || previewImages.length > 0) && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  {formData.images.map((file, index) => (
-                    <div key={index} className="relative group">
-                      <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200 hover:border-orange-300 transition-all duration-200">
-                        <img
-                          src={previewImages[index] || URL.createObjectURL(file)}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute -top-2 -right-2 w-6 h-6 bg-gray-900 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-600 shadow-lg"
-                        aria-label={`Remove image ${index + 1}`}
-                        title={`Remove image ${index + 1}`}
-                      >
-                        <FiX className="w-3 h-3" />
-                      </button>
-                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs p-1 text-center opacity-0 group-hover:opacity-100 transition-all duration-200">
-                        {file.name}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Video Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Video</span>
-                <span className="ml-4 text-sm font-normal text-gray-400">(Optional, Max 100MB)</span>
-              </h2>
-
-              {/* Video Upload Area */}
-              <div className="mb-6 relative z-10">
-                {uploading ? (
-                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center bg-gray-50">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-                    <p className="mt-4 text-lg font-medium text-gray-900">
-                      Uploading video to Amazon S3...
-                    </p>
-                    <p className="mt-2 text-sm text-gray-500">
-                      Please wait while your video is being uploaded...
-                    </p>
-                  </div>
-                ) : !formData.video && !formData.uploadedVideoUrl ? (
-                  <div
-                    onClick={() => document.getElementById('video-upload')?.click()}
-                    className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-orange-300 hover:bg-orange-50/50 transition-all duration-300 cursor-pointer group relative overflow-hidden"
-                  >
-                    {/* Glowing effect on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-600/10 to-orange-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={handleVideoChange}
-                      className="hidden"
-                      id="video-upload"
-                      aria-label="Upload service video"
-                    />
-
-                    <FiUpload className="mx-auto h-12 w-12 text-gray-400 group-hover:text-orange-500 transition-colors duration-200 relative z-10" />
-                    <p className="mt-4 text-lg font-medium text-gray-900 relative z-10">
-                      Click to upload a service video
-                    </p>
-                    <p className="mt-2 text-sm text-gray-500 relative z-10">
-                      MP4, WebM, MOV up to 100MB
-                    </p>
-                    <p className="mt-1 text-xs text-gray-400 relative z-10">
-                      A short video showcasing your service (optional)
-                    </p>
-                  </div>
-                ) : (
-                  <div className="border-2 border-gray-200 rounded-xl p-6 bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg">
-                          <FiEye className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {formData.video ? formData.video.name : 'Uploaded Video'}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formData.video
-                              ? `${(formData.video.size / (1024 * 1024)).toFixed(1)} MB`
-                              : 'Video ready'
-                            }
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleRemoveVideo}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200"
-                        aria-label="Remove video"
-                        title="Remove video"
-                      >
-                        <FiX className="w-5 h-5" />
-                      </button>
-                    </div>
-                    {formData.video && (
-                      <div className="mt-4">
-                        <video
-                          controls
-                          className="w-full max-w-md h-48 bg-black/80 rounded-lg border border-gray-200"
-                          src={URL.createObjectURL(formData.video)}
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Tags Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Tags</span>
-              </h2>
-              <div className="space-y-6 relative z-10">
-                <div className="flex gap-4">
-                  <div className="flex-1 relative">
-                    <input
-                      type="text"
-                      value={currentTag}
-                      onChange={(e) => setCurrentTag(e.target.value)}
-                      placeholder="e.g., photography, wedding, portrait"
-                      maxLength={30}
-                      className="w-full px-4 py-4 bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 text-gray-900 placeholder-gray-400"
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                    /></div>
-                  <Button 
-                    type="button" 
-                    onClick={handleAddTag} 
-                    size="sm"
-                    className="px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg transition-all duration-300 rounded-xl font-semibold border border-transparent"
-                  >
-                    <FiPlus className="w-4 h-4 mr-2" />
-                    Add Tag
-                  </Button>
-                </div>
-                {formData.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-3">
-                    {formData.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-orange-50 backdrop-blur-sm text-orange-700 border border-orange-100 transition-all duration-300 group"
-                      >
-                        {tag}
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveTag(tag)}
-                          className="ml-2 text-orange-400 hover:text-red-500 hover:bg-red-50 rounded-full p-1 transition-all duration-200"
-                          aria-label={`Remove tag ${tag}`}
-                          title={`Remove tag ${tag}`}
-                        >
-                          <FiX className="w-3 h-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Working Hours Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Working Hours</span>
-              </h2>
-              <div className="space-y-4 relative z-10">
-                {daysOfWeek.map(({ key, label }) => (
-                  <div key={key} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl border border-gray-100 transition-all duration-300">
-                    <div className="flex items-center min-w-[140px]">
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          id={`working-${key}`}
-                          checked={formData.workingTime[key as keyof WorkingHours].enabled}
-                          onChange={(e) => handleWorkingHoursChange(key as keyof WorkingHours, 'enabled', e.target.checked)}
-                          className="h-5 w-5 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-orange-500 transition-all duration-200"
-                        />
-                      </div>
-                      <label htmlFor={`working-${key}`} className="ml-3 text-sm font-semibold text-gray-900">
-                        {label}
-                      </label>
-                    </div>
-
-                    <div className="flex items-center space-x-3 flex-1">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex items-center space-x-2">
-                          <FiClock className="w-4 h-4 text-gray-400" />
-                          <input
-                            type="time"
-                            value={formData.workingTime[key as keyof WorkingHours].startTime}
-                            onChange={(e) => handleWorkingHoursChange(key as keyof WorkingHours, 'startTime', e.target.value)}
-                            disabled={!formData.workingTime[key as keyof WorkingHours].enabled}
-                            className={`px-3 py-2 bg-white border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-gray-900 ${
-                              formData.workingTime[key as keyof WorkingHours].enabled
-                                ? 'border-gray-200'
-                                : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
-                            }`}
-                            aria-label={`Start time for ${label}`}
-                          />
-                        </div>
-                        <span className="text-gray-400 font-medium">to</span>
-                        <input
-                          type="time"
-                          value={formData.workingTime[key as keyof WorkingHours].endTime}
-                          onChange={(e) => handleWorkingHoursChange(key as keyof WorkingHours, 'endTime', e.target.value)}
-                          disabled={!formData.workingTime[key as keyof WorkingHours].enabled}
-                          className={`px-3 py-2 bg-white border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-gray-900 ${
-                            formData.workingTime[key as keyof WorkingHours].enabled
-                              ? 'border-gray-200'
-                              : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
-                          }`}
-                          aria-label={`End time for ${label}`}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {formatWorkingHoursForAPI(formData.workingTime).length > 0 && (
-                <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                  <div className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
-                    Preview (as saved):
-                  </div>
-                  <div className="text-sm text-gray-400 space-y-1">
-                    {formatWorkingHoursForAPI(formData.workingTime).map((time, index) => (
-                      <div key={index} className="flex items-center">
-                        {time}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Service Status Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-              <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
-              Service Status
-              </h2>
-              <div className="flex items-center justify-between p-6 bg-gray-50 rounded-xl border border-gray-100 relative z-10">
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg border ${formData.isActive ? 'bg-orange-100 border-orange-200' : 'bg-gray-100 border-gray-200'}`}>
-                <FiEye className={`w-5 h-5 ${formData.isActive ? 'text-gray-900' : 'text-gray-400'}`} />
-                </div>
-                <div>
-                <p className={`font-medium ${formData.isActive ? 'text-gray-900' : 'text-gray-500'}`}>
-                  {formData.isActive ? 'Service Active' : 'Service Inactive'}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {formData.isActive
-                  ? 'Your service will be visible to customers and available for booking'
-                  : 'Your service will be hidden from customers and unavailable for booking'
-                  }
-                </p>
-                </div>
-              </div>
-              <label className="flex items-center cursor-pointer">
-                <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-                  className="sr-only"
-                  aria-label="Toggle service active status"
-                />
-                <div className={`w-12 h-6 rounded-full shadow-inner transition-colors duration-300 border-2 ${
-                  formData.isActive ? 'bg-orange-500 border-orange-500' : 'bg-gray-200 border-gray-300'
-                }`}>
-                  <div className={`w-5 h-5 bg-white rounded-full shadow mt-0.5 ml-0.5 transition-transform duration-300 border ${
-                  formData.isActive ? 'transform translate-x-6 border-orange-500' : 'border-gray-300'
-                  }`}></div>
-                </div>
-                </div>
-              </label>
-              </div>
-            </div>
-
-            {/* Location Section */}
-            <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-              <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-                <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Location</span>
-                <span className="ml-3 text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200">
-                  Optional
-                </span>
-              </h2>
-
-              <div className="relative z-10">
-                <div className="mb-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Specify your service location to help customers find services near them.
-                    If no location is provided, your service will be available everywhere.
-                  </p>
-                </div>
-
-                <LocationPickerAdvanced
-                  value={formData.location}
-                  onChange={handleLocationChange}
-                  className="w-full"
-                  disabled={loading || uploading}
-                  showMap={true}
-                />
-              </div>
-            </div>
+            <LocationSection
+              location={formData.location}
+              isDisabled={loading || uploading}
+              onLocationChange={handleLocationChange}
+            />
 
             {/* Submit Buttons */}
             <div className="relative pt-12">
@@ -1240,9 +698,3 @@ export default function CreateService() {
     </div>
   );
 }
-
-
-
-
-
-
