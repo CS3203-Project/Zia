@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Plus, X, AlertTriangle, MessageCircle, ChevronRight } from 'lucide-react';
 import { MessagingProvider, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
 import { UserSearch } from '../../components/Messaging';
+import Button from '../../components/shared/Button';
 import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
 
@@ -145,18 +147,13 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
           <div className="text-center bg-white rounded-2xl border border-gray-100 p-8 shadow-xl max-w-md w-full relative overflow-hidden">
             <div className="relative z-10">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-50 flex items-center justify-center border border-orange-100">
-                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
+                <AlertTriangle className="w-8 h-8 text-orange-500" />
               </div>
               <p className="text-lg font-medium text-gray-900 mb-2">Error loading conversations</p>
               <p className="text-sm text-gray-500 mb-6">{error}</p>
-              <button
-                onClick={() => loadConversations()}
-                className="px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-orange-500/30"
-              >
+              <Button onClick={() => loadConversations()} size="lg" className="shadow-orange-500/30">
                 Retry
-              </button>
+              </Button>
             </div>
           </div>
         </main>
@@ -165,7 +162,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white text-gray-900">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white text-gray-900">
       <main className="container mx-auto mt-16 flex-grow px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -183,19 +180,10 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
 
           {/* Actions */}
           <div className="mb-8 flex justify-center">
-            <button
-              onClick={() => setShowNewConversation(true)}
-              className="flex items-center space-x-3 rounded-xl bg-orange-500 px-6 py-3 font-semibold text-white transition hover:bg-orange-600"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                </div>
-                <span>Start New Conversation</span>
-              </div>
-            </button>
+            <Button onClick={() => setShowNewConversation(true)} size="lg" className="shadow-orange-500/30">
+              <Plus className="mr-2 h-4 w-4" />
+              Start New Conversation
+            </Button>
           </div>
 
           {/* New Conversation Modal */}
@@ -207,12 +195,10 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                     <h3 className="text-2xl font-bold text-gray-900">Start New Conversation</h3>
                     <button
                       onClick={() => setShowNewConversation(false)}
-                      className="p-2 text-gray-400 hover:text-gray-900 transition-colors duration-300 rounded-lg hover:bg-orange-50"
+                      className="p-2 text-gray-400 hover:text-gray-900 transition-colors duration-300 rounded-full hover:bg-orange-50"
                       aria-label="Close modal"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      <X className="w-5 h-5" />
                     </button>
                   </div>
                   <UserSearch
@@ -261,18 +247,13 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
               ) : conversations.length === 0 ? (
                 <div className="p-12 text-center text-gray-500">
                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-orange-50 flex items-center justify-center border border-orange-100">
-                    <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+                    <MessageCircle className="w-10 h-10 text-orange-500" />
                   </div>
                   <p className="text-xl font-semibold text-gray-900 mb-2">No conversations yet</p>
                   <p className="text-gray-500">Start your first conversation to begin messaging with others</p>
-                  <button
-                    onClick={() => setShowNewConversation(true)}
-                    className="mt-6 px-6 py-3 bg-orange-500 text-white font-semibold rounded-xl hover:bg-orange-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-orange-500/30"
-                  >
+                  <Button onClick={() => setShowNewConversation(true)} size="lg" className="mt-6 shadow-orange-500/30">
                     Start Messaging
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100">
@@ -285,7 +266,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                       <div className="flex items-center space-x-4 relative z-10">
                         {/* Avatar with enhanced styling */}
                         <div className="flex-shrink-0 relative">
-                          <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md group-hover:shadow-lg transition-all duration-300">
+                          <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md ring-2 ring-white group-hover:shadow-lg transition-all duration-300">
                             {getContactDisplayName(conversation).charAt(0).toUpperCase()}
                           </div>
                           {/* Enhanced online status indicator */}
@@ -354,9 +335,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                         {/* Enhanced Arrow */}
                         <div className="flex-shrink-0">
                           <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
-                            <svg className="w-4 h-4 text-gray-500 group-hover:text-orange-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
+                            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-orange-600 transition-colors duration-300" />
                           </div>
                         </div>
                       </div>

@@ -564,7 +564,7 @@ export default function Profile() {
             {/* Profile Header Skeleton */}
             <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden mb-8">
               {/* Banner Skeleton */}
-              <div className="relative h-36 bg-gradient-to-r from-dark-secondary via-dark-secondary to-dark-secondary">
+              <div className="relative h-36 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/2 to-black/5"></div>
 
                 {/* Avatar Skeleton */}
@@ -659,7 +659,7 @@ export default function Profile() {
       <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex flex-col">
         <div className="flex-1 flex items-center justify-center mt-16">
           <div className="text-center">
-        <p className="text-dark-primary mb-4">Please log in to access your profile.</p>
+        <p className="text-gray-900 mb-4">Please log in to access your profile.</p>
         <Button
           onClick={() => {
         localStorage.setItem('RedirectAfterLogin', window.location.pathname);
@@ -690,7 +690,7 @@ export default function Profile() {
         {/* Profile Header - Glass Style */}
         <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden mb-8 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
           {/* Banner - Minimal Gradient */}
-          <div className="relative h-36 bg-gradient-to-r from-dark-secondary via-dark-secondary to-dark-secondary">
+          <div className="relative h-36 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600">
         <img
           src="https://4kwallpapers.com/images/walls/thumbs_3t/8728.jpg"
           alt="Profile Banner"
@@ -719,7 +719,7 @@ export default function Profile() {
           />
             ) : null}
             <div
-          className={`relative w-32 h-32 rounded-full border-4 border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/50 flex items-center justify-center text-dark-primary text-3xl font-bold ${
+          className={`relative w-32 h-32 rounded-full border-4 border-white/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] backdrop-blur-md bg-white/50 flex items-center justify-center text-gray-900 text-3xl font-bold ${
             user.imageUrl && user.imageUrl.trim() ? 'hidden' : 'flex'
           }`}
             >
@@ -741,31 +741,31 @@ export default function Profile() {
             <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mt-4 mb-1">
               {user.firstName || 'First'} {user.lastName || 'Last'}
             </h1>
-            <p className="text-dark-secondary text-lg mb-1">{user.email}</p>
+            <p className="text-gray-500 text-lg mb-1">{user.email}</p>
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
               <span
             className={`px-4 py-2 rounded-full text-sm font-medium border backdrop-blur-md ${
               user.role === 'PROVIDER'
-                ? 'bg-white/50 text-dark-primary border-white/30'
-                : 'bg-white/50 text-dark-primary border-white/30'
+                ? 'bg-white/50 text-gray-900 border-white/30'
+                : 'bg-white/50 text-gray-900 border-white/30'
             } shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]`}
               >
             {user.role === 'PROVIDER' ? 'Service Provider' : 'User'}
               </span>
               {user.isEmailVerified && (
-            <span className="flex items-center text-dark-primary bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+            <span className="flex items-center text-gray-900 bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
               <Shield className="h-4 w-4 mr-1" />
               <span className="text-sm font-medium">Verified</span>
             </span>
               )}
               {user.phone && (
-            <span className="flex items-center text-dark-primary bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+            <span className="flex items-center text-gray-900 bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
               <Phone className="h-4 w-4 mr-1" />
               <span className="text-xs font-medium">{user.phone}</span>
             </span>
               )}
               {user.location && (
-            <span className="flex items-center text-dark-primary bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
+            <span className="flex items-center text-gray-900 bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
               <MapPin className="h-4 w-4 mr-1" />
               <span className="text-xs font-medium">{user.location}</span>
             </span>
@@ -776,7 +776,7 @@ export default function Profile() {
           <Button
             onClick={() => setShowEditProfileModal(true)}
             variant="outline"
-            className="flex items-center space-x-2 px-6 py-3 text-base font-semibold !bg-dark-card hover:!bg-white/90 !text-dark-primary border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1"
+            className="flex items-center space-x-2 px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-gray-900 border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1"
             size="sm"
           >
             <Edit2 className="h-5 w-5" />
@@ -789,7 +789,7 @@ export default function Profile() {
             <Button
               onClick={() => setShowEditProviderModal(true)}
               variant="outline"
-              className="flex items-center space-x-2 px-6 py-3 text-base font-semibold !bg-dark-card hover:!bg-white/90 !text-dark-primary border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1"
+              className="flex items-center space-x-2 px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-gray-900 border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1"
               size="lg"
             >
               <Edit2 className="h-5 w-5" />
@@ -798,7 +798,7 @@ export default function Profile() {
             <Button
               onClick={() => setShowDeleteConfirmation(true)}
               variant="outline"
-              className="flex items-center space-x-2 px-6 py-3 text-base font-semibold !bg-dark-card hover:!bg-white/90 !text-red-400 border-2 !border-white/40 hover:!border-red-400/60 !rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(239,68,68,0.2)] hover:shadow-[0_12px_32px_0_rgba(239,68,68,0.3)] hover:scale-105 hover:-translate-y-1"
+              className="flex items-center space-x-2 px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-red-400 border-2 !border-white/40 hover:!border-red-400/60 !rounded-full backdrop-blur-md transition-all duration-300 shadow-[0_8px_24px_0_rgba(239,68,68,0.2)] hover:shadow-[0_12px_32px_0_rgba(239,68,68,0.3)] hover:scale-105 hover:-translate-y-1"
               size="lg"
             >
               <Trash2 className="h-5 w-5" />
@@ -817,10 +817,10 @@ export default function Profile() {
               />
             ) : (
               <div className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center mr-3 border-2 border-white/50">
-                <Building className="h-5 w-5 text-dark-primary" />
+                <Building className="h-5 w-5 text-gray-900" />
               </div>
             )}
-            <span className="text-sm font-medium text-dark-primary">{providerProfile.companies[0].name}</span>
+            <span className="text-sm font-medium text-gray-900">{providerProfile.companies[0].name}</span>
           </div>
             )}
             {/* Social Media Links */}
@@ -839,22 +839,22 @@ export default function Profile() {
               <div className="space-y-3">
                 <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
                   <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                    <Mail className="h-5 w-5 text-dark-primary" />
+                    <Mail className="h-5 w-5 text-gray-900" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-dark-secondary font-medium">Email</p>
-                    <p className="text-sm font-semibold text-dark-primary">{user.email}</p>
+                    <p className="text-xs text-gray-500 font-medium">Email</p>
+                    <p className="text-sm font-semibold text-gray-900">{user.email}</p>
                   </div>
                 </div>
                 
                 {user.phone && (
                   <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
                     <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                      <Phone className="h-5 w-5 text-dark-primary" />
+                      <Phone className="h-5 w-5 text-gray-900" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary font-medium">Phone</p>
-                      <p className="text-sm font-semibold text-dark-primary">{user.phone}</p>
+                      <p className="text-xs text-gray-500 font-medium">Phone</p>
+                      <p className="text-sm font-semibold text-gray-900">{user.phone}</p>
                     </div>
                   </div>
                 )}
@@ -862,11 +862,11 @@ export default function Profile() {
                 {user.location && (
                   <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
                     <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                      <MapPin className="h-5 w-5 text-dark-primary" />
+                      <MapPin className="h-5 w-5 text-gray-900" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary font-medium">Location</p>
-                      <p className="text-sm font-semibold text-dark-primary">{user.location}</p>
+                      <p className="text-xs text-gray-500 font-medium">Location</p>
+                      <p className="text-sm font-semibold text-gray-900">{user.location}</p>
                     </div>
                   </div>
                 )}
@@ -874,22 +874,22 @@ export default function Profile() {
                 {user.address && (
                   <div className="group flex items-start space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
                     <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                      <MapPin className="h-5 w-5 text-dark-primary mt-0.5" />
+                      <MapPin className="h-5 w-5 text-gray-900 mt-0.5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary font-medium">Address</p>
-                      <p className="text-sm font-semibold text-dark-primary">{user.address}</p>
+                      <p className="text-xs text-gray-500 font-medium">Address</p>
+                      <p className="text-sm font-semibold text-gray-900">{user.address}</p>
                     </div>
                   </div>
                 )}
                 
                 <div className="group flex items-center space-x-3 p-3 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:scale-102 transition-all duration-200">
                   <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                    <Calendar className="h-5 w-5 text-dark-primary" />
+                    <Calendar className="h-5 w-5 text-gray-900" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-xs text-dark-secondary font-medium">Member since</p>
-                    <p className="text-sm font-semibold text-dark-primary">
+                    <p className="text-xs text-gray-500 font-medium">Member since</p>
+                    <p className="text-sm font-semibold text-gray-900">
                       {new Date(user.createdAt).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -902,25 +902,25 @@ export default function Profile() {
                 {user.socialmedia && user.socialmedia.length > 0 && (
                   <div className="group flex items-start space-x-3 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30">
                     <div className="w-10 h-10 rounded-lg bg-white/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
-                      <ExternalLink className="h-5 w-5 text-dark-primary mt-0.5" />
+                      <ExternalLink className="h-5 w-5 text-gray-900 mt-0.5" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-dark-secondary font-medium mb-2">Social Media</p>
+                      <p className="text-xs text-gray-500 font-medium mb-2">Social Media</p>
                       <div className="space-y-2">
                         {user.socialmedia.map((link, index) => {
                           const url = link.startsWith('http') ? link : `https://${link}`;
                           const username = url.split('/').pop(); // Extract username from URL
                           const platformIcon = url.includes('twitter') || url.includes('x.com')
-    ? <i className="fab fa-twitter text-dark-primary"></i>
+    ? <i className="fab fa-twitter text-gray-900"></i>
     : url.includes('linkedin')
-    ? <i className="fab fa-linkedin text-dark-primary"></i>
+    ? <i className="fab fa-linkedin text-gray-900"></i>
     : url.includes('instagram')
-    ? <i className="fab fa-instagram text-dark-primary"></i>
+    ? <i className="fab fa-instagram text-gray-900"></i>
     : url.includes('github')
-    ? <i className="fab fa-github text-dark-primary"></i>
+    ? <i className="fab fa-github text-gray-900"></i>
     : url.includes('portfolio') || url.includes('website')
-    ? <i className="fas fa-globe text-dark-primary"></i>
-    : <i className="fas fa-link text-dark-primary"></i>;
+    ? <i className="fas fa-globe text-gray-900"></i>
+    : <i className="fas fa-link text-gray-900"></i>;
 
   return (
     <a
@@ -928,7 +928,7 @@ export default function Profile() {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center text-dark-primary text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg hover:bg-white/50 backdrop-blur-sm border border-transparent hover:border-white/30"
+      className="flex items-center text-gray-900 text-sm font-medium transition-all duration-200 px-3 py-2 rounded-lg hover:bg-white/50 backdrop-blur-sm border border-transparent hover:border-white/30"
     >
       <span className="mr-2">{platformIcon}</span>
       {username}
@@ -950,12 +950,12 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Services</h2>
-                        <p className="text-sm text-dark-secondary font-medium">Manage your services</p>
+                        <p className="text-sm text-gray-500 font-medium">Manage your services</p>
                       </div>
                     </div>
                     <div className="text-center py-12">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
-                      <p className="text-dark-secondary">Loading services...</p>
+                      <p className="text-gray-500">Loading services...</p>
                     </div>
                   </div>
                 ) : services.length > 0 ? (
@@ -963,7 +963,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Services</h2>
-                        <p className="text-sm text-dark-secondary font-medium">
+                        <p className="text-sm text-gray-500 font-medium">
                           {services.length} service{services.length !== 1 ? 's' : ''} • {services.filter(s => s.isActive).length} active
                         </p>
                       </div>
@@ -986,13 +986,13 @@ export default function Profile() {
                                 }}
                               />
                             ) : (
-                              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-dark-tertiary/50 to-gray-300/50 flex items-center justify-center flex-shrink-0">
-                                <Briefcase className="w-6 h-6 text-dark-muted opacity-50" />
+                              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-gray-100/50 to-gray-300/50 flex items-center justify-center flex-shrink-0">
+                                <Briefcase className="w-6 h-6 text-gray-400 opacity-50" />
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2 mb-1">
-                                <h3 className="text-sm font-bold text-dark-primary line-clamp-1">
+                                <h3 className="text-sm font-bold text-gray-900 line-clamp-1">
                                   {service.title || 'Untitled Service'}
                                 </h3>
                                 <Button
@@ -1024,17 +1024,17 @@ export default function Profile() {
                                   className="px-3 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-md bg-white/90 border border-white/40 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
                                   title="Edit Service"
                                 >
-                                  <Edit2 className="h-3.5 w-3.5 text-dark-primary" strokeWidth={2.5} />
-                                  <span className="text-xs font-semibold text-dark-primary">Edit</span>
+                                  <Edit2 className="h-3.5 w-3.5 text-gray-900" strokeWidth={2.5} />
+                                  <span className="text-xs font-semibold text-gray-900">Edit</span>
                                 </Button>
                               </div>
-                              <p className="text-xs text-dark-secondary line-clamp-2 mb-2">
+                              <p className="text-xs text-gray-500 line-clamp-2 mb-2">
                                 {service.description || 'No description'}
                               </p>
-                              <div className="flex items-center gap-3 text-xs text-dark-secondary">
+                              <div className="flex items-center gap-3 text-xs text-gray-500">
                                 {service.averageRating && service.averageRating > 0 && (
                                   <div className="flex items-center gap-1">
-                                    <Star className="w-3 h-3 fill-current text-dark-primary" />
+                                    <Star className="w-3 h-3 fill-current text-gray-900" />
                                     <span className="font-semibold">{service.averageRating.toFixed(1)}</span>
                                   </div>
                                 )}
@@ -1064,10 +1064,10 @@ export default function Profile() {
                   <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30">
-                        <Briefcase className="h-8 w-8 text-dark-secondary" />
+                        <Briefcase className="h-8 w-8 text-gray-500" />
                       </div>
-                      <h3 className="text-base font-semibold text-dark-primary mb-2">No services yet</h3>
-                      <p className="text-sm text-dark-secondary mb-4">
+                      <h3 className="text-base font-semibold text-gray-900 mb-2">No services yet</h3>
+                      <p className="text-sm text-gray-500 mb-4">
                         Start showcasing your skills
                       </p>
                       <Button
@@ -1097,7 +1097,7 @@ export default function Profile() {
                       <Clock className="h-12 w-12 text-yellow-400" />
                     </div>
                     <h2 className="text-2xl font-semibold text-gray-900 mb-2">Verification in Progress</h2>
-                    <p className="text-dark-muted mb-6">
+                    <p className="text-gray-400 mb-6">
                       Your provider profile has been submitted and is currently under review.
                       Our team is verifying your information and credentials.
                     </p>
@@ -1115,7 +1115,7 @@ export default function Profile() {
                         onClick={() => setShowEditProviderModal(true)}
                         variant="outline"
                         size="lg"
-                        className="flex items-center space-x-2 mx-auto px-6 py-3 text-base font-semibold !bg-dark-card hover:!bg-white/90 !text-dark-primary border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+                        className="flex items-center space-x-2 mx-auto px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-gray-900 border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
                       >
                         <Edit2 className="h-5 w-5" />
                         <span>Edit Profile</span>
@@ -1123,7 +1123,7 @@ export default function Profile() {
                       <Button
                         onClick={() => setShowDeleteConfirmation(true)}
                         variant="ghost"
-                        className="px-6 py-3 text-base font-semibold !bg-dark-card hover:!bg-white/90 !text-red-400 border-2 !border-white/40 hover:!border-red-400/60 !rounded-full backdrop-blur-md shadow-[0_8px_24px_0_rgba(239,68,68,0.2)] hover:shadow-[0_12px_32px_0_rgba(239,68,68,0.3)] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+                        className="px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-red-400 border-2 !border-white/40 hover:!border-red-400/60 !rounded-full backdrop-blur-md shadow-[0_8px_24px_0_rgba(239,68,68,0.2)] hover:shadow-[0_12px_32px_0_rgba(239,68,68,0.3)] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
                       >
                         Cancel Application
                       </Button>
@@ -1131,23 +1131,23 @@ export default function Profile() {
                     
                     {/* Show basic provider info */}
                     <div className="mt-8 text-left">
-                      <h3 className="text-lg font-semibold text-dark-primary mb-4">Your Submitted Information</h3>
-                      <div className="space-y-4 p-4 rounded-lg bg-white/70 border border-dark-secondary">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Submitted Information</h3>
+                      <div className="space-y-4 p-4 rounded-lg bg-white/70 border border-gray-200">
                         {providerProfile.bio && (
                           <div>
-                            <h4 className="font-medium text-dark-primary mb-1">Bio</h4>
-                            <p className="text-dark-secondary text-base leading-relaxed">{providerProfile.bio}</p>
+                            <h4 className="font-medium text-gray-900 mb-1">Bio</h4>
+                            <p className="text-gray-500 text-base leading-relaxed">{providerProfile.bio}</p>
                           </div>
                         )}
                         
                         {providerProfile.skills && providerProfile.skills.length > 0 && (
                           <div>
-                            <h4 className="font-medium text-dark-primary mb-2">Skills</h4>
+                            <h4 className="font-medium text-gray-900 mb-2">Skills</h4>
                             <div className="flex flex-wrap gap-2">
                               {providerProfile.skills.map((skill, index) => (
                                 <span
                                   key={index}
-                                  className="px-3 py-1 bg-dark-tertiary text-blue-400 border border-blue-300/60 rounded-full text-sm"
+                                  className="px-3 py-1 bg-gray-100 text-blue-400 border border-blue-300/60 rounded-full text-sm"
                                 >
                                   {skill}
                                 </span>
@@ -1158,12 +1158,12 @@ export default function Profile() {
                         
                         {providerProfile.qualifications && providerProfile.qualifications.length > 0 && (
                           <div>
-                            <h4 className="font-medium text-dark-primary mb-2">Qualifications</h4>
+                            <h4 className="font-medium text-gray-900 mb-2">Qualifications</h4>
                             <div className="space-y-1">
                               {providerProfile.qualifications.map((qualification, index) => (
                                 <div key={index} className="flex items-center space-x-2">
                                   <Award className="h-4 w-4 text-blue-500" />
-                                  <span className="text-dark-secondary text-base">{qualification}</span>
+                                  <span className="text-gray-500 text-base">{qualification}</span>
                                 </div>
                               ))}
                             </div>
@@ -1181,13 +1181,13 @@ export default function Profile() {
                   <div className="group backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-14 h-14 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
-                        <Star className="h-7 w-7 text-dark-primary" />
+                        <Star className="h-7 w-7 text-gray-900" />
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">
                           {providerProfile.averageRating?.toFixed(1) || 'N/A'}
                         </p>
-                        <p className="text-sm text-dark-secondary font-semibold">Average Rating</p>
+                        <p className="text-sm text-gray-500 font-semibold">Average Rating</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-1">
@@ -1196,8 +1196,8 @@ export default function Profile() {
                           key={i}
                           className={`h-5 w-5 ${
                             i < Math.floor(providerProfile.averageRating || 0)
-                              ? 'text-dark-primary fill-current'
-                              : 'text-dark-muted'
+                              ? 'text-gray-900 fill-current'
+                              : 'text-gray-400'
                           }`}
                         />
                       ))}
@@ -1207,16 +1207,16 @@ export default function Profile() {
                   <div className="group backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-14 h-14 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
-                        <Award className="h-7 w-7 text-dark-primary" />
+                        <Award className="h-7 w-7 text-gray-900" />
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">
                           {providerProfile.totalReviews || 0}
                         </p>
-                        <p className="text-sm text-dark-secondary font-semibold">Total Reviews</p>
+                        <p className="text-sm text-gray-500 font-semibold">Total Reviews</p>
                       </div>
                     </div>
-                    <p className="text-xs text-dark-secondary font-semibold">
+                    <p className="text-xs text-gray-500 font-semibold">
                       {providerProfile.totalReviews && providerProfile.totalReviews > 0 
                         ? `✨ ${((providerProfile.averageRating || 0) / 5 * 100).toFixed(0)}% satisfaction`
                         : 'No reviews yet'
@@ -1227,16 +1227,16 @@ export default function Profile() {
                   <div className="group backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300 hover:scale-105 hover:-translate-y-1">
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-14 h-14 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
-                        <Briefcase className="h-7 w-7 text-dark-primary" />
+                        <Briefcase className="h-7 w-7 text-gray-900" />
                       </div>
                       <div className="text-right">
                         <p className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">
                           {services.length}
                         </p>
-                        <p className="text-sm text-dark-secondary font-semibold">Services Listed</p>
+                        <p className="text-sm text-gray-500 font-semibold">Services Listed</p>
                       </div>
                     </div>
-                    <p className="text-xs text-dark-secondary font-semibold">
+                    <p className="text-xs text-gray-500 font-semibold">
                       ✓ {services.filter(s => s.isActive).length} active • {services.filter(s => !s.isActive).length} inactive
                     </p>
                   </div>
@@ -1248,10 +1248,10 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent flex items-center gap-2">
-                          <Activity className="h-6 w-6 text-dark-primary" />
+                          <Activity className="h-6 w-6 text-gray-900" />
                           Performance Trends
                         </h2>
-                        <p className="text-sm text-dark-secondary font-medium">Service ratings and review trends</p>
+                        <p className="text-sm text-gray-500 font-medium">Service ratings and review trends</p>
                       </div>
                     </div>
                     <div className="h-80">
@@ -1281,21 +1281,21 @@ export default function Profile() {
                             textAnchor="end"
                             height={100}
                             tick={{ fill: 'currentColor', fontSize: 12 }}
-                            className="text-dark-secondary"
+                            className="text-gray-500"
                           />
                           <YAxis 
                             yAxisId="left"
                             domain={[0, 5]}
                             ticks={[0, 1, 2, 3, 4, 5]}
                             tick={{ fill: 'currentColor', fontSize: 12 }}
-                            className="text-dark-secondary"
+                            className="text-gray-500"
                             label={{ value: 'Rating', angle: -90, position: 'insideLeft', fill: 'currentColor' }}
                           />
                           <YAxis 
                             yAxisId="right" 
                             orientation="right"
                             tick={{ fill: 'currentColor', fontSize: 12 }}
-                            className="text-dark-secondary"
+                            className="text-gray-500"
                             label={{ value: 'Reviews', angle: 90, position: 'insideRight', fill: 'currentColor' }}
                           />
                           <Tooltip 
@@ -1345,12 +1345,12 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">About Me</h2>
-                        <p className="text-sm text-dark-secondary font-medium">Professional background and expertise</p>
+                        <p className="text-sm text-gray-500 font-medium">Professional background and expertise</p>
                       </div>
                     </div>
                     <div className="prose prose-gray max-w-none">
                       <blockquote className="border-l-4 border-black/20 pl-6 py-3 bg-white/50 rounded-r-xl backdrop-blur-sm">
-                        <p className="text-dark-secondary leading-relaxed text-base italic font-medium">
+                        <p className="text-gray-500 leading-relaxed text-base italic font-medium">
                           "{providerProfile.bio}"
                         </p>
                       </blockquote>
@@ -1364,7 +1364,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Skills & Expertise</h2>
-                        <p className="text-sm text-dark-secondary font-medium">
+                        <p className="text-sm text-gray-500 font-medium">
                           ✨ {providerProfile.skills.length} skill{providerProfile.skills.length !== 1 ? 's' : ''} listed
                         </p>
                       </div>
@@ -1373,7 +1373,7 @@ export default function Profile() {
                       {providerProfile.skills.map((skill, index) => (
                         <span
                           key={index}
-                          className="group px-5 py-2.5 bg-white/50 backdrop-blur-md text-dark-primary rounded-full text-sm font-semibold border border-white/30 hover:border-white/50 hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.12)] transition-all duration-300 cursor-default hover:scale-105"
+                          className="group px-5 py-2.5 bg-white/50 backdrop-blur-md text-gray-900 rounded-full text-sm font-semibold border border-white/30 hover:border-white/50 hover:shadow-[0_4px_16px_0_rgba(0,0,0,0.12)] transition-all duration-300 cursor-default hover:scale-105"
                         >
                           {skill}
                         </span>
@@ -1388,7 +1388,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Qualifications & Certifications</h2>
-                        <p className="text-sm text-dark-secondary font-medium">
+                        <p className="text-sm text-gray-500 font-medium">
                           Professional credentials and achievements
                         </p>
                       </div>
@@ -1397,10 +1397,10 @@ export default function Profile() {
                       {providerProfile.qualifications.map((qualification, index) => (
                         <div key={index} className="group flex items-start space-x-4 p-4 rounded-xl bg-white/50 backdrop-blur-sm border border-white/30 hover:border-white/50 transition-all duration-300 hover:scale-102">
                           <div className="w-12 h-12 bg-white/50 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                            <Award className="h-6 w-6 text-dark-primary" />
+                            <Award className="h-6 w-6 text-gray-900" />
                           </div>
                           <div className="flex-1">
-                            <p className="text-dark-primary font-semibold leading-relaxed">
+                            <p className="text-gray-900 font-semibold leading-relaxed">
                               {qualification}
                             </p>
                           </div>
@@ -1416,7 +1416,7 @@ export default function Profile() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Reviews</h2>
-                        <p className="text-sm text-dark-secondary font-medium">
+                        <p className="text-sm text-gray-500 font-medium">
                           {selectedReviewType === 'customer'
                             ? 'Feedback received from service providers'
                             : 'Customer feedback on your services'
@@ -1429,23 +1429,23 @@ export default function Profile() {
                         <select
                           value={selectedReviewType}
                           onChange={(e) => setSelectedReviewType(e.target.value as 'customer' | 'service')}
-                          className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-dark-primary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
+                          className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-gray-900 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
                         >
                           {customerReviews.length > 0 && (
-                            <option value="customer" className="bg-dark-card text-dark-primary">⭐ Reviews from Providers</option>
+                            <option value="customer" className="bg-white text-gray-900">⭐ Reviews from Providers</option>
                           )}
                           {serviceReviews.length > 0 && (
-                            <option value="service" className="bg-dark-card text-dark-primary"> Reviews from Customers</option>
+                            <option value="service" className="bg-white text-gray-900"> Reviews from Customers</option>
                           )}
                         </select>
-                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark-primary h-4 w-4 pointer-events-none rotate-90" />
+                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 h-4 w-4 pointer-events-none rotate-90" />
                       </div>
                     </div>
 
                     {reviewsLoading ? (
                       <div className="text-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
-                        <p className="text-dark-secondary">Loading reviews...</p>
+                        <p className="text-gray-500">Loading reviews...</p>
                       </div>
                     ) : selectedReviewType === 'customer' && customerReviews.length > 0 ? (
                       <div className="space-y-6">
@@ -1467,7 +1467,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary text-base">
+                                    <h4 className="font-semibold text-gray-900 text-base">
                                       {review.reviewer?.firstName || 'Provider'} {review.reviewer?.lastName || ''}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -1478,7 +1478,7 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted'
+                                                : 'text-gray-400'
                                             }`}
                                           />
                                         ))}
@@ -1486,10 +1486,10 @@ export default function Profile() {
                                       <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
-                                      <span className="text-sm text-dark-muted">• Provider</span>
+                                      <span className="text-sm text-gray-400">• Provider</span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">
                                         {review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -1500,7 +1500,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
+                                  <blockquote className="text-gray-500 text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -1511,7 +1511,7 @@ export default function Profile() {
 
                         {customerReviews.length > 5 && (
                           <div className="text-center pt-4 border-t border-gray-100">
-                            <span className="text-sm text-dark-secondary font-medium">
+                            <span className="text-sm text-gray-500 font-medium">
                               Showing 5 of {customerReviews.length} reviews
                             </span>
                           </div>
@@ -1533,7 +1533,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary text-base">
+                                    <h4 className="font-semibold text-gray-900 text-base">
                                       {review.clientName || 'Anonymous Customer'}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -1544,7 +1544,7 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted'
+                                                : 'text-gray-400'
                                             }`}
                                           />
                                         ))}
@@ -1552,13 +1552,13 @@ export default function Profile() {
                                       <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
-                                      <span className="text-sm text-dark-muted">•</span>
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">•</span>
+                                      <span className="text-sm text-gray-400">
                                         {typeof review.service === 'object' ? review.service?.title : review.service || 'Service'}
                                       </span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">
                                         {review.date || (review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -1569,7 +1569,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
+                                  <blockquote className="text-gray-500 text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -1580,7 +1580,7 @@ export default function Profile() {
 
                         {serviceReviews.length > 5 && (
                           <div className="text-center pt-4 border-t border-gray-100">
-                            <span className="text-sm text-dark-secondary font-medium">
+                            <span className="text-sm text-gray-500 font-medium">
                               Showing 5 of {serviceReviews.length} reviews
                             </span>
                           </div>
@@ -1588,9 +1588,9 @@ export default function Profile() {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <Star className="w-16 h-16 text-dark-muted mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-dark-primary mb-2">No reviews yet</h3>
-                        <p className="text-dark-secondary text-sm">
+                        <Star className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No reviews yet</h3>
+                        <p className="text-gray-500 text-sm">
                           {selectedReviewType === 'customer'
                             ? 'Reviews from service providers will appear here once you receive feedback.'
                             : 'Reviews from customers will appear here once you receive feedback on your services.'
@@ -1633,13 +1633,13 @@ export default function Profile() {
                                 />
                               ) : (
                                 <div className="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center border border-gray-100">
-                                  <Building className="h-6 w-6 text-dark-muted" />
+                                  <Building className="h-6 w-6 text-gray-400" />
                                 </div>
                               )}
                               <div>
                                 <h3 className="font-semibold text-gray-900">{company.name}</h3>
                                 {company.description && (
-                                  <p className="text-dark-muted text-sm mt-1">{company.description}</p>
+                                  <p className="text-gray-400 text-sm mt-1">{company.description}</p>
                                 )}
                               </div>
                             </div>
@@ -1663,7 +1663,7 @@ export default function Profile() {
                             </div>
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-dark-muted">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-400">
                             {company.address && (
                               <div className="flex items-center space-x-2">
                                 <MapPin className="h-4 w-4" />
@@ -1701,8 +1701,8 @@ export default function Profile() {
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <Building className="h-12 w-12 text-dark-muted mx-auto mb-3" />
-                      <p className="text-dark-muted mb-4">No companies added yet</p>
+                      <Building className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-400 mb-4">No companies added yet</p>
                       <Button
                         onClick={() => {
                           setSelectedCompany(null);
@@ -1725,7 +1725,7 @@ export default function Profile() {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Payment & Earnings</h2>
-                      <p className="text-sm text-dark-secondary font-medium">Your financial overview and transaction history</p>
+                      <p className="text-sm text-gray-500 font-medium">Your financial overview and transaction history</p>
                     </div>
                     <Button
                       onClick={() => setShowPaymentHistory(!showPaymentHistory)}
@@ -1745,8 +1745,8 @@ export default function Profile() {
                         <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-dark-secondary font-medium">Total Earnings</p>
-                              <p className="text-3xl font-bold text-dark-primary">
+                              <p className="text-sm text-gray-500 font-medium">Total Earnings</p>
+                              <p className="text-3xl font-bold text-gray-900">
                                 LKR {typeof earnings.totalEarnings === 'number' ? earnings.totalEarnings.toFixed(2) : parseFloat(earnings.totalEarnings || '0').toFixed(2)}
                               </p>
                             </div>
@@ -1755,8 +1755,8 @@ export default function Profile() {
                         <div className="bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-white/30">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm text-dark-secondary font-medium">Completed Payments</p>
-                              <p className="text-3xl font-bold text-dark-primary">
+                              <p className="text-sm text-gray-500 font-medium">Completed Payments</p>
+                              <p className="text-3xl font-bold text-gray-900">
                                 {paymentHistory.filter(p => p.status === 'SUCCEEDED').length}
                               </p>
                             </div>
@@ -1767,7 +1767,7 @@ export default function Profile() {
                       {/* Earnings Growth Chart */}
                       {paymentHistory.length > 0 && (
                         <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/30 mb-6">
-                          <h3 className="text-lg font-bold text-dark-primary mb-4">Earnings Growth</h3>
+                          <h3 className="text-lg font-bold text-gray-900 mb-4">Earnings Growth</h3>
                           <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
                               <AreaChart
@@ -1798,11 +1798,11 @@ export default function Profile() {
                                 <XAxis 
                                   dataKey="date" 
                                   tick={{ fill: 'currentColor', fontSize: 12 }}
-                                  className="text-dark-secondary"
+                                  className="text-gray-500"
                                 />
                                 <YAxis 
                                   tick={{ fill: 'currentColor', fontSize: 12 }}
-                                  className="text-dark-secondary"
+                                  className="text-gray-500"
                                 />
                                 <Tooltip 
                                   contentStyle={{
@@ -1833,8 +1833,8 @@ export default function Profile() {
                   ) : (
                     <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-white/30 mb-6">
                       <div className="text-center">
-                        <p className="text-dark-secondary">No earnings data available yet</p>
-                        <p className="text-sm text-dark-muted mt-1">Start accepting payments to see your earnings here</p>
+                        <p className="text-gray-500">No earnings data available yet</p>
+                        <p className="text-sm text-gray-400 mt-1">Start accepting payments to see your earnings here</p>
                       </div>
                     </div>
                   )}
@@ -1842,12 +1842,12 @@ export default function Profile() {
                   {/* Payment History */}
                   {showPaymentHistory && (
                     <div className="border-t border-gray-100 pt-6">
-                      <h3 className="text-lg font-bold text-dark-primary mb-4">Payment History</h3>
+                      <h3 className="text-lg font-bold text-gray-900 mb-4">Payment History</h3>
                       
                       {paymentLoading ? (
                         <div className="text-center py-8">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
-                          <p className="text-dark-secondary">Loading payment history...</p>
+                          <p className="text-gray-500">Loading payment history...</p>
                         </div>
                       ) : paymentHistory.length > 0 ? (
                         <>
@@ -1863,10 +1863,10 @@ export default function Profile() {
                                         payment.status === 'FAILED' ? 'bg-red-400' : 'bg-gray-400'
                                       }`}></div>
                                       <div>
-                                        <p className="text-dark-primary font-semibold">
+                                        <p className="text-gray-900 font-semibold">
                                             {payment.service?.title || 'Service Payment'}
                                           </p>
-                                          <p className="text-sm text-dark-muted">
+                                          <p className="text-sm text-gray-400">
                                             {new Date(payment.createdAt).toLocaleDateString('en-US', {
                                               year: 'numeric',
                                               month: 'short',
@@ -1879,13 +1879,13 @@ export default function Profile() {
                                     </div>
                                   </div>
                                   <div className="text-right">
-                                    <p className="text-lg font-bold text-dark-primary">
+                                    <p className="text-lg font-bold text-gray-900">
                                       {payment.currency} {typeof payment.amount === 'number' ? payment.amount.toFixed(2) : parseFloat(payment.amount || '0').toFixed(2)}
                                     </p>
                                     <p className={`text-sm font-semibold ${
-                                      payment.status === 'SUCCEEDED' ? 'text-dark-primary' : 
-                                      payment.status === 'PENDING' ? 'text-dark-secondary' : 
-                                      payment.status === 'FAILED' ? 'text-dark-muted' : 'text-dark-muted'
+                                      payment.status === 'SUCCEEDED' ? 'text-gray-900' : 
+                                      payment.status === 'PENDING' ? 'text-gray-500' : 
+                                      payment.status === 'FAILED' ? 'text-gray-400' : 'text-gray-400'
                                     }`}>
                                       {payment.status}
                                     </p>
@@ -1909,7 +1909,7 @@ export default function Profile() {
                                 <span>Previous</span>
                               </Button>
                               
-                              <span className="text-sm text-dark-secondary font-medium">
+                              <span className="text-sm text-gray-500 font-medium">
                                 Page {paymentPage} of {totalPaymentPages}
                               </span>
                               
@@ -1928,9 +1928,9 @@ export default function Profile() {
                         </>
                       ) : (
                         <div className="text-center py-8">
-                          <CreditCard className="h-12 w-12 text-dark-muted mx-auto mb-3" />
-                          <p className="text-dark-secondary mb-2">No payment history yet</p>
-                          <p className="text-sm text-dark-muted">Payments from your services will appear here</p>
+                          <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                          <p className="text-gray-500 mb-2">No payment history yet</p>
+                          <p className="text-sm text-gray-400">Payments from your services will appear here</p>
                         </div>
                       )}
                     </div>
@@ -1943,7 +1943,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-semibold text-gray-900">Recent Reviews</h2>
-                        <p className="text-sm text-dark-muted">
+                        <p className="text-sm text-gray-400">
                           Latest feedback from your clients
                         </p>
                       </div>
@@ -1955,7 +1955,7 @@ export default function Profile() {
                               {providerProfile.averageRating?.toFixed(1) || 'N/A'}
                             </span>
                           </div>
-                          <p className="text-xs text-dark-muted">{providerProfile.totalReviews || 0} reviews</p>
+                          <p className="text-xs text-gray-400">{providerProfile.totalReviews || 0} reviews</p>
                         </div>
                       </div>
                     </div>
@@ -1988,7 +1988,7 @@ export default function Profile() {
                                           className={`h-4 w-4 ${
                                             i < review.rating 
                                               ? 'text-yellow-400 fill-current' 
-                                              : 'text-dark-secondary'
+                                              : 'text-gray-500'
                                           }`}
                                         />
                                       ))}
@@ -1996,8 +1996,8 @@ export default function Profile() {
                                     <span className="text-sm font-medium text-yellow-300">
                                       {review.rating}.0
                                     </span>
-                                    <span className="text-sm text-dark-muted">•</span>
-                                    <span className="text-sm text-dark-muted">
+                                    <span className="text-sm text-gray-400">•</span>
+                                    <span className="text-sm text-gray-400">
                                       {new Date(review.createdAt).toLocaleDateString('en-US', {
                                         month: 'short',
                                         day: 'numeric',
@@ -2007,7 +2007,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                               </div>
-                              <blockquote className="text-dark-muted text-sm leading-relaxed border-l-3 border-blue-400/50 pl-4 italic">
+                              <blockquote className="text-gray-400 text-sm leading-relaxed border-l-3 border-blue-400/50 pl-4 italic">
                                 "{review.comment}"
                               </blockquote>
                             </div>
@@ -2018,7 +2018,7 @@ export default function Profile() {
                     
                     {/* View All Reviews Button */}
                     {providerProfile.reviews.length > 3 && (
-                      <div className="pt-4 border-t border-dark-primary mt-6">
+                      <div className="pt-4 border-t border-gray-200 mt-6">
                         <Button
                           variant="outline"
                           className="w-full justify-center flex items-center space-x-2 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
@@ -2036,7 +2036,7 @@ export default function Profile() {
               /* Loading provider data */
               <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-gray-800 p-8 text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-                <p className="text-dark-muted">Loading provider profile...</p>
+                <p className="text-gray-400">Loading provider profile...</p>
               </div>
             ) : (
               /* USER role content */
@@ -2069,7 +2069,7 @@ export default function Profile() {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                       <div>
                         <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Reviews</h2>
-                        <p className="text-sm text-dark-secondary font-medium">
+                        <p className="text-sm text-gray-500 font-medium">
                           {selectedReviewType === 'customer'
                             ? 'Feedback received from service providers'
                             : 'Customer feedback on your services'
@@ -2082,23 +2082,23 @@ export default function Profile() {
                         <select
                           value={selectedReviewType}
                           onChange={(e) => setSelectedReviewType(e.target.value as 'customer' | 'service')}
-                          className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-dark-primary backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
+                          className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-gray-900 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
                         >
                           {customerReviews.length > 0 && (
-                            <option value="customer" className="bg-dark-card text-dark-primary">⭐ Reviews from Providers</option>
+                            <option value="customer" className="bg-white text-gray-900">⭐ Reviews from Providers</option>
                           )}
                           {user.role === 'PROVIDER' && serviceReviews.length > 0 && (
-                            <option value="service" className="bg-dark-card text-dark-primary">Reviews from Customers</option>
+                            <option value="service" className="bg-white text-gray-900">Reviews from Customers</option>
                           )}
                         </select>
-                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark-primary h-4 w-4 pointer-events-none rotate-90" />
+                        <ChevronRight className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-900 h-4 w-4 pointer-events-none rotate-90" />
                       </div>
                     </div>
 
                     {reviewsLoading ? (
                       <div className="text-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
-                        <p className="text-dark-secondary">Loading reviews...</p>
+                        <p className="text-gray-500">Loading reviews...</p>
                       </div>
                     ) : selectedReviewType === 'customer' && customerReviews.length > 0 ? (
                       <div className="space-y-6">
@@ -2120,7 +2120,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary text-base">
+                                    <h4 className="font-semibold text-gray-900 text-base">
                                       {review.reviewer?.firstName || 'Provider'} {review.reviewer?.lastName || ''}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -2131,7 +2131,7 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted'
+                                                : 'text-gray-400'
                                             }`}
                                           />
                                         ))}
@@ -2139,10 +2139,10 @@ export default function Profile() {
                                       <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
-                                      <span className="text-sm text-dark-muted">• Provider</span>
+                                      <span className="text-sm text-gray-400">• Provider</span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">
                                         {review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -2153,7 +2153,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
+                                  <blockquote className="text-gray-500 text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -2164,7 +2164,7 @@ export default function Profile() {
 
                         {customerReviews.length > 5 && (
                           <div className="text-center pt-4 border-t border-gray-100">
-                            <span className="text-sm text-dark-secondary font-medium">
+                            <span className="text-sm text-gray-500 font-medium">
                               Showing 5 of {customerReviews.length} reviews
                             </span>
                           </div>
@@ -2186,7 +2186,7 @@ export default function Profile() {
                               <div className="flex-1">
                                 <div className="flex items-center justify-between mb-3">
                                   <div>
-                                    <h4 className="font-semibold text-dark-primary text-base">
+                                    <h4 className="font-semibold text-gray-900 text-base">
                                       {review.clientName || 'Anonymous Customer'}
                                     </h4>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -2197,7 +2197,7 @@ export default function Profile() {
                                             className={`h-4 w-4 ${
                                               i < (review.rating || 0)
                                                 ? 'text-yellow-400 fill-current'
-                                                : 'text-dark-muted'
+                                                : 'text-gray-400'
                                             }`}
                                           />
                                         ))}
@@ -2205,13 +2205,13 @@ export default function Profile() {
                                       <span className="text-sm font-medium text-yellow-600">
                                         {review.rating || 0}.0
                                       </span>
-                                      <span className="text-sm text-dark-muted">•</span>
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">•</span>
+                                      <span className="text-sm text-gray-400">
                                         {typeof review.service === 'object' ? review.service?.title : review.service || 'Service'}
                                       </span>
                                     </div>
                                     <div className="flex items-center mt-1">
-                                      <span className="text-sm text-dark-muted">
+                                      <span className="text-sm text-gray-400">
                                         {review.date || (review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-US', {
                                           month: 'short',
                                           day: 'numeric',
@@ -2222,7 +2222,7 @@ export default function Profile() {
                                   </div>
                                 </div>
                                 <div className="mt-3">
-                                  <blockquote className="text-dark-secondary text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
+                                  <blockquote className="text-gray-500 text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
                                     "{review.comment || 'No comment provided'}"
                                   </blockquote>
                                 </div>
@@ -2233,7 +2233,7 @@ export default function Profile() {
 
                         {serviceReviews.length > 5 && (
                           <div className="text-center pt-4 border-t border-gray-100">
-                            <span className="text-sm text-dark-secondary font-medium">
+                            <span className="text-sm text-gray-500 font-medium">
                               Showing 5 of {serviceReviews.length} reviews
                             </span>
                           </div>
@@ -2241,9 +2241,9 @@ export default function Profile() {
                       </div>
                     ) : (
                       <div className="text-center py-8">
-                        <Star className="w-16 h-16 text-dark-muted mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-dark-primary mb-2">No reviews yet</h3>
-                        <p className="text-dark-secondary text-sm">
+                        <Star className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No reviews yet</h3>
+                        <p className="text-gray-500 text-sm">
                           {selectedReviewType === 'customer'
                             ? 'Reviews from service providers will appear here once you receive feedback.'
                             : 'Reviews from customers will appear here once you receive feedback on your services.'
@@ -2262,7 +2262,7 @@ export default function Profile() {
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <h2 className="text-xl font-semibold text-gray-900">Payment History</h2>
-                        <p className="text-sm text-dark-muted">Your service payment history</p>
+                        <p className="text-sm text-gray-400">Your service payment history</p>
                       </div>
                       <Button
                         onClick={() => setShowPaymentHistory(!showPaymentHistory)}
@@ -2283,7 +2283,7 @@ export default function Profile() {
                         {paymentLoading ? (
                           <div className="text-center py-8">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-3"></div>
-                            <p className="text-dark-muted">Loading payment history...</p>
+                            <p className="text-gray-400">Loading payment history...</p>
                           </div>
                         ) : paymentHistory.length > 0 ? (
                           <>
@@ -2302,13 +2302,13 @@ export default function Profile() {
                                           <p className="text-gray-900 font-medium">
                                             {payment.service?.title || 'Service Payment'}
                                           </p>
-                                          <p className="text-sm text-dark-muted">
+                                          <p className="text-sm text-gray-400">
                                             {payment.provider?.user?.firstName && payment.provider?.user?.lastName 
                                               ? `Provider: ${payment.provider.user.firstName} ${payment.provider.user.lastName}`
                                               : 'Service Provider'
                                             }
                                           </p>
-                                          <p className="text-sm text-dark-muted">
+                                          <p className="text-sm text-gray-400">
                                             {new Date(payment.createdAt).toLocaleDateString('en-US', {
                                               year: 'numeric',
                                               month: 'short',
@@ -2327,7 +2327,7 @@ export default function Profile() {
                                       <p className={`text-sm font-medium ${
                                         payment.status === 'SUCCEEDED' ? 'text-green-400' : 
                                         payment.status === 'PENDING' ? 'text-yellow-400' : 
-                                        payment.status === 'FAILED' ? 'text-red-400' : 'text-dark-muted'
+                                        payment.status === 'FAILED' ? 'text-red-400' : 'text-gray-400'
                                       }`}>
                                         {payment.status}
                                       </p>
@@ -2351,7 +2351,7 @@ export default function Profile() {
                                   <span>Previous</span>
                                 </Button>
                                 
-                                <span className="text-sm text-dark-muted">
+                                <span className="text-sm text-gray-400">
                                   Page {paymentPage} of {totalPaymentPages}
                                 </span>
                                 
@@ -2370,9 +2370,9 @@ export default function Profile() {
                           </>
                         ) : (
                           <div className="text-center py-8">
-                            <CreditCard className="h-12 w-12 text-dark-muted mx-auto mb-3" />
-                            <p className="text-dark-muted mb-2">No payment history yet</p>
-                            <p className="text-sm text-dark-muted">Payments for services you book will appear here</p>
+                            <CreditCard className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                            <p className="text-gray-400 mb-2">No payment history yet</p>
+                            <p className="text-sm text-gray-400">Payments for services you book will appear here</p>
                           </div>
                         )}
                       </div>
@@ -2398,7 +2398,7 @@ export default function Profile() {
                   setShowUpdateServiceModal(false);
                   setSelectedService(null);
                 }}
-                className="text-dark-muted hover:text-gray-900 transition-colors"
+                className="text-gray-400 hover:text-gray-900 transition-colors"
                 title="Close modal"
               >
                 <X className="h-6 w-6" />
@@ -2409,7 +2409,7 @@ export default function Profile() {
             <div className="p-6 space-y-6">
               {/* Service Title */}
               <div>
-                <label className="block text-sm font-medium text-dark-muted mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Service Title *
                 </label>
                 <input
@@ -2423,7 +2423,7 @@ export default function Profile() {
 
               {/* Service Description */}
               <div>
-                <label className="block text-sm font-medium text-dark-muted mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Description
                 </label>
                 <textarea
@@ -2438,7 +2438,7 @@ export default function Profile() {
               {/* Price and Currency */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-dark-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
                     Price *
                   </label>
                   <input
@@ -2452,7 +2452,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-dark-muted mb-2">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">
                     Currency
                   </label>
                   <select
@@ -2470,7 +2470,7 @@ export default function Profile() {
 
               {/* Tags */}
               <div>
-                <label className="block text-sm font-medium text-dark-muted mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Tags (comma-separated)
                 </label>
                 <input
@@ -2484,7 +2484,7 @@ export default function Profile() {
 
               {/* Working Time */}
               <div>
-                <label className="block text-sm font-medium text-dark-muted mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Working Time (comma-separated)
                 </label>
                 <input
@@ -2499,7 +2499,7 @@ export default function Profile() {
 
               {/* Location Picker */}
               <div>
-                <label className="block text-sm font-medium text-dark-muted mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Service Location
                 </label>
                 <LocationPickerAdvanced
@@ -2517,7 +2517,7 @@ export default function Profile() {
               {/* Images */}
               {/* Images */}
               <div>
-                <label className="block text-sm font-medium text-dark-muted mb-2">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
                   Upload Images
                 </label>
                 <div className="space-y-3">
@@ -2538,7 +2538,7 @@ export default function Profile() {
                   )}
                   {serviceFormData.images.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-sm text-dark-muted">Uploaded images:</p>
+                      <p className="text-sm text-gray-400">Uploaded images:</p>
                       <div className="flex flex-wrap gap-2">
                         {serviceFormData.images.map((imageUrl, index) => (
                           <div key={index} className="relative">
@@ -2571,7 +2571,7 @@ export default function Profile() {
                   onChange={(e) => handleServiceFormChange('isActive', e.target.checked)}
                   className="rounded border-gray-300 bg-white text-orange-500 focus:ring-orange-400 focus:ring-offset-0"
                 />
-                <label htmlFor="isActive" className="text-sm font-medium text-dark-muted">
+                <label htmlFor="isActive" className="text-sm font-medium text-gray-400">
                   Service is active and visible to clients
                 </label>
               </div>
@@ -2640,7 +2640,7 @@ export default function Profile() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Delete Company</h3>
               </div>
-              <p className="text-dark-muted mb-6">
+              <p className="text-gray-400 mb-6">
                 Are you sure you want to delete this company? This action cannot be undone.
               </p>
               <div className="flex space-x-3">
@@ -2677,7 +2677,7 @@ export default function Profile() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Delete Provider Profile</h3>
               </div>
-              <p className="text-dark-muted mb-6">
+              <p className="text-gray-400 mb-6">
                 Are you sure you want to delete your provider profile? This action cannot be undone. 
                 All your services will be deactivated and you'll need to recreate your provider profile if you want to become a provider again.
               </p>

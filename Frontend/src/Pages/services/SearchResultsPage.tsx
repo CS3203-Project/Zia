@@ -6,6 +6,7 @@ import { hybridSearchApi } from '../../api/hybridSearchApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
 import SearchResultsMap from '../../components/shared/SearchResultsMap';
 import type { LocationParams } from '../../api/hybridSearchApi';
+import Button from '../../components/shared/Button';
 
 interface LocationState {
   results: HybridSearchResult[];
@@ -149,28 +150,28 @@ const SearchResultsPage: React.FC = () => {
               onClick={() => navigate(-1)}
               className="mr-4 p-2 hover:bg-orange-50 rounded-full transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-dark-muted" />
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
             </button>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-gray-900" />
+              <Sparkles className="w-6 h-6 text-orange-600" />
               <h1 className="text-2xl font-bold text-gray-900">
                 {getSearchTypeLabel()}
               </h1>
             </div>
           </div>
-          
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-gray-200">
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex flex-col gap-4">
               {/* Search Info */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   {query && (
-                    <p className="text-dark-muted">
+                    <p className="text-gray-500">
                       Searched for: <span className="font-semibold text-gray-900">"{query}"</span>
                     </p>
                   )}
                   {locationFilter && (
-                    <p className="text-dark-muted flex items-center gap-1">
+                    <p className="text-gray-500 flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
                       Location: <span className="font-semibold text-gray-900">
                         {locationFilter.address || `${locationFilter.latitude?.toFixed(3)}, ${locationFilter.longitude?.toFixed(3)}`}
@@ -178,57 +179,57 @@ const SearchResultsPage: React.FC = () => {
                       </span>
                     </p>
                   )}
-                  <p className="text-sm text-blue-400">
+                  <p className="text-sm text-gray-500">
                     Found {sortedResults.length} matching services
                     {hasLocationResults && ` • Showing distances from your location`}
                   </p>
                   {/* Add search message notification if radius expansion occurred */}
                   {state.message && (
-                    <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-3 mt-2">
-                      <p className="text-sm text-blue-200">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+                      <p className="text-sm text-blue-700">
                         {state.message}
                       </p>
                     </div>
                   )}
                 </div>
-                
+
                 {/* Controls */}
                 <div className="flex items-center gap-2">
                   {/* Filters Toggle */}
                   <button
                     onClick={() => setShowFilters(!showFilters)}
                     className={`px-3 py-2 rounded-lg text-sm border transition-colors ${
-                      showFilters 
-                        ? 'bg-blue-600 text-gray-900 border-blue-600' 
-                        : 'bg-orange-50 text-dark-muted border-gray-200 hover:bg-orange-100'
+                      showFilters
+                        ? 'bg-orange-500 text-white border-orange-500'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-orange-50 hover:text-orange-700'
                     }`}
                   >
                     <SlidersHorizontal className="w-4 h-4 mr-1 inline" />
                     Filters
                   </button>
-                  
+
                   {/* Sort */}
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                    className="px-3 py-2 bg-orange-50 backdrop-blur-sm border border-gray-200 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="relevance" className="bg-gray-800 text-gray-900">Most Relevant</option>
+                    <option value="relevance" className="bg-white text-gray-900">Most Relevant</option>
                     {hasLocationResults && (
-                      <option value="distance" className="bg-gray-800 text-gray-900">Nearest First</option>
+                      <option value="distance" className="bg-white text-gray-900">Nearest First</option>
                     )}
-                    <option value="price" className="bg-gray-800 text-gray-900">Lowest Price</option>
-                    <option value="rating" className="bg-gray-800 text-gray-900">Best Match</option>
+                    <option value="price" className="bg-white text-gray-900">Lowest Price</option>
+                    <option value="rating" className="bg-white text-gray-900">Best Match</option>
                   </select>
-                  
+
                   {/* View Mode */}
-                  <div className="flex items-center bg-orange-50 backdrop-blur-sm rounded-lg p-1 border border-gray-200">
+                  <div className="flex items-center bg-gray-50 rounded-lg p-1 border border-gray-200">
                     <button
                       onClick={() => setViewMode('grid')}
                       className={`p-2 rounded-md transition-colors ${
-                        viewMode === 'grid' 
-                          ? 'bg-orange-100 text-gray-900 shadow-sm' 
-                          : 'text-dark-muted hover:text-dark-muted'
+                        viewMode === 'grid'
+                          ? 'bg-orange-100 text-orange-700 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       <Grid3X3 className="w-4 h-4" />
@@ -236,9 +237,9 @@ const SearchResultsPage: React.FC = () => {
                     <button
                       onClick={() => setViewMode('list')}
                       className={`p-2 rounded-md transition-colors ${
-                        viewMode === 'list' 
-                          ? 'bg-orange-100 text-gray-900 shadow-sm' 
-                          : 'text-dark-muted hover:text-dark-muted'
+                        viewMode === 'list'
+                          ? 'bg-orange-100 text-orange-700 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       <List className="w-4 h-4" />
@@ -253,7 +254,7 @@ const SearchResultsPage: React.FC = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Location Filter */}
                     <div>
-                      <label className="block text-sm font-medium text-dark-muted mb-2">
+                      <label className="block text-sm font-medium text-gray-500 mb-2">
                         Refine Location
                       </label>
                       <LocationPickerAdvanced
@@ -268,7 +269,7 @@ const SearchResultsPage: React.FC = () => {
 
                     {/* Price Range Filter */}
                     <div className="space-y-3">
-                      <label className="block text-sm font-medium text-dark-muted">
+                      <label className="block text-sm font-medium text-gray-500">
                         Price Range (LKR)
                       </label>
                       <div className="grid grid-cols-2 gap-2">
@@ -280,7 +281,7 @@ const SearchResultsPage: React.FC = () => {
                             ...prev,
                             min: e.target.value ? parseFloat(e.target.value) : undefined
                           }))}
-                          className="px-3 py-2 bg-orange-50 border border-gray-200 rounded-lg text-gray-900 placeholder-dark-muted focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                         <input
                           type="number"
@@ -290,7 +291,7 @@ const SearchResultsPage: React.FC = () => {
                             ...prev,
                             max: e.target.value ? parseFloat(e.target.value) : undefined
                           }))}
-                          className="px-3 py-2 bg-orange-50 border border-gray-200 rounded-lg text-gray-900 placeholder-dark-muted focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                       </div>
                     </div>
@@ -298,13 +299,12 @@ const SearchResultsPage: React.FC = () => {
 
                   {/* Apply Filters Button */}
                   <div className="flex justify-end">
-                    <button
+                    <Button
                       onClick={handleRefineSearch}
                       disabled={isRefining}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-900 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isRefining ? 'Applying...' : 'Apply Filters'}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}

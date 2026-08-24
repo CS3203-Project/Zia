@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, ShieldCheck, Lock } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Lock, Loader2 } from 'lucide-react';
 import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { PayHereCheckout } from '../../components/Payment';
 import { currencyConfig } from '../../services/paymentConfig';
 import { useAuth } from '../../contexts/AuthContext';
+import Button from '../../components/shared/Button';
+import Chip from '../../components/shared/Chip';
 import toast from 'react-hot-toast';
 
 const CheckoutPage: React.FC = () => {
@@ -12,11 +14,11 @@ const CheckoutPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { isLoggedIn, user } = useAuth();
-  
+
   const [service, setService] = useState<ServiceResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<'review' | 'payment' | 'success'>('review');
-  
+
   // Get amount from URL params if provided
   const customAmount = searchParams.get('amount');
   const returnUrl = searchParams.get('return') || '/services';
@@ -85,12 +87,10 @@ const CheckoutPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-        <div className="container mx-auto px-4 py-12">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-dark-secondary">Loading service details...</p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-10 w-10 text-orange-500 animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">Loading service details...</p>
         </div>
       </div>
     );
@@ -98,18 +98,13 @@ const CheckoutPage: React.FC = () => {
 
   if (!service) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-        <div className="container mx-auto px-4 py-12">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-dark-primary mb-4">Service Not Found</h1>
-            <p className="text-dark-secondary mb-6">The service you're looking for doesn't exist.</p>
-            <button
-              onClick={handleContinueShopping}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Browse Services
-            </button>
-          </div>
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center px-4">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Service Not Found</h1>
+          <p className="text-gray-500 mb-6">The service you're looking for doesn't exist.</p>
+          <Button onClick={handleContinueShopping}>
+            Browse Services
+          </Button>
         </div>
       </div>
     );
@@ -120,13 +115,12 @@ const CheckoutPage: React.FC = () => {
   const totalAmount = servicePrice + platformFee;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-secondary to-blue-50">
-      
-      <main className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+      <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Back button */}
         <button
           onClick={handleBackToService}
-          className="flex items-center text-dark-secondary hover:text-dark-primary mb-6 transition-colors"
+          className="inline-flex items-center text-sm font-medium text-gray-600 hover:text-orange-700 mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Service
@@ -135,28 +129,28 @@ const CheckoutPage: React.FC = () => {
         {step === 'review' && (
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-dark-primary mb-2">Review Your Order</h1>
-              <p className="text-dark-secondary">Please review the details before proceeding to payment</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Review Your Order</h1>
+              <p className="text-gray-500">Please review the details before proceeding to payment</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Service Details */}
-              <div className="bg-dark-card rounded-xl shadow-lg p-6">
-                <h2 className="text-xl font-semibold text-dark-primary mb-4">Service Details</h2>
-                
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Service Details</h2>
+
                 <div className="flex items-start space-x-4 mb-6">
                   {service.images && service.images.length > 0 && (
                     <img
                       src={service.images[0]}
                       alt={service.title}
-                      className="w-20 h-20 object-cover rounded-lg"
+                      className="w-20 h-20 object-cover rounded-xl flex-shrink-0"
                     />
                   )}
-                  <div className="flex-1">
-                    <h3 className="text-lg font-medium text-dark-primary mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
                       {service.title}
                     </h3>
-                    <p className="text-dark-secondary text-sm line-clamp-3">
+                    <p className="text-gray-500 text-sm line-clamp-3">
                       {service.description}
                     </p>
                   </div>
@@ -164,65 +158,60 @@ const CheckoutPage: React.FC = () => {
 
                 {service.tags && service.tags.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm font-medium text-dark-secondary mb-2">Categories:</p>
+                    <p className="text-sm font-medium text-gray-500 mb-2">Categories:</p>
                     <div className="flex flex-wrap gap-2">
                       {service.tags.slice(0, 3).map((tag, index) => (
-                        <span
-                          key={index}
-                          className="bg-dark-tertiary text-blue-400 text-xs px-2 py-1 rounded-full"
-                        >
+                        <Chip key={index} tabIndex={-1} className="h-7 px-3 text-xs pointer-events-none">
                           {tag}
-                        </span>
+                        </Chip>
                       ))}
                     </div>
                   </div>
                 )}
 
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-dark-secondary">Service Price:</span>
-                    <span className="font-medium text-dark-primary">
+                <div className="border-t border-gray-100 pt-1 divide-y divide-gray-100">
+                  <div className="flex justify-between items-center py-3">
+                    <span className="text-gray-500">Service Price:</span>
+                    <span className="font-medium text-gray-900">
                       {currencyConfig.formatCurrency(servicePrice, service.currency)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-dark-secondary">Platform Fee (5%):</span>
-                    <span className="font-medium text-dark-primary">
+                  <div className="flex justify-between items-center py-3">
+                    <span className="text-gray-500">Platform Fee (5%):</span>
+                    <span className="font-medium text-gray-900">
                       {currencyConfig.formatCurrency(platformFee, service.currency)}
                     </span>
                   </div>
-                  <div className="border-t pt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-semibold text-dark-primary">Total:</span>
-                      <span className="text-lg font-bold text-blue-600">
-                        {currencyConfig.formatCurrency(totalAmount, service.currency)}
-                      </span>
-                    </div>
+                  <div className="flex justify-between items-center pt-3">
+                    <span className="text-lg font-semibold text-gray-900">Total:</span>
+                    <span className="text-lg font-bold text-orange-600">
+                      {currencyConfig.formatCurrency(totalAmount, service.currency)}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Security & Terms */}
               <div className="space-y-6">
-                <div className="bg-dark-card rounded-xl shadow-lg p-6">
-                  <h2 className="text-xl font-semibold text-dark-primary mb-4">Security & Trust</h2>
-                  
+                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Security &amp; Trust</h2>
+
                   <div className="space-y-4">
                     <div className="flex items-start space-x-3">
-                      <ShieldCheck className="w-5 h-5 text-green-500 mt-0.5" />
+                      <ShieldCheck className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
                       <div>
-                        <h3 className="font-medium text-dark-primary">Secure Payment</h3>
-                        <p className="text-sm text-dark-secondary">
+                        <h3 className="font-medium text-gray-900">Secure Payment</h3>
+                        <p className="text-sm text-gray-500">
                           Your payment information is encrypted and secure
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start space-x-3">
-                      <Lock className="w-5 h-5 text-green-500 mt-0.5" />
+                      <Lock className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0" />
                       <div>
-                        <h3 className="font-medium text-dark-primary">Money Back Guarantee</h3>
-                        <p className="text-sm text-dark-secondary">
+                        <h3 className="font-medium text-gray-900">Money Back Guarantee</h3>
+                        <p className="text-sm text-gray-500">
                           Get a full refund if you're not satisfied
                         </p>
                       </div>
@@ -230,20 +219,21 @@ const CheckoutPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                  <h3 className="font-medium text-blue-900 mb-2">Important Note</h3>
-                  <p className="text-sm text-blue-700">
-                    By proceeding with this payment, you agree to our terms of service and 
+                <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4">
+                  <h3 className="font-medium text-orange-900 mb-2">Important Note</h3>
+                  <p className="text-sm text-orange-800/80">
+                    By proceeding with this payment, you agree to our terms of service and
                     understand that funds will be held in escrow until service completion.
                   </p>
                 </div>
 
-                <button
+                <Button
                   onClick={() => setStep('payment')}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-4 px-6 rounded-xl transition-colors duration-200"
+                  size="lg"
+                  className="w-full shadow-orange-500/30"
                 >
                   Proceed to Payment
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -252,25 +242,27 @@ const CheckoutPage: React.FC = () => {
         {step === 'payment' && (
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-dark-primary mb-2">Complete Your Payment</h1>
-              <p className="text-dark-secondary">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Payment</h1>
+              <p className="text-gray-500">
                 Total: {currencyConfig.formatCurrency(totalAmount, service.currency)}
               </p>
             </div>
 
-            <PayHereCheckout
-              serviceId={service.id}
-              amount={totalAmount}
-              currency={service.currency}
-              serviceName={service.title}
-              onSuccess={handlePaymentSuccess}
-              onError={handlePaymentError}
-            />
+            <div className="bg-gradient-to-br from-orange-500 to-amber-600 rounded-3xl shadow-xl shadow-orange-500/20 p-6 sm:p-8">
+              <PayHereCheckout
+                serviceId={service.id}
+                amount={totalAmount}
+                currency={service.currency}
+                serviceName={service.title}
+                onSuccess={handlePaymentSuccess}
+                onError={handlePaymentError}
+              />
+            </div>
 
             <div className="mt-6 text-center">
               <button
                 onClick={() => setStep('review')}
-                className="text-dark-secondary hover:text-dark-primary text-sm"
+                className="text-gray-500 hover:text-orange-700 text-sm font-medium transition-colors"
               >
                 ← Back to Review
               </button>
@@ -280,19 +272,19 @@ const CheckoutPage: React.FC = () => {
 
         {step === 'success' && (
           <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-dark-card rounded-xl shadow-lg p-8">
-              <div className="w-16 h-16 bg-dark-tertiary rounded-full flex items-center justify-center mx-auto mb-4">
-                <ShieldCheck className="w-8 h-8 text-green-600" />
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-xl p-8">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <ShieldCheck className="w-8 h-8 text-emerald-600" />
               </div>
-              
-              <h1 className="text-3xl font-bold text-dark-primary mb-4">Payment Successful!</h1>
-              <p className="text-dark-secondary mb-6">
+
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Payment Successful!</h1>
+              <p className="text-gray-500 mb-6">
                 Thank you for your payment. You can now contact the service provider to arrange your service.
               </p>
-              
-              <div className="bg-dark-secondary rounded-lg p-4 mb-6">
-                <h3 className="font-medium text-dark-primary mb-2">What's Next?</h3>
-                <p className="text-sm text-dark-secondary">
+
+              <div className="bg-orange-50 rounded-2xl p-4 mb-6 text-left">
+                <h3 className="font-medium text-gray-900 mb-2">What's Next?</h3>
+                <p className="text-sm text-gray-600">
                   • Check your email for payment confirmation<br />
                   • Contact the provider to schedule your service<br />
                   • Your payment is held securely until service completion
@@ -300,28 +292,19 @@ const CheckoutPage: React.FC = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                  onClick={handleBackToService}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"
-                >
+                <Button onClick={handleBackToService} className="sm:px-8">
                   Contact Provider
-                </button>
-                <button
-                  onClick={handleContinueShopping}
-                  className="border border-dark-primary text-dark-secondary hover:bg-dark-secondary px-6 py-3 rounded-lg transition-colors"
-                >
+                </Button>
+                <Button onClick={handleContinueShopping} variant="outline" className="sm:px-8">
                   Browse More Services
-                </button>
+                </Button>
               </div>
             </div>
           </div>
         )}
       </main>
-      
     </div>
   );
 };
 
 export default CheckoutPage;
-
-

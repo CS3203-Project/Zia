@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Star, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import apiClient from '../../api/axios';
 import { serviceApi } from '../../api/serviceApi';
+import Button from '../../components/shared/Button';
 
 const RateServicePage: React.FC = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -9,6 +11,7 @@ const RateServicePage: React.FC = () => {
   const [service, setService] = useState<any>(null);
   const [existingReview, setExistingReview] = useState<any>(null);
   const [rating, setRating] = useState<number>(0);
+  const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +20,7 @@ const RateServicePage: React.FC = () => {
   useEffect(() => {
     if (!serviceId) return;
     setLoading(true);
-    
+
     // Try to fetch service directly first
     const fetchServiceData = async () => {
       try {
@@ -29,7 +32,7 @@ const RateServicePage: React.FC = () => {
         }
       } catch (error) {
         console.log('Failed to get service by ID, trying conversation ID:', error);
-        
+
         // If direct service fetch fails, try getting service by conversation ID
         try {
           const conversationResponse = await serviceApi.getServiceByConversationId(serviceId);
@@ -71,12 +74,12 @@ const RateServicePage: React.FC = () => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    
+
     if (!service) {
       setError('Service information not available');
       return;
     }
-    
+
     try {
       if (existingReview) {
         await apiClient.patch(`/service-reviews/${existingReview.id}`, { rating, comment });
@@ -91,32 +94,88 @@ const RateServicePage: React.FC = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!service) return <div>Service not found.</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-10 w-10 text-orange-500 animate-spin mx-auto mb-4" />
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!service) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center px-4">
+        <p className="text-gray-500">Service not found.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="rate-service-page" style={{ maxWidth: 500, margin: '2rem auto', background: '#fff', padding: 24, borderRadius: 12, boxShadow: '0 2px 8px #eee' }}>
-      <h2>Rate Service</h2>
-      <h3 style={{ marginBottom: 8 }}>{service.title || 'Service'}</h3>
-      <form onSubmit={handleSubmit}>
-        <div style={{ margin: '1rem 0' }}>
-          <label>Rating:</label>
-          <div style={{ fontSize: 28 }}>
-            {[1,2,3,4,5].map(star => (
-              <span key={star} style={{ cursor: 'pointer', color: star <= rating ? '#f5b301' : '#ccc' }} onClick={() => setRating(star)}>&#9733;</span>
-            ))}
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center px-4 py-16">
+      <div className="w-full max-w-lg bg-white rounded-3xl border border-gray-100 shadow-xl p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">Rate Service</h2>
+        <p className="text-gray-500 mb-6">{service.title || 'Service'}</p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded-full"
+                >
+                  <Star
+                    className={`h-9 w-9 transition-colors ${
+                      star <= (hoverRating || rating) ? 'text-amber-500' : 'text-gray-300'
+                    }`}
+                    fill="currentColor"
+                  />
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-        <div style={{ margin: '1rem 0' }}>
-          <label>Comment:</label>
-          <textarea value={comment} onChange={e => setComment(e.target.value)} rows={4} style={{ width: '100%' }} placeholder="Share your experience..." />
-        </div>
-        {error && <div style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
-        {success && <div style={{ color: 'green', marginBottom: 8 }}>{success}</div>}
-        <button type="submit" style={{ padding: '0.5rem 1.5rem', background: '#007bff', color: '#fff', border: 'none', borderRadius: 6, fontWeight: 600 }}>
-          {existingReview ? 'Update Review' : 'Submit Review'}
-        </button>
-      </form>
+
+          <div className="mb-6">
+            <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+              Comment
+            </label>
+            <textarea
+              id="comment"
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              rows={4}
+              placeholder="Share your experience..."
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+            />
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 text-sm">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 text-sm">
+              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+              {success}
+            </div>
+          )}
+
+          <Button type="submit" size="lg" className="w-full shadow-orange-500/30">
+            {existingReview ? 'Update Review' : 'Submit Review'}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };

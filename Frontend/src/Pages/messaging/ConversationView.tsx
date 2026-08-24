@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, AlertTriangle, MessageCircle } from 'lucide-react';
 import { MessagingProvider, MessageThread, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
@@ -7,6 +8,7 @@ import type { UserProfile } from '../../api/userApi';
 import ConfirmationPanel from '../../components/Messaging/ConfirmationPanel';
 import RatingModal from '../../components/Messaging/RatingModal';
 import UserDetailsModal from '../../components/Messaging/UserDetailsModal';
+import Button from '../../components/shared/Button';
 
 const ConversationViewContent: React.FC<{ currentUser: UserProfile; conversationId: string }> = ({ currentUser, conversationId }) => {
   const [currentUserRole, setCurrentUserRole] = useState<'USER' | 'PROVIDER'>('USER');
@@ -188,31 +190,15 @@ const ConversationViewInner: React.FC<{
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
         <main className="flex-grow flex items-center justify-center px-4 py-6 mt-16">
-          <div className="text-center p-8 rounded-xl bg-orange-50 backdrop-blur-sm border border-gray-200 relative overflow-hidden max-w-md w-full">
-            <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse rounded-xl"></div>
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-100 flex items-center justify-center relative z-10">
-              <svg className="w-8 h-8 text-gray-900/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
+          <div className="text-center p-8 rounded-2xl bg-white border border-gray-100 shadow-xl max-w-md w-full">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center">
+              <AlertTriangle className="w-8 h-8 text-orange-500" />
             </div>
-            <p className="text-lg font-medium text-gray-900 mb-2 relative z-10">Error loading conversation</p>
-            <p className="text-sm text-gray-900/60 mb-6 relative z-10">{conversationError}</p>
-            <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 relative z-10">
-              <button 
-                onClick={handleBackToHub}
-                className="px-6 py-3 bg-orange-100 text-gray-900 rounded-xl hover:bg-orange-100 transition-all duration-300 font-medium border border-gray-300 hover:border-orange-300 relative overflow-hidden group"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                <span className="relative z-10">Back to Hub</span>
-              </button>
-              <button 
-                onClick={handleBackToHub}
-                className="px-6 py-3 bg-orange-100 text-gray-900 rounded-xl hover:bg-orange-100 transition-all duration-300 font-medium border border-gray-300 hover:border-orange-300 relative overflow-hidden group"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                <span className="relative z-10">Back to Hub</span>
-              </button>
-            </div>
+            <p className="text-lg font-medium text-gray-900 mb-2">Error loading conversation</p>
+            <p className="text-sm text-gray-500 mb-6">{conversationError}</p>
+            <Button onClick={handleBackToHub} variant="outline" size="lg">
+              Back to Hub
+            </Button>
           </div>
         </main>
       </div>
@@ -226,43 +212,32 @@ const ConversationViewInner: React.FC<{
           {/* Header */}
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <button
-                onClick={handleBackToHub}
-                className="flex items-center space-x-2 text-gray-900/90 hover:text-gray-900 px-4 py-2 rounded-xl hover:bg-orange-50 transition-all duration-300 border border-gray-200 hover:border-gray-300 backdrop-blur-sm relative overflow-hidden group"
-              >
-                {/* Glitter effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent transform -skew-x-12 group-hover:animate-pulse"></div>
-                <svg className="w-5 h-5 relative z-10 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <span className="relative z-10 font-medium">Back to Hub</span>
-              </button>
-              
-              {activeConversation?.title && 
+              <Button onClick={handleBackToHub} variant="outline" className="group">
+                <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" />
+                Back to Hub
+              </Button>
+
+              {activeConversation?.title &&
                !activeConversation.title.includes('Chat with') && (
-                <div className="px-4 py-2 rounded-xl bg-orange-50 backdrop-blur-sm border border-gray-200 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse"></div>
-                  <h1 className="text-xl font-semibold text-gray-900 relative z-10">{activeConversation.title}</h1>
+                <div className="px-4 py-2 rounded-xl bg-orange-50 border border-orange-100">
+                  <h1 className="text-xl font-semibold text-gray-900">{activeConversation.title}</h1>
                 </div>
               )}
             </div>
           </div>
           
           {/* Main Content */}
-          <div className="bg-white rounded-2xl shadow-2xl flex-1 flex flex-col md:flex-row overflow-hidden border border-gray-200 relative">
-            {/* Background gradient effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-pulse rounded-2xl"></div>
-            
+          <div className="bg-white rounded-2xl shadow-xl flex-1 flex flex-col md:flex-row overflow-hidden border border-gray-100 relative">
             {conversationLoading || loading ? (
               <div className="flex-1 flex flex-col relative z-10">
                 {/* Mobile Toggle Buttons - Only visible on small screens during loading */}
-                <div className="md:hidden flex border-b border-gray-200 bg-gray-50 backdrop-blur-sm">
+                <div className="md:hidden flex border-b border-gray-100 bg-gray-50">
                   <button
                     onClick={() => setShowChatOnMobile(false)}
                     className={`flex-1 py-3 px-4 text-sm font-medium transition-all duration-300 ${
-                      !showChatOnMobile 
-                        ? 'bg-orange-100 text-gray-900 border-b-2 border-orange-500' 
-                        : 'text-gray-900/60 hover:text-gray-900 hover:bg-orange-50'
+                      !showChatOnMobile
+                        ? 'bg-orange-50 text-orange-700 border-b-2 border-orange-500'
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-orange-50/60'
                     }`}
                   >
                     Confirmation
@@ -270,9 +245,9 @@ const ConversationViewInner: React.FC<{
                   <button
                     onClick={() => setShowChatOnMobile(true)}
                     className={`flex-1 py-3 px-4 text-sm font-medium transition-all duration-300 ${
-                      showChatOnMobile 
-                        ? 'bg-orange-100 text-gray-900 border-b-2 border-orange-500' 
-                        : 'text-gray-900/60 hover:text-gray-900 hover:bg-orange-50'
+                      showChatOnMobile
+                        ? 'bg-orange-50 text-orange-700 border-b-2 border-orange-500'
+                        : 'text-gray-500 hover:text-gray-900 hover:bg-orange-50/60'
                     }`}
                   >
                     Chat
@@ -282,7 +257,7 @@ const ConversationViewInner: React.FC<{
                 {/* Mobile responsive skeleton loading */}
                 <div className="flex flex-col h-full">
                   {/* Left Side Skeleton - Confirmation Panel */}
-                  <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 backdrop-blur-sm border-b md:border-b-0 md:border-r border-gray-200 p-4 md:p-6 space-y-4 overflow-y-auto h-full md:max-h-none ${
+                  <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 border-b md:border-b-0 md:border-r border-gray-100 p-4 md:p-6 space-y-4 overflow-y-auto h-full md:max-h-none ${
                     showChatOnMobile ? 'hidden md:flex' : 'flex'
                   }`}>
                     {/* User info skeleton */}

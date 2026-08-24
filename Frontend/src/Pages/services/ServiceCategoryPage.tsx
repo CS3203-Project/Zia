@@ -8,6 +8,7 @@ import type { ServiceResponse } from '../../api/serviceApi';
 import type { Category } from '../../api/categoryApi';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import Orb from '../../components/shared/Orb';
+import Button from '../../components/shared/Button';
 
 const SubCategorySidebar: React.FC<{
   category: Category;
@@ -29,7 +30,7 @@ const SubCategorySidebar: React.FC<{
   
   return (
     <div className="w-full md:w-1/4 lg:w-1/5 p-4">
-      <div className="bg-white rounded-xl shadow-sm p-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
         <h3 className="text-xs font-semibold uppercase tracking-wide mb-3 text-gray-500">Subcategories</h3>
         <ul className="space-y-1">
           <li>
@@ -38,24 +39,24 @@ const SubCategorySidebar: React.FC<{
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
                 selectedSubCategory === null
                   ? 'bg-orange-500 text-white font-semibold'
-                  : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600'
+                  : 'text-gray-600 hover:bg-orange-50 hover:text-orange-700'
               }`}
             >
               <div className="flex items-center justify-between">
                 <span>All {category.name}</span>
                 {isLoading && allServices.length === 0 ? (
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    selectedSubCategory === null 
-                      ? 'bg-white/20 text-dark-primary' 
-                      : 'bg-dark-tertiary text-dark-secondary'
+                    selectedSubCategory === null
+                      ? 'bg-white/20 text-white'
+                      : 'bg-gray-100 text-gray-600'
                   }`}>
                     <Loader2 className="w-3 h-3 animate-spin inline" />
                   </span>
                 ) : (
                   <span className={`text-xs px-2 py-1 rounded-full ${
-                    selectedSubCategory === null 
-                      ? 'bg-white/20 text-dark-primary' 
-                      : 'bg-dark-tertiary text-dark-secondary'
+                    selectedSubCategory === null
+                      ? 'bg-white/20 text-white'
+                      : 'bg-gray-100 text-gray-600'
                   }`}>
                     {getAllCategoryServiceCount()}
                   </span>
@@ -72,24 +73,24 @@ const SubCategorySidebar: React.FC<{
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${
                     selectedSubCategory === sub.id
                       ? 'bg-orange-500 text-white font-semibold'
-                      : 'text-dark-secondary hover:bg-orange-50 hover:text-orange-600'
+                      : 'text-gray-600 hover:bg-orange-50 hover:text-orange-700'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span>{sub.name}</span>
                     {isLoading && allServices.length === 0 ? (
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        selectedSubCategory === sub.id 
-                          ? 'bg-white/20 text-dark-primary' 
-                          : 'bg-dark-tertiary text-dark-secondary'
+                        selectedSubCategory === sub.id
+                          ? 'bg-white/20 text-white'
+                          : 'bg-gray-100 text-gray-600'
                       }`}>
                         <Loader2 className="w-3 h-3 animate-spin inline" />
                       </span>
                     ) : (
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        selectedSubCategory === sub.id 
-                          ? 'bg-white/20 text-dark-primary' 
-                          : 'bg-dark-tertiary text-dark-secondary'
+                        selectedSubCategory === sub.id
+                          ? 'bg-white/20 text-white'
+                          : 'bg-gray-100 text-gray-600'
                       }`}>
                         {serviceCount}
                       </span>
@@ -289,33 +290,33 @@ const ServiceCategoryPage: React.FC = () => {
         
         <div className="container mx-auto px-4 pt-20 pb-8 relative z-10">
           {/* Header Skeleton */}
-          <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10 border border-white/30">
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-10 mb-10">
             <div className="animate-pulse">
               {/* Breadcrumb skeleton */}
               <div className="flex items-center space-x-2 mb-6">
-                <div className="h-4 w-12 bg-dark-tertiary rounded"></div>
-                <div className="h-4 w-4 bg-dark-tertiary rounded"></div>
-                <div className="h-4 w-20 bg-dark-tertiary rounded"></div>
-                <div className="h-4 w-4 bg-dark-tertiary rounded"></div>
-                <div className="h-4 w-32 bg-dark-tertiary rounded"></div>
+                <div className="h-4 w-12 bg-gray-200 rounded"></div>
+                <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                <div className="h-4 w-4 bg-gray-200 rounded"></div>
+                <div className="h-4 w-32 bg-gray-200 rounded"></div>
               </div>
               {/* Title skeleton */}
-              <div className="h-12 bg-dark-tertiary rounded w-2/3 mb-4"></div>
+              <div className="h-12 bg-gray-200 rounded w-2/3 mb-4"></div>
               {/* Description skeleton */}
-              <div className="h-6 bg-dark-tertiary rounded w-full mb-2"></div>
-              <div className="h-6 bg-dark-tertiary rounded w-3/4"></div>
+              <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
+              <div className="h-6 bg-gray-200 rounded w-3/4"></div>
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row md:-mx-4">
             {/* Sidebar Skeleton */}
             <div className="w-full md:w-1/4 lg:w-1/5 p-4">
-              <div className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 p-6">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="animate-pulse">
-                  <div className="h-6 bg-dark-tertiary rounded w-3/4 mb-4"></div>
+                  <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
                   <div className="space-y-3">
                     {[...Array(4)].map((_, i) => (
-                      <div key={i} className="h-10 bg-dark-tertiary rounded-xl"></div>
+                      <div key={i} className="h-10 bg-gray-200 rounded-xl"></div>
                     ))}
                   </div>
                 </div>
@@ -325,13 +326,13 @@ const ServiceCategoryPage: React.FC = () => {
             {/* Main Content Skeleton */}
             <div className="w-full md:w-3/4 lg:w-4/5 p-4">
               {/* Controls Skeleton */}
-              <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 mb-8">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
                 <div className="animate-pulse flex justify-between items-center">
                   <div>
-                    <div className="h-8 bg-dark-tertiary rounded w-48 mb-2"></div>
-                    <div className="h-4 bg-dark-tertiary rounded w-32"></div>
+                    <div className="h-8 bg-gray-200 rounded w-48 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-32"></div>
                   </div>
-                  <div className="h-10 bg-dark-tertiary rounded w-48"></div>
+                  <div className="h-10 bg-gray-200 rounded w-48"></div>
                 </div>
               </div>
 
@@ -339,15 +340,15 @@ const ServiceCategoryPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[...Array(6)].map((_, index) => (
                   <div key={index} className="animate-pulse">
-                    <div className="bg-white/50 backdrop-blur-lg border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden">
-                      <div className="w-full h-64 bg-dark-tertiary"></div>
+                    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+                      <div className="w-full h-64 bg-gray-200"></div>
                       <div className="p-6">
-                        <div className="h-4 bg-dark-tertiary rounded w-1/3 mb-3"></div>
-                        <div className="h-6 bg-dark-tertiary rounded w-full mb-3"></div>
-                        <div className="h-4 bg-dark-tertiary rounded w-2/3 mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
+                        <div className="h-6 bg-gray-200 rounded w-full mb-3"></div>
+                        <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
                         <div className="flex justify-between items-center">
-                          <div className="h-4 bg-dark-tertiary rounded w-24"></div>
-                          <div className="h-6 bg-dark-tertiary rounded w-16"></div>
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                          <div className="h-6 bg-gray-200 rounded w-16"></div>
                         </div>
                       </div>
                     </div>
@@ -370,16 +371,16 @@ const ServiceCategoryPage: React.FC = () => {
         <div className="container mx-auto px-4 pt-20 pb-8 relative z-10">
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
-              <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30">
-                <h2 className="text-3xl font-bold text-dark-primary mb-6">
+              <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">
                   Category Not Found
                 </h2>
-                <p className="text-dark-secondary mb-8 leading-relaxed">
+                <p className="text-gray-500 mb-8 leading-relaxed">
                   {error || 'The category you\'re looking for doesn\'t exist or couldn\'t be loaded.'}
                 </p>
-                
-                <div className="bg-yellow-50 backdrop-blur-sm border border-yellow-200 rounded-xl p-6 mb-8">
-                  <h3 className="text-sm font-semibold text-yellow-400 mb-3">Troubleshooting:</h3>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
+                  <h3 className="text-sm font-semibold text-yellow-800 mb-3">Troubleshooting:</h3>
                   <ul className="text-sm text-yellow-700 text-left space-y-2">
                     <li>• Check if the category "{categorySlug}" exists in your database</li>
                     <li>• Verify the category slug is correct</li>
@@ -387,20 +388,23 @@ const ServiceCategoryPage: React.FC = () => {
                     <li>• Ensure your backend is running and accessible</li>
                   </ul>
                 </div>
-                
+
                 <div className="space-y-4">
-                  <button
+                  <Button
                     onClick={() => window.location.href = '/services'}
-                    className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl transition-all duration-300 font-semibold shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] hover:scale-105 border border-orange-500"
+                    className="w-full"
+                    size="lg"
                   >
                     Browse All Services
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => window.location.reload()}
-                    className="w-full bg-white/70 backdrop-blur-sm text-dark-primary px-6 py-3 rounded-xl hover:bg-white/90 transition-all duration-300 border border-white/30 hover:border-white/50"
+                    variant="outline"
+                    className="w-full"
+                    size="lg"
                   >
                     Retry Loading
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -429,12 +433,12 @@ const ServiceCategoryPage: React.FC = () => {
         <div className="mb-6">
           <Breadcrumb items={breadcrumbItems} />
           <div className="mt-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-            <h1 className="text-2xl md:text-3xl font-bold text-dark-primary">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
               {category.name || category.slug}
             </h1>
           </div>
           {category.description && (
-            <p className="text-sm text-dark-secondary mt-1 max-w-2xl">{category.description}</p>
+            <p className="text-sm text-gray-500 mt-1 max-w-2xl">{category.description}</p>
           )}
         </div>
 
@@ -453,14 +457,14 @@ const ServiceCategoryPage: React.FC = () => {
 
           {/* Main Content */}
           <div ref={resultsRef} className={`w-full p-4 ${category.children && category.children.length > 0 ? 'md:w-3/4 lg:w-4/5' : ''}`}>
-            <div className="bg-white rounded-xl px-5 py-3 shadow-sm mb-6">
+            <div className="bg-white rounded-2xl px-5 py-3 shadow-sm border border-gray-100 mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
-                  <h2 className="text-base font-semibold text-dark-primary">
+                  <h2 className="text-base font-semibold text-gray-900">
                     {currentCategoryName}
                   </h2>
                   {!selectedSubCategory && category.children && category.children.length > 0 && (
-                    <span className="text-xs text-dark-secondary">
+                    <span className="text-xs text-gray-500">
                       Including all subcategories
                     </span>
                   )}
@@ -468,28 +472,28 @@ const ServiceCategoryPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   {servicesLoading ? (
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="w-4 h-4 animate-spin text-dark-primary" />
-                      <span className="text-xs text-dark-secondary">
+                      <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                      <span className="text-xs text-gray-500">
                         {selectedSubCategory ? 'Loading services...' : 'Loading all services...'}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-xs text-dark-secondary font-medium">{sortedServices.length} services</span>
+                    <span className="text-xs text-gray-500 font-medium">{sortedServices.length} services</span>
                   )}
                   <div className="relative">
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
                       title="Sort services"
-                      className="appearance-none bg-gray-50 border border-gray-200 rounded-lg py-1.5 pl-3 pr-9 text-xs text-dark-primary focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent hover:bg-gray-100 transition-all duration-300"
+                      className="appearance-none bg-gray-50 border border-gray-200 rounded-lg py-1.5 pl-3 pr-9 text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent hover:bg-gray-100 transition-all duration-300"
                     >
-                      <option value="relevance" className="bg-white text-dark-primary">Sort by: Relevance</option>
-                      <option value="price-low" className="bg-white text-dark-primary">Sort by: Price (Low to High)</option>
-                      <option value="price-high" className="bg-white text-dark-primary">Sort by: Price (High to Low)</option>
-                      <option value="newest" className="bg-white text-dark-primary">Sort by: Newest First</option>
-                      <option value="oldest" className="bg-white text-dark-primary">Sort by: Oldest First</option>
+                      <option value="relevance" className="bg-white text-gray-900">Sort by: Relevance</option>
+                      <option value="price-low" className="bg-white text-gray-900">Sort by: Price (Low to High)</option>
+                      <option value="price-high" className="bg-white text-gray-900">Sort by: Price (High to Low)</option>
+                      <option value="newest" className="bg-white text-gray-900">Sort by: Newest First</option>
+                      <option value="oldest" className="bg-white text-gray-900">Sort by: Oldest First</option>
                     </select>
-                    <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-dark-secondary pointer-events-none" />
+                    <ChevronDown className="w-4 h-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -500,11 +504,11 @@ const ServiceCategoryPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {[...Array(6)].map((_, index) => (
                   <div key={index} className="animate-pulse">
-                    <div className="bg-white/50 backdrop-blur-lg border border-white/30 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
-                      <div className="w-full h-48 bg-dark-tertiary rounded-xl mb-4"></div>
-                      <div className="h-4 bg-dark-tertiary rounded mb-3"></div>
-                      <div className="h-4 bg-dark-tertiary rounded mb-3 w-3/4"></div>
-                      <div className="h-4 bg-dark-tertiary rounded w-1/2"></div>
+                    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+                      <div className="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-3"></div>
+                      <div className="h-4 bg-gray-200 rounded mb-3 w-3/4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                     </div>
                   </div>
                 ))}
@@ -517,21 +521,21 @@ const ServiceCategoryPage: React.FC = () => {
               </div>
             ) : (
               <div className="text-center py-20">
-                <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-12 shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] border border-white/30 max-w-lg mx-auto">
-                  <div className="w-20 h-20 bg-dark-tertiary rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-dark-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-100 max-w-lg mx-auto">
+                  <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-dark-primary mb-4">No Services Found</h3>
-                  <p className="text-dark-secondary leading-relaxed mb-6">
-                    {selectedSubCategory 
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">No Services Found</h3>
+                  <p className="text-gray-500 leading-relaxed mb-6">
+                    {selectedSubCategory
                       ? `There are currently no active services available in this subcategory.`
                       : `There are currently no active services available in "${category.name}" or its subcategories.`
                     }
                   </p>
                   {!selectedSubCategory && category.children && category.children.length > 0 && (
-                    <p className="text-dark-muted text-sm">
+                    <p className="text-gray-400 text-sm">
                       Try selecting a specific subcategory from the sidebar.
                     </p>
                   )}
