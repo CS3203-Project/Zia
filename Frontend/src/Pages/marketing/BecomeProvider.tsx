@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { userApi } from '../../api/userApi';
 import type { CreateProviderData } from '../../api/userApi';
 import { uploadImage } from '../../utils/imageUpload';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import BecomeProviderHero from '../../components/marketing/BecomeProviderHero';
 import ProviderBioSection from '../../components/marketing/ProviderBioSection';
 import ProviderSkillsSection from '../../components/marketing/ProviderSkillsSection';
@@ -313,33 +313,6 @@ export default function BecomeProvider() {
         </div>
       </div>
       </main>
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: 'rgba(0, 0, 0, 0.8)',
-            backdropFilter: 'blur(20px)',
-            color: 'white',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '12px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          },
-          success: {
-            style: {
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              backdropFilter: 'blur(20px)',
-            },
-          },
-          error: {
-            style: {
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              backdropFilter: 'blur(20px)',
-            },
-          },
-        }}
-      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { LoaderProvider } from './components/shared/LoaderContext';
 import Layout from './components/layout/Layout';
 import ScrollToTop from './components/shared/ScrollToTop';
+import AppToaster from './components/shared/AppToaster';
 import Homepage from './Pages/marketing/Homepage';
 import Signup from './Pages/auth/Signup.tsx'
 import SignIn from './Pages/auth/SignIn.tsx'
@@ -43,6 +44,8 @@ function App() {
       <LoaderProvider>
         <Router>
           <ScrollToTop />
+          {/* One themed toaster for the whole app — see AppToaster. */}
+          <AppToaster />
           <Layout>
             <Suspense fallback={
               <div className="min-h-screen flex items-center justify-center bg-white">

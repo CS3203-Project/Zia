@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { userApi } from '../../api/userApi';
 import { useAuth } from '../../contexts/AuthContext';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { Mail, Lock, Loader, Eye, EyeOff, ArrowRight, Compass, Zap, Award, ShieldCheck } from 'lucide-react';
 
 export default function SignIn() {
@@ -49,16 +49,6 @@ export default function SignIn() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative">
-      <Toaster
-        toastOptions={{
-          style: {
-            background: '#1f2937',
-            color: '#fff',
-            borderRadius: '12px',
-          },
-        }}
-      />
-
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-center">
 

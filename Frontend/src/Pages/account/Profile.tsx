@@ -11,7 +11,6 @@ import CompanyModal from '../../components/Profile/CompanyModal';
 import { uploadMultipleImages } from '../../utils/imageUpload';
 import { serviceReviewApi } from '../../api/serviceReviewApi';
 import toast from 'react-hot-toast';
-import { Toaster } from 'react-hot-toast';
 import { useAuth } from '../../contexts/AuthContext';
 import Orb from '../../components/shared/Orb';
 import ProfileLoadingSkeleton from '../../components/Profile/sections/ProfileLoadingSkeleton';
@@ -758,7 +757,7 @@ export default function Profile() {
         onConfirm={handleDeleteProvider}
       />
 
-      <Toaster />
+
       </div>
     </div>
   );

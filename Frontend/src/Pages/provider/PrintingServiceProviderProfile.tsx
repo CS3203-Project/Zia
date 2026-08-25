@@ -1,4 +1,3 @@
-import { Toaster } from 'react-hot-toast';
 
 export default function PrintingServiceProviderProfile() {
   return (
@@ -18,7 +17,7 @@ export default function PrintingServiceProviderProfile() {
       </main>
 
       {/* Toasts */}
-      <Toaster />
+
 
       {/* Footer */}
       <footer className="mt-16 animate-fade-in-up">

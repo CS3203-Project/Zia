@@ -9,11 +9,12 @@ import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { serviceReviewApi, type ServiceReview, type ReviewStats } from '../../api/serviceReviewApi';
 import { userApi, type ProviderProfile } from '../../api/userApi';
 import { messagingApi } from '../../api/messagingApi';
-import { bookingApi, getBookingTimeline } from '../../api/bookingApi';
+import { bookingApi, getBookingTimeline, type Booking } from '../../api/bookingApi';
+import ExistingBookingPrompt from '../../components/services/detail/ExistingBookingPrompt';
 import { debugMessagingState } from '../../utils/messagingDebug';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/services/Breadcrumb';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { cn } from '../../utils/utils';
 import Button from '@/components/shared/Button';
 import Chip from '@/components/shared/Chip';
@@ -106,6 +107,8 @@ const ServiceDetailPage: React.FC = () => {
   // reopens that thread or starts a fresh request.
   const [activeBookingStatus, setActiveBookingStatus] = useState<string | null>(null);
   const [hasPastBooking, setHasPastBooking] = useState(false);
+  // Set when Book Now finds an open booking, so we can ask before acting.
+  const [existingBooking, setExistingBooking] = useState<Booking | null>(null);
 
   // Auto-slide effect for images only (video is now separate)
   useEffect(() => {
@@ -378,7 +381,7 @@ const ServiceDetailPage: React.FC = () => {
     fetchService();
   }, [serviceId, navigate]);
 
-  const handleBookNow = async () => {
+  const handleBookNow = async (skipExistingCheck = false) => {
     // Check if user is logged in
     if (!isLoggedIn || !user) {
       setShowLoginPrompt(true);
@@ -433,17 +436,18 @@ const ServiceDetailPage: React.FC = () => {
     try {
       setBookingLoading(true);
 
-      // Resume an in-flight booking for this exact service rather than opening a
-      // duplicate. Deliberately keyed on the booking (not the participant pair or
-      // even the conversation): a COMPLETED or CANCELLED booking is not "active",
-      // so hiring the same provider for the same service again correctly starts a
-      // fresh conversation instead of dropping the customer back into the old,
-      // finished thread.
-      const activeBooking = await bookingApi.findActive(service.id);
-      if (activeBooking) {
-        toast.success('Opening your existing booking...');
-        navigate(`/conversation/${activeBooking.conversationId}`);
-        return;
+      // If a booking for this exact service is still open, ask rather than assume:
+      // reopening is right when they forgot it was in flight, but booking the same
+      // service a second time is equally legitimate. Keyed on the booking, so a
+      // COMPLETED or CANCELLED one never blocks a fresh request.
+      // (`skipExistingCheck` is set when they've already chosen "book again".)
+      if (!skipExistingCheck) {
+        const activeBooking = await bookingApi.findActive(service.id);
+        if (activeBooking) {
+          setExistingBooking(activeBooking);
+          setBookingLoading(false);
+          return;
+        }
       }
 
       // Create conversation between user and provider's user ID, including serviceId
@@ -908,7 +912,7 @@ const ServiceDetailPage: React.FC = () => {
               provider={provider}
               providerLoading={providerLoading}
               onViewProviderProfile={handleViewProviderProfile}
-              onBookNow={handleBookNow}
+              onBookNow={() => handleBookNow()}
               bookingLoading={bookingLoading}
               activeBookingStatus={activeBookingStatus}
               hasPastBooking={hasPastBooking}
@@ -933,7 +937,21 @@ const ServiceDetailPage: React.FC = () => {
         </div>
       </main>
 
-      <Toaster position="bottom-right" />
+      <ExistingBookingPrompt
+        isOpen={!!existingBooking}
+        booking={existingBooking}
+        starting={bookingLoading}
+        onClose={() => setExistingBooking(null)}
+        onContinue={() => {
+          const id = existingBooking?.conversationId;
+          setExistingBooking(null);
+          if (id) navigate(`/conversation/${id}`);
+        }}
+        onStartNew={() => {
+          setExistingBooking(null);
+          handleBookNow(true);
+        }}
+      />
     </div>
   );
 };

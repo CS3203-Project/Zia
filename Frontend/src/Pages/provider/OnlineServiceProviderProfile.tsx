@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
 import ProfileHeader from '../../components/profiles/shared/ProfileHeader';
 import OnlineProfileTabs from '../../components/profiles/online/OnlineProfileTabs';
 import OnlineProfileContent from '../../components/profiles/online/OnlineProfileContent';
@@ -310,7 +309,7 @@ export default function ServiceProviderProfile() {
       />
 
       {/* Toasts */}
-      <Toaster />
+
 
       {/* Footer */}
       <footer className="mt-16 animate-fade-in-up">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Lock, User, Phone, MapPin, Home, Check, Eye, EyeOff, Loader, ArrowRight, Compass, Zap, Award, ShieldCheck } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { userApi, type RegisterUserData } from '../../api/userApi';
 
 interface FormData {
@@ -158,16 +158,6 @@ export default function SignupForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white relative">
-      <Toaster
-        toastOptions={{
-          style: {
-            background: '#1f2937',
-            color: '#fff',
-            borderRadius: '12px',
-          },
-        }}
-      />
-
       <div className="relative z-10 h-screen flex items-center justify-center p-4 overflow-hidden">
         <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-center">
 

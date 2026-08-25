@@ -18,7 +18,6 @@ import type { UserProfile, ProviderProfile } from '../../api/userApi';
 import type { ServiceResponse } from '../../api/serviceApi';
 import type { ProviderServiceReview, ReviewStats } from '../../api/serviceReviewApi';
 import toast from 'react-hot-toast';
-import { Toaster } from 'react-hot-toast';
 import Button from '../../components/shared/Button';
 import ServiceLocationMap from '../../components/shared/ServiceLocationMap';
 import ProviderTabs, { type ProviderTabId } from '../../components/provider/ProviderTabs';
@@ -659,7 +658,7 @@ export default function Provider() {
 
       {/* Modals */}
 
-      <Toaster />
+
     </div>
   );
 
