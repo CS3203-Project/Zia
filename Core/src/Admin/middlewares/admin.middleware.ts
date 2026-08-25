@@ -84,6 +84,39 @@ export const adminAuthMiddleware = async (
   }
 };
 
+/**
+ * Guards admin registration.
+ *
+ * POST /api/admin/register previously had no auth at all, so anyone who could
+ * reach the API could grant themselves a full admin account — every admin route
+ * behind it (settings, customer data, provider verification, payouts) was one
+ * unauthenticated request away.
+ *
+ * It cannot simply require a token, or the first admin could never be created.
+ * So: while no admin exists the endpoint is open for bootstrapping, and the
+ * moment one does it requires an existing admin like any other admin route.
+ */
+export const adminRegistrationMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const admins = await adminService.getAllAdmins();
+    if (admins.length === 0) {
+      next();
+      return;
+    }
+    await adminAuthMiddleware(req, res, next);
+  } catch (error: any) {
+    console.error('Admin registration middleware error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
 export const adminOptionalMiddleware = async (
   req: Request,
   res: Response,

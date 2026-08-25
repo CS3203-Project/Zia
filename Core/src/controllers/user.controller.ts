@@ -16,7 +16,12 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
       console.error('Registered user but verification email failed:', mailErr);
     }
 
-    res.status(201).json({ message: 'User registered', user });
+    // The record from Prisma carries the bcrypt hash, and returning it verbatim
+    // handed every caller the hash for the password they had just chosen -
+    // offline-crackable, and needlessly exposed to anything logging responses.
+    const { password: _password, ...safeUser } = user as Record<string, unknown>;
+
+    res.status(201).json({ message: 'User registered', user: safeUser });
   } catch (err) {
     next(err);
   }

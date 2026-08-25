@@ -1,6 +1,6 @@
 import { Router, type Router as ExpressRouter } from 'express';
 import { adminController } from '../controllers/admin.controller.js';
-import { adminAuthMiddleware } from '../middlewares/admin.middleware.js';
+import { adminAuthMiddleware, adminRegistrationMiddleware } from '../middlewares/admin.middleware.js';
 import { validateAdminLogin, validateAdminRegistration, validateAdminUpdate, validateServiceProviderVerification } from '../validators/admin.validator.js';
 import { scheduledJobsController } from '../../controllers/scheduled-jobs.controller.js';
 import validate from '../../middlewares/validation.middleware.js';
@@ -14,8 +14,12 @@ import {
 const router: ExpressRouter = Router();
 
 // Public routes
-router.post('/register', validateAdminRegistration, adminController.register);
 router.post('/login', validateAdminLogin, adminController.login);
+
+// Open only until the first admin exists; afterwards it takes an existing admin
+// to create another. It was fully unauthenticated, which let anyone who could
+// reach the API mint themselves an admin and walk in through every route below.
+router.post('/register', adminRegistrationMiddleware, validateAdminRegistration, adminController.register);
 
 // Protected routes (require admin authentication)
 router.get('/profile', adminAuthMiddleware, adminController.getProfile);
