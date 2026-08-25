@@ -23,6 +23,10 @@ services:
       REDIS_URL: redis://redis:6379
       CHAT_SERVICE_URL: http://chat:3001
       PAYMENT_SERVICE_URL: http://payment:3002
+      # Local development only. All host traffic (browser + tooling) shares the
+      # Docker gateway IP, so the shared per-IP budget is exhausted by normal work.
+      # Do NOT carry this into a production deployment.
+      RATE_LIMIT_DISABLED: "true"
       MINIO_ENDPOINT: http://minio:9000
       MINIO_PUBLIC_URL: http://localhost:9000
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
@@ -49,6 +53,8 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=chat&connection_limit=10&pool_timeout=20
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
       REDIS_URL: redis://redis:6379
+      # Local development only - see the note on the core service.
+      RATE_LIMIT_DISABLED: "true"
     ports:
       - "3001:3001"
     depends_on:
@@ -67,6 +73,8 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=payment&connection_limit=10&pool_timeout=20
       REDIS_URL: redis://redis:6379
+      # Local development only - see the note on the core service.
+      RATE_LIMIT_DISABLED: "true"
       CORE_SERVICE_URL: http://core:3000
     ports:
       - "3002:3002"

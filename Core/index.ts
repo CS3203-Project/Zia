@@ -77,6 +77,15 @@ async function testDatabaseConnection() {
 
 const app: Application = express();
 
+// Behind a reverse proxy / ingress, req.ip is the proxy's address unless we opt in,
+// which would put every user in ONE rate-limit bucket and 429 the whole site at
+// once. Set TRUST_PROXY to the number of proxy hops in front of this service.
+// Left off by default: trusting X-Forwarded-For when nothing strips it lets a
+// client spoof its IP and evade the limiter entirely.
+if (process.env.TRUST_PROXY) {
+  app.set('trust proxy', parseInt(process.env.TRUST_PROXY, 10));
+}
+
 // CORS configuration (must run before any rate limiting or routes)
 const corsOptions: CorsOptions = {
   origin: true,
@@ -90,14 +99,22 @@ app.use(cors(corsOptions));
 // in-memory store, which only counted requests hitting that one process. With N
 // replicas the in-memory version let each pod give every client its own separate
 // quota (an effective N× multiplier), and reset the count on every pod restart/deploy.
+// NOTE ON `max`: this counts per IP, and a single SPA page view fans out into
+// many calls (services, categories, profile, notifications, reviews, ...), so a
+// normal browsing session burns through a four-figure budget quickly. 1000/30min
+// was low enough that ordinary use hit 429s.
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000, // 30 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
+  max: parseInt(process.env.RATE_LIMIT_MAX || '5000', 10),
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
   // Do not rate-limit CORS preflight requests
-  skip: (req) => req.method === 'OPTIONS',
+  // RATE_LIMIT_DISABLED turns the limiter off entirely for local development,
+  // where one developer plus tooling shares a single source IP and trips the
+  // limit during normal work. Never set it in production - the limiter is the
+  // only thing standing between this API and an unthrottled client.
+  skip: (req) => req.method === 'OPTIONS' || process.env.RATE_LIMIT_DISABLED === 'true',
   store: new RedisStore({
     sendCommand: (...args: string[]) => redis.call(...(args as [string, ...string[]])) as Promise<any>,
   }),

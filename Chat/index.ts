@@ -26,6 +26,12 @@ async function testDatabaseConnection() {
 }
 
 const app: Application = express();
+
+// See Core's note: without this, everyone behind a proxy shares one rate-limit
+// bucket; with it set blindly, clients can spoof X-Forwarded-For. Opt in per env.
+if (process.env.TRUST_PROXY) {
+  app.set('trust proxy', parseInt(process.env.TRUST_PROXY, 10));
+}
 const server = createServer(app);
 
 const io = new SocketIOServer(server, {
@@ -322,10 +328,13 @@ app.use(cors({ origin: true, credentials: true }));
 // quota (an effective N× multiplier), and reset the count on every pod restart/deploy.
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
+  // Per IP; polling/reconnect traffic makes chat especially chatty. See Core's
+  // limiter comment - 1000/30min was low enough to 429 normal use.
+  max: parseInt(process.env.RATE_LIMIT_MAX || '5000', 10),
   standardHeaders: true,
   legacyHeaders: false,
-  skip: (req) => req.method === 'OPTIONS',
+  // See Core: RATE_LIMIT_DISABLED is a local-development escape hatch only.
+  skip: (req) => req.method === 'OPTIONS' || process.env.RATE_LIMIT_DISABLED === 'true',
   store: new RedisStore({
     sendCommand: (...args: string[]) => redis.call(...(args as [string, ...string[]])) as Promise<any>,
   }),

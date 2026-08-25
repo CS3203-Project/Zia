@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MessagingProvider, MessageThread, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
 import { bookingApi } from '../../api/bookingApi';
+import { messagingApi, type ConversationWithLastMessage } from '../../api/messagingApi';
 import type { UserProfile } from '../../api/userApi';
 import BookingPanel from '../../components/Messaging/BookingPanel';
 import RatingModal from '../../components/Messaging/RatingModal';
@@ -69,70 +70,66 @@ const ConversationViewInner: React.FC<{
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
   const [isChatVisibleOnMobile, setIsChatVisibleOnMobile] = useState(true); // Default to showing chat on mobile
 
-  // Auto-select conversation based on URL parameter
+  // Resolve the conversation named in the URL, exactly once per id.
+  //
+  // This previously ran off the cached conversation list and, when the id wasn't
+  // in it, called loadConversations() from an effect that also *depended* on that
+  // list - so a conversation missing from the cache re-triggered the effect
+  // forever, hammering the API (~44 req/s) until the rate limiter returned 429.
+  // A freshly created conversation is never in the cache, which is exactly the
+  // case hit when re-booking a service after completing it: the user landed on
+  // "Conversation not found" while the tab quietly spammed the backend.
+  //
+  // Fetching the conversation by id is authoritative, needs one request, and
+  // can't loop.
+  const resolveAttemptedFor = useRef<string | null>(null);
+
   useEffect(() => {
-    const handleConversationSelection = async () => {
-      if (!conversationId) {
-        setConversationError('No conversation ID provided');
-        setIsConversationLoading(false);
-        return;
-      }
-
-      // If we already have the right conversation active, we're done
-      if (activeConversation?.id === conversationId) {
-        setIsConversationLoading(false);
-        return;
-      }
-
-      // Try to find the conversation in our current list
-      if (conversations.length > 0) {
-        const targetConversation = conversations.find((conv: any) => conv.id === conversationId);
-        if (targetConversation) {
-          console.log('Selecting conversation from existing list:', conversationId);
-          try {
-            await selectConversation(targetConversation);
-            setIsConversationLoading(false);
-          } catch (error) {
-            console.error('Failed to select conversation:', error);
-            setConversationError('Failed to load conversation');
-            setIsConversationLoading(false);
-          }
-        } else {
-          // Conversation not found, try to refresh
-          console.warn('Conversation not found in list, refreshing conversations');
-          try {
-            await loadConversations();
-          } catch (error) {
-            console.error('Failed to refresh conversations:', error);
-            setConversationError('Conversation not found');
-            setIsConversationLoading(false);
-          }
-        }
-      }
-    };
-
-    handleConversationSelection();
-  }, [conversationId, activeConversation, conversations, selectConversation, loadConversations]);
-
-  // Handle conversation selection after conversations are loaded
-  useEffect(() => {
-    if (conversationId && conversations.length > 0 && !activeConversation && isConversationLoading) {
-      const targetConversation = conversations.find((conv: any) => conv.id === conversationId);
-      if (targetConversation) {
-        console.log('Selecting conversation after conversations update:', conversationId);
-        selectConversation(targetConversation).then(() => {
-          setIsConversationLoading(false);
-        }).catch((error) => {
-          console.error('Failed to select conversation after update:', error);
-          setConversationError('Failed to load conversation');
-          setIsConversationLoading(false);
-        });
-      } else if (!loading) {
-        setConversationError('Conversation not found');
-        setIsConversationLoading(false);
-      }
+    if (!conversationId) {
+      setConversationError('No conversation ID provided');
+      setIsConversationLoading(false);
+      return;
     }
-  }, [conversations, conversationId, activeConversation, isConversationLoading, loading]);
+
+    if (activeConversation?.id === conversationId) {
+      setIsConversationLoading(false);
+      return;
+    }
+
+    if (resolveAttemptedFor.current === conversationId) return;
+    resolveAttemptedFor.current = conversationId;
+
+    let alive = true;
+    setIsConversationLoading(true);
+    setConversationError(null);
+
+    (async () => {
+      try {
+        const cached = conversations.find(
+          (conv: ConversationWithLastMessage) => conv.id === conversationId
+        );
+        const conversation = cached ?? (await messagingApi.getConversationById(conversationId));
+
+        if (!alive) return;
+        await selectConversation(conversation);
+
+        // Keep the hub list in step, but never gate this view on it.
+        if (!cached) loadConversations().catch(() => {});
+      } catch (error) {
+        console.error('Failed to load conversation:', error);
+        if (alive) setConversationError('Conversation not found');
+      } finally {
+        if (alive) setIsConversationLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+    // Intentionally not depending on `conversations`: it changes as the list
+    // loads, and re-running on it is what caused the loop above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId, activeConversation?.id]);
 
   const handleBackToHub = () => {
     navigate('/conversation-hub');
