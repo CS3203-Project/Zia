@@ -5,6 +5,10 @@
 # `npm ci` and a Vite build on it would exhaust memory — so images are built in
 # CI and only pulled here.
 #
+# mem_limit values come from measuring the full stack running locally (507 MiB
+# total at idle), plus headroom - not from guesswork. They are ceilings, so a
+# runaway service is capped rather than taking the host down with it.
+#
 # Every secret comes from the environment; nothing is committed. The deploy
 # workflow writes .env on the host from GitHub Secrets.
 services:
@@ -36,7 +40,7 @@ services:
       TRUST_PROXY: "1"
     depends_on: [postgres, rabbitmq, redis]
     restart: unless-stopped
-    mem_limit: 220m
+    mem_limit: 160m
 
   chat:
     image: ${REGISTRY}/chat:${IMAGE_TAG:-latest}
@@ -55,7 +59,7 @@ services:
       TRUST_PROXY: "1"
     depends_on: [postgres, rabbitmq, redis]
     restart: unless-stopped
-    mem_limit: 180m
+    mem_limit: 120m
 
   payment:
     image: ${REGISTRY}/payment:${IMAGE_TAG:-latest}
@@ -84,7 +88,7 @@ services:
       PAYHERE_NOTIFY_URL: ${APP_URL}/api/payments/notify
     depends_on: [postgres, redis]
     restart: unless-stopped
-    mem_limit: 180m
+    mem_limit: 110m
 
   notification:
     image: ${REGISTRY}/notification:${IMAGE_TAG:-latest}
@@ -99,7 +103,7 @@ services:
       NODE_ENV: production
     depends_on: [notification-postgres, rabbitmq]
     restart: unless-stopped
-    mem_limit: 180m
+    mem_limit: 128m
 
   frontend:
     image: ${REGISTRY}/frontend:${IMAGE_TAG:-latest}
@@ -108,7 +112,7 @@ services:
     ports:
       - "127.0.0.1:8080:80"
     restart: unless-stopped
-    mem_limit: 48m
+    mem_limit: 32m
 
   postgres:
     image: ${REGISTRY}/postgres:${IMAGE_TAG:-latest}
@@ -125,7 +129,7 @@ services:
     command: >
       postgres -c shared_buffers=96MB -c max_connections=60
                -c effective_cache_size=256MB -c work_mem=4MB
-    mem_limit: 320m
+    mem_limit: 220m
 
   notification-postgres:
     image: postgres:16-alpine
@@ -140,7 +144,7 @@ services:
     restart: unless-stopped
     command: >
       postgres -c shared_buffers=32MB -c max_connections=20
-    mem_limit: 140m
+    mem_limit: 80m
 
   rabbitmq:
     image: rabbitmq:3.13-alpine
@@ -151,7 +155,7 @@ services:
     volumes:
       - core_rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
-    mem_limit: 180m
+    mem_limit: 200m
 
   redis:
     image: redis:7-alpine
@@ -160,7 +164,7 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
-    mem_limit: 64m
+    mem_limit: 48m
 
   minio:
     image: minio/minio:latest
@@ -175,7 +179,7 @@ services:
     volumes:
       - minio_data:/data
     restart: unless-stopped
-    mem_limit: 180m
+    mem_limit: 128m
 
   createbuckets:
     image: minio/mc:latest
