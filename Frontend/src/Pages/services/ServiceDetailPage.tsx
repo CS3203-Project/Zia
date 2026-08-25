@@ -402,13 +402,19 @@ const ServiceDetailPage: React.FC = () => {
         providerUserId
       );
 
-      if (existingConversation) {
-        console.log('Found existing conversation:', existingConversation);
+      // Only reuse an existing conversation if it's for this same service - the
+      // participant pair alone isn't enough, since a customer may have separate
+      // conversations with the same provider for different services (each with its
+      // own price/schedule confirmation), and reusing the wrong one would land the
+      // customer in an unrelated chat (e.g. booking "Office Cleaning" would reopen
+      // an older "Deep House Cleaning" thread with the same provider).
+      if (existingConversation && existingConversation.serviceId === service.id) {
+        console.log('Found existing conversation for this service:', existingConversation);
         toast.success('Opening existing conversation...');
         navigate(`/conversation/${existingConversation.id}`);
         return;
       }
-      
+
       // Create conversation between user and provider's user ID, including serviceId
       const conversationData = {
         userIds: [user.id, providerUserId],

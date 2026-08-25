@@ -7,6 +7,7 @@ export interface ConversationResponse {
   id: string;
   userIds: string[];
   title: string | null;
+  serviceId?: string | null;
 }
 
 export interface MessageResponse {

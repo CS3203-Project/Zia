@@ -69,28 +69,17 @@ const RatingModal: React.FC<RatingModalProps> = ({
     setError(null);
 
     try {
-      const token = localStorage.getItem('token');
-
       if (ratingType === 'customer') {
         // Rate customer
         const customerId = conversation?.userIds.find(id => id !== currentUserId);
         if (!customerId) throw new Error('Customer not found');
 
-        const res = await fetch('/api/reviews', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
-          },
-          body: JSON.stringify({
-            reviewerId: currentUserId,
-            revieweeId: customerId,
-            rating,
-            comment
-          })
+        await apiClient.post('/reviews', {
+          reviewerId: currentUserId,
+          revieweeId: customerId,
+          rating,
+          comment
         });
-
-        if (!res.ok) throw new Error('Failed to submit review');
       } else {
         // Rate service
         const serviceToRate = serviceData;
