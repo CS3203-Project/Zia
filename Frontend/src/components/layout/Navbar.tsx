@@ -76,7 +76,7 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { name: 'Become a Provider', href: "/become-provider" },
+    ...(user?.role !== 'PROVIDER' ? [{ name: 'Become a Provider', href: "/become-provider" }] : []),
     ...(isLoggedIn ? [{ name: 'Messages', href: "/conversation-hub" }] : [])
   ];
 

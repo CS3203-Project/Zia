@@ -1,12 +1,14 @@
 import { FacebookIcon, InstagramIcon, LinkedinIcon } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function MinimalFooter() {
   const year = new Date().getFullYear();
+  const { user, isLoggedIn } = useAuth();
 
   const navLinks = [
     { title: 'Browse Services', href: '/services' },
-    { title: 'Become a Provider', href: '/become-provider' },
-    { title: 'Messages', href: '/conversation-hub' },
+    ...(user?.role !== 'PROVIDER' ? [{ title: 'Become a Provider', href: '/become-provider' }] : []),
+    ...(isLoggedIn ? [{ title: 'Messages', href: '/conversation-hub' }] : []),
   ];
 
   const socialLinks = [
