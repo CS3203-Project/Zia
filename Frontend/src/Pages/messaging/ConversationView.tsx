@@ -197,11 +197,18 @@ const ConversationViewInner: React.FC<{
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <main className="flex-grow px-4 py-6 mt-16">
-        <div className="h-[calc(100vh-8rem)] flex flex-col">
+        {/* On mobile, the Confirmation tab needs to flow naturally with the page
+            (it's a form, not a pinned chat log), while the Chat tab needs a fixed
+            viewport height so its message list scrolls internally and the composer
+            stays pinned at the bottom. Only constrain the height when Chat is the
+            visible mobile tab; desktop always keeps the fixed two-pane height. */}
+        <div className={`flex flex-col ${!isChatVisibleOnMobile ? 'md:h-[calc(100vh-8rem)]' : 'h-[calc(100vh-8rem)]'}`}>
           <ConversationThreadHeader title={activeConversation?.title} onBack={handleBackToHub} />
 
           {/* Main Content */}
-          <div className="bg-white rounded-2xl shadow-xl flex-1 flex flex-col md:flex-row overflow-hidden border border-gray-100 relative">
+          <div className={`bg-white rounded-2xl shadow-xl flex-1 flex flex-col md:flex-row border border-gray-100 relative ${
+            !isChatVisibleOnMobile ? 'overflow-visible md:overflow-hidden' : 'overflow-hidden'
+          }`}>
             {isConversationLoading || loading ? (
               <ConversationLoadingSkeleton
                 isChatVisibleOnMobile={isChatVisibleOnMobile}
@@ -216,7 +223,7 @@ const ConversationViewInner: React.FC<{
                 />
 
                 {/* Left Side - Confirmation Panel */}
-                <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 backdrop-blur-sm border-b md:border-b-0 md:border-r border-gray-200 overflow-y-auto h-full md:max-h-none ${
+                <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 backdrop-blur-sm border-b md:border-b-0 md:border-r border-gray-200 md:overflow-y-auto md:h-full ${
                   isChatVisibleOnMobile ? 'hidden md:flex' : 'flex'
                 }`}>
                   <ConfirmationPanel

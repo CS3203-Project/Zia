@@ -76,8 +76,10 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
       return;
     }
 
-    textArea.style.height = '0px';
-    textArea.style.height = `${Math.min(textArea.scrollHeight, 140)}px`;
+    textArea.style.height = 'auto';
+    const scrollHeight = textArea.scrollHeight;
+    textArea.style.height = `${Math.min(scrollHeight, 140)}px`;
+    textArea.style.overflowY = scrollHeight > 140 ? 'auto' : 'hidden';
   }, [newMessage]);
 
   useEffect(() => {
@@ -365,7 +367,7 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
             placeholder="Type your message"
             rows={1}
             disabled={sending}
-            className="min-h-[44px] max-h-[140px] flex-1 resize-none rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white"
+            className="min-h-[44px] max-h-[140px] flex-1 resize-none overflow-hidden rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white"
           />
           <button
             type="submit"
