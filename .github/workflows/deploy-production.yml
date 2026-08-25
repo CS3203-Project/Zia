@@ -153,23 +153,37 @@ jobs:
             # from chat."Conversation", so Chat has to have created its schema
             # first or Core aborts on "relation does not exist". Payment is
             # independent.
-            migrate() {
-              svc=$1
-              echo "migrating ${svc}..."
-              for i in $(seq 1 20); do
-                if docker compose -f docker-compose.prod.yml exec -T "$svc" npx prisma migrate deploy; then
-                  return 0
-                fi
-                echo "  ${svc} not ready yet, retrying..."
-                sleep 5
-              done
-              echo "${svc} migrations failed after 20 attempts" >&2
-              return 1
-            }
+            # Retrying `prisma migrate deploy` is NOT a readiness strategy. When a
+            # migration errors partway, Prisma records it as failed, and every
+            # later run aborts with P3009 until someone resolves it — so a retry
+            # loop turns one bad attempt into twenty identical failures, buries
+            # the real error under the last one, and mislabels it "not ready yet".
+            #
+            # Wait for the actual dependency (Postgres) once, then migrate exactly
+            # once per service and let a real failure stop the deploy immediately
+            # with its own error message.
+            echo "waiting for postgres..."
+            ready=""
+            for i in $(seq 1 30); do
+              if docker compose -f docker-compose.prod.yml exec -T postgres \
+                   pg_isready -U postgres -d zia_core >/dev/null 2>&1; then
+                ready=yes
+                break
+              fi
+              sleep 5
+            done
+            if [ -z "$ready" ]; then
+              echo "postgres did not accept connections within 150s" >&2
+              exit 1
+            fi
 
-            migrate chat
-            migrate payment
-            migrate core
+            # A failed migration is deliberately NOT auto-resolved here: resolving
+            # one that had partially applied would leave the schema silently wrong.
+            # That needs a human deciding between --rolled-back and --applied.
+            for svc in chat payment core; do
+              echo "migrating ${svc}..."
+              docker compose -f docker-compose.prod.yml exec -T "$svc" npx prisma migrate deploy
+            done
 
             # Seed service categories. seed.ts compiles to dist/prisma/seed.js,
             # so this runs on plain node with no dev dependencies. Every write is
