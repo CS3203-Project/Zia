@@ -9,11 +9,13 @@ import {
   deleteReviewController,
   getUserReviewStatsController
 } from '../controllers/review.controller.js';
+import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router: import('express').Router = Router();
 
-// Create a review
-router.post('/', createReviewController);
+// Create a review. Authenticated: the reviewer is taken from the token, never
+// from the request body, so a caller can't post reviews as someone else.
+router.post('/', authMiddleware, createReviewController);
 
 // Get reviews given by a user (as reviewer)
 router.get('/user/:userId/given', getUserGivenReviewsController);

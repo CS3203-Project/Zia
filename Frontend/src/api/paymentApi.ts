@@ -30,6 +30,8 @@ export interface PayHereCheckoutResponse {
 
 export interface CreateCheckoutRequest {
   serviceId: string;
+  /** Booking being paid for, so the backend can move it to PAID on settlement. */
+  bookingId?: string;
   amount: number;
   currency?: string;
 }

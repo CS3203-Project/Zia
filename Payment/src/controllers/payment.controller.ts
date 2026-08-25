@@ -8,7 +8,7 @@ export class PaymentController {
    */
   async createCheckout(req: Request, res: Response) {
     try {
-      const { serviceId, amount, currency = 'lkr' } = req.body;
+      const { serviceId, amount, currency = 'lkr', bookingId } = req.body;
       const userId = (req as any).user?.id;
 
       if (!userId) {
@@ -30,7 +30,8 @@ export class PaymentController {
         service.providerId,
         userId,
         amount,
-        currency
+        currency,
+        bookingId
       );
 
       res.status(200).json({

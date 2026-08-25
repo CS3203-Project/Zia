@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import internalController from '../controllers/internal.controller.js';
 import internalMiddleware from '../middlewares/internal.middleware.js';
+import { markOnlinePaidController } from '../controllers/booking.controller.js';
 
 const router: Router = Router();
 
 router.use(internalMiddleware);
+
+// Called by the payment service once PayHere confirms an online payment.
+router.post('/bookings/mark-paid', markOnlinePaidController);
 
 router.get('/users/:id', internalController.getUser);
 router.get('/services/:id', internalController.getService);

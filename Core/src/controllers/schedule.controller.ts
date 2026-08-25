@@ -1,59 +1,25 @@
 import { Request, Response } from 'express';
 import { prisma } from '../utils/database.js';
+import bookingService from '../services/booking.service.js';
 
+/**
+ * Public booking queue for a service. Now sourced from Booking rather than
+ * Schedule, so the times shown actually belong to the service being viewed -
+ * the old Schedule rows were keyed on (customer, provider) and stamped with an
+ * arbitrary serviceId, so a service's page could list someone else's booking.
+ */
 export const getCurrentScheduleTimes = async (req: Request, res: Response) => {
   try {
     const serviceId = String(req.params.serviceId);
-
-    // Get current time
-    const now = new Date();
-
-    // Fetch schedules for the service that are confirmed by both user and provider
-    // First try to get upcoming schedules, if none, get recent past schedules
-    let schedules = await prisma.schedule.findMany({
-      where: {
-        serviceId,
-        customerConfirmation: true,
-        providerConfirmation: true,
-        startTime: {
-          gte: now.toISOString(), // startTime >= now (upcoming)
-        },
-      },
-      select: {
-        startTime: true,
-        endTime: true,
-      },
-      orderBy: {
-        startTime: 'asc',
-      },
-      take: 5,
-    });
-
-    // If no upcoming schedules, get recent past schedules
-    if (schedules.length === 0) {
-      schedules = await prisma.schedule.findMany({
-        where: {
-          serviceId,
-          customerConfirmation: true,
-          providerConfirmation: true,
-          startTime: {
-            lt: now.toISOString(), // startTime < now (past)
-          },
-        },
-        select: {
-          startTime: true,
-          endTime: true,
-        },
-        orderBy: {
-          startTime: 'desc', // Most recent first
-        },
-        take: 3, // Show last 3 completed schedules
-      });
-    }
+    const queue = await bookingService.getServiceQueue(serviceId);
 
     res.json({
       success: true,
-      data: schedules,
+      data: queue.map((b) => ({
+        startTime: b.scheduledStart?.toISOString() ?? null,
+        endTime: b.scheduledEnd?.toISOString() ?? null,
+        status: b.status,
+      })),
     });
   } catch (error) {
     console.error('Error fetching current schedule times:', error);

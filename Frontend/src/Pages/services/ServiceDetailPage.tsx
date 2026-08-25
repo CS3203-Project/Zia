@@ -14,7 +14,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/services/Breadcrumb';
 import toast, { Toaster } from 'react-hot-toast';
 import { cn } from '../../utils/utils';
-import { confirmationApi } from '../../api/confirmationApi';
 import Button from '@/components/shared/Button';
 import Chip from '@/components/shared/Chip';
 import * as QRCodeLib from 'qrcode';
@@ -442,14 +441,10 @@ const ServiceDetailPage: React.FC = () => {
       console.log('Initial message sent successfully');
       
       toast.success('Conversation started! Redirecting to messages...');
-      
-      // Ensure confirmation record exists for this conversation
-      try {
-        await confirmationApi.ensure(conversation.id);
-      } catch (ensureErr) {
-        console.warn('Failed to ensure confirmation record (non-blocking):', ensureErr);
-      }
-      
+
+      // The booking record is created lazily when the booking panel first opens,
+      // so there's nothing to pre-create here.
+
       // Navigate to the specific conversation
       navigate(`/conversation/${conversation.id}`);
       

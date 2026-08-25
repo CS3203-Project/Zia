@@ -85,7 +85,8 @@ class PayHereService {
     providerId: string,
     userId: string,
     amount: number,
-    currency: string = 'lkr'
+    currency: string = 'lkr',
+    bookingId?: string
   ): Promise<{ paymentId: string; orderId: string; payhereFields: PayHereCheckoutFields }> {
     try {
       const [user, service] = await Promise.all([
@@ -104,6 +105,7 @@ class PayHereService {
       const payment = await prisma.payment.create({
         data: {
           serviceId,
+          bookingId,
           providerId,
           userId,
           gateway: 'payhere',
@@ -216,6 +218,16 @@ class PayHereService {
 
     if (status === PaymentStatus.SUCCEEDED) {
       await this.updateProviderEarnings(payment.providerId, Number(payment.providerAmount || 0));
+
+      // Advance the booking to PAID. Isolated so a Core hiccup can't fail the
+      // webhook - PayHere would retry and we'd double-credit the provider above.
+      if (payment.bookingId) {
+        try {
+          await coreClient.markBookingPaid(payment.bookingId, payment.id);
+        } catch (err) {
+          console.error('Payment settled but booking could not be marked paid:', err);
+        }
+      }
     }
 
     return updatedPayment;

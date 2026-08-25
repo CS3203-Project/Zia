@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { MessagingProvider, MessageThread, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
+import { bookingApi } from '../../api/bookingApi';
 import type { UserProfile } from '../../api/userApi';
-import ConfirmationPanel from '../../components/Messaging/ConfirmationPanel';
+import BookingPanel from '../../components/Messaging/BookingPanel';
 import RatingModal from '../../components/Messaging/RatingModal';
 import UserDetailsModal from '../../components/Messaging/UserDetailsModal';
 import ConversationThreadHeader from '../../components/Messaging/ConversationThreadHeader';
@@ -137,43 +138,30 @@ const ConversationViewInner: React.FC<{
     navigate('/conversation-hub');
   };
 
+  // Reviews unlock once the provider marks the booking COMPLETED. The panel only
+  // renders the rate button in that state, but re-check here so a stale view
+  // can't open the modal against a booking that isn't finished.
   const handleReviewClick = async () => {
     if (!activeConversation) return;
     try {
-      // Get token from localStorage
-      const token = localStorage.getItem('token');
-      // Add cache-busting param to always get fresh data
-      const res = await fetch(`/api/confirmations/${activeConversation.id}?t=${Date.now()}`, {
-        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-      });
-      if (!res.ok) throw new Error('Failed to fetch confirmation status');
-      const data = await res.json();
-      if (data.customerConfirmation && data.providerConfirmation) {
-        if (currentUserRole === 'USER') {
-          // Get the service from the conversation for rating
-          try {
-            const serviceResponse = await serviceApi.getServiceByConversationId(activeConversation.id);
-            if (serviceResponse.success && serviceResponse.data) {
-              setServiceData(serviceResponse.data);
-              setRatingType('service');
-              setIsRatingModalOpen(true);
-            } else {
-              setConversationError('Service information not found for this conversation.');
-            }
-          } catch (serviceError) {
-            console.error('Failed to get service from conversation:', serviceError);
-            setConversationError('Failed to get service information. Please try again.');
-          }
-        } else if (currentUserRole === 'PROVIDER') {
-          // Rate customer - modal will handle finding customer ID
-          setRatingType('customer');
-          setIsRatingModalOpen(true);
-        }
-      } else {
-        setConversationError('Both customer and provider must confirm the booking before rating.');
+      const booking = await bookingApi.getByConversation(activeConversation.id);
+
+      if (booking.status !== 'COMPLETED') {
+        setConversationError('You can leave a review once the provider marks the service complete.');
+        return;
       }
+
+      if (currentUserRole === 'PROVIDER') {
+        setRatingType('customer');
+        setIsRatingModalOpen(true);
+        return;
+      }
+
+      setServiceData(booking.service);
+      setRatingType('service');
+      setIsRatingModalOpen(true);
     } catch {
-      setConversationError('Failed to check confirmation status. Please try again.');
+      setConversationError('Failed to check the booking status. Please try again.');
     }
   };
 
@@ -226,7 +214,7 @@ const ConversationViewInner: React.FC<{
                 <div className={`w-full md:w-80 xl:w-96 flex-shrink-0 flex flex-col bg-gray-50 backdrop-blur-sm border-b md:border-b-0 md:border-r border-gray-200 md:overflow-y-auto md:h-full ${
                   isChatVisibleOnMobile ? 'hidden md:flex' : 'flex'
                 }`}>
-                  <ConfirmationPanel
+                  <BookingPanel
                     key={activeConversation.id}
                     conversationId={activeConversation.id}
                     currentUserRole={currentUserRole as 'USER' | 'PROVIDER'}

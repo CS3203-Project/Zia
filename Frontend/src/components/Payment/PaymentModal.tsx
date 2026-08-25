@@ -8,6 +8,8 @@ interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   serviceId: string;
+  /** Booking this payment settles, so the backend can advance it to PAID. */
+  bookingId?: string;
   serviceName: string;
   servicePrice: number;
   serviceCurrency?: string;
@@ -20,6 +22,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   isOpen,
   onClose,
   serviceId,
+  bookingId,
   serviceName,
   servicePrice,
   serviceCurrency = 'lkr',
@@ -165,6 +168,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             /* Payment Form */
             <PayHereCheckout
               serviceId={serviceId}
+              bookingId={bookingId}
               amount={servicePrice}
               currency={serviceCurrency}
               serviceName={serviceName}

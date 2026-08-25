@@ -10,6 +10,7 @@ datasource db {
 model Payment {
   id               String        @id @default(cuid())
   serviceId        String
+  bookingId        String?
   providerId       String
   userId           String
   gateway          String?       @default("payhere")
@@ -28,6 +29,7 @@ model Payment {
   status           PaymentStatus @default(PENDING)
 
   @@index([payhereOrderId])
+  @@index([bookingId])
   @@index([status])
   @@index([createdAt])
   @@index([providerId])

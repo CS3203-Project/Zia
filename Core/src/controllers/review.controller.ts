@@ -11,10 +11,21 @@ import {
 } from '../services/review.service.js';
 import { queueService } from '../services/queue.service.js';
 import { prisma } from '../utils/database.js';
+import bookingService from '../services/booking.service.js';
 
 export const createReviewController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { reviewerId, revieweeId, rating, comment } = req.body;
+    const { revieweeId, rating, comment } = req.body;
+    // Trust the token, not the caller-supplied reviewerId.
+    const reviewerId = (req as any).user?.id as string;
+
+    // A provider may only rate a customer they've actually completed work for.
+    const allowed = await bookingService.hasCompletedBookingWithCustomer(reviewerId, revieweeId);
+    if (!allowed) {
+      return res.status(403).json({
+        error: 'You can only review a customer after marking their booking complete.',
+      });
+    }
 
     // Check if review already exists
     const existingReview = await prisma.customerReview.findFirst({

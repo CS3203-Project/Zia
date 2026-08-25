@@ -28,6 +28,7 @@ model User {
   socialmedia             String[]
   customerReviewsReceived CustomerReview[] @relation("CustomerReviewReviewee")
   customerReviewsWritten  CustomerReview[] @relation("CustomerReviewReviewer")
+  bookings                Booking[]
   schedules               Schedule[]
   serviceProvider         ServiceProvider?
   serviceRequests         ServiceRequest[]
@@ -53,6 +54,7 @@ model ServiceProvider {
   updatedAt      DateTime   @updatedAt
   IDCardUrl      String
   isVerified     Boolean    @default(false)
+  bookings       Booking[]
   companies      Company[]
   schedules      Schedule[]
   services       Service[]
@@ -117,6 +119,7 @@ model Service {
   postalCode           String?
   serviceRadiusKm      Float?                 @default(10)
   state                String?
+  bookings             Booking[]
   schedules            Schedule[]
   category             Category               @relation(fields: [categoryId], references: [id])
   provider             ServiceProvider        @relation(fields: [providerId], references: [id])
@@ -155,6 +158,60 @@ model Schedule {
   provider             ServiceProvider @relation(fields: [providerId], references: [id])
   service              Service         @relation(fields: [serviceId], references: [id])
   user                 User            @relation(fields: [userId], references: [id])
+}
+
+/// A single booking, owned by exactly one conversation.
+///
+/// Replaces the old Schedule-as-booking approach, which looked bookings up by
+/// (userId, providerId) and so silently collapsed every booking between the same
+/// two people into one row - a customer booking a second service from a provider
+/// they'd already hired would overwrite the first booking's price and schedule.
+/// conversationId is unique here, so conversation -> booking -> service is 1:1:1.
+model Booking {
+  id             String          @id @default(cuid())
+  conversationId String          @unique
+  serviceId      String
+  providerId     String
+  customerId     String
+  status         BookingStatus   @default(INQUIRY)
+  price          Decimal?        @db.Decimal(10, 2)
+  currency       String          @default("LKR")
+  scheduledStart DateTime?
+  scheduledEnd   DateTime?
+  paymentMethod  PaymentMethod?
+  paymentId      String?
+  note           String?
+  cancelReason   String?
+  quotedAt       DateTime?
+  acceptedAt     DateTime?
+  paidAt         DateTime?
+  completedAt    DateTime?
+  cancelledAt    DateTime?
+  cancelledBy    String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  provider       ServiceProvider @relation(fields: [providerId], references: [id])
+  service        Service         @relation(fields: [serviceId], references: [id])
+  customer       User            @relation(fields: [customerId], references: [id])
+
+  @@index([serviceId, status, scheduledStart])
+  @@index([providerId, status])
+  @@index([customerId, status])
+  @@index([status])
+}
+
+enum BookingStatus {
+  INQUIRY
+  QUOTED
+  ACCEPTED
+  PAID
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  ONLINE
+  CASH
 }
 
 model ServiceReview {

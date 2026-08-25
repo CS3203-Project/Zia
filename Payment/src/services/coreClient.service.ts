@@ -64,6 +64,26 @@ class CoreClient {
   getAdmin(adminId: number): Promise<CoreAdmin | null> {
     return internalGet<CoreAdmin>(`/internal/admins/${adminId}`);
   }
+
+  /**
+   * Tells Core that an online payment settled, so the booking can move to PAID.
+   * Without this the booking would stay ACCEPTED forever and the customer would
+   * still be shown a Pay Now button after paying.
+   */
+  async markBookingPaid(bookingId: string, paymentId: string): Promise<void> {
+    const response = await fetch(`${CORE_SERVICE_URL}/internal/bookings/mark-paid`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-internal-key': INTERNAL_API_KEY,
+      },
+      body: JSON.stringify({ bookingId, paymentId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to mark booking paid: ${response.status}`);
+    }
+  }
 }
 
 export default new CoreClient();

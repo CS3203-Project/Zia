@@ -12,12 +12,22 @@ import {
   UpdateServiceReviewData
 } from '../services/serviceReview.service.js';
 import { Request, Response } from 'express';
+import bookingService from '../services/booking.service.js';
 
 export const createServiceReviewController = async (req: Request, res: Response) => {
   try {
     const data: CreateServiceReviewData = req.body;
     // reviewerId should come from auth middleware (req.user.id)
     data.reviewerId = req.user.id;
+
+    // Only customers who actually had the service delivered may rate it.
+    const allowed = await bookingService.hasCompletedServiceBooking(data.reviewerId, data.serviceId);
+    if (!allowed) {
+      return res.status(403).json({
+        error: 'You can only review a service after the provider marks your booking complete.',
+      });
+    }
+
     const review = await createServiceReview(data);
     res.status(201).json(review);
   } catch (err: any) {

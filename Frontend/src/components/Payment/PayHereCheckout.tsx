@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 
 interface PayHereCheckoutProps {
   serviceId: string;
+  bookingId?: string;
   amount: number;
   currency?: string;
   serviceName?: string;
@@ -81,6 +82,7 @@ async function pollPaymentStatus(
 
 const PayHereCheckout: React.FC<PayHereCheckoutProps> = ({
   serviceId,
+  bookingId,
   amount,
   currency = 'lkr',
   serviceName,
@@ -100,7 +102,7 @@ const PayHereCheckout: React.FC<PayHereCheckoutProps> = ({
     try {
       await loadPayHereScript();
 
-      const checkout = await paymentApi.createCheckout({ serviceId, amount, currency });
+      const checkout = await paymentApi.createCheckout({ serviceId, bookingId, amount, currency });
 
       window.payhere!.onCompleted = () => {
         pollPaymentStatus(
