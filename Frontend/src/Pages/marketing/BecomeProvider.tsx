@@ -225,28 +225,13 @@ export default function BecomeProvider() {
       {/* Hero Section */}
       <BecomeProviderHero onBack={() => navigate('/profile')} />
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-12">
         {/* Form Container */}
         <div className="relative">
-          <div className="relative bg-white border border-gray-100 shadow-xl rounded-3xl overflow-hidden">
+          <div className="relative bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
 
             <form onSubmit={handleSubmit} className="relative z-10">
-              <div className="p-8 lg:p-12 space-y-10">
-                {/* Progress Indicator */}
-                <div className="flex items-center justify-center space-x-2 mb-8">
-                  <div className="flex items-center">
-                    <div className="relative">
-                      <div className="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-full text-white text-sm font-bold">
-                        1
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <span className="text-gray-900 font-semibold text-lg">Profile Setup</span>
-                      <p className="text-gray-500 text-sm">Create your professional profile</p>
-                    </div>
-                  </div>
-                </div>
-
+              <div className="p-6 lg:p-8 space-y-8">
               {/* Bio Section */}
               <ProviderBioSection
                 sectionRef={bioSectionRef}

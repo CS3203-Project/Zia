@@ -11,7 +11,6 @@ import type { Category } from '../../api/categoryApi';
 import type { ProviderProfile } from '../../api/userApi';
 import type { LocationInfo } from '../../services/locationService';
 import { FiPlus } from 'react-icons/fi';
-import Orb from '../../components/shared/Orb';
 import CategorySection from '../../components/services/create/CategorySection';
 import ServiceDetailsSection from '../../components/services/create/ServiceDetailsSection';
 import ImagesSection from '../../components/services/create/ImagesSection';
@@ -554,27 +553,18 @@ export default function CreateService() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-orange-50 to-white overflow-hidden">
-      {/* Background accent - matches homepage */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 right-0 w-72 h-72 opacity-10 blur-3xl">
-          <Orb hue={0} hoverIntensity={0.15} rotateOnHover={true} />
-        </div>
-      </div>
+    <div className="relative min-h-screen bg-gradient-to-b from-orange-50 to-white">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mt-16">
+        <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-16">
-        <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_2px_6px_2px_rgba(0,0,0,0.15)] transition-all duration-300 overflow-hidden">
-
-          {/* Enhanced Header */}
-          <div className="relative bg-gradient-to-r from-orange-50 to-white px-8 py-8 border-b border-gray-100">
-            <div className="relative flex items-center space-x-4">
-              <div className="p-3 bg-white rounded-xl border border-gray-200 shadow-sm hover:scale-105 transition-all duration-300">
-                <FiPlus className="h-8 w-8 text-gray-900" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Create New Service</h1>
-                <p className="text-gray-500 mt-2">Share your expertise with the world. Create a service that showcases your skills.</p>
-              </div>
+          {/* Header */}
+          <div className="flex items-center space-x-4 px-8 py-6 border-b border-gray-100">
+            <div className="p-3 bg-orange-50 rounded-xl">
+              <FiPlus className="h-6 w-6 text-orange-600" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Create New Service</h1>
+              <p className="text-gray-500 mt-1">Share your expertise and start earning on the platform.</p>
             </div>
           </div>
 
@@ -644,51 +634,38 @@ export default function CreateService() {
             />
 
             {/* Submit Buttons */}
-            <div className="relative pt-12">
-              {/* Decorative separator */}
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-
-              <div className="flex justify-end space-x-6 pt-8">
+            <div className="pt-8 border-t border-gray-100">
+              <div className="flex justify-end space-x-3">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/profile')}
                   disabled={loading || uploading}
-                  className="px-10 py-4 rounded-full hover:scale-105"
                 >
-                  <span className="font-semibold">Cancel</span>
+                  Cancel
                 </Button>
 
                 <Button
                   type="submit"
                   disabled={loading || uploading}
-                  variant="default"
-                  className="px-10 py-4 min-w-[200px] rounded-full shadow-lg hover:scale-105 transition-all duration-300"
+                  className="min-w-[160px] flex items-center justify-center"
                 >
-                  <span className="flex items-center justify-center font-bold">
-                    {uploading ? (
-                      <>
-                        <div className="w-5 h-5 mr-3 relative">
-                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30"></div>
-                          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white absolute top-0 left-0"></div>
-                        </div>
-                        Uploading...
-                      </>
-                    ) : loading ? (
-                      <>
-                        <div className="w-5 h-5 mr-3 relative">
-                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30"></div>
-                          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-white absolute top-0 left-0"></div>
-                        </div>
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <FiPlus className="w-5 h-5 mr-2" />
-                        Create Service
-                      </>
-                    )}
-                  </span>
+                  {uploading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2"></div>
+                      Uploading...
+                    </>
+                  ) : loading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2"></div>
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <FiPlus className="w-4 h-4 mr-2" />
+                      Create Service
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
