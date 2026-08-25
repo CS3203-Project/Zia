@@ -43,7 +43,7 @@ const ServiceStatusSection: React.FC<ServiceStatusSectionProps> = ({ isActive, o
           isActive ? 'bg-orange-500 border-orange-500' : 'bg-gray-200 border-gray-300'
         }`}>
           <div className={`w-5 h-5 bg-white rounded-full shadow mt-0.5 ml-0.5 transition-transform duration-300 border ${
-          isActive ? 'transform translate-x-6 border-orange-500' : 'border-gray-300'
+          isActive ? 'transform translate-x-5 border-orange-500' : 'border-gray-300'
           }`}></div>
         </div>
         </div>

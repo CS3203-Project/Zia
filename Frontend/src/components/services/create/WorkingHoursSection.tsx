@@ -20,53 +20,49 @@ const WorkingHoursSection: React.FC<WorkingHoursSectionProps> = ({
       </h2>
       <div className="space-y-4 relative z-10">
         {daysOfWeek.map(({ key, label }) => (
-          <div key={key} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl border border-gray-100 transition-all duration-300">
-            <div className="flex items-center min-w-[140px]">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  id={`working-${key}`}
-                  checked={workingTime[key].enabled}
-                  onChange={(e) => onWorkingHoursChange(key, 'enabled', e.target.checked)}
-                  className="h-5 w-5 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-orange-500 transition-all duration-200"
-                />
-              </div>
+          <div key={key} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100 transition-all duration-300">
+            <div className="flex items-center sm:min-w-[140px]">
+              <input
+                type="checkbox"
+                id={`working-${key}`}
+                checked={workingTime[key].enabled}
+                onChange={(e) => onWorkingHoursChange(key, 'enabled', e.target.checked)}
+                className="h-5 w-5 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 accent-orange-500 transition-all duration-200 flex-shrink-0"
+              />
               <label htmlFor={`working-${key}`} className="ml-3 text-sm font-semibold text-gray-900">
                 {label}
               </label>
             </div>
 
-            <div className="flex items-center space-x-3 flex-1">
-              <div className="flex items-center space-x-3">
-                <div className="flex items-center space-x-2">
-                  <FiClock className="w-4 h-4 text-gray-400" />
-                  <input
-                    type="time"
-                    value={workingTime[key].startTime}
-                    onChange={(e) => onWorkingHoursChange(key, 'startTime', e.target.value)}
-                    disabled={!workingTime[key].enabled}
-                    className={`px-3 py-2 bg-white border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-gray-900 ${
-                      workingTime[key].enabled
-                        ? 'border-gray-200'
-                        : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
-                    aria-label={`Start time for ${label}`}
-                  />
-                </div>
-                <span className="text-gray-400 font-medium">to</span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <FiClock className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 <input
                   type="time"
-                  value={workingTime[key].endTime}
-                  onChange={(e) => onWorkingHoursChange(key, 'endTime', e.target.value)}
+                  value={workingTime[key].startTime}
+                  onChange={(e) => onWorkingHoursChange(key, 'startTime', e.target.value)}
                   disabled={!workingTime[key].enabled}
-                  className={`px-3 py-2 bg-white border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-gray-900 ${
+                  className={`min-w-0 px-3 py-2 bg-white border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-gray-900 ${
                     workingTime[key].enabled
                       ? 'border-gray-200'
                       : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
                   }`}
-                  aria-label={`End time for ${label}`}
+                  aria-label={`Start time for ${label}`}
                 />
               </div>
+              <span className="text-gray-400 font-medium flex-shrink-0">to</span>
+              <input
+                type="time"
+                value={workingTime[key].endTime}
+                onChange={(e) => onWorkingHoursChange(key, 'endTime', e.target.value)}
+                disabled={!workingTime[key].enabled}
+                className={`min-w-0 px-3 py-2 bg-white border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all duration-300 text-gray-900 ${
+                  workingTime[key].enabled
+                    ? 'border-gray-200'
+                    : 'border-gray-100 bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+                aria-label={`End time for ${label}`}
+              />
             </div>
           </div>
         ))}

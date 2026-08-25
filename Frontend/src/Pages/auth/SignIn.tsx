@@ -172,7 +172,7 @@ export default function SignIn() {
                       <label className="inline-flex items-center gap-2 text-gray-600 cursor-pointer">
                         <input
                           type="checkbox"
-                          className="rounded border-gray-300 text-orange-500 focus:ring-orange-500 focus:ring-offset-0"
+                          className="rounded border-gray-300 accent-orange-500 focus:ring-orange-500 focus:ring-offset-0"
                         />
                         Remember me
                       </label>

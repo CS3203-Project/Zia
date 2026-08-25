@@ -351,7 +351,7 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   checked={!!record.customerConfirmation}
                   disabled={!isCustomer || saving}
                   onChange={(e) => update({ customerConfirmation: e.target.checked })}
-                  className="rounded text-orange-500 focus:ring-orange-400 bg-white border-gray-300"
+                  className="rounded accent-orange-500 focus:ring-orange-400 bg-white border-gray-300"
                 />
                 <span className="font-medium text-gray-900">Customer Confirmation</span>
                 {isCustomer && (
@@ -365,7 +365,7 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   checked={!!record.providerConfirmation}
                   disabled={!isProvider || saving}
                   onChange={(e) => update({ providerConfirmation: e.target.checked })}
-                  className="rounded text-orange-500 focus:ring-orange-400 bg-white border-gray-300"
+                  className="rounded accent-orange-500 focus:ring-orange-400 bg-white border-gray-300"
                 />
                 <span className="font-medium text-gray-900">Provider Confirmation</span>
                 {isProvider && (

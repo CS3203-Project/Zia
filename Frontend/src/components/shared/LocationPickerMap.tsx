@@ -283,7 +283,7 @@ const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
                 value={searchQuery}
                 onChange={handleSearchInputChange}
                 placeholder={placeholder}
-                className="w-full px-4 py-3 pl-12 bg-white border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-4 py-3 pl-12 bg-white border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               />
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 {isSearching ? (

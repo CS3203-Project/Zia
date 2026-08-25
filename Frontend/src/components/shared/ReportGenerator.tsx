@@ -381,7 +381,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
                   <select
                     value={reportType}
                     onChange={(e) => setReportType(e.target.value as ReportType)}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600/40 bg-white text-gray-900"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500/40 bg-white text-gray-900"
                   >
                     <option value="customers">Customer Report</option>
                     <option value="providers">Service Provider Report</option>
@@ -415,7 +415,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
                     onChange={(e) => setStartDate(e.target.value)}
                     aria-invalid={!!formErrors.startDate}
                     style={{ colorScheme: 'light' }}
-                    className={`w-full px-3 py-3 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-600 focus:border-blue-600/40 ${
+                    className={`w-full px-3 py-3 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-orange-500/40 ${
                       formErrors.startDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                   />
@@ -434,7 +434,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ isOpen, onClose }) =>
                     onChange={(e) => setEndDate(e.target.value)}
                     aria-invalid={!!formErrors.endDate}
                     style={{ colorScheme: 'light' }}
-                    className={`w-full px-3 py-3 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-600 focus:border-blue-600/40 ${
+                    className={`w-full px-3 py-3 border rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-orange-500/40 ${
                       formErrors.endDate ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                   />
