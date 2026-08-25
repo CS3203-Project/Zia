@@ -258,7 +258,7 @@ const AdminDashboard: React.FC = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between min-h-16 py-3 gap-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
               <p className="text-sm text-gray-500">
@@ -287,8 +287,8 @@ const AdminDashboard: React.FC = () => {
 
       {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="border-b border-gray-200 bg-white">
-          <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+        <div className="border-b border-gray-200 bg-white overflow-x-auto">
+          <nav className="-mb-px flex space-x-8 w-max min-w-full" aria-label="Tabs">
             {[
               { id: 'overview', label: 'Overview', icon: TrendingUp },
               { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, icon: UserCheck },
