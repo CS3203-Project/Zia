@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp, CheckCircle, Clock, AlertCircle, Minimize2, Lightbulb } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle, Clock, AlertCircle, Minimize2, Lightbulb, CreditCard } from 'lucide-react';
 import confirmationApi from '../../api/confirmationApi';
 import type { ConversationConfirmation } from '../../types/confirmation';
 import { useConfirmationSocket } from '../../hooks/useConfirmationSocket';
 import { useAuth } from '../../contexts/AuthContext';
+import { serviceApi } from '../../api/serviceApi';
+import { PaymentModal } from '../Payment';
 
 interface Props {
   conversationId: string;
@@ -45,6 +47,9 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
   const [isStartTimeEditing, setIsStartTimeEditing] = useState(false);
   const [isEndTimeEditing, setIsEndTimeEditing] = useState(false);
   const [currentConversationId, setCurrentConversationId] = useState<string>('');
+  const [bookedService, setBookedService] = useState<{ id: string; title: string; images?: string[] } | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
   const isCustomer = currentUserRole === 'USER';
   const isProvider = currentUserRole === 'PROVIDER';
 
@@ -61,9 +66,31 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
       setIsStartTimeEditing(false);
       setIsEndTimeEditing(false);
       setSaving(false);
+      setBookedService(null);
+      setIsPaymentModalOpen(false);
+      setPaymentCompleted(false);
       setCurrentConversationId(conversationId);
     }
   }, [conversationId, currentConversationId]);
+
+  // Fetch the booked service so the customer's Pay Now button has a serviceId to check out with
+  useEffect(() => {
+    if (!isCustomer) return;
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await serviceApi.getServiceByConversationId(conversationId);
+        if (mounted && res.success && res.data) {
+          setBookedService({ id: res.data.id, title: res.data.title || 'Booking Payment', images: res.data.images });
+        }
+      } catch (e) {
+        console.error('Failed to load booked service for payment:', e);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [conversationId, isCustomer]);
 
   useEffect(() => {
     let mounted = true;
@@ -398,10 +425,10 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                       min="0"
                       step="0.01"
                       className={`w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white text-gray-900 placeholder-gray-400 ${
-                        !isProvider ? 'cursor-not-allowed opacity-50' : ''
+                        !isProvider || record.feeLocked ? 'cursor-not-allowed opacity-50' : ''
                       } ${hasUnsavedChanges ? 'border-orange-400 bg-orange-50' : ''}`}
                       value={serviceFeeInput}
-                      disabled={!isProvider || saving}
+                      disabled={!isProvider || saving || !!record.feeLocked}
                       onChange={(e) => {
                         const inputValue = e.target.value;
                         setServiceFeeInput(inputValue);
@@ -430,10 +457,10 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   </div>
                   <select
                     className={`border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 bg-white text-gray-900 ${
-                      !isProvider ? 'cursor-not-allowed opacity-50' : ''
+                      !isProvider || record.feeLocked ? 'cursor-not-allowed opacity-50' : ''
                     }`}
                     value={record.currency || 'USD'}
-                    disabled={!isProvider || saving}
+                    disabled={!isProvider || saving || !!record.feeLocked}
                     onChange={(e) => update({ currency: e.target.value })}
                   >
                     <option value="USD" className="bg-white text-gray-900">USD</option>
@@ -462,7 +489,7 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                     )}
                   </button>
                 )}
-                {isProvider && (
+                {isProvider && !record.feeLocked && (
                   <div className="mt-2 text-xs text-gray-500 relative z-10 flex items-center gap-1">
                     <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
                     Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click outside to save your changes
@@ -474,11 +501,67 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                     <span>Please set the service fee to complete the booking</span>
                   </p>
                 )}
+
+                {/* Lock/unlock the amount so the customer knows it's final before paying */}
+                {isProvider && hasServiceFee && !hasUnsavedChanges && (
+                  <button
+                    onClick={() => update({ feeLocked: !record.feeLocked })}
+                    disabled={saving}
+                    className={`mt-3 w-full px-4 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 ${
+                      record.feeLocked
+                        ? 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                        : 'bg-orange-600 text-white hover:bg-orange-700'
+                    }`}
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    <span>{record.feeLocked ? 'Unlock Amount to Edit' : 'Lock Amount & Allow Payment'}</span>
+                  </button>
+                )}
+
+                {/* Cash payment tracking, available once the amount is locked */}
+                {isProvider && record.feeLocked && (
+                  <label className="mt-3 flex items-center space-x-3 bg-white p-3 rounded-xl border border-gray-200 hover:border-orange-200 transition-all duration-300 cursor-pointer relative z-10">
+                    <input
+                      type="checkbox"
+                      checked={!!record.cashReceived}
+                      disabled={saving}
+                      onChange={(e) => update({ cashReceived: e.target.checked })}
+                      className="rounded accent-orange-500 focus:ring-orange-400 bg-white border-gray-300"
+                    />
+                    <span className="text-sm font-medium text-gray-900">Received payment in cash / on hand</span>
+                  </label>
+                )}
+
                 {!isProvider && hasServiceFee && (
                   <div className="mt-3 p-3 bg-emerald-50 rounded-xl border border-emerald-200 relative z-10">
-                    <p className="text-sm text-emerald-600 font-medium text-center">
+                    <p className="text-sm text-emerald-600 font-medium text-center mb-3">
                       {record.currency} {record.serviceFee?.toFixed(2)}
                     </p>
+                    {record.cashReceived ? (
+                      <div className="flex items-center justify-center space-x-2 text-sm text-emerald-700 font-medium">
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Paid via Cash</span>
+                      </div>
+                    ) : paymentCompleted ? (
+                      <div className="flex items-center justify-center space-x-2 text-sm text-emerald-700 font-medium">
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Payment Complete</span>
+                      </div>
+                    ) : record.feeLocked ? (
+                      <button
+                        onClick={() => setIsPaymentModalOpen(true)}
+                        disabled={!bookedService}
+                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <CreditCard className="h-4 w-4" />
+                        <span>Pay Now</span>
+                      </button>
+                    ) : (
+                      <p className="text-xs text-gray-500 text-center flex items-center justify-center space-x-1">
+                        <Clock className="h-3 w-3" />
+                        <span>Waiting for the provider to finalize the price</span>
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -686,6 +769,19 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
       </div>
 
       {/* Rating buttons removed from here - now inside scrollable area above */}
+
+      {bookedService && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          serviceId={bookedService.id}
+          serviceName={bookedService.title}
+          servicePrice={record.serviceFee || 0}
+          serviceCurrency={record.currency?.toLowerCase() || 'lkr'}
+          serviceImage={bookedService.images?.[0]}
+          onPaymentSuccess={() => setPaymentCompleted(true)}
+        />
+      )}
     </div>
   );
 };

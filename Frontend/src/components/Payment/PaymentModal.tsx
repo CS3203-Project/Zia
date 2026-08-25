@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { CreditCard, DollarSign, AlertTriangle, ArrowLeft, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { currencyConfig } from '../../services/paymentConfig';
 import PayHereCheckout from './PayHereCheckout';
 import PaymentStatusPopup from './PaymentStatusPopup';
@@ -28,7 +27,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   onPaymentSuccess,
   onPaymentError
 }) => {
-  const navigate = useNavigate();
   const [step, setStep] = useState<'details' | 'payment'>('details');
   const [showStatusPopup, setShowStatusPopup] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'success' | 'error' | 'pending' | 'failed'>('success');
@@ -50,10 +48,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   };
 
   const handleStatusPopupOk = () => {
-    if (paymentStatus === 'success') {
-      // Navigate to customer profile
-      navigate('/profile');
-    }
     setShowStatusPopup(false);
     onClose();
     setStep('details'); // Reset for next time

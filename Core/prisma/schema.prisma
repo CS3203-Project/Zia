@@ -148,6 +148,10 @@ model Schedule {
   providerConfirmation Boolean         @default(false)
   currency             String          @default("RS")
   serviceFee           Decimal?        @db.Decimal(10, 2)
+  cashReceived         Boolean         @default(false)
+  cashReceivedAt       DateTime?
+  feeLocked            Boolean         @default(false)
+  feeLockedAt          DateTime?
   provider             ServiceProvider @relation(fields: [providerId], references: [id])
   service              Service         @relation(fields: [serviceId], references: [id])
   user                 User            @relation(fields: [userId], references: [id])

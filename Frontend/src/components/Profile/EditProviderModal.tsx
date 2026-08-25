@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Save, Plus, Trash2, FileText, Camera, Award, Star } from 'lucide-react';
+import { X, Save, Plus, Trash2, FileText, Camera, Award, Star, MessageCircle } from 'lucide-react';
 import Button from '../shared/Button';
 import toast from 'react-hot-toast';
 import { userApi } from '../../api/userApi';
@@ -17,6 +17,7 @@ const inputClass =
 
 export default function EditProviderModal({ isOpen, onClose, onSuccess, provider }: EditProviderModalProps) {
   const [formData, setFormData] = useState<UpdateProviderData>({});
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [newSkill, setNewSkill] = useState('');
   const [newQualification, setNewQualification] = useState('');
@@ -30,6 +31,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
         logoUrl: provider.logoUrl || '',
         IDCardUrl: provider.IDCardUrl || ''
       });
+      setPhone(provider.user?.phone || '');
     }
   }, [isOpen, provider]);
 
@@ -42,11 +44,21 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
 
     try {
       const updatedProvider = await userApi.updateProvider(formData);
+
+      const phoneChanged = phone.trim() !== (provider.user?.phone || '');
+      if (phoneChanged) {
+        await userApi.updateProfile({ phone: phone.trim() });
+      }
+
       toast.success('Provider profile updated successfully!');
-      onSuccess(updatedProvider);
+      onSuccess({
+        ...updatedProvider,
+        user: { ...updatedProvider.user, phone: phone.trim() }
+      });
       onClose();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update provider profile');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to update provider profile';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -166,6 +178,24 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
               />
               <p className="text-xs text-gray-400">
                 Professional license or ID for verification purposes
+              </p>
+            </div>
+
+            {/* WhatsApp / Phone Number Section */}
+            <div className="space-y-3 pb-8 border-b border-gray-100">
+              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <MessageCircle className="h-4 w-4 mr-2 text-orange-600" />
+                WhatsApp / Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className={inputClass}
+                placeholder="e.g. +94 77 123 4567"
+              />
+              <p className="text-xs text-gray-400">
+                Shown as a WhatsApp contact button on your service listings
               </p>
             </div>
 

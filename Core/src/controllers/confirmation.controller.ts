@@ -15,6 +15,10 @@ interface ConversationConfirmation {
   endDate: string | null;
   serviceFee?: number | null;
   currency?: string;
+  cashReceived?: boolean;
+  cashReceivedAt?: string | null;
+  feeLocked?: boolean;
+  feeLockedAt?: string | null;
   updatedAt?: string;
 }
 
@@ -153,6 +157,10 @@ function scheduleToConfirmation(schedule: any, conversationId: string): Conversa
     endDate: schedule.endTime,
     serviceFee: schedule.serviceFee ? parseFloat(schedule.serviceFee.toString()) : null,
     currency: schedule.currency,
+    cashReceived: schedule.cashReceived,
+    cashReceivedAt: schedule.cashReceivedAt || null,
+    feeLocked: schedule.feeLocked,
+    feeLockedAt: schedule.feeLockedAt || null,
     updatedAt: schedule.updatedAt || new Date().toISOString()
   };
 }
@@ -318,12 +326,23 @@ export const upsertConfirmationController = async (req: Request, res: Response) 
       updateData.endTime = updates.endDate;
     }
     if (updates.serviceFee !== undefined) {
+      if (schedule.feeLocked && updates.feeLocked !== false) {
+        return res.status(400).json({ error: 'Service fee is locked and cannot be changed. Unlock it first.' });
+      }
       updateData.serviceFee = updates.serviceFee;
     }
     if (updates.currency !== undefined) {
       updateData.currency = updates.currency;
     }
-    
+    if (updates.feeLocked !== undefined) {
+      updateData.feeLocked = updates.feeLocked;
+      updateData.feeLockedAt = updates.feeLocked ? new Date() : null;
+    }
+    if (updates.cashReceived !== undefined) {
+      updateData.cashReceived = updates.cashReceived;
+      updateData.cashReceivedAt = updates.cashReceived ? new Date() : null;
+    }
+
     // Update the schedule
     schedule = await prisma.schedule.update({
       where: { id: schedule.id },
