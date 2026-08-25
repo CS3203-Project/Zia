@@ -103,6 +103,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: REGISTRY,IMAGE_TAG,GHCR_USER,GHCR_TOKEN
+          # Pulling six images onto a 2-vCPU box and waiting for the stack to
+          # come up runs past the action's default, which failed the run even
+          # though every container had started.
+          command_timeout: 25m
           script: |
             set -euo pipefail
             cd ~/zia

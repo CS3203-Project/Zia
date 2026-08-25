@@ -153,9 +153,10 @@ services:
   rabbitmq:
     image: rabbitmq:3.13-alpine
     container_name: zia-core-rabbitmq
-    environment:
-      # The Erlang VM will happily take far more than this box has.
-      RABBITMQ_VM_MEMORY_HIGH_WATERMARK: "0.4"
+    # No RABBITMQ_VM_MEMORY_HIGH_WATERMARK here: 3.13 treats that env var as
+    # deprecated and exits(1) rather than starting, which had it crash-looping
+    # and taking core/chat/payment down with it. RabbitMQ reads the container's
+    # cgroup limit, so mem_limit below already bounds the Erlang VM.
     volumes:
       - core_rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
