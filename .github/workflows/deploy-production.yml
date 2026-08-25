@@ -1,0 +1,151 @@
+# Builds every image in CI, publishes them to GHCR, then tells the server to
+# pull and restart.
+#
+# The server is deliberately not a build host: it has 954 MB of RAM and 2 vCPU,
+# and `npm ci` plus a Vite build there would run it out of memory. CI does the
+# heavy work; the box only pulls.
+name: Deploy to production
+
+on:
+  push:
+    branches: [production]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}/zia
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      # One slow service shouldn't hide failures in the others.
+      fail-fast: false
+      matrix:
+        include:
+          - name: core
+            context: ./Core
+          - name: chat
+            context: ./Chat
+          - name: payment
+            context: ./Payment
+          - name: notification
+            context: ./Notification
+          - name: frontend
+            context: ./Frontend
+          - name: postgres
+            context: ./scripts
+            dockerfile: ./scripts/postgres-core.Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.name }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile || format('{0}/Dockerfile', matrix.context) }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ matrix.name }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ matrix.name }}:latest
+          # Layer cache keyed per service, so one service's cache can't be
+          # clobbered by another's.
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy deployment files to the server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "docker-compose.prod.yml,scripts/init-core-db.sql,Notification/scripts/init-notification-db.sql"
+          target: "~/zia"
+
+      - name: Pull images and restart
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          # Passed through so the heredoc below can write .env on the host.
+          # Nothing here is ever written into the repository.
+          REGISTRY: ghcr.io/${{ github.repository_owner }}/zia
+          IMAGE_TAG: ${{ github.sha }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: REGISTRY,IMAGE_TAG
+          script: |
+            set -euo pipefail
+            cd ~/zia
+
+            # Written fresh each deploy, readable only by the deploy user.
+            umask 077
+            cat > .env <<ENVEOF
+            REGISTRY=${REGISTRY}
+            IMAGE_TAG=${IMAGE_TAG}
+            APP_URL=${{ secrets.APP_URL }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            INTERNAL_API_KEY=${{ secrets.INTERNAL_API_KEY }}
+            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+            MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}
+            MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
+            MAIL_HOST=${{ secrets.MAIL_HOST }}
+            MAIL_USER=${{ secrets.MAIL_USER }}
+            MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            MAIL_FROM=${{ secrets.MAIL_FROM }}
+            PAYHERE_MODE=${{ secrets.PAYHERE_MODE }}
+            PAYHERE_MERCHANT_ID=${{ secrets.PAYHERE_MERCHANT_ID }}
+            PAYHERE_MERCHANT_SECRET=${{ secrets.PAYHERE_MERCHANT_SECRET }}
+            PAYHERE_APP_ID=${{ secrets.PAYHERE_APP_ID }}
+            PAYHERE_APP_SECRET=${{ secrets.PAYHERE_APP_SECRET }}
+            ENVEOF
+
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+
+            # Reclaim disk from superseded images; the box only has ~93 GB and
+            # every deploy leaves another full set behind.
+            docker image prune -af --filter "until=72h" || true
+
+            docker compose -f docker-compose.prod.yml ps
+
+      - name: Smoke test
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+            # Give the stack a moment before judging it.
+            for i in $(seq 1 30); do
+              if curl -sf -o /dev/null http://localhost/ ; then
+                echo "frontend responding"
+                exit 0
+              fi
+              sleep 5
+            done
+            echo "frontend did not come up within 150s" >&2
+            cd ~/zia && docker compose -f docker-compose.prod.yml logs --tail=40
+            exit 1

@@ -1,0 +1,70 @@
+# Checks on the development branch and on PRs into it.
+#
+# Deliberately no deploy step: development is where things are allowed to be
+# broken, and production deploys only from the production branch.
+name: CI
+
+on:
+  push:
+    branches: [development, main]
+  pull_request:
+    branches: [development, main, production]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [Core, Chat, Payment, Frontend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Generate Prisma client
+        # Core, Chat and Payment won't typecheck without it; Frontend has no schema.
+        run: |
+          if [ -f prisma/schema.prisma ]; then
+            npx prisma generate --schema=./prisma/schema.prisma
+          else
+            echo "no prisma schema, skipping"
+          fi
+
+      - name: Typecheck
+        run: |
+          if [ "${{ matrix.service }}" = "Frontend" ]; then
+            npx tsc -b --noEmit
+          else
+            npx tsc --noEmit
+          fi
+
+  docker-build:
+    # Proves every image still builds before production tries to.
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: core, context: ./Core }
+          - { name: chat, context: ./Chat }
+          - { name: payment, context: ./Payment }
+          - { name: notification, context: ./Notification }
+          - { name: frontend, context: ./Frontend }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build ${{ matrix.name }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.name }}

@@ -1,0 +1,196 @@
+# Production stack.
+#
+# Unlike docker-compose.yml (which builds locally), every service here pulls a
+# pre-built image. The target host has 954 MB of RAM and 2 vCPU — running
+# `npm ci` and a Vite build on it would exhaust memory — so images are built in
+# CI and only pulled here.
+#
+# Every secret comes from the environment; nothing is committed. The deploy
+# workflow writes .env on the host from GitHub Secrets.
+services:
+  core:
+    image: ${REGISTRY}/core:${IMAGE_TAG:-latest}
+    container_name: zia-core
+    # Loopback only: nginx is the sole way in from outside.
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/zia_core?connection_limit=10&pool_timeout=20
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      REDIS_URL: redis://redis:6379
+      CHAT_SERVICE_URL: http://chat:3001
+      PAYMENT_SERVICE_URL: http://payment:3002
+      APP_URL: ${APP_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_PUBLIC_URL: ${APP_URL}/s3
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET: zia-uploads
+      MINIO_REGION: us-east-1
+      NODE_ENV: production
+      # Behind nginx, so honour one hop of X-Forwarded-For; without this every
+      # visitor shares a single rate-limit bucket.
+      TRUST_PROXY: "1"
+    depends_on: [postgres, rabbitmq, redis]
+    restart: unless-stopped
+    mem_limit: 220m
+
+  chat:
+    image: ${REGISTRY}/chat:${IMAGE_TAG:-latest}
+    container_name: zia-chat
+    # Loopback only: nginx is the sole way in from outside.
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/zia_core?schema=chat&connection_limit=10&pool_timeout=20
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      CORE_SERVICE_URL: http://core:3000
+      NODE_ENV: production
+      TRUST_PROXY: "1"
+    depends_on: [postgres, rabbitmq, redis]
+    restart: unless-stopped
+    mem_limit: 180m
+
+  payment:
+    image: ${REGISTRY}/payment:${IMAGE_TAG:-latest}
+    container_name: zia-payment
+    # Loopback only: nginx is the sole way in from outside.
+    ports:
+      - "127.0.0.1:3002:3002"
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/zia_core?schema=payment&connection_limit=10&pool_timeout=20
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      CORE_SERVICE_URL: http://core:3000
+      NODE_ENV: production
+      TRUST_PROXY: "1"
+      PAYHERE_MODE: ${PAYHERE_MODE:-sandbox}
+      PAYHERE_MERCHANT_ID: ${PAYHERE_MERCHANT_ID}
+      PAYHERE_MERCHANT_SECRET: ${PAYHERE_MERCHANT_SECRET}
+      PAYHERE_APP_ID: ${PAYHERE_APP_ID}
+      PAYHERE_APP_SECRET: ${PAYHERE_APP_SECRET}
+      # These must be publicly reachable. notify_url especially: it's a
+      # server-to-server callback from PayHere, and while it pointed at a
+      # placeholder every payment stayed PENDING forever.
+      PAYHERE_RETURN_URL: ${APP_URL}/checkout/success
+      PAYHERE_CANCEL_URL: ${APP_URL}/checkout/cancel
+      PAYHERE_NOTIFY_URL: ${APP_URL}/api/payments/notify
+    depends_on: [postgres, redis]
+    restart: unless-stopped
+    mem_limit: 180m
+
+  notification:
+    image: ${REGISTRY}/notification:${IMAGE_TAG:-latest}
+    container_name: zia-notification
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@notification-postgres:5432/zia_com
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM: ${MAIL_FROM}
+      NODE_ENV: production
+    depends_on: [notification-postgres, rabbitmq]
+    restart: unless-stopped
+    mem_limit: 180m
+
+  frontend:
+    image: ${REGISTRY}/frontend:${IMAGE_TAG:-latest}
+    container_name: zia-frontend
+    # Loopback only: nginx is the sole way in from outside.
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+    mem_limit: 48m
+
+  postgres:
+    image: ${REGISTRY}/postgres:${IMAGE_TAG:-latest}
+    container_name: zia-core-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: zia_core
+    volumes:
+      - core_pg_data:/var/lib/postgresql/data
+      - ./scripts/init-core-db.sql:/docker-entrypoint-initdb.d/init-core-db.sql:ro
+    restart: unless-stopped
+    # Tuned down from the defaults to fit a 1 GB host.
+    command: >
+      postgres -c shared_buffers=96MB -c max_connections=60
+               -c effective_cache_size=256MB -c work_mem=4MB
+    mem_limit: 320m
+
+  notification-postgres:
+    image: postgres:16-alpine
+    container_name: zia-notification-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: zia_com
+    volumes:
+      - notification_pg_data:/var/lib/postgresql/data
+      - ./Notification/scripts/init-notification-db.sql:/docker-entrypoint-initdb.d/init-notification-db.sql:ro
+    restart: unless-stopped
+    command: >
+      postgres -c shared_buffers=32MB -c max_connections=20
+    mem_limit: 140m
+
+  rabbitmq:
+    image: rabbitmq:3.13-alpine
+    container_name: zia-core-rabbitmq
+    environment:
+      # The Erlang VM will happily take far more than this box has.
+      RABBITMQ_VM_MEMORY_HIGH_WATERMARK: "0.4"
+    volumes:
+      - core_rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    mem_limit: 180m
+
+  redis:
+    image: redis:7-alpine
+    container_name: zia-redis
+    command: redis-server --maxmemory 48mb --maxmemory-policy allkeys-lru --save ""
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    mem_limit: 64m
+
+  minio:
+    image: minio/minio:latest
+    container_name: zia-minio
+    # Loopback only: nginx is the sole way in from outside.
+    ports:
+      - "127.0.0.1:9000:9000"
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+    mem_limit: 180m
+
+  createbuckets:
+    image: minio/mc:latest
+    depends_on: [minio]
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set zia http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; do sleep 2; done;
+      mc mb --ignore-existing zia/zia-uploads;
+      mc anonymous set download zia/zia-uploads;
+      exit 0;"
+    restart: "no"
+
+volumes:
+  core_pg_data:
+  notification_pg_data:
+  core_rabbitmq_data:
+  redis_data:
+  minio_data:
