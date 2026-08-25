@@ -28,7 +28,17 @@ jobs:
           node-version: '20'
 
       - name: Install
-        run: npm ci --no-audit --no-fund
+        # `npm ci` needs a package-lock.json, and Core/Frontend have none —
+        # they carry pnpm-lock.yaml, and package-lock.json is gitignored. Their
+        # Dockerfiles run plain `npm install`, so CI does the same rather than
+        # verifying against a different dependency resolution than the image
+        # build actually uses.
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
+          fi
 
       - name: Generate Prisma client
         # Core, Chat and Payment won't typecheck without it; Frontend has no schema.
