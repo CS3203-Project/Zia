@@ -30,7 +30,6 @@ const AdminDashboard: React.FC = () => {
   const [adminProfile, setAdminProfile] = useState<AdminProfile | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<ServiceProvider | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAnalyticsDashboardOpen, setIsAnalyticsDashboardOpen] = useState(false);
   const [isReportGeneratorOpen, setIsReportGeneratorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -370,19 +369,7 @@ const AdminDashboard: React.FC = () => {
                 <TrendingUp className="w-5 h-5 mr-2 text-amber-600" />
                 Analytics Dashboard
               </h2>
-              <div className="space-y-4">
-                <p className="text-gray-500">
-                  View graphical charts and performance metrics for comprehensive business insights.
-                </p>
-                <button
-                  onClick={() => setIsAnalyticsDashboardOpen(true)}
-                  className="w-full flex items-center justify-center p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg hover:from-amber-100 hover:to-orange-100 transition-all group"
-                >
-                  <TrendingUp className="w-5 h-5 text-amber-600 mr-3" />
-                  <span className="text-lg font-medium text-amber-700">Open Analytics Dashboard</span>
-                  <ExternalLink className="w-4 h-4 text-amber-500 ml-2" />
-                </button>
-              </div>
+              <AnalyticsDashboard />
             </div>
 
             {/* Report Generator */}
@@ -613,12 +600,6 @@ const AdminDashboard: React.FC = () => {
           setSelectedProvider(null);
         }}
         onApprove={handleApproveProvider}
-      />
-
-      {/* Analytics Dashboard Modal */}
-      <AnalyticsDashboard
-        isOpen={isAnalyticsDashboardOpen}
-        onClose={() => setIsAnalyticsDashboardOpen(false)}
       />
 
       {/* Report Generator Modal */}

@@ -15,10 +15,7 @@ import {
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import {
   Users,
-  ShoppingBag,
-  UserCheck,
   RefreshCw,
-  BarChart3,
   MapPin,
   Star,
   Activity,
@@ -47,8 +44,7 @@ ChartJS.register(
 );
 
 interface AnalyticsDashboardProps {
-  isOpen: boolean;
-  onClose: () => void;
+  className?: string;
 }
 
 interface AnalyticsData {
@@ -82,7 +78,7 @@ interface PaymentAnalyticsData {
   recentPayments: Array<{ id: string; amount: number; currency: string; status: string; customerName: string; providerName: string; serviceName?: string; createdAt: string }>;
 }
 
-const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isOpen, onClose }) => {
+const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) => {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [paymentData, setPaymentData] = useState<PaymentAnalyticsData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -270,14 +266,12 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isOpen, onClose
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      if (activeTab === 'general') {
-        fetchAnalyticsData();
-      } else {
-        fetchPaymentAnalyticsData();
-      }
+    if (activeTab === 'general') {
+      fetchAnalyticsData();
+    } else {
+      fetchPaymentAnalyticsData();
     }
-  }, [isOpen, activeTab, fetchAnalyticsData, fetchPaymentAnalyticsData]);
+  }, [activeTab, fetchAnalyticsData, fetchPaymentAnalyticsData]);
 
   const refreshData = () => {
     if (activeTab === 'general') {
@@ -286,8 +280,6 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isOpen, onClose
       fetchPaymentAnalyticsData();
     }
   };
-
-  if (!isOpen) return null;
 
   // Chart configurations
   const servicesByCategoryData = data ? {
@@ -365,129 +357,60 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isOpen, onClose
   } : { labels: [], datasets: [] };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[95vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-amber-50">
-          <div className="flex items-center">
-            <BarChart3 className="w-8 h-8 text-blue-600 mr-3" />
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h2>
-              <p className="text-gray-600">Real-time insights and performance metrics</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={refreshData}
-              variant="outline"
-              size="sm"
-              disabled={loading}
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
-            <p className="text-sm text-gray-500">
-              Last updated: {lastUpdated.toLocaleTimeString()}
-            </p>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              ✕
-            </button>
-          </div>
+    <div className={className}>
+      {/* Toolbar: sub-tabs + refresh */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 pb-4 border-b border-gray-200">
+        <div className="flex space-x-6">
+          <button
+            onClick={() => setActiveTab('general')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'general'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Users className="w-4 h-4 inline mr-2" />
+            General Analytics
+          </button>
+          <button
+            onClick={() => setActiveTab('payments')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'payments'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <CreditCard className="w-4 h-4 inline mr-2" />
+            Payment Analytics
+          </button>
         </div>
-
-        {/* Tabs */}
-        <div className="border-b border-gray-200 bg-white">
-          <div className="flex space-x-8 px-6">
-            <button
-              onClick={() => setActiveTab('general')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'general'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <Users className="w-4 h-4 inline mr-2" />
-              General Analytics
-            </button>
-            <button
-              onClick={() => setActiveTab('payments')}
-              className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                activeTab === 'payments'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <CreditCard className="w-4 h-4 inline mr-2" />
-              Payment Analytics
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-gray-500">
+            Last updated: {lastUpdated.toLocaleTimeString()}
+          </p>
+          <Button
+            onClick={refreshData}
+            variant="outline"
+            size="sm"
+            disabled={loading}
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
         </div>
+      </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(95vh-140px)]">
+      {/* Content */}
+      <div>
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
           ) : activeTab === 'general' && data ? (
             <div className="space-y-6">
-              {/* Key Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-blue-600">Total Customers</p>
-                      <p className="text-3xl font-bold text-blue-900">{data.totalUsers.toLocaleString()}</p>
-                      <p className="text-sm text-blue-700 mt-1">
-                        {data.totalActiveCustomers} active
-                      </p>
-                    </div>
-                    <Users className="w-10 h-10 text-blue-500" />
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-green-600">Total Providers</p>
-                      <p className="text-3xl font-bold text-green-900">{data.totalProviders.toLocaleString()}</p>
-                      <p className="text-sm text-green-700 mt-1">
-                        {data.totalVerifiedProviders} verified
-                      </p>
-                    </div>
-                    <UserCheck className="w-10 h-10 text-green-500" />
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-orange-600">Total Services</p>
-                      <p className="text-3xl font-bold text-orange-900">{data.totalServices.toLocaleString()}</p>
-                      <p className="text-sm text-orange-700 mt-1">
-                        {data.totalActiveServices} active
-                      </p>
-                    </div>
-                    <ShoppingBag className="w-10 h-10 text-orange-500" />
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-xl p-6 border border-cyan-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-cyan-600">Verified Providers</p>
-                      <p className="text-3xl font-bold text-cyan-900">{data.totalVerifiedProviders.toLocaleString()}</p>
-                      <p className="text-sm text-cyan-700 mt-1">
-                        {((data.totalVerifiedProviders / data.totalProviders) * 100).toFixed(1)}% verified
-                      </p>
-                    </div>
-                    <UserCheck className="w-10 h-10 text-cyan-500" />
-                  </div>
-                </div>
-              </div>
+              {/* Key Metrics intentionally omitted here — Total Customers/Providers/
+                  Verified Providers already appear in the stat cards above this section
+                  on the Overview tab; repeating them here was pure duplication. */}
 
               {/* Charts Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -925,7 +848,6 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isOpen, onClose
               </div>
             </div>
           )}
-        </div>
       </div>
     </div>
   );

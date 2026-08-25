@@ -12,7 +12,7 @@ interface NewConversationModalProps {
  */
 const NewConversationModal: React.FC<NewConversationModalProps> = ({ onClose, onSelectUser }) => {
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 px-4">
       <div className="w-full max-w-lg rounded-2xl border border-gray-100 bg-white p-8 shadow-2xl">
         <div>
           <div className="flex justify-between items-center mb-6">

@@ -84,7 +84,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       {/* Animated background orbs for extra visual flair */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 opacity-20 blur-2xl">

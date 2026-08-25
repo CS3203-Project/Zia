@@ -95,7 +95,7 @@ const PaymentStatusPopup: React.FC<PaymentStatusPopupProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-black/40 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-md">
         {/* Content */}
         <div className="p-8">
