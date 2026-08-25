@@ -37,7 +37,7 @@ export default function ProviderQualificationsSection({
           onChange={(e) => onNewQualificationChange(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), onAddQualification())}
           placeholder="Add a qualification (e.g., Bachelor's in Computer Science, AWS Certified)"
-          className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 text-gray-900 placeholder-gray-400 transition-all duration-200"
+          className="flex-1 px-4 py-4 bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all duration-300"
         />
         <Button
           type="button"

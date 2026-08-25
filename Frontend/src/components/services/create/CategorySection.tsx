@@ -1,5 +1,6 @@
 import React from 'react';
-import { FiChevronDown, FiX } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
+import Select from '../../shared/Select';
 import type { Category } from '../../../api/categoryApi';
 
 interface CategorySectionProps {
@@ -32,27 +33,15 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           <label htmlFor="categoryId" className="block text-sm font-semibold text-gray-900 mb-3">
             Category <span className="text-red-500">*</span>
           </label>
-          <div className="relative">
-            <select
-              id="categoryId"
-              name="categoryId"
-              value={categoryId}
-              onChange={onInputChange}
-              className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 appearance-none text-gray-900 ${
-                categoryError ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name || category.slug}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-              <FiChevronDown className="text-gray-500 w-5 h-5" />
-            </div>
-          </div>
+          <Select
+            id="categoryId"
+            name="categoryId"
+            value={categoryId}
+            placeholder="Select a category"
+            error={!!categoryError}
+            options={categories.map((category) => ({ value: category.id, label: category.name || category.slug }))}
+            onChange={onInputChange}
+          />
           {categoryError && <p className="mt-2 text-sm text-red-500 flex items-center">
             <FiX className="w-4 h-4 mr-1" />
             {categoryError}
@@ -65,37 +54,21 @@ const CategorySection: React.FC<CategorySectionProps> = ({
             <label htmlFor="subcategoryId" className="block text-sm font-semibold text-gray-900 mb-3">
               Subcategory
             </label>
-            <div className="relative">
-              <select
-                id="subcategoryId"
-                name="subcategoryId"
-                value={subcategoryId}
-                onChange={onInputChange}
-                disabled={!categoryId || subcategories.length === 0}
-                className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 appearance-none text-gray-900 ${
-                  !categoryId || subcategories.length === 0
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <option value="">
-                  {!categoryId
-                    ? 'Select a category first'
-                    : subcategories.length === 0
-                      ? 'No subcategories available'
-                      : 'Select a subcategory (optional)'
-                  }
-                </option>
-                {subcategories.map((subcategory) => (
-                  <option key={subcategory.id} value={subcategory.id}>
-                    {subcategory.name || subcategory.slug}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <FiChevronDown className={!categoryId || subcategories.length === 0 ? 'text-gray-300 w-5 h-5' : 'text-gray-500 w-5 h-5'} />
-              </div>
-            </div>
+            <Select
+              id="subcategoryId"
+              name="subcategoryId"
+              value={subcategoryId}
+              placeholder={
+                !categoryId
+                  ? 'Select a category first'
+                  : subcategories.length === 0
+                    ? 'No subcategories available'
+                    : 'Select a subcategory (optional)'
+              }
+              disabled={!categoryId || subcategories.length === 0}
+              options={subcategories.map((subcategory) => ({ value: subcategory.id, label: subcategory.name || subcategory.slug }))}
+              onChange={onInputChange}
+            />
           </div>
         )}
       </div>

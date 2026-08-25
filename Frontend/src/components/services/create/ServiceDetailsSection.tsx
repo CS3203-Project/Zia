@@ -1,5 +1,6 @@
 import React from 'react';
-import { FiChevronDown, FiX } from 'react-icons/fi';
+import { FiX } from 'react-icons/fi';
+import Select from '../../shared/Select';
 
 interface ServiceDetailsSectionProps {
   title: string;
@@ -107,26 +108,18 @@ const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({
             <label htmlFor="currency" className="block text-sm font-semibold text-gray-900 mb-3">
               Currency
             </label>
-            <div className="relative">
-              <select
-                id="currency"
-                name="currency"
-                value={currency}
-                onChange={onInputChange}
-                className="w-full px-4 py-4 bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 appearance-none text-gray-900"
-              >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="LKR">LKR (₨)</option>
-              </select>
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <div className="flex items-center space-x-1">
-                  <div className="w-1 h-1 bg-orange-400 rounded-full animate-pulse"></div>
-                  <FiChevronDown className="text-gray-500 w-5 h-5" />
-                </div>
-              </div>
-            </div>
+            <Select
+              id="currency"
+              name="currency"
+              value={currency}
+              options={[
+                { value: 'USD', label: 'USD ($)' },
+                { value: 'EUR', label: 'EUR (€)' },
+                { value: 'GBP', label: 'GBP (£)' },
+                { value: 'LKR', label: 'LKR (₨)' },
+              ]}
+              onChange={onInputChange}
+            />
           </div>
         </div>
       </div>

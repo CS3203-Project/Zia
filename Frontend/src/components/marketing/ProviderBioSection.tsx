@@ -22,30 +22,27 @@ export default function ProviderBioSection({ sectionRef, bio, error, touched, on
       </div>
 
       <div className="relative group">
-        {/* Container */}
-        <div className={`relative bg-gray-50 border rounded-2xl overflow-hidden transition-colors duration-200 ${
-          error && touched ? 'border-red-300' : 'border-gray-200'
-        }`}>
-          <textarea
-            value={bio || ''}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            placeholder="Share your story, experience, and what makes you unique. This helps customers understand your background and expertise..."
-            rows={6}
-            className="w-full px-6 py-4 bg-transparent border-0 rounded-2xl focus:ring-2 focus:ring-orange-400 resize-none text-gray-900 placeholder-gray-400 transition-all duration-200 focus:outline-none"
-            required
-          />
-          {/* Character counter */}
-          <div className="absolute bottom-3 right-3 flex items-center space-x-2">
-            <div className={`text-xs px-2 py-1 rounded-full ${
-              (bio?.length || 0) > 900
-                ? 'bg-red-100 text-red-600'
-                : (bio?.length || 0) > 700
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-gray-200 text-gray-500'
-            }`}>
-              {bio?.length || 0}/1000
-            </div>
+        <textarea
+          value={bio || ''}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
+          placeholder="Share your story, experience, and what makes you unique. This helps customers understand your background and expertise..."
+          rows={6}
+          required
+          className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none text-gray-900 placeholder-gray-400 ${
+            error && touched ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
+          }`}
+        />
+        {/* Character counter */}
+        <div className="absolute bottom-3 right-3 flex items-center space-x-2 pointer-events-none">
+          <div className={`text-xs px-2 py-1 rounded-full ${
+            (bio?.length || 0) > 900
+              ? 'bg-red-100 text-red-600'
+              : (bio?.length || 0) > 700
+                ? 'bg-yellow-100 text-yellow-700'
+                : 'bg-gray-200 text-gray-500'
+          }`}>
+            {bio?.length || 0}/1000
           </div>
         </div>
 
