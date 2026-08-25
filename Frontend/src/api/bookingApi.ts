@@ -19,9 +19,22 @@ export interface Booking {
   note: string | null;
   cancelReason: string | null;
   completedAt: string | null;
-  service: { id: string; title: string | null; images: string[]; price: string | number; currency: string };
-  provider: { id: string; userId: string; user: { id: string; firstName: string | null; lastName: string | null; email: string; phone: string | null } };
-  customer: { id: string; firstName: string | null; lastName: string | null; email: string; phone: string | null };
+  service: {
+    id: string; title: string | null; images: string[]; price: string | number; currency: string;
+    address: string | null; city: string | null; latitude: number | null; longitude: number | null;
+  };
+  provider: { id: string; userId: string; user: BookingParty };
+  customer: BookingParty;
+}
+
+export interface BookingParty {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  location: string | null;
 }
 
 export interface QuoteInput {
@@ -38,6 +51,15 @@ export const bookingApi = {
   /** Loads (creating on first open) the booking attached to a conversation. */
   async getByConversation(conversationId: string): Promise<Booking> {
     return unwrap(await apiClient.get(`/bookings/conversation/${conversationId}`));
+  },
+
+  /**
+   * The caller's still-open booking for a service, or null when there isn't one
+   * (including when the last one finished - that's what allows re-booking).
+   */
+  async findActive(serviceId: string): Promise<Booking | null> {
+    const res = await apiClient.get(`/bookings/active/${serviceId}`);
+    return res.data.data ?? null;
   },
 
   /** Provider: propose or revise price + schedule. */
@@ -64,6 +86,32 @@ export const bookingApi = {
     return unwrap(await apiClient.post(`/bookings/conversation/${conversationId}/cancel`, { reason }));
   },
 };
+
+export interface BookingTimelineEntry {
+  bookingId: string;
+  conversationId: string;
+  status: BookingStatus;
+  price: string | number | null;
+  currency: string;
+  scheduledStart: string | null;
+  service: { id: string; title: string | null; images: string[] };
+  role: 'CUSTOMER' | 'PROVIDER';
+  lastActivityAt: string;
+  events: Array<{
+    id: string;
+    event: string;
+    status: BookingStatus;
+    message: string;
+    createdAt: string;
+    byMe: boolean;
+  }>;
+}
+
+/** The caller's booking activity, grouped per booking, newest booking first. */
+export async function getBookingTimeline(): Promise<BookingTimelineEntry[]> {
+  const res = await apiClient.get('/bookings/timeline');
+  return res.data.data ?? [];
+}
 
 /** Human-readable label + tone for a status, shared by the panel and badges. */
 export const STATUS_META: Record<BookingStatus, { label: string; tone: 'neutral' | 'active' | 'done' | 'error' }> = {

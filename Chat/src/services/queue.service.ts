@@ -3,6 +3,8 @@ import * as amqp from 'amqplib';
 export interface ConfirmationUpdatedEvent {
   conversationId: string;
   confirmation: any;
+  /** Which booking transition happened, e.g. QUOTED / ACCEPTED / PAID. */
+  event?: string;
 }
 
 class QueueService {

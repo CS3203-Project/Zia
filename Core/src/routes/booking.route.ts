@@ -7,6 +7,8 @@ import {
   completeBookingController,
   cancelBookingController,
   getServiceQueueController,
+  getActiveBookingController,
+  getBookingTimelineController,
 } from '../controllers/booking.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
@@ -18,6 +20,8 @@ router.get('/service/:serviceId/queue', getServiceQueueController);
 // Everything below acts on a specific booking and requires a signed-in participant.
 router.use(authMiddleware);
 
+router.get('/timeline', getBookingTimelineController);
+router.get('/active/:serviceId', getActiveBookingController);
 router.get('/conversation/:conversationId', getBookingController);
 router.post('/conversation/:conversationId/quote', quoteBookingController);
 router.post('/conversation/:conversationId/accept', acceptBookingController);

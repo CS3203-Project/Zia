@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell, Check, CheckCheck, Clock, AlertCircle, ShoppingCart, MessageSquare } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
 import { cn } from '../../utils/utils';
 import Button from '../../components/shared/Button';
+import BookingTimeline from '../../components/Messaging/BookingTimeline';
+import { getBookingTimeline, type BookingTimelineEntry } from '../../api/bookingApi';
 
 const NotificationsPage: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
+  const [tab, setTab] = useState<'bookings' | 'messages'>('bookings');
+  const [timeline, setTimeline] = useState<BookingTimelineEntry[]>([]);
+  const [timelineLoading, setTimelineLoading] = useState(true);
   const {
     notifications,
     stats,
@@ -14,6 +19,17 @@ const NotificationsPage: React.FC = () => {
     markAsRead,
     markAllAsRead,
   } = useNotifications();
+
+  useEffect(() => {
+    let alive = true;
+    getBookingTimeline()
+      .then((data) => alive && setTimeline(data))
+      .catch(() => alive && setTimeline([]))
+      .finally(() => alive && setTimelineLoading(false));
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const filteredNotifications = notifications.filter(notification => {
     if (filter === 'unread') return !notification.isRead;
@@ -137,36 +153,59 @@ const NotificationsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Filters and Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <div className="flex gap-2">
-            {[
-              { key: 'all', label: 'All' },
-              { key: 'unread', label: 'Unread' },
-              { key: 'read', label: 'Read' },
-            ].map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key as any)}
-                className={cn(
-                  'px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200',
-                  filter === key
-                    ? 'bg-orange-600 text-white shadow-sm'
-                    : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-700'
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {stats && stats.unread > 0 && (
-            <Button onClick={handleMarkAllAsRead} className="px-6">
-              <CheckCheck className="h-4 w-4 mr-2" />
-              Mark All as Read
-            </Button>
-          )}
+        {/* Booking activity vs. plain notifications */}
+        <div className="flex gap-2 mb-6">
+          {([
+            { key: 'bookings', label: 'Booking Activity' },
+            { key: 'messages', label: 'Notifications' },
+          ] as const).map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setTab(key)}
+              className={cn(
+                'px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200',
+                tab === key
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-700'
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
+
+        {/* Filters and Actions */}
+        {tab === 'messages' && (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="flex gap-2">
+              {[
+                { key: 'all', label: 'All' },
+                { key: 'unread', label: 'Unread' },
+                { key: 'read', label: 'Read' },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setFilter(key as any)}
+                  className={cn(
+                    'px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200',
+                    filter === key
+                      ? 'bg-orange-600 text-white shadow-sm'
+                      : 'bg-white text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-700'
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {stats && stats.unread > 0 && (
+              <Button onClick={handleMarkAllAsRead} className="px-6">
+                <CheckCheck className="h-4 w-4 mr-2" />
+                Mark All as Read
+              </Button>
+            )}
+          </div>
+        )}
 
         {/* Error State */}
         {error && (
@@ -178,8 +217,25 @@ const NotificationsPage: React.FC = () => {
           </div>
         )}
 
+        {/* Booking pipeline timeline */}
+        {tab === 'bookings' && (
+          timelineLoading ? (
+            <div className="space-y-4">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="bg-white rounded-2xl border border-gray-100 p-6 animate-pulse">
+                  <div className="h-5 bg-gray-100 rounded-full w-1/3 mb-4" />
+                  <div className="h-3 bg-gray-100 rounded-full w-2/3 mb-2" />
+                  <div className="h-3 bg-gray-100 rounded-full w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <BookingTimeline entries={timeline} />
+          )
+        )}
+
         {/* Notifications List */}
-        <div className="space-y-4">
+        <div className={cn('space-y-4', tab !== 'messages' && 'hidden')}>
           {filteredNotifications.length === 0 ? (
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-12 text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 mx-auto mb-4">

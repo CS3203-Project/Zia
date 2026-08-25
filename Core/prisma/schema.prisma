@@ -193,11 +193,32 @@ model Booking {
   provider       ServiceProvider @relation(fields: [providerId], references: [id])
   service        Service         @relation(fields: [serviceId], references: [id])
   customer       User            @relation(fields: [customerId], references: [id])
+  events         BookingEvent[]
 
   @@index([serviceId, status, scheduledStart])
   @@index([providerId, status])
   @@index([customerId, status])
   @@index([status])
+}
+
+/// Append-only log of booking transitions, powering the in-app notification
+/// timeline. Kept separate from Notification (which models sent emails) because
+/// this needs structured, per-booking history rather than rendered HTML.
+model BookingEvent {
+  id             String   @id @default(cuid())
+  bookingId      String
+  event          String
+  status         String
+  message        String
+  actorId        String
+  customerId     String
+  providerUserId String
+  createdAt      DateTime @default(now())
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, createdAt])
+  @@index([providerUserId, createdAt])
+  @@index([bookingId, createdAt])
 }
 
 enum BookingStatus {

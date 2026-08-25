@@ -9,6 +9,7 @@ import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { serviceReviewApi, type ServiceReview, type ReviewStats } from '../../api/serviceReviewApi';
 import { userApi, type ProviderProfile } from '../../api/userApi';
 import { messagingApi } from '../../api/messagingApi';
+import { bookingApi } from '../../api/bookingApi';
 import { debugMessagingState } from '../../utils/messagingDebug';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/services/Breadcrumb';
@@ -393,24 +394,17 @@ const ServiceDetailPage: React.FC = () => {
 
     try {
       setBookingLoading(true);
-      
-      // Check if conversation already exists (use provider's user ID, not provider ID)
-      console.log('Checking for existing conversation between:', user.id, 'and', providerUserId);
-      const existingConversation = await messagingApi.findConversationByParticipants(
-        user.id, 
-        providerUserId
-      );
 
-      // Only reuse an existing conversation if it's for this same service - the
-      // participant pair alone isn't enough, since a customer may have separate
-      // conversations with the same provider for different services (each with its
-      // own price/schedule confirmation), and reusing the wrong one would land the
-      // customer in an unrelated chat (e.g. booking "Office Cleaning" would reopen
-      // an older "Deep House Cleaning" thread with the same provider).
-      if (existingConversation && existingConversation.serviceId === service.id) {
-        console.log('Found existing conversation for this service:', existingConversation);
-        toast.success('Opening existing conversation...');
-        navigate(`/conversation/${existingConversation.id}`);
+      // Resume an in-flight booking for this exact service rather than opening a
+      // duplicate. Deliberately keyed on the booking (not the participant pair or
+      // even the conversation): a COMPLETED or CANCELLED booking is not "active",
+      // so hiring the same provider for the same service again correctly starts a
+      // fresh conversation instead of dropping the customer back into the old,
+      // finished thread.
+      const activeBooking = await bookingApi.findActive(service.id);
+      if (activeBooking) {
+        toast.success('Opening your existing booking...');
+        navigate(`/conversation/${activeBooking.conversationId}`);
         return;
       }
 

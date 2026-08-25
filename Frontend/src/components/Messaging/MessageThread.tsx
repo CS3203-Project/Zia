@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Sparkles } from 'lucide-react';
 import { useMessaging } from './MessagingProvider';
 import { userApi, type UserProfile } from '../../api/userApi';
 import type { MessageResponse } from '../../api/messagingApi';
@@ -320,6 +321,23 @@ export const MessageThread: React.FC<MessageThreadProps> = ({ className = '' }) 
                 <div className="space-y-2">
                   {group.messages.map((message) => {
                     const isOwnMessage = message.fromId === currentUserId;
+
+                    // Booking transitions are posted into the thread as SYSTEM
+                    // messages so each side sees the other's actions inline,
+                    // rather than only inside the booking panel.
+                    if (message.kind === 'SYSTEM') {
+                      return (
+                        <div key={message.id} className="flex justify-center">
+                          <div className="flex max-w-[90%] items-center gap-2 rounded-full border border-orange-100 bg-orange-50 px-4 py-2 text-center">
+                            <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-orange-500" />
+                            <span className="text-xs text-orange-800">{message.content}</span>
+                            <span className="flex-shrink-0 text-[10px] text-orange-400">
+                              {formatTime(message.createdAt)}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    }
 
                     return (
                       <div

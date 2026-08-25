@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   CheckCircle, Clock, CreditCard, Banknote, AlertCircle, XCircle,
-  CalendarClock, Loader2, Star, User as UserIcon,
+  CalendarClock, Loader2, Star, User as UserIcon, Navigation,
 } from 'lucide-react';
 import { bookingApi, BOOKING_STEPS, STATUS_META, type Booking, type BookingStatus } from '../../api/bookingApi';
 import { useConfirmationSocket } from '../../hooks/useConfirmationSocket';
 import { useAuth } from '../../contexts/AuthContext';
 import { PaymentModal } from '../Payment';
+import DirectionsModal from './DirectionsModal';
 
 interface Props {
   conversationId: string;
@@ -30,6 +31,36 @@ const formatWhen = (iso: string | null) => (iso ? new Date(iso).toLocaleString()
 const readApiError = (e: unknown): string | undefined =>
   (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
 
+interface DirectionsTarget {
+  label: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  address?: string | null;
+}
+
+/**
+ * Where the viewer needs to travel to, once a booking is confirmed.
+ *
+ * The customer heads to where the service happens (its coordinates if the provider
+ * pinned them, else the provider's own address); the provider heads to the
+ * customer's address. Returns null when we simply don't hold an address for the
+ * other party, so the button can be hidden rather than opening an empty map.
+ */
+function directionsTarget(booking: Booking, isProvider: boolean): DirectionsTarget | null {
+  if (isProvider) {
+    const dest = booking.customer.address || booking.customer.location;
+    return dest ? { label: dest, address: dest } : null;
+  }
+
+  const { latitude, longitude, address, city } = booking.service;
+  if (latitude != null && longitude != null) {
+    return { label: address || city || 'Service location', latitude, longitude };
+  }
+
+  const dest = address || booking.provider.user.address || booking.provider.user.location;
+  return dest ? { label: dest, address: dest } : null;
+}
+
 /**
  * The booking workspace inside a conversation.
  *
@@ -48,6 +79,7 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [payOpen, setPayOpen] = useState(false);
+  const [directionsOpen, setDirectionsOpen] = useState(false);
 
   // Quote form (provider only)
   const [price, setPrice] = useState('');
@@ -162,6 +194,7 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
 
   const showQuoteForm =
     isProvider && (status === 'INQUIRY' || editingQuote) && !isCancelled;
+  const directions = directionsTarget(booking, isProvider);
 
   return (
     <div className="h-full flex flex-col bg-white">
@@ -407,6 +440,20 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
           </div>
         )}
 
+        {/* Once money has changed hands, the two parties need to find each other. */}
+        {(status === 'PAID' || status === 'COMPLETED') && directions && (
+          <>
+            <button
+              onClick={() => setDirectionsOpen(true)}
+              className="w-full px-4 py-3 bg-white text-gray-900 rounded-xl hover:bg-orange-50 hover:border-orange-300 transition-all font-medium border border-gray-200 flex items-center justify-center gap-2"
+            >
+              <Navigation className="h-4 w-4 text-orange-600" />
+              {isProvider ? 'Directions to customer' : 'Directions to service'}
+            </button>
+            <p className="text-xs text-gray-400 text-center -mt-1 truncate">{directions.label}</p>
+          </>
+        )}
+
         {/* Secondary actions */}
         <div className="pt-2 space-y-2 border-t border-gray-100">
           {onViewUserDetails && (
@@ -429,6 +476,17 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
           )}
         </div>
       </div>
+
+      {directions && (
+        <DirectionsModal
+          isOpen={directionsOpen}
+          onClose={() => setDirectionsOpen(false)}
+          title={directions.label}
+          latitude={directions.latitude}
+          longitude={directions.longitude}
+          address={directions.address}
+        />
+      )}
 
       {booking.price != null && (
         <PaymentModal

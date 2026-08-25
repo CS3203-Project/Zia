@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bookingService, { BookingError } from '../services/booking.service.js';
 import { queueService } from '../services/queue.service.js';
+import { prisma } from '../utils/database.js';
 
 const userIdOf = (req: Request) => (req as any).user?.id as string;
 
@@ -18,9 +19,45 @@ function fail(res: Response, error: unknown) {
  * transitions, not on every field edit - changing a currency no longer spams both
  * inboxes with a "your booking was modified" email.
  */
-async function notify(booking: any, event: 'QUOTED' | 'ACCEPTED' | 'PAID' | 'COMPLETED' | 'CANCELLED') {
+const EVENT_TEXT: Record<string, (b: any, amount: string | null, when: string | null) => string> = {
+  QUOTED: (_b, amount, when) => `Quote sent${amount ? `: ${amount}` : ''}${when ? ` for ${when}` : ''}`,
+  ACCEPTED: (_b, amount) => `Customer accepted the quote${amount ? ` at ${amount}` : ''}`,
+  PAID: (b, amount) =>
+    b.paymentMethod === 'CASH'
+      ? `Paid in cash${amount ? ` (${amount})` : ''}`
+      : `Payment received${amount ? ` (${amount})` : ''}`,
+  COMPLETED: () => 'Service marked complete',
+  CANCELLED: (b) => `Booking cancelled${b.cancelReason ? `: ${b.cancelReason}` : ''}`,
+};
+
+/** Appends the transition to the booking's timeline (drives in-app notifications). */
+async function recordEvent(booking: any, event: string) {
+  const amount = booking.price != null ? `${booking.currency} ${Number(booking.price).toFixed(2)}` : null;
+  const when = booking.scheduledStart ? new Date(booking.scheduledStart).toLocaleString() : null;
+  const message = EVENT_TEXT[event]?.(booking, amount, when) ?? event;
+
   try {
-    await queueService.publishConfirmationUpdate(booking.conversationId, booking);
+    await prisma.bookingEvent.create({
+      data: {
+        bookingId: booking.id,
+        event,
+        status: booking.status,
+        message,
+        actorId: event === 'ACCEPTED' ? booking.customerId : booking.provider.userId,
+        customerId: booking.customerId,
+        providerUserId: booking.provider.userId,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to record booking event:', err);
+  }
+}
+
+async function notify(booking: any, event: 'QUOTED' | 'ACCEPTED' | 'PAID' | 'COMPLETED' | 'CANCELLED') {
+  await recordEvent(booking, event);
+
+  try {
+    await queueService.publishConfirmationUpdate(booking.conversationId, booking, event);
   } catch (err) {
     console.error('Failed to publish booking update:', err);
   }
@@ -121,6 +158,33 @@ export const cancelBookingController = async (req: Request, res: Response) => {
     );
     await notify(booking, 'CANCELLED');
     res.json({ success: true, data: booking });
+  } catch (error) {
+    fail(res, error);
+  }
+};
+
+/**
+ * The caller's still-open booking for a service, or null. Lets "Book Now" resume
+ * an in-flight booking instead of starting a duplicate, while still allowing a
+ * fresh booking once the previous one is finished.
+ */
+export const getActiveBookingController = async (req: Request, res: Response) => {
+  try {
+    const booking = await bookingService.findActiveForCustomer(
+      userIdOf(req),
+      String(req.params.serviceId)
+    );
+    res.json({ success: true, data: booking });
+  } catch (error) {
+    fail(res, error);
+  }
+};
+
+/** The caller's booking activity, grouped per booking, for the notifications timeline. */
+export const getBookingTimelineController = async (req: Request, res: Response) => {
+  try {
+    const timeline = await bookingService.getTimeline(userIdOf(req));
+    res.json({ success: true, data: timeline });
   } catch (error) {
     fail(res, error);
   }

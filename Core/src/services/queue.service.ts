@@ -148,7 +148,7 @@ class QueueService {
    * conversation. Replaces the old in-process broadcastConfirmationUpdate() call,
    * which only worked when confirmation logic and chat sockets shared one process.
    */
-  async publishConfirmationUpdate(conversationId: string, confirmation: any): Promise<void> {
+  async publishConfirmationUpdate(conversationId: string, confirmation: any, event?: string): Promise<void> {
     if (!this.channel || !this.connection) {
       await this.connect();
     }
@@ -159,7 +159,9 @@ class QueueService {
     }
 
     try {
-      const message = Buffer.from(JSON.stringify({ conversationId, confirmation }));
+      // `event` lets the Chat service turn this into a system message in the thread,
+      // so each side sees the other's booking actions inline as they happen.
+      const message = Buffer.from(JSON.stringify({ conversationId, confirmation, event }));
       this.channel.publish(this.chatExchangeName, 'confirmation.updated', message, {
         persistent: true,
         timestamp: Date.now(),

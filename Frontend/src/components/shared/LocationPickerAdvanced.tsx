@@ -319,6 +319,17 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         </div>
       )}
 
+      {/* Radius, map and the selected-location summary.
+          When embedded in a compound field (bordered={false}, e.g. the homepage
+          search pill) these float below the input instead of sitting in flow -
+          otherwise they expand the pill and spill outside its rounded frame. */}
+      <div
+        className={
+          bordered
+            ? undefined
+            : 'absolute left-0 right-0 top-full z-30 mt-2 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl empty:hidden'
+        }
+      >
       {/* Add Service Radius Button and Input */}
       {showRadius && value && allowManualRadius && (
         <div className="mt-3 space-y-3">
@@ -420,6 +431,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

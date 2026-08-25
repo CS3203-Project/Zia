@@ -233,6 +233,48 @@ class PayHereService {
     return updatedPayment;
   }
 
+  /**
+   * Records a cash-in-hand payment. Cash still has to land in Payment and
+   * ProviderEarnings, otherwise a provider paid in cash sees an empty earnings
+   * page and the payment never appears in either party's history.
+   * Idempotent per booking so a repeated call can't double-credit.
+   */
+  async recordCashPayment(input: {
+    bookingId: string;
+    serviceId: string;
+    providerId: string;
+    userId: string;
+    amount: number;
+    currency?: string;
+  }) {
+    const existing = await prisma.payment.findFirst({
+      where: { bookingId: input.bookingId, status: PaymentStatus.SUCCEEDED },
+    });
+    if (existing) return existing;
+
+    const platformFee = Math.round(input.amount * 0.05);
+    const providerAmount = input.amount - platformFee;
+
+    const payment = await prisma.payment.create({
+      data: {
+        serviceId: input.serviceId,
+        bookingId: input.bookingId,
+        providerId: input.providerId,
+        userId: input.userId,
+        gateway: 'cash',
+        amount: input.amount,
+        platformFee,
+        providerAmount,
+        currency: (input.currency || 'lkr').toLowerCase(),
+        status: PaymentStatus.SUCCEEDED,
+        paidAt: new Date(),
+      },
+    });
+
+    await this.updateProviderEarnings(input.providerId, providerAmount);
+    return payment;
+  }
+
   private async updateProviderEarnings(providerId: string, amount: number) {
     try {
       const existingEarnings = await prisma.providerEarnings.findUnique({

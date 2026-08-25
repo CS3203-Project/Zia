@@ -208,6 +208,34 @@ export class PaymentController {
       res.status(400).send('Notify handling failed');
     }
   }
+
+  /**
+   * Internal: called by Core when a provider records a cash payment, so cash
+   * bookings still show up in payment history and provider earnings.
+   */
+  async recordCashPayment(req: Request, res: Response) {
+    try {
+      const { bookingId, serviceId, providerId, userId, amount, currency } = req.body;
+
+      if (!bookingId || !serviceId || !providerId || !userId || !amount) {
+        return res.status(400).json({ success: false, message: 'Missing required payment fields' });
+      }
+
+      const payment = await payhereService.recordCashPayment({
+        bookingId,
+        serviceId,
+        providerId,
+        userId,
+        amount: Number(amount),
+        currency,
+      });
+
+      res.status(200).json({ success: true, data: payment });
+    } catch (error) {
+      console.error('Error recording cash payment:', error);
+      res.status(500).json({ success: false, message: 'Failed to record cash payment' });
+    }
+  }
 }
 
 export default new PaymentController();

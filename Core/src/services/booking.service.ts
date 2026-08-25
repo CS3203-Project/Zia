@@ -1,5 +1,6 @@
 import { prisma } from '../utils/database.js';
 import chatClient from './chatClient.service.js';
+import { recordCashPayment } from './paymentClient.service.js';
 
 export type BookingStatus = 'INQUIRY' | 'QUOTED' | 'ACCEPTED' | 'PAID' | 'COMPLETED' | 'CANCELLED';
 export type Actor = 'CUSTOMER' | 'PROVIDER';
@@ -11,10 +12,31 @@ export class BookingError extends Error {
   }
 }
 
+// Addresses/coordinates are included so the panel can offer directions once the
+// booking is confirmed and the two parties actually need to find each other.
 const bookingInclude = {
-  service: { select: { id: true, title: true, images: true, price: true, currency: true } },
-  provider: { include: { user: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } } } },
-  customer: { select: { id: true, firstName: true, lastName: true, email: true, phone: true } },
+  service: {
+    select: {
+      id: true, title: true, images: true, price: true, currency: true,
+      address: true, city: true, latitude: true, longitude: true,
+    },
+  },
+  provider: {
+    include: {
+      user: {
+        select: {
+          id: true, firstName: true, lastName: true, email: true, phone: true,
+          address: true, location: true,
+        },
+      },
+    },
+  },
+  customer: {
+    select: {
+      id: true, firstName: true, lastName: true, email: true, phone: true,
+      address: true, location: true,
+    },
+  },
 } as const;
 
 /**
@@ -113,6 +135,25 @@ export const bookingService = {
     return prisma.booking.findUnique({ where: { conversationId }, include: bookingInclude });
   },
 
+  /**
+   * The customer's still-open booking for a service, if any.
+   *
+   * COMPLETED and CANCELLED are deliberately excluded so a customer can hire the
+   * same service again later: a finished booking shouldn't drag them back into
+   * the old conversation, it should start a fresh one.
+   */
+  async findActiveForCustomer(customerId: string, serviceId: string) {
+    return prisma.booking.findFirst({
+      where: {
+        customerId,
+        serviceId,
+        status: { in: ['INQUIRY', 'QUOTED', 'ACCEPTED', 'PAID'] },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: bookingInclude,
+    });
+  },
+
   /** Provider proposes (or revises) price + schedule. Revising resets acceptance. */
   async quote(
     conversationId: string,
@@ -162,11 +203,30 @@ export const bookingService = {
     const booking = await this.requireBooking(conversationId);
     assertTransition('MARK_CASH_PAID', booking, userId);
 
-    return prisma.booking.update({
+    const updated = await prisma.booking.update({
       where: { conversationId },
       data: { status: 'PAID', paymentMethod: 'CASH', paidAt: new Date() },
       include: bookingInclude,
     });
+
+    // Mirror it into Payment/ProviderEarnings so cash bookings still show up in
+    // payment history and the provider's earnings, same as an online payment.
+    // Isolated: the booking is already paid, so a payment-service blip shouldn't
+    // roll that back or block the provider.
+    try {
+      await recordCashPayment({
+        bookingId: updated.id,
+        serviceId: updated.serviceId,
+        providerId: updated.providerId,
+        userId: updated.customerId,
+        amount: Number(updated.price ?? 0),
+        currency: updated.currency,
+      });
+    } catch (err) {
+      console.error('Booking marked cash-paid but payment record failed:', err);
+    }
+
+    return updated;
   },
 
   /**
@@ -219,6 +279,60 @@ export const bookingService = {
     const booking = await prisma.booking.findUnique({ where: { conversationId }, include: bookingInclude });
     if (!booking) throw new BookingError('Booking not found for this conversation', 404);
     return booking;
+  },
+
+  /**
+   * The user's booking activity, newest first, grouped per booking so the client
+   * can render each booking's pipeline as a timeline.
+   */
+  async getTimeline(userId: string, limit = 40) {
+    const events = await prisma.bookingEvent.findMany({
+      where: { OR: [{ customerId: userId }, { providerUserId: userId }] },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      include: {
+        booking: {
+          select: {
+            id: true, conversationId: true, status: true, price: true, currency: true,
+            scheduledStart: true,
+            service: { select: { id: true, title: true, images: true } },
+          },
+        },
+      },
+    });
+
+    // Group into one entry per booking, keeping each booking's events in order.
+    const byBooking = new Map<string, any>();
+    for (const e of events) {
+      const key = e.bookingId;
+      if (!byBooking.has(key)) {
+        byBooking.set(key, {
+          bookingId: key,
+          conversationId: e.booking.conversationId,
+          status: e.booking.status,
+          price: e.booking.price,
+          currency: e.booking.currency,
+          scheduledStart: e.booking.scheduledStart,
+          service: e.booking.service,
+          role: e.customerId === userId ? 'CUSTOMER' : 'PROVIDER',
+          lastActivityAt: e.createdAt,
+          events: [],
+        });
+      }
+      byBooking.get(key).events.push({
+        id: e.id,
+        event: e.event,
+        status: e.status,
+        message: e.message,
+        createdAt: e.createdAt,
+        byMe: e.actorId === userId,
+      });
+    }
+
+    return Array.from(byBooking.values()).map((b) => ({
+      ...b,
+      events: [...b.events].reverse(), // oldest -> newest within a booking
+    }));
   },
 
   /** Publicly visible upcoming schedule for a service (the booking queue). */

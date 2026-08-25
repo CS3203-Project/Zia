@@ -228,19 +228,89 @@ messagingIo.on('connection', async (socket) => {
 });
 
 /**
- * Re-broadcasts a booking-confirmation update to whichever connected user is actively
- * viewing that conversation. Triggered by a `confirmation.updated` RabbitMQ event
- * published by the Core service, since Core no longer holds these socket connections.
+ * Re-broadcasts a booking update. Triggered by a `confirmation.updated` RabbitMQ
+ * event published by the Core service, since Core no longer holds these socket
+ * connections.
+ *
+ * Unlike before, this reaches every participant who is connected at all - not just
+ * whoever happens to have that conversation open - so the other side's conversation
+ * list updates the moment a booking moves.
  */
 async function broadcastConfirmationUpdate(conversationId: string, confirmation: any) {
-  const activeConversations = await redis.hgetall(ACTIVE_CONVERSATIONS_KEY);
-  for (const [userId, activeConvId] of Object.entries(activeConversations)) {
-    if (activeConvId === conversationId) {
+  const participants: string[] = confirmation?.customerId && confirmation?.provider?.userId
+    ? [confirmation.customerId, confirmation.provider.userId]
+    : [];
+
+  for (const userId of participants) {
+    const socketId = await redis.hget(CONNECTED_USERS_KEY, userId);
+    if (socketId) {
+      messagingIo.to(socketId).emit('confirmation_updated', { conversationId, confirmation });
+    }
+  }
+}
+
+/** Human-readable one-liner describing a booking transition. */
+function describeBookingEvent(event: string, booking: any): string | null {
+  const amount =
+    booking?.price != null ? `${booking.currency || ''} ${Number(booking.price).toFixed(2)}`.trim() : null;
+  const when = booking?.scheduledStart ? new Date(booking.scheduledStart).toLocaleString() : null;
+
+  switch (event) {
+    case 'QUOTED':
+      return `Quote sent${amount ? `: ${amount}` : ''}${when ? ` for ${when}` : ''}.`;
+    case 'ACCEPTED':
+      return `Quote accepted${amount ? ` at ${amount}` : ''}.`;
+    case 'PAID':
+      return booking?.paymentMethod === 'CASH'
+        ? `Payment received in cash${amount ? ` (${amount})` : ''}.`
+        : `Payment received${amount ? ` (${amount})` : ''}.`;
+    case 'COMPLETED':
+      return 'Service marked complete. You can now leave a review.';
+    case 'CANCELLED':
+      return `Booking cancelled${booking?.cancelReason ? `: ${booking.cancelReason}` : ''}.`;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Records a booking transition as a SYSTEM message in the thread and pushes it to
+ * both parties, so each side sees what the other did without having to open the
+ * booking panel. The message is addressed to the party who did NOT act, so it also
+ * drives their unread badge.
+ */
+async function postBookingSystemMessage(conversationId: string, booking: any, event: string) {
+  const text = describeBookingEvent(event, booking);
+  if (!text) return;
+
+  const customerId: string | undefined = booking?.customerId;
+  const providerUserId: string | undefined = booking?.provider?.userId;
+  if (!customerId || !providerUserId) return;
+
+  // The provider drives every transition except ACCEPTED (customer-only).
+  const actorId = event === 'ACCEPTED' ? customerId : providerUserId;
+  const recipientId = actorId === customerId ? providerUserId : customerId;
+
+  try {
+    const message = await prisma.message.create({
+      data: {
+        content: text,
+        fromId: actorId,
+        toId: recipientId,
+        conversationId,
+        kind: 'SYSTEM',
+        metadata: { event, status: booking?.status ?? null },
+      },
+    });
+
+    for (const userId of [customerId, providerUserId]) {
       const socketId = await redis.hget(CONNECTED_USERS_KEY, userId);
       if (socketId) {
-        messagingIo.to(socketId).emit('confirmation_updated', { conversationId, confirmation });
+        messagingIo.to(socketId).emit('message:received', message);
       }
     }
+  } catch (error) {
+    console.error('error==> Failed to post booking system message:', error);
   }
 }
 
@@ -285,8 +355,9 @@ async function startServer() {
 
   try {
     await queueService.connect();
-    await queueService.consumeConfirmationUpdates(({ conversationId, confirmation }) => {
-      broadcastConfirmationUpdate(conversationId, confirmation);
+    await queueService.consumeConfirmationUpdates(async ({ conversationId, confirmation, event }) => {
+      await broadcastConfirmationUpdate(conversationId, confirmation);
+      if (event) await postBookingSystemMessage(conversationId, confirmation, event);
     });
     queueService.setupGracefulShutdown();
     console.log('=====> RabbitMQ connection established, listening for confirmation updates');
