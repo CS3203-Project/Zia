@@ -76,6 +76,14 @@ export const SETTING_SPECS: SettingSpec[] = [
     group: 'limits',
   },
   {
+    key: 'requireServiceApproval',
+    label: 'Review services before they go live',
+    description: 'New and edited listings stay hidden from search until an admin approves them.',
+    type: 'boolean',
+    default: false,
+    group: 'limits',
+  },
+  {
     key: 'requireProviderVerification',
     label: 'Require verified providers',
     description: 'When on, only admin-verified providers can publish services and receive bookings.',

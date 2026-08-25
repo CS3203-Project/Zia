@@ -108,6 +108,13 @@ model Service {
   tags                 String[]
   images               String[]
   isActive             Boolean                @default(true)
+  /// Moderation state, separate from isActive: isActive is the provider's own
+  /// on/off switch, this is the platform's. Defaults to APPROVED so nothing
+  /// changes until an admin turns on requireServiceApproval.
+  reviewStatus         ServiceReviewStatus    @default(APPROVED)
+  reviewNote           String?
+  reviewedAt           DateTime?
+  reviewedBy           String?
   workingTime          String[]
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
@@ -242,6 +249,12 @@ model PlatformSetting {
   value     String
   updatedAt DateTime @updatedAt
   updatedBy String?
+}
+
+enum ServiceReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 enum BookingStatus {

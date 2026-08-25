@@ -58,7 +58,8 @@ export class SemanticSearchService {
       const embeddingVector = `[${queryEmbedding.join(',')}]`;
 
       // Build WHERE conditions
-      const whereConditions = ['s."isActive" = $1'];
+      // Public search path, so unapproved listings stay out of results.
+      const whereConditions = ['s."isActive" = $1', `s."reviewStatus" = 'APPROVED'`];
       const params: any[] = [isActive];
       let paramIndex = 2;
 

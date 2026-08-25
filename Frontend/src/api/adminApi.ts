@@ -309,7 +309,43 @@ export interface AdminRefundRequest {
   createdAt: string;
 }
 
+export interface ServiceForReview {
+  id: string;
+  title: string | null;
+  description: string | null;
+  price: string | number;
+  currency: string;
+  images: string[];
+  reviewStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+  reviewNote?: string | null;
+  reviewedBy?: string | null;
+  reviewedAt?: string | null;
+  createdAt: string;
+  category?: { id: string; name: string | null } | null;
+  provider?: {
+    id: string;
+    isVerified: boolean;
+    user: { firstName: string | null; lastName: string | null; email: string };
+  } | null;
+}
+
 export const adminApi = {
+  /** Listings by moderation state. Only meaningful with service review enabled. */
+  getServicesForReview: async (status = 'PENDING'): Promise<ServiceForReview[]> => {
+    const response = await apiClient.get<ApiResponse<ServiceForReview[]>>('/admin/service-review', {
+      params: { status },
+    });
+    return response.data.data;
+  },
+
+  reviewService: async (
+    serviceId: string,
+    status: 'APPROVED' | 'REJECTED',
+    note?: string
+  ): Promise<void> => {
+    await apiClient.post(`/admin/service-review/${serviceId}`, { status, note });
+  },
+
   /** Customer refund disputes. Decided by admins, not the provider involved. */
   getRefunds: async (status?: string): Promise<AdminRefundRequest[]> => {
     const response = await paymentApiClient.get('/admin/refunds', { params: status ? { status } : {} });

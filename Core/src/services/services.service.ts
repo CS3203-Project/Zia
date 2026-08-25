@@ -160,6 +160,11 @@ export const createService = async (serviceData: ServiceCreateData) => {
       tags,
       images,
       isActive,
+      // When review is on, a new listing waits for an admin rather than
+      // appearing in search the moment it's saved.
+      reviewStatus: (await settingsService.get<boolean>('requireServiceApproval'))
+        ? ('PENDING' as const)
+        : ('APPROVED' as const),
       workingTime,
       videoUrl: videoUrl ?? null, // Ensure videoUrl is null if undefined
       // Location fields
@@ -217,6 +222,53 @@ export const createService = async (serviceData: ServiceCreateData) => {
  * @param {number} [filters.take=10] - Number of records to take for pagination
  * @returns {Promise<Object[]>} Array of service objects
  */
+/** Admin: listings by moderation state, newest first. */
+export const getServicesByReviewStatus = async (status: string) => {
+  return prisma.service.findMany({
+    where: { reviewStatus: status as 'PENDING' | 'APPROVED' | 'REJECTED' },
+    orderBy: { createdAt: 'desc' },
+    take: 200,
+    include: {
+      category: { select: { id: true, name: true } },
+      provider: {
+        select: {
+          id: true,
+          isVerified: true,
+          user: { select: { firstName: true, lastName: true, email: true } },
+        },
+      },
+    },
+  });
+};
+
+/** Admin: approve or reject a listing, with a note the provider can read. */
+export const setServiceReviewStatus = async (
+  serviceId: string,
+  status: 'APPROVED' | 'REJECTED',
+  reviewedBy: string,
+  note?: string
+) => {
+  const service = await prisma.service.findUnique({ where: { id: serviceId } });
+  if (!service) {
+    const err = new Error('Service not found') as Error & { status?: number };
+    err.status = 404;
+    throw err;
+  }
+
+  return prisma.service.update({
+    where: { id: serviceId },
+    data: {
+      reviewStatus: status,
+      reviewNote: note ?? null,
+      reviewedBy,
+      reviewedAt: new Date(),
+      // A rejected listing is also taken off sale, so it can't linger as
+      // "active" while being hidden from every public surface.
+      ...(status === 'REJECTED' ? { isActive: false } : {}),
+    },
+  });
+};
+
 export const getServices = async (filters: ServiceFilters = {}) => {
   try {
     const {
@@ -233,6 +285,11 @@ export const getServices = async (filters: ServiceFilters = {}) => {
     if (providerId) whereClause.providerId = providerId;
     if (categoryId) whereClause.categoryId = categoryId;
     if (isActive !== undefined) whereClause.isActive = isActive;
+
+    // Hide listings awaiting or refused moderation from public browsing. Scoped
+    // out when a providerId is given, so a provider still sees their own
+    // pending listings on their profile - they just aren't publicly findable.
+    if (!providerId) whereClause.reviewStatus = 'APPROVED';
     if (search && search.trim()) {
       whereClause.OR = [
         { title: { contains: search.trim(), mode: 'insensitive' } },
@@ -578,7 +635,8 @@ export const searchServicesByLocation = async (options: LocationSearchOptions) =
     const offset = (page - 1) * limit;
 
     // Build WHERE clause for additional filters
-    let whereConditions = ['s."isActive" = true'];
+    // Same moderation gate as getServices - this is a public search path.
+    let whereConditions = ['s."isActive" = true', `s."reviewStatus" = 'APPROVED'`];
     const queryParams: any[] = [longitude, latitude, radius * 1000, limit, offset]; // radius in meters
     let paramIndex = 6;
 
