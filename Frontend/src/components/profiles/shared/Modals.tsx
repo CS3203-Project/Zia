@@ -1,4 +1,4 @@
-import { FiX, FiMessageCircle, FiPhone, FiMail, FiMapPin } from 'react-icons/fi';
+import { FiX, FiMessageCircle, FiPhone, FiMail, FiMapPin, FiInfo } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import type { ServiceProviderProfile } from './types';
 
@@ -48,9 +48,10 @@ export function ContactModal({ showContactModal, setShowContactModal, provider }
                 </button>
               </div>
 
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-700">
-                  💡 <strong>Tip:</strong> Response time is typically {provider.responseTime}
+              <div className="mt-6 p-4 bg-orange-50 rounded-lg flex items-start gap-2">
+                <FiInfo className="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-orange-700">
+                  <strong>Tip:</strong> Response time is typically {provider.responseTime}
                 </p>
               </div>
             </div>

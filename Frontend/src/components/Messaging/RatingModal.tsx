@@ -153,8 +153,9 @@ const RatingModal: React.FC<RatingModalProps> = ({
         {/* Header */}
         <div className="relative z-10 p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {ratingType === 'customer' ? '⭐ Rate Customer' : '⭐ Rate Service'}
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              <Star className="w-5 h-5 mr-2 text-amber-500" />
+              {ratingType === 'customer' ? 'Rate Customer' : 'Rate Service'}
             </h2>
             <button
               onClick={handleClose}

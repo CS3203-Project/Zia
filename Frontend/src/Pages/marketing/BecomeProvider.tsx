@@ -154,7 +154,7 @@ export default function BecomeProvider() {
     
     try {
       await userApi.createProvider(formData);
-      toast.success('🎉 Provider profile created successfully! Please wait for verification.');
+      toast.success('Provider profile created successfully! Please wait for verification.');
       setTimeout(() => {
         navigate('/profile');
       }, 2000);
@@ -200,7 +200,7 @@ export default function BecomeProvider() {
       }));
       setNewQualification('');
       if (touched.qualifications) validateField('qualifications', updatedQualifications);
-      toast.success('Qualification added successfully! 📜');
+      toast.success('Qualification added successfully!');
     } else if (formData.qualifications?.includes(newQualification.trim())) {
       toast.error('This qualification has already been added');
     }

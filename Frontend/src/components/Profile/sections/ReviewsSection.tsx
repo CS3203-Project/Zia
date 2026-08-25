@@ -63,7 +63,7 @@ export default function ReviewsSection({
             className="px-4 py-2 pr-8 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors hover:bg-gray-100 appearance-none"
           >
             {customerReviews.length > 0 && (
-              <option value="customer" className="bg-white text-gray-900">⭐ Reviews from Providers</option>
+              <option value="customer" className="bg-white text-gray-900">Reviews from Providers</option>
             )}
             {showServiceOption && (
               <option value="service" className="bg-white text-gray-900">Reviews from Customers</option>

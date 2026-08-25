@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Star, User, MapPin, Phone, Mail, Calendar, Award } from 'lucide-react';
+import { X, Star, User, MapPin, Phone, Mail, Calendar, Award, Building } from 'lucide-react';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
 import apiClient from '../../api/axios';
@@ -203,8 +203,9 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
         {/* Header */}
         <div className="relative z-10 p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900">
-              {userRole === 'PROVIDER' ? 'Customer Details' : '🏢 Service Provider Details'}
+            <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+              {userRole !== 'PROVIDER' && <Building className="w-5 h-5 mr-2 text-orange-600" />}
+              {userRole === 'PROVIDER' ? 'Customer Details' : 'Service Provider Details'}
             </h2>
             <button
               onClick={handleClose}

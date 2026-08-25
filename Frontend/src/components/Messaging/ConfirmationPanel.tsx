@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, ChevronUp, CheckCircle, Clock, AlertCircle, Minimize2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, CheckCircle, Clock, AlertCircle, Minimize2, Lightbulb } from 'lucide-react';
 import confirmationApi from '../../api/confirmationApi';
 import type { ConversationConfirmation } from '../../types/confirmation';
 import { useConfirmationSocket } from '../../hooks/useConfirmationSocket';
@@ -463,8 +463,9 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                   </button>
                 )}
                 {isProvider && (
-                  <div className="mt-2 text-xs text-gray-500 relative z-10">
-                    💡 Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click outside to save your changes
+                  <div className="mt-2 text-xs text-gray-500 relative z-10 flex items-center gap-1">
+                    <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
+                    Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click outside to save your changes
                   </div>
                 )}
                 {isProvider && !hasServiceFee && (
@@ -597,8 +598,9 @@ const ConfirmationPanel: React.FC<Props> = ({ conversationId, currentUserRole, o
                 )}
               </div>
 
-              <div className="text-xs text-gray-500 mt-2 relative z-10">
-                💡 Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click the save buttons to confirm your changes
+              <div className="text-xs text-gray-500 mt-2 relative z-10 flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
+                Tip: Press <kbd className="px-1 py-0.5 bg-gray-200 border border-gray-300 rounded text-gray-600">Enter</kbd> or click the save buttons to confirm your changes
               </div>
             </div>
           </div>

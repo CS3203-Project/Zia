@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin } from 'lucide-react';
+import { MapPin, ImageOff } from 'lucide-react';
 import type { HybridSearchResult } from '../../api/hybridSearchApi';
 
 // Service card used to preview hybrid/keyword search results on BrowseServices.
@@ -41,7 +41,7 @@ const SearchResultServiceCard: React.FC<SearchResultServiceCardProps> = ({ servi
               />
             ) : null}
             <div className={`w-full h-full flex items-center justify-center ${service.images && service.images.length > 0 ? 'hidden' : ''}`}>
-              <span className="text-4xl">🎯</span>
+              <ImageOff className="w-8 h-8 text-gray-300" />
             </div>
           </div>
         </div>
