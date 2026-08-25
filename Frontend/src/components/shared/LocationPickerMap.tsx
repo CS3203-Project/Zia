@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Circle, useMap, useMapEvents } from 'react-leaflet';
 import type { Marker as LeafletMarker } from 'leaflet';
 import { MapPin, Search, Navigation, X, Loader2 } from 'lucide-react';
+import MapAutoResize from './MapAutoResize';
 import { hybridSearchApi } from '../../api/hybridSearchApi';
 import type { LocationParams, AddressSuggestion } from '../../api/hybridSearchApi';
 
@@ -212,13 +213,16 @@ const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
   return (
     <div className={`relative ${className}`}>
       {/* Map Container - Made wider by using aspect ratio */}
-      <div className="w-full aspect-[16/10] min-h-[280px] relative">
+      {/* min-h was 280px, which on a small phone left barely any room for the
+          controls beneath it once the picker is open. */}
+      <div className="relative aspect-[16/10] min-h-[220px] w-full sm:min-h-[280px]">
         <MapContainer
           center={mapCenter}
           zoom={zoom}
           scrollWheelZoom={false}
           className="w-full h-full rounded-lg border border-gray-300"
         >
+          <MapAutoResize />
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

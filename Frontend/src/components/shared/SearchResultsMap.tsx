@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import '../../utils/leafletSetup';
+import MapAutoResize from './MapAutoResize';
 import { MapPin, Navigation2, Eye } from 'lucide-react';
 import { hybridSearchApi, type HybridSearchResult } from '../../api/hybridSearchApi';
 
@@ -198,13 +199,16 @@ const SearchResultsMap: React.FC<SearchResultsMapProps> = ({
       </div>
 
       {/* Map Container */}
-      <div className="w-full h-96 relative rounded-lg overflow-hidden shadow-lg border border-gray-300">
+      {/* Shorter on phones so the map doesn't eat the whole viewport and push
+          the results out of view. */}
+      <div className="relative h-64 w-full overflow-hidden rounded-lg border border-gray-300 shadow-lg sm:h-96">
         <MapContainer
           center={defaultCenter}
           zoom={10}
           scrollWheelZoom
           style={{ width: '100%', height: '100%' }}
         >
+          <MapAutoResize />
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

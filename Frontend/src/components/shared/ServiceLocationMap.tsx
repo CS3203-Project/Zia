@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import '../../utils/leafletSetup';
+import MapAutoResize from './MapAutoResize';
 import { Navigation, Loader2, Clock, Route as RouteIcon, AlertCircle } from 'lucide-react';
 import Button from './Button';
 import { cn } from '../../utils/utils';
@@ -127,6 +128,7 @@ const ServiceLocationMap: React.FC<ServiceLocationMapProps> = ({ destination, de
           scrollWheelZoom={false}
           className="h-full w-full"
         >
+          <MapAutoResize />
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

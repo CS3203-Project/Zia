@@ -46,7 +46,11 @@ const bookingInclude = {
  * free-floating confirmation checkboxes that either party could toggle at any time.
  */
 const TRANSITIONS: Record<string, { from: BookingStatus[]; actor: Actor }> = {
-  QUOTE:    { from: ['INQUIRY', 'QUOTED', 'ACCEPTED'], actor: 'PROVIDER' },
+  // CANCELLED is included so a cancelled booking isn't a dead end: the pair can
+  // re-agree in the same conversation instead of abandoning it and starting a
+  // new thread, which left the old one showing "Cancelled" forever with no
+  // action available to either side.
+  QUOTE:    { from: ['INQUIRY', 'QUOTED', 'ACCEPTED', 'CANCELLED'], actor: 'PROVIDER' },
   ACCEPT:   { from: ['QUOTED'],                        actor: 'CUSTOMER' },
   MARK_CASH_PAID: { from: ['ACCEPTED'],                actor: 'PROVIDER' },
   COMPLETE: { from: ['PAID'],                          actor: 'PROVIDER' },
@@ -219,6 +223,11 @@ export const bookingService = {
         note: input.note ?? booking.note,
         quotedAt: new Date(),
         acceptedAt: null,
+        // Re-quoting after a cancellation clears the old outcome, so the booking
+        // doesn't carry a stale "cancelled by / reason" into its new life.
+        cancelledAt: null,
+        cancelledBy: null,
+        cancelReason: null,
       },
       include: bookingInclude,
     });
@@ -326,7 +335,13 @@ export const bookingService = {
     if (booking.status === 'COMPLETED') throw new BookingError('A completed booking cannot be cancelled', 409);
     if (booking.status === 'CANCELLED') return booking;
     if (booking.status === 'PAID') {
-      throw new BookingError('This booking is already paid - please arrange a refund instead', 409);
+      // Deliberately points at the chat rather than a refund flow: there is no
+      // self-serve refund in the product, and telling someone to "arrange a
+      // refund" they can't actually start is a dead end.
+      throw new BookingError(
+        'This booking is already paid, so it can\'t be cancelled here. Message the other party to agree what happens next.',
+        409
+      );
     }
 
     return prisma.booking.update({

@@ -186,20 +186,10 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
   const stepIndex = BOOKING_STEPS.indexOf(status);
   const quoteFormValid = parseFloat(price) > 0 && !!start && !!end && new Date(end) > new Date(start);
 
-  // Exactly one side "owns" the booking at each step; the other is waiting.
-  const waitingOn: Record<string, 'CUSTOMER' | 'PROVIDER' | null> = {
-    INQUIRY: 'PROVIDER',
-    QUOTED: 'CUSTOMER',
-    ACCEPTED: 'CUSTOMER',
-    PAID: 'PROVIDER',
-    COMPLETED: null,
-    CANCELLED: null,
-  };
-  const turn = waitingOn[status];
-  const myTurn = turn === (isProvider ? 'PROVIDER' : 'CUSTOMER');
 
-  const showQuoteForm =
-    isProvider && (status === 'INQUIRY' || editingQuote) && !isCancelled;
+  // Cancelled is included via editingQuote so the provider can revive a
+  // cancelled booking with a fresh quote rather than the thread being dead.
+  const showQuoteForm = isProvider && (status === 'INQUIRY' || editingQuote);
   const directions = directionsTarget(booking, isProvider);
 
   return (
@@ -425,8 +415,11 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
               </div>
             )}
 
-            {/* Cancelling stays possible until money changes hands */}
-            {(status === 'INQUIRY' || status === 'QUOTED' || status === 'ACCEPTED') && !myTurn && (
+            {/* Cancelling stays possible until money changes hands - including
+                when it's your move. This was gated on !myTurn, which hid it in
+                exactly the case where it's most needed: a customer looking at a
+                quote they don't want could only accept or abandon the thread. */}
+            {(status === 'INQUIRY' || status === 'QUOTED' || status === 'ACCEPTED') && (
               <button
                 onClick={() => run(() => bookingApi.cancel(conversationId))}
                 disabled={busy}
@@ -438,11 +431,29 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
           </div>
         )}
 
-        {isCancelled && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
-            <p className="text-sm text-red-600">
-              This booking was cancelled{booking.cancelReason ? `: ${booking.cancelReason}` : '.'}
-            </p>
+        {isCancelled && !showQuoteForm && (
+          <div className="space-y-3">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-sm text-red-600">
+                This booking was cancelled{booking.cancelReason ? `: ${booking.cancelReason}` : '.'}
+              </p>
+            </div>
+
+            {/* A cancellation shouldn't strand the conversation - the provider
+                can put a new quote on the table and pick it back up. */}
+            {isProvider ? (
+              <button
+                onClick={() => setEditingQuote(true)}
+                disabled={busy}
+                className="w-full px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-medium transition-all disabled:opacity-50"
+              >
+                Send a new quote
+              </button>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Message the provider if you&apos;d like them to send a new quote.
+              </p>
+            )}
           </div>
         )}
 
