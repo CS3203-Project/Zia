@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckCircle, CreditCard, Clock, Calendar } from 'lucide-react';
+import { CheckCircle, Clock, Calendar } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import type { ProviderProfile } from '../../../api/userApi';
 import type { DetailedService } from '../../../Pages/services/ServiceDetailPage';
 import ServiceProviderCard from './ServiceProviderCard';
@@ -10,7 +11,6 @@ interface ServiceBookingSidebarProps {
   provider: ProviderProfile | null;
   providerLoading: boolean;
   onViewProviderProfile: () => void;
-  onPayNow: () => void;
   onBookNow: () => void;
   bookingLoading: boolean;
   qrCodeUrl: string;
@@ -39,13 +39,17 @@ const ServiceBookingSidebar: React.FC<ServiceBookingSidebarProps> = ({
   provider,
   providerLoading,
   onViewProviderProfile,
-  onPayNow,
   onBookNow,
   bookingLoading,
   qrCodeUrl,
   onDownloadQR,
   onShareService
 }) => {
+  const providerPhone = provider?.user.phone?.replace(/[^0-9]/g, '');
+  const whatsappUrl = providerPhone
+    ? `https://wa.me/${providerPhone}?text=${encodeURIComponent(`Hi, I'm interested in your service: ${service.title}`)}`
+    : undefined;
+
   return (
     <div className="lg:col-span-1 space-y-6 pb-10">
       {/* Unified Glass Morphism Card */}
@@ -73,28 +77,34 @@ const ServiceBookingSidebar: React.FC<ServiceBookingSidebarProps> = ({
           {/* Action Buttons */}
           <div className="space-y-3 mb-6">
             <button
-              onClick={onPayNow}
-              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white py-4 px-6 rounded-full font-bold hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-xl hover:shadow-2xl border border-orange-500/20 backdrop-blur-sm flex items-center justify-center"
-              style={{ boxShadow: '0 4px 24px rgba(249,115,22,0.3)' }}
-            >
-              <CreditCard className="w-5 h-5 mr-2" />
-              Pay Now
-            </button>
-
-            <button
               onClick={onBookNow}
               disabled={bookingLoading}
-              className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 px-6 rounded-full font-bold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {bookingLoading ? <BookingLoadingIndicator label="Creating conversation" /> : 'Book Now'}
             </button>
-            <button
-              onClick={onBookNow}
-              disabled={bookingLoading}
-              className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-orange-50 hover:border-orange-300 hover:scale-105 hover:-translate-y-0.5 active:scale-100 transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-            >
-              {bookingLoading ? <BookingLoadingIndicator label="Creating conversation" /> : 'Message Provider'}
-            </button>
+
+            {whatsappUrl ? (
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-white text-gray-900 py-4 px-6 rounded-full font-bold hover:bg-emerald-50 hover:border-emerald-300 transition-colors shadow-sm border-2 border-gray-200 flex items-center justify-center"
+              >
+                <FaWhatsapp className="w-5 h-5 mr-2 text-emerald-600" />
+                Chat on WhatsApp
+              </a>
+            ) : (
+              <button
+                type="button"
+                disabled
+                title="Provider hasn't added a contact number"
+                className="w-full bg-white text-gray-400 py-4 px-6 rounded-full font-bold border-2 border-gray-200 opacity-50 cursor-not-allowed flex items-center justify-center"
+              >
+                <FaWhatsapp className="w-5 h-5 mr-2" />
+                Chat on WhatsApp
+              </button>
+            )}
           </div>
 
           {/* QR Code Section */}

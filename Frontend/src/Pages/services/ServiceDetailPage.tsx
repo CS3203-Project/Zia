@@ -12,7 +12,6 @@ import { messagingApi } from '../../api/messagingApi';
 import { debugMessagingState } from '../../utils/messagingDebug';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/services/Breadcrumb';
-import { PaymentModal } from '../../components/Payment';
 import toast, { Toaster } from 'react-hot-toast';
 import { cn } from '../../utils/utils';
 import { confirmationApi } from '../../api/confirmationApi';
@@ -94,7 +93,6 @@ const ServiceDetailPage: React.FC = () => {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   
   // Payment modal state
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   // QR code state
@@ -484,31 +482,6 @@ const ServiceDetailPage: React.FC = () => {
   const toggleWishlist = () => {
     setIsWishlisted(!isWishlisted);
     toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
-  };
-
-  // Payment handlers
-  const handlePayNow = () => {
-    if (!isLoggedIn || !user) {
-      setShowLoginPrompt(true);
-      return;
-    }
-    
-    if (!service) {
-      toast.error('Service information not available');
-      return;
-    }
-    
-    setIsPaymentModalOpen(true);
-  };
-
-  const handlePaymentSuccess = (paymentId: string) => {
-    console.log('Payment completed:', paymentId);
-    // The PaymentModal will handle showing the success popup and navigation to profile
-  };
-
-  const handlePaymentError = (error: string) => {
-    console.error('Payment error:', error);
-    // The PaymentModal will handle showing the error popup
   };
 
   const nextImage = () => {
@@ -902,7 +875,6 @@ const ServiceDetailPage: React.FC = () => {
               provider={provider}
               providerLoading={providerLoading}
               onViewProviderProfile={handleViewProviderProfile}
-              onPayNow={handlePayNow}
               onBookNow={handleBookNow}
               bookingLoading={bookingLoading}
               qrCodeUrl={qrCodeUrl}
@@ -927,21 +899,6 @@ const ServiceDetailPage: React.FC = () => {
       </main>
 
       <Toaster position="bottom-right" />
-      
-      {/* Payment Modal */}
-      {service && (
-        <PaymentModal
-          isOpen={isPaymentModalOpen}
-          onClose={() => setIsPaymentModalOpen(false)}
-          serviceId={service.id}
-          serviceName={service.title}
-          servicePrice={typeof service.price === 'string' ? parseFloat(service.price) : service.price}
-          serviceCurrency={service.currency}
-          serviceImage={service.images?.[0]}
-          onPaymentSuccess={handlePaymentSuccess}
-          onPaymentError={handlePaymentError}
-        />
-      )}
     </div>
   );
 };
