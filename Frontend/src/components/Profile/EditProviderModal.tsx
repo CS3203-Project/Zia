@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
-import { X, Save, Plus, Trash2, FileText, Camera, Award, Star, MessageCircle } from 'lucide-react';
+import {
+  X, Save, Plus, Trash2, FileText, Camera, Award, Star, MessageCircle,
+  Upload, Image as ImageIcon,
+} from 'lucide-react';
 import Button from '../shared/Button';
 import toast from 'react-hot-toast';
+import { uploadImage } from '../../utils/imageUpload';
 import { userApi } from '../../api/userApi';
 import type { UpdateProviderData, ProviderProfile } from '../../api/userApi';
 
@@ -15,12 +19,117 @@ interface EditProviderModalProps {
 const inputClass =
   'w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors hover:border-gray-300';
 
+interface FileFieldProps {
+  icon: React.ReactNode;
+  label: string;
+  inputId: string;
+  value?: string;
+  uploading: boolean;
+  onFile: (file: File) => void;
+  hint: string;
+}
+
+/**
+ * Picks a file from the device and uploads it, showing what's currently stored.
+ *
+ * Replaces the previous free-text URL boxes: a provider editing their profile has
+ * an image on their phone or laptop, not a hosted URL to paste, and a typo'd URL
+ * silently produced a broken profile picture.
+ */
+const FileField: React.FC<FileFieldProps> = ({
+  icon, label, inputId, value, uploading, onFile, hint,
+}) => (
+  <div className="space-y-3 pb-8 border-b border-gray-100">
+    <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+      {icon}
+      {label}
+    </label>
+
+    <div className="flex items-center gap-4">
+      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+        {value ? (
+          <img src={value} alt={label} className="h-full w-full object-cover" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <ImageIcon className="h-6 w-6 text-gray-300" />
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <input
+          type="file"
+          accept="image/*"
+          id={inputId}
+          className="hidden"
+          disabled={uploading}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) onFile(file);
+            e.target.value = ''; // allow re-picking the same file
+          }}
+        />
+        <label
+          htmlFor={inputId}
+          className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
+            uploading
+              ? 'cursor-not-allowed border-gray-200 bg-gray-50 text-gray-400'
+              : 'cursor-pointer border-gray-200 bg-white text-gray-700 hover:border-orange-300 hover:bg-orange-50'
+          }`}
+        >
+          {uploading ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-orange-400 border-t-transparent" />
+              Uploading…
+            </>
+          ) : (
+            <>
+              <Upload className="h-4 w-4" />
+              {value ? 'Replace file' : 'Choose file'}
+            </>
+          )}
+        </label>
+        <p className="mt-2 text-xs text-gray-400">{hint}</p>
+      </div>
+    </div>
+  </div>
+);
+
 export default function EditProviderModal({ isOpen, onClose, onSuccess, provider }: EditProviderModalProps) {
   const [formData, setFormData] = useState<UpdateProviderData>({});
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingId, setUploadingId] = useState(false);
   const [newSkill, setNewSkill] = useState('');
   const [newQualification, setNewQualification] = useState('');
+
+  /** Uploads a picked file and stores the resulting URL on the form. */
+  const handleFile = async (
+    file: File,
+    field: 'logoUrl' | 'IDCardUrl',
+    setBusy: (busy: boolean) => void
+  ) => {
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please choose an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be 5MB or smaller');
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const url = await uploadImage(file);
+      setFormData(prev => ({ ...prev, [field]: url }));
+      toast.success('Upload complete');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Upload failed. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (isOpen && provider) {
@@ -39,6 +148,12 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Saving mid-upload would persist the old URL and silently discard the file.
+    if (uploadingLogo || uploadingId) {
+      toast.error('Please wait for the upload to finish');
+      return;
+    }
 
     setLoading(true);
 
@@ -144,42 +259,27 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
               </div>
             </div>
 
-            {/* Logo URL Section */}
-            <div className="space-y-3 pb-8 border-b border-gray-100">
-              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
-                <Camera className="h-4 w-4 mr-2 text-orange-600" />
-                Profile Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.logoUrl || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, logoUrl: e.target.value }))}
-                className={inputClass}
-                placeholder="https://example.com/your-profile-image.jpg"
-              />
-              <p className="text-xs text-gray-400">
-                Add a professional headshot or company logo
-              </p>
-            </div>
+            {/* Profile Image */}
+            <FileField
+              icon={<Camera className="h-4 w-4 mr-2 text-orange-600" />}
+              label="Profile Image"
+              inputId="edit-provider-logo"
+              value={formData.logoUrl}
+              uploading={uploadingLogo}
+              onFile={(file) => handleFile(file, 'logoUrl', setUploadingLogo)}
+              hint="Add a professional headshot or company logo"
+            />
 
-            {/* ID Card URL Section */}
-            <div className="space-y-3 pb-8 border-b border-gray-100">
-              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
-                <Award className="h-4 w-4 mr-2 text-orange-600" />
-                ID Card/Document
-                <span className="text-gray-400 font-normal normal-case tracking-normal ml-1">(Optional)</span>
-              </label>
-              <input
-                type="text"
-                value={formData.IDCardUrl || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, IDCardUrl: e.target.value }))}
-                className={inputClass}
-                placeholder="Enter image URL or text identifier for your ID document"
-              />
-              <p className="text-xs text-gray-400">
-                Professional license or ID for verification purposes
-              </p>
-            </div>
+            {/* ID Document */}
+            <FileField
+              icon={<Award className="h-4 w-4 mr-2 text-orange-600" />}
+              label="ID Card / Document"
+              inputId="edit-provider-id"
+              value={formData.IDCardUrl}
+              uploading={uploadingId}
+              onFile={(file) => handleFile(file, 'IDCardUrl', setUploadingId)}
+              hint="Professional license or ID for verification purposes"
+            />
 
             {/* WhatsApp / Phone Number Section */}
             <div className="space-y-3 pb-8 border-b border-gray-100">
@@ -321,7 +421,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={loading || uploadingLogo || uploadingId}
             >
               {loading ? (
                 <>

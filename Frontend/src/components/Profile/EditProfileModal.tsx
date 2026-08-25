@@ -292,33 +292,8 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                 </div>
               </div>
 
-              {/* URL Input (Alternative) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Or Image URL (Optional)
-                </label>
-                <input
-                  type="url"
-                  value={formData.imageUrl || ''}
-                  onChange={(e) => {
-                    setFormData(prev => ({ ...prev, imageUrl: e.target.value.trim() || undefined }));
-                    // Clear file selection if URL is entered
-                    if (e.target.value.trim()) {
-                      setSelectedFile(null);
-                      setPreviewUrl('');
-                      if (fileInputRef.current) {
-                        fileInputRef.current.value = '';
-                      }
-                    }
-                  }}
-                  className={inputClass}
-                  placeholder="https://example.com/your-image.jpg"
-                  disabled={!!selectedFile}
-                />
-                <p className="text-xs text-gray-400 mt-1">
-                  {selectedFile ? 'URL input disabled while file is selected' : 'Enter a direct link to your image or upload a file above'}
-                </p>
-              </div>
+              {/* Pasting an image URL was the alternative here; removed in favour
+                  of picking the file directly, which is what people actually have. */}
             </div>
 
             {/* Social Media */}
