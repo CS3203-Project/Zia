@@ -279,7 +279,35 @@ export interface PlatformSetting {
   value: number | boolean;
 }
 
+export interface AdminPayoutRequest {
+  id: string;
+  providerId: string;
+  amount: string | number;
+  currency: string;
+  status: 'PENDING' | 'PAID' | 'REJECTED';
+  payoutMethod?: string | null;
+  note?: string | null;
+  rejectReason?: string | null;
+  processedBy?: string | null;
+  processedAt?: string | null;
+  createdAt: string;
+}
+
 export const adminApi = {
+  /** Provider withdrawal requests awaiting review. Served by the payment service. */
+  getPayouts: async (status?: string): Promise<AdminPayoutRequest[]> => {
+    const response = await paymentApiClient.get('/admin/payouts', { params: status ? { status } : {} });
+    return response.data.data;
+  },
+
+  approvePayout: async (id: string): Promise<void> => {
+    await paymentApiClient.post(`/admin/payouts/${id}/approve`);
+  },
+
+  rejectPayout: async (id: string, reason?: string): Promise<void> => {
+    await paymentApiClient.post(`/admin/payouts/${id}/reject`, { reason });
+  },
+
   /** Platform settings: commission, upload limits, verification requirement. */
   getSettings: async (): Promise<PlatformSetting[]> => {
     const response = await apiClient.get<ApiResponse<PlatformSetting[]>>('/admin/settings');

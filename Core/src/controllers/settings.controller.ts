@@ -44,6 +44,7 @@ export const getPublicSettingsController = async (_req: Request, res: Response) 
         maxServiceImages: all.maxServiceImages,
         allowCashPayments: all.allowCashPayments,
         platformFeePercent: all.platformFeePercent,
+        minPayoutAmount: all.minPayoutAmount,
       },
     });
   } catch (error) {

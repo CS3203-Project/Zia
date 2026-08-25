@@ -51,6 +51,38 @@ model ProviderEarnings {
   @@index([providerId])
 }
 
+/// A provider's request to withdraw their available balance.
+///
+/// Until now earnings accumulated with no way out: ProviderEarnings tracked
+/// availableBalance and totalWithdrawn, but nothing could ever move money
+/// between them. Requesting reserves the amount in pendingBalance so it can't be
+/// requested twice while an admin reviews it.
+model PayoutRequest {
+  id           String       @id @default(cuid())
+  providerId   String
+  amount       Decimal      @db.Decimal(10, 2)
+  currency     String       @default("lkr")
+  status       PayoutStatus @default(PENDING)
+  /// Where the provider wants the money sent. Free text so this doesn't assume
+  /// a particular banking integration.
+  payoutMethod String?
+  note         String?
+  rejectReason String?
+  processedBy  String?
+  processedAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([providerId, status])
+  @@index([status, createdAt])
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+  REJECTED
+}
+
 enum PaymentStatus {
   PENDING
   PROCESSING

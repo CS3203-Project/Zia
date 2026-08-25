@@ -114,8 +114,48 @@ export interface PaymentHistoryResponse {
   };
 }
 
+export type PayoutStatus = 'PENDING' | 'PAID' | 'REJECTED';
+
+export interface PayoutRequest {
+  id: string;
+  providerId: string;
+  amount: string | number;
+  currency: string;
+  status: PayoutStatus;
+  payoutMethod?: string | null;
+  note?: string | null;
+  rejectReason?: string | null;
+  processedAt?: string | null;
+  createdAt: string;
+}
+
+export interface EarningsWithLimits extends ProviderEarnings {
+  minimumPayout: number;
+}
+
 // Payment API Service
 export const paymentApi = {
+  /** Provider balance plus the minimum withdrawal the platform allows. */
+  getPayoutEarnings: async (): Promise<EarningsWithLimits> => {
+    const response = await paymentApiClient.get('/payments/payouts/earnings');
+    return response.data.success ? response.data.data : response.data;
+  },
+
+  /** Request a withdrawal. The amount is reserved until an admin reviews it. */
+  requestPayout: async (data: {
+    amount: number;
+    payoutMethod?: string;
+    note?: string;
+  }): Promise<PayoutRequest> => {
+    const response = await paymentApiClient.post('/payments/payouts', data);
+    return response.data.success ? response.data.data : response.data;
+  },
+
+  getMyPayouts: async (): Promise<PayoutRequest[]> => {
+    const response = await paymentApiClient.get('/payments/payouts');
+    return response.data.success ? response.data.data : response.data;
+  },
+
   // Create a PayHere checkout payload
   createCheckout: async (data: CreateCheckoutRequest): Promise<PayHereCheckoutResponse> => {
     const response = await paymentApiClient.post('/payments/checkout', data);

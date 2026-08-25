@@ -1,8 +1,18 @@
 import { Router } from 'express';
 import paymentController from '../controllers/payment.controller.js';
+import payoutController from '../controllers/payout.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router: Router = Router();
+
+/**
+ * @route GET/POST /api/payments/payouts
+ * @desc Provider withdrawals. Earnings previously had no exit at all.
+ * @access Private (provider)
+ */
+router.get('/payouts/earnings', authMiddleware, payoutController.getMyEarnings);
+router.get('/payouts', authMiddleware, payoutController.listMyPayouts);
+router.post('/payouts', authMiddleware, payoutController.requestPayout);
 
 /**
  * @route POST /api/payments/checkout

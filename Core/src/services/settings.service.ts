@@ -43,6 +43,17 @@ export const SETTING_SPECS: SettingSpec[] = [
     group: 'fees',
   },
   {
+    key: 'minPayoutAmount',
+    label: 'Minimum withdrawal',
+    description: 'Smallest balance a provider may request a payout for.',
+    type: 'number',
+    default: 1000,
+    min: 0,
+    max: 1000000,
+    unit: 'LKR',
+    group: 'fees',
+  },
+  {
     key: 'maxUploadSizeMb',
     label: 'Maximum upload size',
     description: 'Largest image a user may upload, in megabytes.',

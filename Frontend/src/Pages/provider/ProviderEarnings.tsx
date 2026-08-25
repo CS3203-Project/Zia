@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   DollarSign,
@@ -10,8 +10,9 @@ import {
   Wallet,
   BarChart3
 } from 'lucide-react';
-import { paymentApi, type ProviderEarnings, type Payment } from '../../api/paymentApi';
+import { paymentApi, type ProviderEarnings, type Payment, type PayoutRequest } from '../../api/paymentApi';
 import { PaymentStatusCard } from '../../components/Payment';
+import WithdrawModal from '../../components/Payment/WithdrawModal';
 import { currencyConfig } from '../../services/paymentConfig';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -25,6 +26,16 @@ const ProviderEarningsPage: React.FC = () => {
   const [recentPayments, setRecentPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [paymentsLoading, setPaymentsLoading] = useState(true);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [payouts, setPayouts] = useState<PayoutRequest[]>([]);
+
+  const loadPayouts = useCallback(() => {
+    paymentApi.getMyPayouts().then(setPayouts).catch(() => setPayouts([]));
+  }, []);
+
+  useEffect(() => {
+    loadPayouts();
+  }, [loadPayouts]);
 
   // Check authentication and provider status
   useEffect(() => {
@@ -87,10 +98,7 @@ const ProviderEarningsPage: React.FC = () => {
     fetchRecentPayments();
   };
 
-  const handleWithdraw = () => {
-    // Implement withdrawal logic
-    toast.success('Withdrawal functionality would be implemented here');
-  };
+  const handleWithdraw = () => setWithdrawOpen(true);
 
   const handleViewAllPayments = () => {
     navigate('/payment-history');
@@ -325,8 +333,57 @@ const ProviderEarningsPage: React.FC = () => {
             <p className="text-gray-500">Unable to load your earnings information.</p>
           </div>
         )}
+        {/* Withdrawal history */}
+        {payouts.length > 0 && (
+          <div className="mt-8 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+            <div className="border-b border-gray-100 px-6 py-4">
+              <h3 className="text-lg font-bold text-gray-900">Withdrawals</h3>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {payouts.map((p) => {
+                const tone =
+                  p.status === 'PAID'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : p.status === 'REJECTED'
+                      ? 'bg-red-50 text-red-600 border-red-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200';
+                return (
+                  <div key={p.id} className="flex items-center justify-between gap-4 px-6 py-4">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-900">
+                        {currencyConfig.formatCurrency(Number(p.amount), p.currency)}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(p.createdAt).toLocaleString()}
+                        {p.payoutMethod ? ` · ${p.payoutMethod}` : ''}
+                      </p>
+                      {p.status === 'REJECTED' && p.rejectReason && (
+                        <p className="mt-1 text-xs text-red-500">{p.rejectReason}</p>
+                      )}
+                    </div>
+                    <span className={`flex-shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${tone}`}>
+                      {p.status === 'PENDING' ? 'Under review' : p.status === 'PAID' ? 'Paid' : 'Declined'}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </main>
 
+      {earnings && (
+        <WithdrawModal
+          isOpen={withdrawOpen}
+          onClose={() => setWithdrawOpen(false)}
+          onSuccess={() => {
+            fetchEarnings();
+            loadPayouts();
+          }}
+          availableBalance={Number(earnings.availableBalance)}
+          currency={earnings.currency}
+        />
+      )}
     </div>
   );
 };
