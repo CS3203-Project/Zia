@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { adminService } from '../services/admin.service.js';
+import * as categoryService from '../../services/category.service.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
@@ -308,6 +309,86 @@ export class AdminController {
         success: false,
         message: 'Internal server error',
         error: error.message,
+      });
+    }
+  }
+
+  async getCategories(req: Request, res: Response): Promise<void> {
+    try {
+      const categories = await categoryService.getAllCategories({
+        parentId: null,
+        includeChildren: true,
+        includeParent: false,
+        includeServices: true,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Categories fetched successfully',
+        data: categories,
+      });
+    } catch (error: any) {
+      console.error('Get categories error:', error);
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  async createCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const category = await categoryService.createCategory(req.body);
+
+      res.status(201).json({
+        success: true,
+        message: 'Category created successfully',
+        data: category,
+      });
+    } catch (error: any) {
+      console.error('Create category error:', error);
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  async updateCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const id = String(req.params.id);
+      const category = await categoryService.updateCategory(id, req.body);
+
+      res.status(200).json({
+        success: true,
+        message: 'Category updated successfully',
+        data: category,
+      });
+    } catch (error: any) {
+      console.error('Update category error:', error);
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  async deleteCategory(req: Request, res: Response): Promise<void> {
+    try {
+      const id = String(req.params.id);
+      const force = req.query.force === 'true';
+      const category = await categoryService.deleteCategory(id, { force });
+
+      res.status(200).json({
+        success: true,
+        message: 'Category deleted successfully',
+        data: category,
+      });
+    } catch (error: any) {
+      console.error('Delete category error:', error);
+      res.status(error.status || 500).json({
+        success: false,
+        message: error.message || 'Internal server error',
       });
     }
   }

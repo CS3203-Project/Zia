@@ -190,6 +190,30 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface Category {
+  id: string;
+  name: string | null;
+  slug: string;
+  description?: string | null;
+  parentId?: string | null;
+  parent?: {
+    id: string;
+    name: string | null;
+    slug: string;
+  } | null;
+  children?: Category[];
+  _count?: {
+    services: number;
+  };
+}
+
+export interface CategoryInput {
+  name: string;
+  slug: string;
+  description?: string;
+  parentId?: string | null;
+}
+
 export interface AdminLoginRequest {
   username: string;
   password: string;
@@ -621,6 +645,74 @@ export const adminApi = {
         throw new Error('Network error. Please check your connection.');
       } else {
         throw new Error('Failed to fetch payment statistics');
+      }
+    }
+  },
+
+  // Get all root categories with their subcategories
+  getCategories: async (): Promise<ApiResponse<Category[]>> => {
+    try {
+      const response = await apiClient.get<ApiResponse<Category[]>>('/admin/categories');
+      return response.data;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        throw new Error(axiosError.response?.data?.message || 'Failed to fetch categories');
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Network error. Please check your connection.');
+      } else {
+        throw new Error('An unexpected error occurred');
+      }
+    }
+  },
+
+  // Create a category or subcategory (pass parentId to create a subcategory)
+  createCategory: async (categoryData: CategoryInput): Promise<ApiResponse<Category>> => {
+    try {
+      const response = await apiClient.post<ApiResponse<Category>>('/admin/categories', categoryData);
+      return response.data;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        throw new Error(axiosError.response?.data?.message || 'Failed to create category');
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Network error. Please check your connection.');
+      } else {
+        throw new Error('An unexpected error occurred');
+      }
+    }
+  },
+
+  // Update a category or subcategory
+  updateCategory: async (id: string, categoryData: Partial<CategoryInput>): Promise<ApiResponse<Category>> => {
+    try {
+      const response = await apiClient.put<ApiResponse<Category>>(`/admin/categories/${id}`, categoryData);
+      return response.data;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        throw new Error(axiosError.response?.data?.message || 'Failed to update category');
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Network error. Please check your connection.');
+      } else {
+        throw new Error('An unexpected error occurred');
+      }
+    }
+  },
+
+  // Delete a category or subcategory
+  deleteCategory: async (id: string): Promise<ApiResponse<Category>> => {
+    try {
+      const response = await apiClient.delete<ApiResponse<Category>>(`/admin/categories/${id}`);
+      return response.data;
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { message?: string } } };
+        throw new Error(axiosError.response?.data?.message || 'Failed to delete category');
+      } else if (error && typeof error === 'object' && 'request' in error) {
+        throw new Error('Network error. Please check your connection.');
+      } else {
+        throw new Error('An unexpected error occurred');
       }
     }
   },

@@ -11,7 +11,8 @@ import {
   AlertTriangle,
   Clock,
   ExternalLink,
-  LogOut
+  LogOut,
+  FolderTree
 } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import AnalyticsDashboard from '../../components/shared/AnalyticsDashboard';
@@ -21,6 +22,7 @@ import StatCard from '../../components/admin/StatCard';
 import ProviderCard from '../../components/admin/ProviderCard';
 import ProviderDetailsModal from '../../components/admin/ProviderDetailsModal';
 import AdminProfileSection from '../../components/admin/AdminProfileSection';
+import CategoryManagementSection from '../../components/admin/CategoryManagementSection';
 import { adminApi, type ServiceProvider, type AdminProfile } from '../../api/adminApi';
 import { showSuccessToast, showErrorToast } from '../../utils/toastUtils';
 
@@ -33,7 +35,7 @@ const AdminDashboard: React.FC = () => {
   const [isReportGeneratorOpen, setIsReportGeneratorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'providers' | 'profile'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'providers' | 'categories' | 'profile'>('overview');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [providerToApprove, setProviderToApprove] = useState<ServiceProvider | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -287,6 +289,7 @@ const AdminDashboard: React.FC = () => {
             {[
               { id: 'overview', label: 'Overview', icon: TrendingUp },
               { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, icon: UserCheck },
+              { id: 'categories', label: 'Categories', icon: FolderTree },
               { id: 'profile', label: 'Admin Profile', icon: Settings },
             ].map((tab) => (
               <button
@@ -565,6 +568,19 @@ const AdminDashboard: React.FC = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Categories Tab */}
+        {activeTab === 'categories' && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Categories</h2>
+              <p className="text-gray-500">Manage service categories and subcategories</p>
+            </div>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <CategoryManagementSection />
+            </div>
           </div>
         )}
 

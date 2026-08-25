@@ -3,6 +3,8 @@ import { adminController } from '../controllers/admin.controller.js';
 import { adminAuthMiddleware } from '../middlewares/admin.middleware.js';
 import { validateAdminLogin, validateAdminRegistration, validateAdminUpdate, validateServiceProviderVerification } from '../validators/admin.validator.js';
 import { scheduledJobsController } from '../../controllers/scheduled-jobs.controller.js';
+import validate from '../../middlewares/validation.middleware.js';
+import { createCategorySchema, updateCategorySchema, categoryIdSchema } from '../../validators/category.validator.js';
 
 const router: ExpressRouter = Router();
 
@@ -26,5 +28,11 @@ router.put('/service-providers/:providerId/verification', adminAuthMiddleware, v
 // Scheduled Jobs routes
 router.get('/scheduled-jobs/trigger-reminder', adminAuthMiddleware, scheduledJobsController.triggerBookingReminder);
 router.post('/scheduled-jobs/send-immediate-reminder', adminAuthMiddleware, scheduledJobsController.sendImmediateReminder);
+
+// Category management routes (categories and subcategories, via parentId)
+router.get('/categories', adminAuthMiddleware, adminController.getCategories);
+router.post('/categories', adminAuthMiddleware, validate(createCategorySchema), adminController.createCategory);
+router.put('/categories/:id', adminAuthMiddleware, validate(categoryIdSchema, 'params'), validate(updateCategorySchema), adminController.updateCategory);
+router.delete('/categories/:id', adminAuthMiddleware, validate(categoryIdSchema, 'params'), adminController.deleteCategory);
 
 export default router;
