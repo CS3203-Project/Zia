@@ -177,9 +177,30 @@ jobs:
               exit 1
             fi
 
-            # A failed migration is deliberately NOT auto-resolved here: resolving
-            # one that had partially applied would leave the schema silently wrong.
-            # That needs a human deciding between --rolled-back and --applied.
+            # One-time recovery. Running Core's migrations before Chat's schema
+            # existed left 20260825120000_add_booking_model recorded as started
+            # and unfinished, which makes every later deploy abort with P3009.
+            # Postgres DDL is transactional, so that attempt applied nothing —
+            # applied_steps_count is 0 — and re-running it is safe.
+            #
+            # This is deliberately not a general auto-resolve: resolving a
+            # migration that had partially applied would leave the schema
+            # silently wrong. It names one migration and requires 0 applied
+            # steps, so it is a no-op on every subsequent deploy and can never
+            # touch a migration that got part-way in.
+            stuck=$(docker compose -f docker-compose.prod.yml exec -T postgres \
+              psql -U postgres -d zia_core -tAc \
+              "select count(*) from public.\"_prisma_migrations\"
+                 where migration_name = '20260825120000_add_booking_model'
+                   and finished_at is null
+                   and rolled_back_at is null
+                   and applied_steps_count = 0;" 2>/dev/null | tr -d '[:space:]' || true)
+            if [ "${stuck:-0}" = "1" ]; then
+              echo "clearing stuck add_booking_model migration..."
+              docker compose -f docker-compose.prod.yml exec -T core \
+                npx prisma migrate resolve --rolled-back 20260825120000_add_booking_model
+            fi
+
             for svc in chat payment core; do
               echo "migrating ${svc}..."
               docker compose -f docker-compose.prod.yml exec -T "$svc" npx prisma migrate deploy
