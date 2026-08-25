@@ -144,18 +144,53 @@ jobs:
             # every deploy leaves another full set behind.
             docker image prune -af --filter "until=72h" || true
 
+            # Apply schema migrations. Without this the containers start and
+            # connect happily against an empty database, and every query 500s —
+            # which is exactly how a deploy once reported success over a schema
+            # with zero application tables.
+            #
+            # Order matters: a Core migration backfills bookings by selecting
+            # from chat."Conversation", so Chat has to have created its schema
+            # first or Core aborts on "relation does not exist". Payment is
+            # independent.
+            migrate() {
+              svc=$1
+              echo "migrating ${svc}..."
+              for i in $(seq 1 20); do
+                if docker compose -f docker-compose.prod.yml exec -T "$svc" npx prisma migrate deploy; then
+                  return 0
+                fi
+                echo "  ${svc} not ready yet, retrying..."
+                sleep 5
+              done
+              echo "${svc} migrations failed after 20 attempts" >&2
+              return 1
+            }
+
+            migrate chat
+            migrate payment
+            migrate core
+
             # Seed service categories. seed.ts compiles to dist/prisma/seed.js,
             # so this runs on plain node with no dev dependencies. Every write is
             # an upsert, so re-running on each deploy is harmless — and it only
             # creates categories, never demo users or listings.
             echo "seeding categories..."
+            seeded=""
             for i in $(seq 1 20); do
               if docker compose -f docker-compose.prod.yml exec -T core node dist/prisma/seed.js; then
+                seeded=yes
                 break
               fi
               echo "  core not ready yet, retrying..."
               sleep 5
             done
+            # Previously the loop just fell through when every attempt failed, so
+            # a completely unseeded database still reported a green deploy.
+            if [ -z "$seeded" ]; then
+              echo "category seed failed after 20 attempts" >&2
+              exit 1
+            fi
 
             docker compose -f docker-compose.prod.yml ps
 
@@ -168,13 +203,23 @@ jobs:
           script: |
             set -euo pipefail
             # Give the stack a moment before judging it.
+            #
+            # The API check is the point: serving the SPA shell only proves nginx
+            # is up. A deploy once passed this step while every /api/services call
+            # returned 500 against an empty schema, because the old check stopped
+            # at the frontend. curl -f makes a 500 a failure.
+            ok=""
             for i in $(seq 1 30); do
-              if curl -sf -o /dev/null http://localhost/ ; then
-                echo "frontend responding"
-                exit 0
+              if curl -sf -o /dev/null http://localhost/ \
+                 && curl -sf -o /dev/null http://localhost:3000/api/services; then
+                ok=yes
+                break
               fi
               sleep 5
             done
-            echo "frontend did not come up within 150s" >&2
-            cd ~/zia && docker compose -f docker-compose.prod.yml logs --tail=40
-            exit 1
+            if [ -z "$ok" ]; then
+              echo "stack did not come up healthy within 150s" >&2
+              cd ~/zia && docker compose -f docker-compose.prod.yml logs --tail=40
+              exit 1
+            fi
+            echo "frontend and core API responding"
