@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreditCard, DollarSign, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { CreditCard, DollarSign, AlertTriangle, ArrowLeft, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { currencyConfig } from '../../services/paymentConfig';
 import PayHereCheckout from './PayHereCheckout';
@@ -68,35 +68,33 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-black/40 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 pt-24 sm:pt-4">
+      <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/20 bg-white/5">
-          {step === 'payment' && (
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 flex-shrink-0">
+          {step === 'payment' ? (
             <button
               onClick={() => setStep('details')}
-              className="flex items-center text-white/80 hover:text-white transition-colors"
+              className="flex items-center text-gray-500 hover:text-gray-900 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               Back
             </button>
-          )}
-          <h2 className="text-xl font-semibold text-white flex items-center">
-            <CreditCard className="w-5 h-5 mr-2" />
+          ) : <div />}
+          <h2 className="text-lg font-bold text-gray-900 flex items-center">
+            <CreditCard className="w-5 h-5 mr-2 text-orange-600" />
             {step === 'details' ? 'Payment Summary' : 'Complete Payment'}
           </h2>
           <button
             onClick={handleCloseModal}
-            className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
+            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-full transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="flex-1 overflow-y-auto p-6">
           {step === 'details' ? (
             <>
               {/* Service Details */}
@@ -106,14 +104,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                     <img
                       src={serviceImage}
                       alt={serviceName}
-                      className="w-16 h-16 object-cover rounded-xl border border-white/20"
+                      className="w-16 h-16 object-cover rounded-xl border border-gray-100"
                     />
                   )}
                   <div className="flex-1">
-                    <h3 className="text-lg font-medium text-white mb-1">
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">
                       {serviceName}
                     </h3>
-                    <p className="text-white/60 text-sm">
+                    <p className="text-gray-500 text-sm">
                       Professional service booking
                     </p>
                   </div>
@@ -121,25 +119,25 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               </div>
 
               {/* Service Price */}
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 mb-6">
-                <h4 className="text-sm font-medium text-white mb-3">Service Price</h4>
+              <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 mb-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-3">Service Price</h4>
                 <div className="flex justify-between font-medium">
-                  <span className="text-white">Price</span>
-                  <span className="text-white">
+                  <span className="text-gray-900">Price</span>
+                  <span className="text-gray-900">
                     {currencyConfig.formatCurrency(servicePrice, serviceCurrency)}
                   </span>
                 </div>
               </div>
 
               {/* Payment Terms */}
-              <div className="bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl p-4 mb-6">
+              <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-4">
                 <div className="flex items-start">
-                  <DollarSign className="w-5 h-5 text-white mr-2 mt-0.5" />
+                  <DollarSign className="w-5 h-5 text-orange-600 mr-2 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="text-sm font-medium text-white mb-1">
+                    <h4 className="text-sm font-medium text-gray-900 mb-1">
                       Secure Payment
                     </h4>
-                    <p className="text-sm text-white/70">
+                    <p className="text-sm text-gray-600">
                       Your payment is held securely until the service is completed to your satisfaction.
                     </p>
                   </div>
@@ -147,14 +145,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               </div>
 
               {/* Warning */}
-              <div className="bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl p-4 mb-6">
+              <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 mb-6">
                 <div className="flex items-start">
-                  <AlertTriangle className="w-5 h-5 text-white mr-2 mt-0.5" />
+                  <AlertTriangle className="w-5 h-5 text-amber-600 mr-2 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="text-sm font-medium text-white mb-1">
+                    <h4 className="text-sm font-medium text-gray-900 mb-1">
                       Important Note
                     </h4>
-                    <p className="text-sm text-white/70">
+                    <p className="text-sm text-gray-600">
                       By proceeding with this payment, you agree to our terms of service and refund policy.
                     </p>
                   </div>
@@ -164,7 +162,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               {/* Continue Button */}
               <button
                 onClick={() => setStep('payment')}
-                className="w-full bg-gradient-to-r from-white to-white/80 text-black font-semibold py-3 px-4 rounded-xl hover:scale-105 transition-all duration-200 shadow-lg"
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors shadow-sm"
               >
                 Continue to Payment
               </button>

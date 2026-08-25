@@ -142,11 +142,11 @@ const PayHereCheckout: React.FC<PayHereCheckoutProps> = ({
 
   if (paymentSuccess) {
     return (
-      <div className="max-w-md mx-auto p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl">
+      <div className="max-w-md mx-auto p-6 bg-emerald-50 border border-emerald-100 rounded-xl">
         <div className="text-center">
-          <CheckCircle className="w-16 h-16 text-white mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">Payment Successful!</h3>
-          <p className="text-white/70">
+          <CheckCircle className="w-16 h-16 text-emerald-600 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">Payment Successful!</h3>
+          <p className="text-gray-600">
             Your payment of {currencyConfig.formatCurrency(amount, currency)} has been processed successfully.
           </p>
         </div>
@@ -156,36 +156,36 @@ const PayHereCheckout: React.FC<PayHereCheckoutProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4">
-        <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-          <CreditCard className="w-5 h-5 mr-2" />
+      <div className="bg-gray-50 border border-gray-100 rounded-xl p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+          <CreditCard className="w-5 h-5 mr-2 text-orange-600" />
           Payment Details
         </h3>
-        {serviceName && <p className="text-white/70 text-sm mb-2">Service: {serviceName}</p>}
-        <p className="text-xl font-medium text-white">Total: {currencyConfig.formatCurrency(amount, currency)}</p>
+        {serviceName && <p className="text-gray-500 text-sm mb-2">Service: {serviceName}</p>}
+        <p className="text-xl font-medium text-gray-900">Total: {currencyConfig.formatCurrency(amount, currency)}</p>
       </div>
 
       {paymentError && (
-        <div className="flex items-center p-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl">
-          <AlertCircle className="w-5 h-5 text-white mr-2" />
-          <span className="text-sm text-white/90">{paymentError}</span>
+        <div className="flex items-center p-3 bg-red-50 border border-red-100 rounded-xl">
+          <AlertCircle className="w-5 h-5 text-red-600 mr-2 flex-shrink-0" />
+          <span className="text-sm text-red-700">{paymentError}</span>
         </div>
       )}
 
-      <div className="flex items-center justify-center p-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl">
-        <Lock className="w-4 h-4 text-white/70 mr-2" />
-        <span className="text-xs text-white/70">You'll be securely redirected to PayHere to complete this payment</span>
+      <div className="flex items-center justify-center p-3 bg-gray-50 border border-gray-100 rounded-xl">
+        <Lock className="w-4 h-4 text-gray-400 mr-2" />
+        <span className="text-xs text-gray-500">You'll be securely redirected to PayHere to complete this payment</span>
       </div>
 
       <button
         type="button"
         onClick={handlePay}
         disabled={isProcessing || loading || disabled}
-        className="w-full bg-gradient-to-r from-white to-white/80 text-black font-semibold py-3 px-4 rounded-xl hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg flex items-center justify-center"
+        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center"
       >
         {isProcessing || loading ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2"></div>
             Processing...
           </>
         ) : (
@@ -197,7 +197,7 @@ const PayHereCheckout: React.FC<PayHereCheckoutProps> = ({
       </button>
 
       <div className="text-center">
-        <p className="text-xs text-white/60">By completing this payment, you agree to our terms of service.</p>
+        <p className="text-xs text-gray-400">By completing this payment, you agree to our terms of service.</p>
       </div>
     </div>
   );
