@@ -14,7 +14,6 @@ import { FiPlus } from 'react-icons/fi';
 import CategorySection from '../../components/services/create/CategorySection';
 import ServiceDetailsSection from '../../components/services/create/ServiceDetailsSection';
 import ImagesSection from '../../components/services/create/ImagesSection';
-import VideoSection from '../../components/services/create/VideoSection';
 import TagsSection from '../../components/services/create/TagsSection';
 import WorkingHoursSection from '../../components/services/create/WorkingHoursSection';
 import ServiceStatusSection from '../../components/services/create/ServiceStatusSection';
@@ -273,6 +272,25 @@ export default function CreateService() {
       URL.revokeObjectURL(previewImages[index]);
     }
     setPreviewImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Moves the chosen image to the front of the array, which is what the
+  // rest of the app (service cards, search results) treats as the thumbnail.
+  const handleSetThumbnail = (index: number) => {
+    if (index === 0) return;
+
+    const reorder = <T,>(arr: T[]): T[] => {
+      const next = [...arr];
+      const [selected] = next.splice(index, 1);
+      next.unshift(selected);
+      return next;
+    };
+
+    setFormData(prev => ({
+      ...prev,
+      images: reorder(prev.images)
+    }));
+    setPreviewImages(prev => reorder(prev));
   };
 
   const handleAddTag = () => {
@@ -598,12 +616,9 @@ export default function CreateService() {
               fileInputRef={fileInputRef}
               onFileChange={handleFileChange}
               onRemoveImage={handleRemoveImage}
-            />
-
-            <VideoSection
+              onSetThumbnail={handleSetThumbnail}
               video={formData.video}
               uploadedVideoUrl={formData.uploadedVideoUrl}
-              isUploading={uploading}
               onVideoChange={handleVideoChange}
               onRemoveVideo={handleRemoveVideo}
             />
