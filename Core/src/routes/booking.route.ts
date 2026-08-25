@@ -10,6 +10,7 @@ import {
   getActiveBookingController,
   getBookingTimelineController,
   getAttentionCountController,
+  markEventsReadController,
 } from '../controllers/booking.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
@@ -23,6 +24,7 @@ router.use(authMiddleware);
 
 router.get('/timeline', getBookingTimelineController);
 router.get('/attention-count', getAttentionCountController);
+router.post('/events/read', markEventsReadController);
 router.get('/active/:serviceId', getActiveBookingController);
 router.get('/conversation/:conversationId', getBookingController);
 router.post('/conversation/:conversationId/quote', quoteBookingController);

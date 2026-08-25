@@ -326,30 +326,45 @@ export const bookingService = {
         message: e.message,
         createdAt: e.createdAt,
         byMe: e.actorId === userId,
+        // Only the other party's actions can be "unread" - your own are not news.
+        unread: e.actorId !== userId && e.readAt === null,
       });
     }
 
     return Array.from(byBooking.values()).map((b) => ({
       ...b,
+      unreadCount: b.events.filter((e: { unread: boolean }) => e.unread).length,
       events: [...b.events].reverse(), // oldest -> newest within a booking
     }));
   },
 
   /**
-   * How many bookings are waiting on this user to do something. Mirrors the
-   * transition rules: the provider owes a quote on INQUIRY and completion on
-   * PAID; the customer owes an acceptance on QUOTED and payment on ACCEPTED.
+   * Unread booking actions taken by the *other* party. This is what the bell
+   * badge shows: it counts news, so marking read clears it, unlike a count of
+   * still-open bookings (which is state and would never go away).
    */
-  async countAwaitingAction(userId: string) {
-    const [asCustomer, asProvider] = await Promise.all([
-      prisma.booking.count({
-        where: { customerId: userId, status: { in: ['QUOTED', 'ACCEPTED'] } },
-      }),
-      prisma.booking.count({
-        where: { provider: { userId }, status: { in: ['INQUIRY', 'PAID'] } },
-      }),
-    ]);
-    return asCustomer + asProvider;
+  async countUnreadEvents(userId: string) {
+    return prisma.bookingEvent.count({
+      where: {
+        readAt: null,
+        actorId: { not: userId },
+        OR: [{ customerId: userId }, { providerUserId: userId }],
+      },
+    });
+  },
+
+  /** Marks the other party's actions as seen — all of them, or one booking's. */
+  async markEventsRead(userId: string, bookingId?: string) {
+    const result = await prisma.bookingEvent.updateMany({
+      where: {
+        readAt: null,
+        actorId: { not: userId },
+        OR: [{ customerId: userId }, { providerUserId: userId }],
+        ...(bookingId ? { bookingId } : {}),
+      },
+      data: { readAt: new Date() },
+    });
+    return result.count;
   },
 
   /** Publicly visible upcoming schedule for a service (the booking queue). */

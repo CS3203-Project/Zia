@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarCheck } from 'lucide-react';
+import { CalendarCheck, CheckCheck } from 'lucide-react';
 import BookingTimeline from '../../components/Messaging/BookingTimeline';
-import { getBookingTimeline, type BookingTimelineEntry } from '../../api/bookingApi';
+import Button from '../../components/shared/Button';
+import {
+  getBookingTimeline,
+  markBookingEventsRead,
+  type BookingTimelineEntry,
+} from '../../api/bookingApi';
 import { useAuth } from '../../contexts/AuthContext';
 
 /**
@@ -34,6 +39,25 @@ const BookingActivityPage: React.FC = () => {
       alive = false;
     };
   }, [isLoggedIn]);
+
+  const unreadTotal = entries.reduce((sum, e) => sum + (e.unreadCount ?? 0), 0);
+
+  // Clear the badge for actions the other party took, and reflect it locally so
+  // the "New" markers disappear without a refetch.
+  const handleMarkAllRead = async () => {
+    try {
+      await markBookingEventsRead();
+      setEntries((prev) =>
+        prev.map((entry) => ({
+          ...entry,
+          unreadCount: 0,
+          events: entry.events.map((ev) => ({ ...ev, unread: false })),
+        }))
+      );
+    } catch {
+      // Non-blocking: the badge simply stays until the next load.
+    }
+  };
 
   const awaitingYou = entries.filter((e) => {
     const owner: Record<string, string> = {
@@ -69,6 +93,12 @@ const BookingActivityPage: React.FC = () => {
                   <div className="text-2xl font-bold text-orange-600">{awaitingYou}</div>
                   <div className="text-sm text-gray-500">Need you</div>
                 </div>
+                {unreadTotal > 0 && (
+                  <Button onClick={handleMarkAllRead} variant="outline" className="whitespace-nowrap">
+                    <CheckCheck className="mr-2 h-4 w-4" />
+                    Mark all as read
+                  </Button>
+                )}
               </div>
             )}
           </div>

@@ -190,10 +190,20 @@ export const getBookingTimelineController = async (req: Request, res: Response) 
   }
 };
 
-/** Count of bookings waiting on the caller — drives the notification bell badge. */
+/** Unread actions by the other party — drives the notification bell badge. */
 export const getAttentionCountController = async (req: Request, res: Response) => {
   try {
-    const count = await bookingService.countAwaitingAction(userIdOf(req));
+    const count = await bookingService.countUnreadEvents(userIdOf(req));
+    res.json({ success: true, data: { count } });
+  } catch (error) {
+    fail(res, error);
+  }
+};
+
+/** Marks the other party's booking actions as read (all, or one booking's). */
+export const markEventsReadController = async (req: Request, res: Response) => {
+  try {
+    const count = await bookingService.markEventsRead(userIdOf(req), req.body?.bookingId);
     res.json({ success: true, data: { count } });
   } catch (error) {
     fail(res, error);

@@ -97,6 +97,7 @@ export interface BookingTimelineEntry {
   service: { id: string; title: string | null; images: string[] };
   role: 'CUSTOMER' | 'PROVIDER';
   lastActivityAt: string;
+  unreadCount: number;
   events: Array<{
     id: string;
     event: string;
@@ -104,12 +105,19 @@ export interface BookingTimelineEntry {
     message: string;
     createdAt: string;
     byMe: boolean;
+    unread: boolean;
   }>;
 }
 
-/** How many bookings are waiting on the caller to act. Drives the bell badge. */
+/** Unread booking actions taken by the other party. Drives the bell badge. */
 export async function getBookingAttentionCount(): Promise<number> {
   const res = await apiClient.get('/bookings/attention-count');
+  return res.data?.data?.count ?? 0;
+}
+
+/** Marks the other party's booking actions as read — all, or one booking's. */
+export async function markBookingEventsRead(bookingId?: string): Promise<number> {
+  const res = await apiClient.post('/bookings/events/read', { bookingId });
   return res.data?.data?.count ?? 0;
 }
 

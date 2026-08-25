@@ -125,6 +125,11 @@ const BookingTimeline: React.FC<{ entries: BookingTimelineEntry[] }> = ({ entrie
                     {entry.service.title || 'Service booking'}
                   </h3>
                   <div className="flex flex-shrink-0 items-center gap-2">
+                    {entry.unreadCount > 0 && (
+                      <span className="rounded-full bg-rose-500 px-2 py-1 text-xs font-semibold text-white">
+                        {entry.unreadCount} new
+                      </span>
+                    )}
                     {myTurn && (
                       <span className="rounded-full bg-orange-600 px-2.5 py-1 text-xs font-semibold text-white">
                         Your turn
@@ -179,6 +184,11 @@ const BookingTimeline: React.FC<{ entries: BookingTimelineEntry[] }> = ({ entrie
                             <span className="rounded-full bg-orange-100 px-1.5 py-0.5 font-medium text-orange-700">
                               They
                             </span>
+                            {ev.unread && (
+                              <span className="rounded-full bg-rose-500 px-1.5 py-0.5 font-semibold text-white">
+                                New
+                              </span>
+                            )}
                             <span>{relative(ev.createdAt)}</span>
                           </>
                         )}

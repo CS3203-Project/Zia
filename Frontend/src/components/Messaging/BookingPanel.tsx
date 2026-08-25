@@ -3,7 +3,10 @@ import {
   CheckCircle, Clock, CreditCard, Banknote, AlertCircle, XCircle,
   CalendarClock, Loader2, Star, User as UserIcon, Navigation,
 } from 'lucide-react';
-import { bookingApi, BOOKING_STEPS, STATUS_META, type Booking, type BookingStatus } from '../../api/bookingApi';
+import {
+  bookingApi, markBookingEventsRead, BOOKING_STEPS, STATUS_META,
+  type Booking, type BookingStatus,
+} from '../../api/bookingApi';
 import { useConfirmationSocket } from '../../hooks/useConfirmationSocket';
 import { useAuth } from '../../contexts/AuthContext';
 import { PaymentModal } from '../Payment';
@@ -108,6 +111,9 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
         if (!alive) return;
         setBooking(b);
         syncForm(b);
+        // Opening the booking counts as seeing it, so the bell badge clears
+        // without the user hunting for a "mark as read" button.
+        markBookingEventsRead(b.id).catch(() => {});
       })
       .catch((e: unknown) => {
         if (!alive) return;

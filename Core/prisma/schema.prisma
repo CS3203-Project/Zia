@@ -213,6 +213,10 @@ model BookingEvent {
   actorId        String
   customerId     String
   providerUserId String
+  /// Set once the recipient (the participant who did NOT act) has seen this
+  /// event. Drives the unread badge, which must clear on "mark as read" - a
+  /// count of still-open bookings never would, since that is state, not news.
+  readAt         DateTime?
   createdAt      DateTime @default(now())
   booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
