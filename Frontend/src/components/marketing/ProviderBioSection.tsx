@@ -25,18 +25,16 @@ export default function ProviderBioSection({ sectionRef, bio, error, touched, on
 
       <div className="relative group">
         {/* Container */}
-        <div className="relative bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
+        <div className={`relative bg-gray-50 border rounded-2xl overflow-hidden transition-colors duration-200 ${
+          error && touched ? 'border-red-300' : 'border-gray-200'
+        }`}>
           <textarea
             value={bio || ''}
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
             placeholder="Share your story, experience, and what makes you unique. This helps customers understand your background and expertise..."
             rows={6}
-            className={`w-full px-6 py-4 bg-transparent border-0 rounded-2xl focus:ring-2 resize-none text-gray-900 placeholder-gray-400 transition-all duration-200 focus:outline-none ${
-              error && touched
-                ? 'focus:ring-red-500'
-                : 'focus:ring-orange-400'
-            }`}
+            className="w-full px-6 py-4 bg-transparent border-0 rounded-2xl focus:ring-2 focus:ring-orange-400 resize-none text-gray-900 placeholder-gray-400 transition-all duration-200 focus:outline-none"
             required
           />
           {/* Character counter */}
