@@ -13,6 +13,10 @@ interface ServiceBookingSidebarProps {
   onViewProviderProfile: () => void;
   onBookNow: () => void;
   bookingLoading: boolean;
+  /** Status of an in-flight booking for this service, if the viewer has one. */
+  activeBookingStatus?: string | null;
+  /** Whether the viewer has previously completed/cancelled a booking here. */
+  hasPastBooking?: boolean;
   qrCodeUrl: string;
   onDownloadQR: () => void;
   onShareService: () => void;
@@ -41,6 +45,8 @@ const ServiceBookingSidebar: React.FC<ServiceBookingSidebarProps> = ({
   onViewProviderProfile,
   onBookNow,
   bookingLoading,
+  activeBookingStatus,
+  hasPastBooking,
   qrCodeUrl,
   onDownloadQR,
   onShareService
@@ -81,8 +87,27 @@ const ServiceBookingSidebar: React.FC<ServiceBookingSidebarProps> = ({
               disabled={bookingLoading}
               className="w-full bg-orange-600 hover:bg-orange-700 text-white py-4 px-6 rounded-full font-bold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              {bookingLoading ? <BookingLoadingIndicator label="Creating conversation" /> : 'Book Now'}
+              {bookingLoading ? (
+                <BookingLoadingIndicator label={activeBookingStatus ? 'Opening booking' : 'Creating conversation'} />
+              ) : activeBookingStatus ? (
+                'Continue Booking'
+              ) : (
+                'Book Now'
+              )}
             </button>
+
+            {/* Make it obvious whether this reopens an in-flight booking or starts
+                a new request - the same service can be booked again once finished. */}
+            {activeBookingStatus && (
+              <p className="text-center text-xs text-gray-500">
+                You have a booking in progress ({activeBookingStatus.toLowerCase()}) — this reopens it.
+              </p>
+            )}
+            {hasPastBooking && !activeBookingStatus && (
+              <p className="text-center text-xs text-gray-500">
+                You&apos;ve booked this before — this starts a new request.
+              </p>
+            )}
 
             {whatsappUrl ? (
               <a

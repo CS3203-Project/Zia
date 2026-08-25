@@ -10,6 +10,7 @@ import ConversationListSkeleton from '../../components/Messaging/ConversationLis
 import EmptyConversationsState from '../../components/Messaging/EmptyConversationsState';
 import ConversationHubError from '../../components/Messaging/ConversationHubError';
 import ConversationHubPageSkeleton from '../../components/Messaging/ConversationHubPageSkeleton';
+import PageHeader from '../../components/shared/PageHeader';
 import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
 
@@ -122,17 +123,10 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
       <main className="container mx-auto mt-16 flex-grow px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8 text-center">
-            <div className="relative inline-block">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent mb-4">
-                Conversation Hub
-              </h1>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full"></div>
-            </div>
-            <p className="text-gray-500 mt-6 text-lg max-w-2xl mx-auto">
-              Connect, communicate, and collaborate with your network in a seamless messaging experience
-            </p>
-          </div>
+          <PageHeader
+            title="Conversation Hub"
+            subtitle="Connect, communicate, and collaborate with your network in a seamless messaging experience"
+          />
 
           {/* Actions */}
           <div className="mb-8 flex justify-center">

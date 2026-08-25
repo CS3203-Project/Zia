@@ -9,7 +9,7 @@ import { serviceApi, type ServiceResponse } from '../../api/serviceApi';
 import { serviceReviewApi, type ServiceReview, type ReviewStats } from '../../api/serviceReviewApi';
 import { userApi, type ProviderProfile } from '../../api/userApi';
 import { messagingApi } from '../../api/messagingApi';
-import { bookingApi } from '../../api/bookingApi';
+import { bookingApi, getBookingTimeline } from '../../api/bookingApi';
 import { debugMessagingState } from '../../utils/messagingDebug';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../../components/services/Breadcrumb';
@@ -101,6 +101,11 @@ const ServiceDetailPage: React.FC = () => {
   // Schedule state
   const [currentSchedules, setCurrentSchedules] = useState<{ startTime: string; endTime: string }[]>([]);
   const [scheduleLoading, setScheduleLoading] = useState(false);
+
+  // Whether this viewer already has a booking here, so the CTA can say whether it
+  // reopens that thread or starts a fresh request.
+  const [activeBookingStatus, setActiveBookingStatus] = useState<string | null>(null);
+  const [hasPastBooking, setHasPastBooking] = useState(false);
 
   // Auto-slide effect for images only (video is now separate)
   useEffect(() => {
@@ -286,6 +291,39 @@ const ServiceDetailPage: React.FC = () => {
       fetchServiceReviews(service.id);
     }
   }, [service?.id]);
+
+  // Look up any booking this viewer already has for the service.
+  useEffect(() => {
+    if (!service?.id || !isLoggedIn) {
+      setActiveBookingStatus(null);
+      setHasPastBooking(false);
+      return;
+    }
+
+    let alive = true;
+    (async () => {
+      try {
+        const [active, timeline] = await Promise.all([
+          bookingApi.findActive(service.id),
+          getBookingTimeline().catch(() => []),
+        ]);
+        if (!alive) return;
+        setActiveBookingStatus(active?.status ?? null);
+        setHasPastBooking(
+          timeline.some((t) => t.service?.id === service.id && !active)
+        );
+      } catch {
+        if (alive) {
+          setActiveBookingStatus(null);
+          setHasPastBooking(false);
+        }
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [service?.id, isLoggedIn]);
 
   useEffect(() => {
     const fetchService = async () => {
@@ -872,6 +910,8 @@ const ServiceDetailPage: React.FC = () => {
               onViewProviderProfile={handleViewProviderProfile}
               onBookNow={handleBookNow}
               bookingLoading={bookingLoading}
+              activeBookingStatus={activeBookingStatus}
+              hasPastBooking={hasPastBooking}
               qrCodeUrl={qrCodeUrl}
               onDownloadQR={handleDownloadQR}
               onShareService={handleShareService}

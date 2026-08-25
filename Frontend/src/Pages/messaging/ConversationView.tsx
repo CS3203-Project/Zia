@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { MessagingProvider, MessageThread, useMessaging } from '../../components/Messaging';
 import { userApi } from '../../api/userApi';
 import { serviceApi } from '../../api/serviceApi';
@@ -68,7 +68,12 @@ const ConversationViewInner: React.FC<{
   const [ratingType, setRatingType] = useState<'customer' | 'service'>('customer');
   const [serviceData, setServiceData] = useState<any>(null);
   const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
-  const [isChatVisibleOnMobile, setIsChatVisibleOnMobile] = useState(true); // Default to showing chat on mobile
+  // `?view=booking` opens straight onto the booking panel — used by notification
+  // links, so tapping "Quote sent" lands on the quote rather than the chat tab.
+  const [searchParams] = useSearchParams();
+  const [isChatVisibleOnMobile, setIsChatVisibleOnMobile] = useState(
+    searchParams.get('view') !== 'booking'
+  );
 
   // Resolve the conversation named in the URL, exactly once per id.
   //

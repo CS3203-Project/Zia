@@ -6,6 +6,7 @@ import { clearMessages } from '../../utils/messageDB';
 import { Link, useLocation } from 'react-router-dom';
 import { categoriesData } from '../../data/servicesData';
 import { useNotifications } from '../../hooks/useNotifications';
+import { getBookingAttentionCount } from '../../api/bookingApi';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -20,6 +21,27 @@ const Navbar = () => {
 
   // Use notifications hook for unread count
   const { stats } = useNotifications();
+
+  // Bookings waiting on this user. Counted alongside unread notifications so the
+  // bell reflects booking actions the other party has taken — the notification
+  // table alone stays empty for booking activity.
+  const [awaitingAction, setAwaitingAction] = useState(0);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setAwaitingAction(0);
+      return;
+    }
+    let alive = true;
+    getBookingAttentionCount()
+      .then((count) => alive && setAwaitingAction(count))
+      .catch(() => alive && setAwaitingAction(0));
+    return () => {
+      alive = false;
+    };
+  }, [isLoggedIn, location.pathname]);
+
+  const alertCount = (stats?.unread ?? 0) + awaitingAction;
 
   // Helper function to check if a route is active
   const isActiveRoute = (href: string) => {
@@ -77,7 +99,12 @@ const Navbar = () => {
 
   const navLinks = [
     ...(user?.role !== 'PROVIDER' ? [{ name: 'Become a Provider', href: "/become-provider" }] : []),
-    ...(isLoggedIn ? [{ name: 'Messages', href: "/conversation-hub" }] : [])
+    ...(isLoggedIn
+      ? [
+          { name: 'Messages', href: '/conversation-hub' },
+          { name: 'Bookings', href: '/bookings' },
+        ]
+      : [])
   ];
 
   return (
@@ -217,9 +244,9 @@ const Navbar = () => {
                   className="flex items-center justify-center p-2 rounded-full hover:bg-orange-50 transition-all duration-200 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2"
                 >
                   <Bell className="h-4 w-4 text-gray-600" />
-                  {stats && stats.unread > 0 && (
+                  {alertCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 bg-orange-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                      {stats.unread > 99 ? '99+' : stats.unread}
+                      {alertCount > 99 ? '99+' : alertCount}
                     </span>
                   )}
                 </Link>

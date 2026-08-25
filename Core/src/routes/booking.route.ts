@@ -9,6 +9,7 @@ import {
   getServiceQueueController,
   getActiveBookingController,
   getBookingTimelineController,
+  getAttentionCountController,
 } from '../controllers/booking.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
@@ -21,6 +22,7 @@ router.get('/service/:serviceId/queue', getServiceQueueController);
 router.use(authMiddleware);
 
 router.get('/timeline', getBookingTimelineController);
+router.get('/attention-count', getAttentionCountController);
 router.get('/active/:serviceId', getActiveBookingController);
 router.get('/conversation/:conversationId', getBookingController);
 router.post('/conversation/:conversationId/quote', quoteBookingController);

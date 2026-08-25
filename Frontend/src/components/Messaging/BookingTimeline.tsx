@@ -75,10 +75,31 @@ const BookingTimeline: React.FC<{ entries: BookingTimelineEntry[] }> = ({ entrie
     );
   }
 
+  // Bookings waiting on this user float to the top; the rest stay newest-first.
+  const ordered = [...entries].sort((a, b) => {
+    const turn = (e: BookingTimelineEntry) =>
+      ({ INQUIRY: 'PROVIDER', QUOTED: 'CUSTOMER', ACCEPTED: 'CUSTOMER', PAID: 'PROVIDER' } as Record<string, string>)[
+        e.status
+      ] === e.role;
+    if (turn(a) !== turn(b)) return turn(a) ? -1 : 1;
+    return new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime();
+  });
+
   return (
     <div className="space-y-4">
-      {entries.map((entry) => {
+      {ordered.map((entry) => {
         const meta = STATUS_META[entry.status];
+
+        // Whose move it is at each stage — mirrors the server-side transition
+        // rules, so the badge can't tell you to act when the API would refuse.
+        const owner: Partial<Record<BookingStatus, 'CUSTOMER' | 'PROVIDER'>> = {
+          INQUIRY: 'PROVIDER',
+          QUOTED: 'CUSTOMER',
+          ACCEPTED: 'CUSTOMER',
+          PAID: 'PROVIDER',
+        };
+        const myTurn = owner[entry.status] === entry.role;
+
         return (
           <div
             key={entry.bookingId}
@@ -103,11 +124,18 @@ const BookingTimeline: React.FC<{ entries: BookingTimelineEntry[] }> = ({ entrie
                   <h3 className="font-semibold text-gray-900 truncate">
                     {entry.service.title || 'Service booking'}
                   </h3>
-                  <span
-                    className={`flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border ${toneClasses[meta.tone]}`}
-                  >
-                    {meta.label}
-                  </span>
+                  <div className="flex flex-shrink-0 items-center gap-2">
+                    {myTurn && (
+                      <span className="rounded-full bg-orange-600 px-2.5 py-1 text-xs font-semibold text-white">
+                        Your turn
+                      </span>
+                    )}
+                    <span
+                      className={`text-xs font-medium px-2.5 py-1 rounded-full border ${toneClasses[meta.tone]}`}
+                    >
+                      {meta.label}
+                    </span>
+                  </div>
                 </div>
                 <p className="text-xs text-gray-500 mt-0.5">
                   {entry.role === 'PROVIDER' ? 'You are the provider' : 'You are the customer'}
@@ -119,7 +147,8 @@ const BookingTimeline: React.FC<{ entries: BookingTimelineEntry[] }> = ({ entrie
               </div>
             </div>
 
-            {/* Event timeline */}
+            {/* Event timeline. Each action links into the booking panel, so tapping
+                "Quote sent" takes you to the quote you need to act on. */}
             <ol className="p-5 space-y-0">
               {entry.events.map((ev, i) => {
                 const isLast = i === entry.events.length - 1;
@@ -133,22 +162,38 @@ const BookingTimeline: React.FC<{ entries: BookingTimelineEntry[] }> = ({ entrie
                       />
                       {!isLast && <span className="w-px flex-1 bg-gray-200 my-1" />}
                     </div>
-                    <div className={`flex-1 ${isLast ? 'pb-0' : 'pb-4'}`}>
-                      <p className="text-sm text-gray-900">{ev.message}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">
-                        {ev.byMe ? 'You' : 'They'} · {relative(ev.createdAt)}
+                    <Link
+                      to={`/conversation/${entry.conversationId}?view=booking`}
+                      className={`group flex-1 -my-0.5 rounded-lg px-2 py-1 transition-colors hover:bg-orange-50 ${
+                        isLast ? 'mb-0' : 'mb-3'
+                      }`}
+                    >
+                      <p className="text-sm text-gray-900 group-hover:text-orange-800">
+                        {ev.message}
                       </p>
-                    </div>
+                      <p className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-400">
+                        {ev.byMe ? (
+                          <span>You · {relative(ev.createdAt)}</span>
+                        ) : (
+                          <>
+                            <span className="rounded-full bg-orange-100 px-1.5 py-0.5 font-medium text-orange-700">
+                              They
+                            </span>
+                            <span>{relative(ev.createdAt)}</span>
+                          </>
+                        )}
+                      </p>
+                    </Link>
                   </li>
                 );
               })}
             </ol>
 
             <Link
-              to={`/conversation/${entry.conversationId}`}
+              to={`/conversation/${entry.conversationId}?view=booking`}
               className="flex items-center justify-between px-5 py-3 bg-gray-50 border-t border-gray-100 text-sm font-medium text-orange-700 hover:bg-orange-50 transition-colors"
             >
-              Open conversation
+              Open booking
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

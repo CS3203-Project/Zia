@@ -5,6 +5,7 @@ import { categoryApi, type Category } from '../../api/categoryApi';
 import { hybridSearchApi, type HybridSearchResult, type LocationParams } from '../../api/hybridSearchApi';
 import { serviceApi } from '../../api/serviceApi';
 import LocationPickerAdvanced from '../../components/shared/LocationPickerAdvanced';
+import PageHeader from '../../components/shared/PageHeader';
 import BrowseServicesLoadingSkeleton from '../../components/services/BrowseServicesLoadingSkeleton';
 import SearchResultServiceCard from '../../components/services/SearchResultServiceCard';
 import SearchResultCardSkeleton from '../../components/services/SearchResultCardSkeleton';
@@ -375,16 +376,16 @@ const BrowseServices: React.FC = () => {
       <div className="relative z-10 flex flex-col min-h-screen">
         <main className="flex-1 container mx-auto px-4 py-8 sm:px-6 lg:px-8">
           {/* Header Section */}
-          <div className="text-center mb-12 pt-20">
-            <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-4">
-              {getSearchTypeLabel()}
-            </h1>
-            <p className="text-lg text-gray-500">
-              {state.isHybridSearchActive
-                ? `Found ${state.hybridSearchResults.length} matching services`
-                : 'Discover amazing services from verified providers'
+          <div className="mb-12 pt-20">
+            <PageHeader
+              className="mb-0"
+              title={getSearchTypeLabel()}
+              subtitle={
+                state.isHybridSearchActive
+                  ? `Found ${state.hybridSearchResults.length} matching services`
+                  : 'Discover amazing services from verified providers'
               }
-            </p>
+            />
             {/* Add search message notification */}
             {state.searchMessage && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">

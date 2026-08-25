@@ -1,4 +1,5 @@
 import { ArrowLeft, Star, Shield, Clock } from 'lucide-react';
+import PageHeader from '../shared/PageHeader';
 
 interface BecomeProviderHeroProps {
   onBack: () => void;
@@ -17,14 +18,12 @@ export default function BecomeProviderHero({ onBack }: BecomeProviderHeroProps) 
         </button>
 
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              Become a Service Provider
-            </h1>
-            <p className="text-base text-gray-500 max-w-xl">
-              Create your provider profile to start listing services and earning on the platform.
-            </p>
-          </div>
+          <PageHeader
+            align="left"
+            className="mb-0"
+            title="Become a Service Provider"
+            subtitle="Create your provider profile to start listing services and earning on the platform."
+          />
 
           {/* Benefits strip */}
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600">

@@ -107,6 +107,12 @@ export interface BookingTimelineEntry {
   }>;
 }
 
+/** How many bookings are waiting on the caller to act. Drives the bell badge. */
+export async function getBookingAttentionCount(): Promise<number> {
+  const res = await apiClient.get('/bookings/attention-count');
+  return res.data?.data?.count ?? 0;
+}
+
 /** The caller's booking activity, grouped per booking, newest booking first. */
 export async function getBookingTimeline(): Promise<BookingTimelineEntry[]> {
   const res = await apiClient.get('/bookings/timeline');

@@ -190,6 +190,16 @@ export const getBookingTimelineController = async (req: Request, res: Response) 
   }
 };
 
+/** Count of bookings waiting on the caller — drives the notification bell badge. */
+export const getAttentionCountController = async (req: Request, res: Response) => {
+  try {
+    const count = await bookingService.countAwaitingAction(userIdOf(req));
+    res.json({ success: true, data: { count } });
+  } catch (error) {
+    fail(res, error);
+  }
+};
+
 /** Public: upcoming confirmed bookings for a service. */
 export const getServiceQueueController = async (req: Request, res: Response) => {
   try {

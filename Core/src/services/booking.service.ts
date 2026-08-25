@@ -335,6 +335,23 @@ export const bookingService = {
     }));
   },
 
+  /**
+   * How many bookings are waiting on this user to do something. Mirrors the
+   * transition rules: the provider owes a quote on INQUIRY and completion on
+   * PAID; the customer owes an acceptance on QUOTED and payment on ACCEPTED.
+   */
+  async countAwaitingAction(userId: string) {
+    const [asCustomer, asProvider] = await Promise.all([
+      prisma.booking.count({
+        where: { customerId: userId, status: { in: ['QUOTED', 'ACCEPTED'] } },
+      }),
+      prisma.booking.count({
+        where: { provider: { userId }, status: { in: ['INQUIRY', 'PAID'] } },
+      }),
+    ]);
+    return asCustomer + asProvider;
+  },
+
   /** Publicly visible upcoming schedule for a service (the booking queue). */
   async getServiceQueue(serviceId: string) {
     return prisma.booking.findMany({
