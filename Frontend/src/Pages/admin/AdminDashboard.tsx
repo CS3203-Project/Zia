@@ -255,39 +255,35 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100">
+      <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between min-h-16 py-3 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 mt-0.5">
                 Welcome back, {adminProfile?.firstName || 'Admin'}
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50 hover:border-red-200"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
               </Button>
-              <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
-                <span className="text-white text-sm font-medium">
+              <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center ring-4 ring-orange-50 flex-shrink-0">
+                <span className="text-white text-sm font-semibold">
                   {adminProfile?.firstName?.[0] || 'A'}
                 </span>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="border-b border-gray-200 bg-white overflow-x-auto">
-          <nav className="-mb-px flex space-x-8 w-max min-w-full" aria-label="Tabs">
+          {/* Navigation Tabs */}
+          <nav className="flex items-center gap-1 overflow-x-auto pb-3 -mx-1 px-1" aria-label="Tabs">
             {[
               { id: 'overview', label: 'Overview', icon: TrendingUp },
               { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, icon: UserCheck },
@@ -298,9 +294,9 @@ const AdminDashboard: React.FC = () => {
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`${
                   activeTab === tab.id
-                    ? 'border-orange-600 text-gray-900'
-                    : 'border-transparent text-gray-400 hover:text-gray-600 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center transition-colors`}
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                } whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-full font-medium text-sm flex items-center transition-colors`}
               >
                 <tab.icon className="w-4 h-4 mr-2" />
                 {tab.label}
