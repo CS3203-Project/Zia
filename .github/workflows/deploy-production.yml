@@ -137,6 +137,19 @@ jobs:
             # every deploy leaves another full set behind.
             docker image prune -af --filter "until=72h" || true
 
+            # Seed service categories. seed.ts compiles to dist/prisma/seed.js,
+            # so this runs on plain node with no dev dependencies. Every write is
+            # an upsert, so re-running on each deploy is harmless — and it only
+            # creates categories, never demo users or listings.
+            echo "seeding categories..."
+            for i in $(seq 1 20); do
+              if docker compose -f docker-compose.prod.yml exec -T core node dist/prisma/seed.js; then
+                break
+              fi
+              echo "  core not ready yet, retrying..."
+              sleep 5
+            done
+
             docker compose -f docker-compose.prod.yml ps
 
       - name: Smoke test
