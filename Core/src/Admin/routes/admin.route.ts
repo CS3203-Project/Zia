@@ -5,6 +5,7 @@ import { validateAdminLogin, validateAdminRegistration, validateAdminUpdate, val
 import { scheduledJobsController } from '../../controllers/scheduled-jobs.controller.js';
 import validate from '../../middlewares/validation.middleware.js';
 import { createCategorySchema, updateCategorySchema, categoryIdSchema } from '../../validators/category.validator.js';
+import { getSettingsController, updateSettingsController } from '../../controllers/settings.controller.js';
 
 const router: ExpressRouter = Router();
 
@@ -16,6 +17,8 @@ router.post('/login', validateAdminLogin, adminController.login);
 router.get('/profile', adminAuthMiddleware, adminController.getProfile);
 router.put('/profile', adminAuthMiddleware, validateAdminUpdate, adminController.updateProfile);
 router.get('/all', adminAuthMiddleware, adminController.getAllAdmins);
+router.get('/settings', adminAuthMiddleware, getSettingsController);
+router.put('/settings', adminAuthMiddleware, updateSettingsController);
 router.get('/service-providers', adminAuthMiddleware, adminController.getAllServiceProviders);
 router.get('/services', adminAuthMiddleware, adminController.getAllServicesWithCategories);
 router.get('/customers/count', adminAuthMiddleware, adminController.getCustomerCount);

@@ -12,7 +12,8 @@ import {
   Clock,
   ExternalLink,
   LogOut,
-  FolderTree
+  FolderTree,
+  SlidersHorizontal
 } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import AnalyticsDashboard from '../../components/shared/AnalyticsDashboard';
@@ -23,6 +24,7 @@ import ProviderCard from '../../components/admin/ProviderCard';
 import ProviderDetailsModal from '../../components/admin/ProviderDetailsModal';
 import AdminProfileSection from '../../components/admin/AdminProfileSection';
 import CategoryManagementSection from '../../components/admin/CategoryManagementSection';
+import PlatformSettingsSection from '../../components/admin/PlatformSettingsSection';
 import { adminApi, type ServiceProvider, type AdminProfile } from '../../api/adminApi';
 import { showSuccessToast, showErrorToast } from '../../utils/toastUtils';
 
@@ -35,7 +37,7 @@ const AdminDashboard: React.FC = () => {
   const [isReportGeneratorOpen, setIsReportGeneratorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'providers' | 'categories' | 'profile'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'providers' | 'categories' | 'settings' | 'profile'>('overview');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [providerToApprove, setProviderToApprove] = useState<ServiceProvider | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -290,6 +292,7 @@ const AdminDashboard: React.FC = () => {
               { id: 'overview', label: 'Overview', icon: TrendingUp },
               { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, icon: UserCheck },
               { id: 'categories', label: 'Categories', icon: FolderTree },
+              { id: 'settings', label: 'Platform Settings', icon: SlidersHorizontal },
               { id: 'profile', label: 'Admin Profile', icon: Settings },
             ].map((tab) => (
               <button
@@ -585,6 +588,8 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {/* Admin Profile Tab */}
+        {activeTab === 'settings' && <PlatformSettingsSection />}
+
         {activeTab === 'profile' && (
           <div className="space-y-6">
             <div>

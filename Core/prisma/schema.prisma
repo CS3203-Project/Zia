@@ -232,6 +232,18 @@ model BookingEvent {
   @@index([bookingId, createdAt])
 }
 
+/// Admin-editable platform configuration.
+///
+/// Key/value rather than a column per setting: values are typed and defaulted in
+/// the settings service, so adding a knob doesn't need a migration, while the
+/// admin UI still gets proper types.
+model PlatformSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
 enum BookingStatus {
   INQUIRY
   QUOTED

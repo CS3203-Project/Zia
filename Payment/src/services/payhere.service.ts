@@ -98,8 +98,9 @@ class PayHereService {
         throw new Error('Service not found');
       }
 
-      const platformFeePercentage = 0.05;
-      const platformFee = Math.round(amount * platformFeePercentage);
+      // Commission comes from admin settings rather than a constant, so it can
+      // be changed without a deploy and can't drift between call sites.
+      const platformFee = Math.round(amount * (await coreClient.getPlatformFeeRate()));
       const providerAmount = amount - platformFee;
 
       const payment = await prisma.payment.create({
@@ -252,7 +253,7 @@ class PayHereService {
     });
     if (existing) return existing;
 
-    const platformFee = Math.round(input.amount * 0.05);
+    const platformFee = Math.round(input.amount * (await coreClient.getPlatformFeeRate()));
     const providerAmount = input.amount - platformFee;
 
     const payment = await prisma.payment.create({

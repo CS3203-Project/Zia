@@ -7,6 +7,7 @@ import {
   resetPasswordController,
 } from '../controllers/account.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
+import { getPublicSettingsController } from '../controllers/settings.controller.js';
 
 const router: Router = Router();
 
@@ -23,6 +24,10 @@ const sensitiveLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: 'Too many attempts. Please try again shortly.' },
 });
+
+// Public platform limits the client needs to enforce before uploading. Not
+// secret - the server re-checks everything - and unauthenticated pages use them.
+router.get('/settings', getPublicSettingsController);
 
 router.post('/forgot-password', sensitiveLimiter, forgotPasswordController);
 router.post('/reset-password', sensitiveLimiter, resetPasswordController);

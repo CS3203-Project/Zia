@@ -66,6 +66,36 @@ class CoreClient {
   }
 
   /**
+   * Platform settings, cached briefly so pricing a checkout doesn't depend on a
+   * round trip per request. A short TTL is fine: a commission change taking up
+   * to a minute to apply is acceptable, and falling back to the last known value
+   * keeps checkout working if Core is briefly unreachable.
+   */
+  private settingsCache: { value: Record<string, unknown>; expiresAt: number } | null = null;
+
+  async getSettings(): Promise<Record<string, unknown>> {
+    if (this.settingsCache && this.settingsCache.expiresAt > Date.now()) {
+      return this.settingsCache.value;
+    }
+
+    try {
+      const value = (await internalGet<Record<string, unknown>>('/internal/settings')) ?? {};
+      this.settingsCache = { value, expiresAt: Date.now() + 60_000 };
+      return value;
+    } catch (error) {
+      console.error('Failed to load platform settings, using last known values:', error);
+      return this.settingsCache?.value ?? {};
+    }
+  }
+
+  /** Platform commission as a fraction (0.05 == 5%). */
+  async getPlatformFeeRate(): Promise<number> {
+    const settings = await this.getSettings();
+    const percent = Number(settings.platformFeePercent);
+    return Number.isFinite(percent) ? percent / 100 : 0.05;
+  }
+
+  /**
    * Tells Core that an online payment settled, so the booking can move to PAID.
    * Without this the booking would stay ACCEPTED forever and the customer would
    * still be shown a Pay Now button after paying.

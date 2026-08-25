@@ -265,7 +265,31 @@ export interface AnalyticsData {
 }
 
 // Admin API functions
+/** One admin-editable platform setting, with its spec and current value. */
+export interface PlatformSetting {
+  key: string;
+  label: string;
+  description: string;
+  type: 'number' | 'boolean';
+  default: number | boolean;
+  min?: number;
+  max?: number;
+  unit?: string;
+  group: 'fees' | 'limits';
+  value: number | boolean;
+}
+
 export const adminApi = {
+  /** Platform settings: commission, upload limits, verification requirement. */
+  getSettings: async (): Promise<PlatformSetting[]> => {
+    const response = await apiClient.get<ApiResponse<PlatformSetting[]>>('/admin/settings');
+    return response.data.data;
+  },
+
+  updateSettings: async (values: Record<string, number | boolean>): Promise<void> => {
+    await apiClient.put('/admin/settings', values);
+  },
+
   // Admin login
   login: async (credentials: AdminLoginRequest): Promise<ApiResponse<AdminLoginResponse>> => {
     try {

@@ -1,6 +1,7 @@
 import { prisma } from '../utils/database.js';
 import chatClient from './chatClient.service.js';
 import { recordCashPayment } from './paymentClient.service.js';
+import settingsService from './settings.service.js';
 
 export type BookingStatus = 'INQUIRY' | 'QUOTED' | 'ACCEPTED' | 'PAID' | 'COMPLETED' | 'CANCELLED';
 export type Actor = 'CUSTOMER' | 'PROVIDER';
@@ -202,6 +203,10 @@ export const bookingService = {
   async markCashPaid(conversationId: string, userId: string) {
     const booking = await this.requireBooking(conversationId);
     assertTransition('MARK_CASH_PAID', booking, userId);
+
+    if (!(await settingsService.get<boolean>('allowCashPayments'))) {
+      throw new BookingError('Cash payments are currently disabled on this platform', 403);
+    }
 
     const updated = await prisma.booking.update({
       where: { conversationId },

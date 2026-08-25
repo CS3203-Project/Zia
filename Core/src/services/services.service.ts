@@ -1,6 +1,7 @@
 import { prisma } from '../utils/database.js';
 import { embeddingService } from './embedding.service.js';
 import chatClient from './chatClient.service.js';
+import settingsService from './settings.service.js';
 
 /**
  * Generates and stores a service's embeddings. Deliberately fire-and-forget at every
@@ -90,6 +91,23 @@ interface LocationSearchOptions {
  */
 export const createService = async (serviceData: ServiceCreateData) => {
   try {
+    // When the platform requires verified providers, admin verification finally
+    // means something: an unverified provider can't publish a listing at all.
+    // Previously the flag existed but nothing checked it anywhere.
+    if (await settingsService.get<boolean>('requireProviderVerification')) {
+      const provider = await prisma.serviceProvider.findUnique({
+        where: { id: serviceData.providerId },
+        select: { isVerified: true },
+      });
+      if (!provider?.isVerified) {
+        const err = new Error(
+          'Your provider account is awaiting verification. You can publish services once an admin approves it.'
+        ) as Error & { status?: number };
+        err.status = 403;
+        throw err;
+      }
+    }
+
     const {
       providerId,
       categoryId,
