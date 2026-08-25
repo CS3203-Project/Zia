@@ -12,6 +12,9 @@ interface EditProviderModalProps {
   provider: ProviderProfile;
 }
 
+const inputClass =
+  'w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors hover:border-gray-300';
+
 export default function EditProviderModal({ isOpen, onClose, onSuccess, provider }: EditProviderModalProps) {
   const [formData, setFormData] = useState<UpdateProviderData>({});
   const [loading, setLoading] = useState(false);
@@ -84,22 +87,17 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
   };
 
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden border border-gray-100">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 pt-24 sm:pt-4 overflow-y-auto">
+      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden border border-gray-100 my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
-              <FileText className="h-5 w-5 text-orange-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Edit Provider Profile</h2>
-              <p className="text-sm text-gray-500">Update your professional information</p>
-            </div>
+        <div className="flex items-start justify-between px-8 pt-8 pb-6 border-b border-gray-100 flex-shrink-0">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Edit Provider Profile</h2>
+            <p className="text-gray-500 mt-1">Update your professional information</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-400 hover:text-gray-600 group"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600 group"
             disabled={loading}
             title="Close modal"
           >
@@ -108,27 +106,23 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-180px)]">
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-8">
             {/* Bio Section */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-orange-600" />
-                </div>
-                <label className="text-sm font-medium text-gray-900">
-                  Professional Bio
-                </label>
-              </div>
+            <div className="space-y-3 pb-8 border-b border-gray-100">
+              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <FileText className="h-4 w-4 mr-2 text-orange-600" />
+                Professional Bio
+              </label>
               <textarea
                 value={formData.bio || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-400 transition-colors hover:border-gray-300"
+                className={`${inputClass} resize-none`}
                 rows={4}
                 placeholder="Tell potential clients about yourself, your experience, and what makes you unique..."
                 maxLength={1000}
               />
-              <div className="flex justify-between items-center mt-2">
+              <div className="flex justify-between items-center">
                 <p className="text-xs text-gray-400">
                   Share your story and professional journey
                 </p>
@@ -139,66 +133,54 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
             </div>
 
             {/* Logo URL Section */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <Camera className="h-4 w-4 text-orange-600" />
-                </div>
-                <label className="text-sm font-medium text-gray-900">
-                  Profile Image URL
-                </label>
-              </div>
+            <div className="space-y-3 pb-8 border-b border-gray-100">
+              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Camera className="h-4 w-4 mr-2 text-orange-600" />
+                Profile Image URL
+              </label>
               <input
                 type="url"
                 value={formData.logoUrl || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, logoUrl: e.target.value }))}
-                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-colors hover:border-gray-300"
+                className={inputClass}
                 placeholder="https://example.com/your-profile-image.jpg"
               />
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-gray-400">
                 Add a professional headshot or company logo
               </p>
             </div>
 
             {/* ID Card URL Section */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <Award className="h-4 w-4 text-orange-600" />
-                </div>
-                <label className="text-sm font-medium text-gray-900">
-                  ID Card/Document
-                  <span className="text-gray-400 font-normal ml-1">(Optional)</span>
-                </label>
-              </div>
+            <div className="space-y-3 pb-8 border-b border-gray-100">
+              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Award className="h-4 w-4 mr-2 text-orange-600" />
+                ID Card/Document
+                <span className="text-gray-400 font-normal normal-case tracking-normal ml-1">(Optional)</span>
+              </label>
               <input
                 type="text"
                 value={formData.IDCardUrl || ''}
                 onChange={(e) => setFormData(prev => ({ ...prev, IDCardUrl: e.target.value }))}
-                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-colors hover:border-gray-300"
+                className={inputClass}
                 placeholder="Enter image URL or text identifier for your ID document"
               />
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-gray-400">
                 Professional license or ID for verification purposes
               </p>
             </div>
 
             {/* Skills Section */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <Star className="h-4 w-4 text-orange-600" />
-                </div>
-                <label className="text-sm font-medium text-gray-900">
-                  Skills & Expertise
-                </label>
-              </div>
-              <div className="flex space-x-2 mb-4">
+            <div className="space-y-3 pb-8 border-b border-gray-100">
+              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Star className="h-4 w-4 mr-2 text-orange-600" />
+                Skills & Expertise
+              </label>
+              <div className="flex space-x-2">
                 <input
                   type="text"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
-                  className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-colors hover:border-gray-300"
+                  className={`flex-1 ${inputClass}`}
                   placeholder="Enter a skill (e.g., React.js, Photography, etc.)"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
                 />
@@ -238,21 +220,17 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
             </div>
 
             {/* Qualifications Section */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <Award className="h-4 w-4 text-orange-600" />
-                </div>
-                <label className="text-sm font-medium text-gray-900">
-                  Qualifications & Certifications
-                </label>
-              </div>
-              <div className="flex space-x-2 mb-4">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Award className="h-4 w-4 mr-2 text-orange-600" />
+                Qualifications & Certifications
+              </label>
+              <div className="flex space-x-2">
                 <input
                   type="text"
                   value={newQualification}
                   onChange={(e) => setNewQualification(e.target.value)}
-                  className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-colors hover:border-gray-300"
+                  className={`flex-1 ${inputClass}`}
                   placeholder="Enter a qualification (e.g., Bachelor's in Computer Science)"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addQualification())}
                 />
@@ -299,7 +277,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-gray-100 bg-gray-50">
+        <div className="flex items-center justify-between px-8 py-6 border-t border-gray-100 bg-gray-50 flex-shrink-0">
           <p className="text-xs text-gray-400">
             All changes are saved automatically
           </p>

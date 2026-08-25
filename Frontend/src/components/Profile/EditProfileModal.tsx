@@ -12,6 +12,9 @@ interface EditProfileModalProps {
   user: UserProfile;
 }
 
+const inputClass =
+  'w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors hover:border-gray-300';
+
 export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: EditProfileModalProps) {
   const [formData, setFormData] = useState<UpdateProfileData>({});
   const [loading, setLoading] = useState(false);
@@ -122,11 +125,14 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
   };
 
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white border border-gray-100 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[95vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 pt-24 sm:pt-4 overflow-y-auto">
+      <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0">
-          <h2 className="text-xl font-bold text-gray-900">Edit Profile</h2>
+        <div className="flex items-start justify-between px-8 pt-8 pb-6 border-b border-gray-100 flex-shrink-0">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Edit Profile</h2>
+            <p className="text-gray-500 mt-1">Keep your personal information up to date</p>
+          </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
@@ -137,12 +143,12 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(95vh - 200px)' }}>
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-8">
             {/* Personal Information */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <User className="h-5 w-5 mr-2 text-orange-600" />
+            <div className="space-y-4 pb-8 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <User className="h-4 w-4 mr-2 text-orange-600" />
                 Personal Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,7 +160,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                     type="text"
                     value={formData.firstName || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="Enter your first name"
                   />
                 </div>
@@ -167,7 +173,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                     type="text"
                     value={formData.lastName || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="Enter your last name"
                   />
                 </div>
@@ -175,31 +181,29 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
             </div>
 
             {/* Contact Information */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Phone className="h-5 w-5 mr-2 text-orange-600" />
+            <div className="space-y-4 pb-8 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Phone className="h-4 w-4 mr-2 text-orange-600" />
                 Contact Information
               </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone || ''}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
-                    placeholder="Enter your phone number"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phone || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className={inputClass}
+                  placeholder="Enter your phone number"
+                />
               </div>
             </div>
 
             {/* Location Information */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <MapPin className="h-5 w-5 mr-2 text-orange-600" />
+            <div className="space-y-4 pb-8 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <MapPin className="h-4 w-4 mr-2 text-orange-600" />
                 Location Information
               </h3>
               <div className="space-y-4">
@@ -211,7 +215,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                     type="text"
                     value={formData.location || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="Enter your city or location"
                   />
                 </div>
@@ -223,7 +227,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                   <textarea
                     value={formData.address || ''}
                     onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-400"
+                    className={`${inputClass} resize-none`}
                     rows={2}
                     placeholder="Enter your full address"
                   />
@@ -232,14 +236,14 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
             </div>
 
             {/* Profile Image */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <Image className="h-5 w-5 mr-2 text-orange-600" />
+            <div className="space-y-4 pb-8 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Image className="h-4 w-4 mr-2 text-orange-600" />
                 Profile Image
               </h3>
 
               {/* Current Image Display */}
-              <div className="mb-4">
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Current Profile Image
                 </label>
@@ -262,7 +266,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
               </div>
 
               {/* File Upload */}
-              <div className="mb-4">
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Upload New Image
                 </label>
@@ -277,7 +281,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors"
                   >
                     <Upload className="h-4 w-4 mr-2" />
                     Choose Image
@@ -307,7 +311,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                       }
                     }
                   }}
-                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                  className={inputClass}
                   placeholder="https://example.com/your-image.jpg"
                   disabled={!!selectedFile}
                 />
@@ -318,9 +322,9 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
             </div>
 
             {/* Social Media */}
-            <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                <Globe className="h-5 w-5 mr-2 text-orange-600" />
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide flex items-center">
+                <Globe className="h-4 w-4 mr-2 text-orange-600" />
                 Social Media
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -336,7 +340,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                       newSocial[0] = e.target.value.trim();
                       setFormData(prev => ({ ...prev, socialmedia: newSocial }));
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="twitter.com/username or x.com/username"
                   />
                 </div>
@@ -353,7 +357,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                       newSocial[1] = e.target.value.trim();
                       setFormData(prev => ({ ...prev, socialmedia: newSocial }));
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="linkedin.com/in/username"
                   />
                 </div>
@@ -370,7 +374,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                       newSocial[2] = e.target.value.trim();
                       setFormData(prev => ({ ...prev, socialmedia: newSocial }));
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="instagram.com/username"
                   />
                 </div>
@@ -387,7 +391,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                       newSocial[3] = e.target.value.trim();
                       setFormData(prev => ({ ...prev, socialmedia: newSocial }));
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="github.com/username"
                   />
                 </div>
@@ -404,12 +408,12 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                       newSocial[4] = e.target.value.trim();
                       setFormData(prev => ({ ...prev, socialmedia: newSocial }));
                     }}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-900 placeholder-gray-400"
+                    className={inputClass}
                     placeholder="https://yourwebsite.com"
                   />
                 </div>
 
-                <p className="text-xs text-gray-400 sm:col-span-2 bg-white rounded-lg p-3 border border-gray-100">
+                <p className="text-xs text-gray-400 sm:col-span-2">
                   Leave fields empty if you don't have accounts on these platforms.
                 </p>
               </div>
@@ -418,7 +422,7 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
         </div>
 
         {/* Footer - Always visible */}
-        <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+        <div className="flex items-center justify-end space-x-3 px-8 py-6 border-t border-gray-100 bg-gray-50 flex-shrink-0">
           <Button
             variant="outline"
             onClick={onClose}
