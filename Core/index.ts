@@ -54,6 +54,7 @@ import categoryRoutes from './src/routes/category.route.js';
 import adminRoutes from './src/Admin/routes/admin.route.js';
 import confirmationRoutes from './src/routes/confirmation.route.js';
 import bookingRoutes from './src/routes/booking.route.js';
+import accountRoutes from './src/routes/account.route.js';
 import reviewRoutes from './src/routes/review.route.js';
 import serviceReviewRoutes from './src/routes/serviceReview.route.js';
 import serviceRequestRoutes from './src/routes/serviceRequest.route.js';
@@ -135,6 +136,7 @@ app.use('/api/services', servicesRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/account', accountRoutes);
 // Superseded by /api/bookings - kept mounted so older clients don't hard-fail
 // mid-deploy, but the booking panel no longer calls it.
 app.use('/api/confirmations', confirmationRoutes);

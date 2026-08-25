@@ -1,5 +1,8 @@
-import { Shield, Phone, MapPin, Edit2, Trash2, Building } from 'lucide-react';
+import { useState } from 'react';
+import { Shield, ShieldAlert, Phone, MapPin, Edit2, Trash2, Building } from 'lucide-react';
+import toast from 'react-hot-toast';
 import Button from '../../shared/Button';
+import { accountApi } from '../../../api/accountApi';
 import type { UserProfile, ProviderProfile } from '../../../api/userApi';
 
 interface ProfileHeaderProps {
@@ -17,6 +20,19 @@ export default function ProfileHeader({
   onEditProvider,
   onDeleteProviderClick
 }: ProfileHeaderProps) {
+  const [resending, setResending] = useState(false);
+
+  const handleResendVerification = async () => {
+    setResending(true);
+    try {
+      toast.success(await accountApi.sendVerification());
+    } catch {
+      toast.error('Could not send the verification email. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden mb-8 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
       {/* Banner - Minimal Gradient */}
@@ -82,11 +98,24 @@ export default function ProfileHeader({
                   >
                     {user.role === 'PROVIDER' ? 'Service Provider' : 'User'}
                   </span>
-                  {user.isEmailVerified && (
+                  {user.isEmailVerified ? (
                     <span className="flex items-center text-gray-900 bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">
                       <Shield className="h-4 w-4 mr-1" />
                       <span className="text-sm font-medium">Verified</span>
                     </span>
+                  ) : (
+                    // Unverified accounts previously had no way forward at all -
+                    // nothing in the product could ever set isEmailVerified.
+                    <button
+                      onClick={handleResendVerification}
+                      disabled={resending}
+                      className="flex items-center rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-amber-800 transition-colors hover:bg-amber-100 disabled:opacity-60"
+                    >
+                      <ShieldAlert className="mr-1 h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        {resending ? 'Sending…' : 'Verify email'}
+                      </span>
+                    </button>
                   )}
                   {user.phone && (
                     <span className="flex items-center text-gray-900 bg-white/50 px-3 py-1 rounded-full border border-white/30 backdrop-blur-md shadow-[0_4px_16px_0_rgba(0,0,0,0.08)]">

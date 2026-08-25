@@ -74,6 +74,8 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
         'email.booking.reminder',
         'email.booking.modification',
         'email.message.review',
+        'email.account.verify',
+        'email.account.reset',
         'email.other'
       ];
 
@@ -226,7 +228,12 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
       case 'NEW_MESSAGE_OR_REVIEW':
         await this.sendMessageOrReviewEmails(data);
         break;
-      
+
+      case 'ACCOUNT_VERIFICATION':
+      case 'PASSWORD_RESET':
+        await this.sendAccountEmail(type, data);
+        break;
+
       default:
         console.warn(`Unknown email event type: ${type}`);
     }
@@ -351,6 +358,69 @@ export class QueueService implements OnModuleInit, OnModuleDestroy {
     } catch (error) {
       console.error('❌ Failed to send message/review notification email:', error);
     }
+  }
+
+  /**
+   * Verify-address and reset-password mails. One recipient, one time-limited
+   * link, and no booking context - so these don't fit the two-party templates.
+   */
+  private async sendAccountEmail(
+    type: 'ACCOUNT_VERIFICATION' | 'PASSWORD_RESET',
+    data: EmailEvent['data']
+  ): Promise<void> {
+    const isReset = type === 'PASSWORD_RESET';
+    const actionUrl = (data.metadata?.actionUrl as string) || '#';
+    const name = data.customerName || 'there';
+
+    try {
+      const record = await this.emailService.queueEmailRecord({
+        userId: undefined,
+        to: data.customerEmail,
+        subject: isReset ? 'Reset your Zia password' : 'Confirm your email address',
+        html: this.generateAccountHtml(isReset, name, actionUrl),
+        emailType: isReset ? EmailType.PASSWORD_RESET : EmailType.ACCOUNT_VERIFICATION,
+        createdAt: new Date(),
+      });
+
+      await this.emailService.sendAndUpdateSentAt(record.id);
+    } catch (error) {
+      console.error(`❌ Failed to send ${type} email:`, error);
+      throw error;
+    }
+  }
+
+  private generateAccountHtml(isReset: boolean, name: string, actionUrl: string): string {
+    const title = isReset ? 'Reset your password' : 'Confirm your email';
+    const lead = isReset
+      ? 'We received a request to reset your Zia password. Choose a new one using the button below.'
+      : 'Thanks for joining Zia. Confirm your email address to finish setting up your account.';
+    const cta = isReset ? 'Reset Password' : 'Verify Email';
+    const expiry = isReset ? 'This link expires in 1 hour.' : 'This link expires in 24 hours.';
+    const ignore = isReset
+      ? "If you didn't request this, you can ignore this email - your password won't change."
+      : "If you didn't create a Zia account, you can safely ignore this email.";
+
+    return `
+      <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); padding: 40px 20px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 26px;">${title}</h1>
+        </div>
+        <div style="padding: 40px 20px; background: white;">
+          <p style="font-size: 16px; margin-bottom: 20px;">Hi ${name},</p>
+          <p style="font-size: 16px; margin-bottom: 30px;">${lead}</p>
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="${actionUrl}" style="background: #ea580c; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">${cta}</a>
+          </div>
+          <p style="font-size: 13px; color: #666;">${expiry}</p>
+          <p style="font-size: 13px; color: #666;">If the button doesn't work, paste this into your browser:</p>
+          <p style="font-size: 12px; color: #999; word-break: break-all;">${actionUrl}</p>
+          <div style="border-top: 1px solid #eee; padding-top: 20px; margin-top: 30px; color: #666; font-size: 13px;">
+            <p>${ignore}</p>
+            <p style="margin-top: 12px;">Best regards,<br>The Zia Team</p>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   private formatDate(dateString?: string): string {

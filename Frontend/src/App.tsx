@@ -32,6 +32,9 @@ const ProviderEarnings = lazy(() => import('./Pages/provider/ProviderEarnings.ts
 const CheckoutPage = lazy(() => import('./Pages/payments/CheckoutPage.tsx'));
 const NotificationsPage = lazy(() => import('./Pages/account/NotificationsPage'));
 const BookingActivityPage = lazy(() => import('./Pages/account/BookingActivityPage'));
+const ForgotPassword = lazy(() => import('./Pages/auth/ForgotPassword'));
+const ResetPassword = lazy(() => import('./Pages/auth/ResetPassword'));
+const VerifyEmail = lazy(() => import('./Pages/auth/VerifyEmail'));
 const NotFound = lazy(() => import('./Pages/marketing/NotFound.tsx'));
 
 function App() {
@@ -75,6 +78,10 @@ function App() {
             <Route path="/provider-earnings" element={<ProviderEarnings />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/bookings" element={<BookingActivityPage />} />
+            <Route path="/forgot" element={<ForgotPassword />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
 
             <Route path="*" element={<NotFound />} />
 

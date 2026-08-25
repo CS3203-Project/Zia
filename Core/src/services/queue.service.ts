@@ -1,7 +1,14 @@
 import * as amqp from 'amqplib';
 
 export interface EmailEvent {
-  type: 'BOOKING_CONFIRMATION' | 'BOOKING_REMINDER' | 'BOOKING_CANCELLATION_MODIFICATION' | 'NEW_MESSAGE_OR_REVIEW' | 'OTHER';
+  type:
+    | 'BOOKING_CONFIRMATION'
+    | 'BOOKING_REMINDER'
+    | 'BOOKING_CANCELLATION_MODIFICATION'
+    | 'NEW_MESSAGE_OR_REVIEW'
+    | 'ACCOUNT_VERIFICATION'
+    | 'PASSWORD_RESET'
+    | 'OTHER';
   data: {
     conversationId?: string;
     scheduleId?: string;
@@ -32,6 +39,8 @@ class QueueService {
     BOOKING_REMINDER: 'email.booking.reminder',
     BOOKING_CANCELLATION_MODIFICATION: 'email.booking.modification',
     NEW_MESSAGE_OR_REVIEW: 'email.message.review',
+    ACCOUNT_VERIFICATION: 'email.account.verify',
+    PASSWORD_RESET: 'email.account.reset',
     OTHER: 'email.other'
   };
 
@@ -256,6 +265,32 @@ class QueueService {
         serviceName: data.notificationType === 'REVIEW' ? 'Service Review' : 'New Message'
       },
       timestamp: new Date().toISOString()
+    };
+
+    await this.publishEmailEvent(event);
+  }
+
+  /**
+   * Account emails (verify address, reset password). These carry a one-time link
+   * and are addressed to a single recipient, unlike the booking mails above which
+   * always involve both parties.
+   */
+  async sendAccountEmail(data: {
+    type: 'ACCOUNT_VERIFICATION' | 'PASSWORD_RESET';
+    to: string;
+    name: string;
+    actionUrl: string;
+  }): Promise<void> {
+    const event: EmailEvent = {
+      type: data.type,
+      data: {
+        customerEmail: data.to,
+        providerEmail: data.to,
+        customerName: data.name,
+        providerName: data.name,
+        metadata: { actionUrl: data.actionUrl },
+      },
+      timestamp: new Date().toISOString(),
     };
 
     await this.publishEmailEvent(event);

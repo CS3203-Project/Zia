@@ -23,6 +23,9 @@ services:
       REDIS_URL: redis://redis:6379
       CHAT_SERVICE_URL: http://chat:3001
       PAYMENT_SERVICE_URL: http://payment:3002
+      # Base URL used to build verification / password-reset links in emails.
+      # Must be where the browser reaches the frontend, not an internal hostname.
+      APP_URL: http://localhost:8080
       # Local development only. All host traffic (browser + tooling) shares the
       # Docker gateway IP, so the shared per-IP budget is exhausted by normal work.
       # Do NOT carry this into a production deployment.

@@ -17,3 +17,7 @@ CREATE TABLE IF NOT EXISTS "notification" (
   "isRead" boolean NOT NULL DEFAULT false,
   CONSTRAINT "PK_notification_id" PRIMARY KEY ("id")
 );
+
+-- Account emails (verify address / reset password).
+ALTER TYPE "notification_emailType_enum" ADD VALUE IF NOT EXISTS 'ACCOUNT_VERIFICATION';
+ALTER TYPE "notification_emailType_enum" ADD VALUE IF NOT EXISTS 'PASSWORD_RESET';

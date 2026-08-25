@@ -1,11 +1,21 @@
 import type { Request, Response, NextFunction } from 'express';
 import { register, login, getProfile, updateProfile, deleteProfile, checkEmailExists, searchUsers, getUserById, createAdmin } from '../services/user.service.js';
 import { uploadToS3, deleteFromS3, uploadVideoToS3 } from '../utils/s3.js';
+import accountService from '../services/account.service.js';
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
             const { email, firstName, lastName, password, imageUrl, location, address, phone, socialmedia } = req.body;
             const user = await register({ email, firstName, lastName, password, imageUrl, location, address, phone, socialmedia });
+
+    // Send the verification link. Isolated so a mail failure can't fail the
+    // signup itself - the user can always request a fresh link later.
+    try {
+      await accountService.sendVerificationEmail(user.id);
+    } catch (mailErr) {
+      console.error('Registered user but verification email failed:', mailErr);
+    }
+
     res.status(201).json({ message: 'User registered', user });
   } catch (err) {
     next(err);
