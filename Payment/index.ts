@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { RedisStore } from 'rate-limit-redis';
 import paymentRoutes from './src/routes/payment.route.js';
 import adminRoutes from './src/routes/admin.route.js';
+import errorHandler from './src/middlewares/errorHandler.middleware.js';
 
 async function testDatabaseConnection() {
   try {
@@ -48,6 +49,9 @@ app.use('/api/payments', paymentRoutes);
 // Payment-data admin analytics — reachable at /api/admin/analytics/* via a specific
 // ingress rule that takes precedence over the general /api/admin -> core-service rule.
 app.use('/api/admin', adminRoutes);
+
+// Must be registered after every route — see the comment in errorHandler.middleware.ts.
+app.use(errorHandler);
 
 const PORT: number = parseInt(process.env.PORT || '3002', 10);
 

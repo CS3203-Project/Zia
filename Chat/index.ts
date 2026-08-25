@@ -12,6 +12,7 @@ import { RedisStore } from 'rate-limit-redis';
 import { redis } from './src/utils/redis.js';
 import messagingRoutes from './src/routes/messaging.route.js';
 import internalRoutes from './src/routes/internal.route.js';
+import errorHandler from './src/middlewares/errorHandler.middleware.js';
 
 async function testDatabaseConnection() {
   try {
@@ -268,6 +269,9 @@ app.get('/health', (_req, res) => res.json({ status: 'ok', service: 'chat' }));
 
 app.use('/messaging', messagingRoutes);
 app.use('/internal', internalRoutes);
+
+// Must be registered after every route — see the comment in errorHandler.middleware.ts.
+app.use(errorHandler);
 
 const PORT: number = parseInt(process.env.PORT || '3001', 10);
 

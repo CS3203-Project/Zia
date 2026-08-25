@@ -60,6 +60,7 @@ import notificationRoutes from './src/routes/notification.route.js';
 import internalRoutes from './src/routes/internal.route.js';
 import scheduleRoutes from './src/routes/schedule.route.js';
 import healthRoutes from './src/routes/health.route.js';
+import errorHandler from './src/middlewares/errorHandler.middleware.js';
 
 // Simple database test function
 async function testDatabaseConnection() {
@@ -124,6 +125,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/internal', internalRoutes);
 app.use('/', healthRoutes);
+
+// Must be registered after every route — see the comment in errorHandler.middleware.ts.
+app.use(errorHandler);
 
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
