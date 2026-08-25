@@ -24,7 +24,15 @@ const NotificationsPage: React.FC = () => {
   useEffect(() => {
     let alive = true;
     getBookingTimeline()
-      .then((data) => alive && setBookingCount(data.length))
+      .then((data) => {
+        if (!alive) return;
+        // "In progress" must exclude finished work - a COMPLETED or CANCELLED
+        // booking isn't something the user still has on the go.
+        const inProgress = data.filter(
+          (b) => b.status !== 'COMPLETED' && b.status !== 'CANCELLED'
+        );
+        setBookingCount(inProgress.length);
+      })
       .catch(() => alive && setBookingCount(0));
     return () => {
       alive = false;

@@ -56,6 +56,35 @@ const TRANSITIONS: Record<string, { from: BookingStatus[]; actor: Actor }> = {
  * Resolves who the caller is for a booking. Returns null when the user isn't a
  * participant, so callers can reject rather than silently acting as the wrong party.
  */
+/** Statuses that actually hold a slot in the provider's calendar. */
+const COMMITTED: BookingStatus[] = ['ACCEPTED', 'PAID'];
+
+/**
+ * Finds a committed booking that overlaps the given window for this provider.
+ *
+ * Scoped to the provider rather than the service: a provider can't be in two
+ * places at once, so a slot taken through one listing is equally unavailable
+ * through another. Overlap is `start < otherEnd && otherStart < end`, so
+ * back-to-back bookings (one ending exactly as the next begins) are allowed.
+ */
+async function findConflict(
+  providerId: string,
+  start: Date,
+  end: Date,
+  excludeBookingId?: string
+) {
+  return prisma.booking.findFirst({
+    where: {
+      providerId,
+      status: { in: COMMITTED },
+      scheduledStart: { lt: end },
+      scheduledEnd: { gt: start },
+      ...(excludeBookingId ? { id: { not: excludeBookingId } } : {}),
+    },
+    select: { id: true, scheduledStart: true, scheduledEnd: true },
+  });
+}
+
 export function resolveActor(booking: { customerId: string; provider: { userId: string } }, userId: string): Actor | null {
   if (booking.customerId === userId) return 'CUSTOMER';
   if (booking.provider.userId === userId) return 'PROVIDER';
@@ -171,6 +200,14 @@ export const bookingService = {
     if (isNaN(start.getTime()) || isNaN(end.getTime())) throw new BookingError('Invalid start or end time');
     if (end <= start) throw new BookingError('End time must be after the start time');
 
+    const clash = await findConflict(booking.providerId, start, end, booking.id);
+    if (clash) {
+      throw new BookingError(
+        `You already have a booking from ${clash.scheduledStart?.toLocaleString()} to ${clash.scheduledEnd?.toLocaleString()}. Pick a different time.`,
+        409
+      );
+    }
+
     return prisma.booking.update({
       where: { conversationId },
       data: {
@@ -191,6 +228,25 @@ export const bookingService = {
   async accept(conversationId: string, userId: string) {
     const booking = await this.requireBooking(conversationId);
     assertTransition('ACCEPT', booking, userId);
+
+    // Re-check here, not just at quote time. A QUOTED booking holds no slot, so
+    // two customers can be quoted the same window and both reach this point -
+    // whoever accepts second must be turned away rather than double-booking the
+    // provider.
+    if (booking.scheduledStart && booking.scheduledEnd) {
+      const clash = await findConflict(
+        booking.providerId,
+        booking.scheduledStart,
+        booking.scheduledEnd,
+        booking.id
+      );
+      if (clash) {
+        throw new BookingError(
+          'That time has just been taken. Ask the provider to send a new time.',
+          409
+        );
+      }
+    }
 
     return prisma.booking.update({
       where: { conversationId },
@@ -372,17 +428,33 @@ export const bookingService = {
     return result.count;
   },
 
-  /** Publicly visible upcoming schedule for a service (the booking queue). */
+  /**
+   * Upcoming slots the provider is already committed to, shown publicly on the
+   * service page so customers can see what's taken before asking for a time.
+   *
+   * Keyed on the provider, not this one listing: the same person delivers all of
+   * their services, so a slot booked through another listing is equally
+   * unavailable here. This mirrors exactly what findConflict() rejects, so the
+   * page can't advertise a slot the booking flow would then refuse.
+   *
+   * Only times are exposed - no customer or service details.
+   */
   async getServiceQueue(serviceId: string) {
+    const service = await prisma.service.findUnique({
+      where: { id: serviceId },
+      select: { providerId: true },
+    });
+    if (!service) return [];
+
     return prisma.booking.findMany({
       where: {
-        serviceId,
-        status: { in: ['ACCEPTED', 'PAID'] },
-        scheduledStart: { gte: new Date() },
+        providerId: service.providerId,
+        status: { in: COMMITTED },
+        scheduledEnd: { gte: new Date() },
       },
-      select: { scheduledStart: true, scheduledEnd: true, status: true },
+      select: { scheduledStart: true, scheduledEnd: true, status: true, serviceId: true },
       orderBy: { scheduledStart: 'asc' },
-      take: 10,
+      take: 20,
     });
   },
 

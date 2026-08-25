@@ -100,7 +100,9 @@ const ServiceDetailPage: React.FC = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
   // Schedule state
-  const [currentSchedules, setCurrentSchedules] = useState<{ startTime: string; endTime: string }[]>([]);
+  const [currentSchedules, setCurrentSchedules] = useState<
+    { startTime: string; endTime: string; status?: string; isThisService?: boolean }[]
+  >([]);
   const [scheduleLoading, setScheduleLoading] = useState(false);
 
   // Whether this viewer already has a booking here, so the CTA can say whether it
@@ -828,8 +830,11 @@ const ServiceDetailPage: React.FC = () => {
                     <div className="bg-white rounded-2xl p-4 md:p-6 border border-gray-100 shadow-sm">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <Calendar className="w-5 h-5 mr-2 text-orange-500" />
-                        Confirmed Schedule
+                        Already Booked
                       </h3>
+                      <p className="-mt-2 mb-4 text-sm text-gray-500">
+                        Times this provider is unavailable. Ask for a slot outside these.
+                      </p>
                       {scheduleLoading ? (
                         <div className="flex justify-center py-4">
                           <div className="flex gap-1">
@@ -847,7 +852,7 @@ const ServiceDetailPage: React.FC = () => {
                                 <tr>
                                   <th className="px-4 py-3 text-left text-gray-900 font-semibold">Start Time</th>
                                   <th className="px-4 py-3 text-left text-gray-900 font-semibold">End Time</th>
-                                  <th className="px-4 py-3 text-left text-gray-900 font-semibold">Status</th>
+                                  <th className="px-4 py-3 text-left text-gray-900 font-semibold">Booking</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -860,9 +865,9 @@ const ServiceDetailPage: React.FC = () => {
                                       {new Date(schedule.endTime).toLocaleString()}
                                     </td>
                                     <td className="px-4 py-3">
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                                         <CheckCircle className="w-3 h-3 mr-1" />
-                                        Confirmed
+                                        {schedule.isThisService ? 'This service' : 'Another service'}
                                       </span>
                                     </td>
                                   </tr>
@@ -876,9 +881,9 @@ const ServiceDetailPage: React.FC = () => {
                             {currentSchedules.map((schedule, index) => (
                               <div key={index} className="bg-gray-50 rounded-xl border border-gray-100 p-4">
                                 <div className="flex items-center justify-between mb-3">
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
                                     <CheckCircle className="w-3 h-3 mr-1" />
-                                    Confirmed
+                                    {schedule.isThisService ? 'This service' : 'Another service'}
                                   </span>
                                 </div>
                                 <div className="space-y-2">

@@ -19,6 +19,9 @@ export const getCurrentScheduleTimes = async (req: Request, res: Response) => {
         startTime: b.scheduledStart?.toISOString() ?? null,
         endTime: b.scheduledEnd?.toISOString() ?? null,
         status: b.status,
+        // Lets the page distinguish "this listing" from the provider's other
+        // commitments, without revealing what those other bookings are.
+        isThisService: b.serviceId === String(req.params.serviceId),
       })),
     });
   } catch (error) {

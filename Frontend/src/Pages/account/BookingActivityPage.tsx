@@ -41,6 +41,10 @@ const BookingActivityPage: React.FC = () => {
   }, [isLoggedIn]);
 
   const unreadTotal = entries.reduce((sum, e) => sum + (e.unreadCount ?? 0), 0);
+  // Finished bookings still belong in the timeline, but they aren't "in progress".
+  const inProgress = entries.filter(
+    (e) => e.status !== 'COMPLETED' && e.status !== 'CANCELLED'
+  ).length;
 
   // Clear the badge for actions the other party took, and reflect it locally so
   // the "New" markers disappear without a refetch.
@@ -86,8 +90,8 @@ const BookingActivityPage: React.FC = () => {
             {!loading && entries.length > 0 && (
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{entries.length}</div>
-                  <div className="text-sm text-gray-500">Bookings</div>
+                  <div className="text-2xl font-bold text-gray-900">{inProgress}</div>
+                  <div className="text-sm text-gray-500">In progress</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-orange-600">{awaitingYou}</div>
