@@ -87,7 +87,7 @@ export default function ProfileHeader({
                 <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mt-4 mb-1">
                   {user.firstName || 'First'} {user.lastName || 'Last'}
                 </h1>
-                <p className="text-gray-500 text-lg mb-1">{user.email}</p>
+                <p className="mb-1 truncate text-lg text-gray-500">{user.email}</p>
                 <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
                   <span
                     className={`px-4 py-2 rounded-full text-sm font-medium border backdrop-blur-md ${

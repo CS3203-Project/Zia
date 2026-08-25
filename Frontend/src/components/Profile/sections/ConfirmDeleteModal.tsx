@@ -20,9 +20,10 @@ export default function ConfirmDeleteModal({
 }: ConfirmDeleteModalProps) {
   if (!isOpen) return null;
 
+  // See ConfirmationModal: centred-only modals strand their buttons off-screen on a short viewport.
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white/80 backdrop-blur-lg border border-gray-100 rounded-2xl shadow-2xl w-full max-w-md">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-white/30 p-4 py-10 backdrop-blur-sm sm:items-center">
+      <div className="my-auto max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-100 bg-white/80 shadow-2xl backdrop-blur-lg">
         <div className="p-6">
           <div className="flex items-center space-x-3 mb-4">
             <div className="p-2 bg-red-500/20 backdrop-blur-sm rounded-full border border-red-400/30">

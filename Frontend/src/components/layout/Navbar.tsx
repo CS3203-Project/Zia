@@ -283,7 +283,7 @@ const Navbar = () => {
                   )}>
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
+                      <p className="truncate text-xs text-gray-500">{user.email}</p>
                     </div>
                     <a
                       href="/profile"
@@ -432,7 +432,7 @@ const Navbar = () => {
                     )}
                     <div>
                       <p className="font-medium text-gray-900">{user.firstName} {user.lastName}</p>
-                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <p className="truncate text-sm text-gray-500">{user.email}</p>
                     </div>
                   </div>
                   <a

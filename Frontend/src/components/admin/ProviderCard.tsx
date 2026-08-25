@@ -41,7 +41,7 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onApprove, onView
         <div className="mt-2 space-y-1">
           <div className="flex items-center text-sm text-gray-500">
             <Mail className="w-4 h-4 mr-2" />
-            {provider.user.email}
+            <span className="truncate">{provider.user.email}</span>
           </div>
           {provider.user.phone && (
             <div className="flex items-center text-sm text-gray-500">

@@ -46,7 +46,7 @@ const ProviderDetailsModal: React.FC<ProviderDetailsModalProps> = ({
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Email</label>
-                <p className="mt-1 text-sm text-gray-900">{provider.user.email}</p>
+                <p className="mt-1 break-all text-sm text-gray-900">{provider.user.email}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Phone</label>

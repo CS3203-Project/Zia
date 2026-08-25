@@ -846,7 +846,11 @@ const ServiceDetailPage: React.FC = () => {
                       ) : (
                         <>
                           {/* Desktop Table View */}
-                          <div className="hidden md:block bg-gray-50 rounded-xl border border-gray-100 overflow-hidden">
+                          {/* overflow-x-auto rather than overflow-hidden: at the
+                              md breakpoint a three-column table of full
+                              timestamps can still exceed the column and was
+                              being clipped with no way to scroll to it. */}
+                          <div className="hidden overflow-x-auto rounded-xl border border-gray-100 bg-gray-50 md:block">
                             <table className="w-full text-sm">
                               <thead className="bg-gray-100">
                                 <tr>

@@ -16,7 +16,7 @@ export default function BasicInformationCard({ user }: BasicInformationCardProps
           </div>
           <div className="flex-1">
             <p className="text-xs text-gray-500 font-medium">Email</p>
-            <p className="text-sm font-semibold text-gray-900">{user.email}</p>
+            <p className="truncate text-sm font-semibold text-gray-900">{user.email}</p>
           </div>
         </div>
 

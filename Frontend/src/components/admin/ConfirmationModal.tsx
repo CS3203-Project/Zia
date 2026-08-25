@@ -23,9 +23,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
+  // Scrollable overlay with a capped panel: centred-only modals became unreachable on short screens (a landscape phone) - the buttons sat outside the viewport with nothing to scroll.
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full border border-gray-100 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-white/30 p-4 py-10 backdrop-blur-sm sm:items-center">
+      <div className="my-auto max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-gray-100 bg-white shadow-xl">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-900">{title}</h2>
