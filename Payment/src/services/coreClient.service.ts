@@ -65,6 +65,22 @@ class CoreClient {
     return internalGet<CoreAdmin>(`/internal/admins/${adminId}`);
   }
 
+  /** Closes a booking out as refunded once an admin approves the refund. */
+  async markBookingRefunded(bookingId: string): Promise<void> {
+    const response = await fetch(`${CORE_SERVICE_URL}/internal/bookings/mark-refunded`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-internal-key': INTERNAL_API_KEY,
+      },
+      body: JSON.stringify({ bookingId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to mark booking refunded: ${response.status}`);
+    }
+  }
+
   /**
    * Platform settings, cached briefly so pricing a checkout doesn't depend on a
    * round trip per request. A short TTL is fine: a commission change taking up

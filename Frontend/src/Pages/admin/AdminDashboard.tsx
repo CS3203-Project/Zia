@@ -14,7 +14,8 @@ import {
   LogOut,
   FolderTree,
   SlidersHorizontal,
-  Banknote
+  Banknote,
+  Undo2
 } from 'lucide-react';
 import Button from '../../components/shared/Button';
 import AnalyticsDashboard from '../../components/shared/AnalyticsDashboard';
@@ -27,6 +28,7 @@ import AdminProfileSection from '../../components/admin/AdminProfileSection';
 import CategoryManagementSection from '../../components/admin/CategoryManagementSection';
 import PlatformSettingsSection from '../../components/admin/PlatformSettingsSection';
 import PayoutRequestsSection from '../../components/admin/PayoutRequestsSection';
+import RefundRequestsSection from '../../components/admin/RefundRequestsSection';
 import { adminApi, type ServiceProvider, type AdminProfile } from '../../api/adminApi';
 import { showSuccessToast, showErrorToast } from '../../utils/toastUtils';
 
@@ -39,7 +41,7 @@ const AdminDashboard: React.FC = () => {
   const [isReportGeneratorOpen, setIsReportGeneratorOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'providers' | 'payouts' | 'categories' | 'settings' | 'profile'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'providers' | 'payouts' | 'refunds' | 'categories' | 'settings' | 'profile'>('overview');
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [providerToApprove, setProviderToApprove] = useState<ServiceProvider | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -294,6 +296,7 @@ const AdminDashboard: React.FC = () => {
               { id: 'overview', label: 'Overview', icon: TrendingUp },
               { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, icon: UserCheck },
               { id: 'payouts', label: 'Payouts', icon: Banknote },
+              { id: 'refunds', label: 'Refunds', icon: Undo2 },
               { id: 'categories', label: 'Categories', icon: FolderTree },
               { id: 'settings', label: 'Platform Settings', icon: SlidersHorizontal },
               { id: 'profile', label: 'Admin Profile', icon: Settings },
@@ -592,6 +595,8 @@ const AdminDashboard: React.FC = () => {
 
         {/* Admin Profile Tab */}
         {activeTab === 'payouts' && <PayoutRequestsSection />}
+
+        {activeTab === 'refunds' && <RefundRequestsSection />}
 
         {activeTab === 'settings' && <PlatformSettingsSection />}
 

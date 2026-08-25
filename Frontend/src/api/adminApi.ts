@@ -293,7 +293,37 @@ export interface AdminPayoutRequest {
   createdAt: string;
 }
 
+export interface AdminRefundRequest {
+  id: string;
+  paymentId: string;
+  bookingId?: string | null;
+  userId: string;
+  providerId: string;
+  amount: string | number;
+  currency: string;
+  reason: string;
+  status: 'PENDING' | 'APPROVED' | 'DECLINED';
+  decisionNote?: string | null;
+  processedBy?: string | null;
+  processedAt?: string | null;
+  createdAt: string;
+}
+
 export const adminApi = {
+  /** Customer refund disputes. Decided by admins, not the provider involved. */
+  getRefunds: async (status?: string): Promise<AdminRefundRequest[]> => {
+    const response = await paymentApiClient.get('/admin/refunds', { params: status ? { status } : {} });
+    return response.data.data;
+  },
+
+  approveRefund: async (id: string, note?: string): Promise<void> => {
+    await paymentApiClient.post(`/admin/refunds/${id}/approve`, { note });
+  },
+
+  declineRefund: async (id: string, note?: string): Promise<void> => {
+    await paymentApiClient.post(`/admin/refunds/${id}/decline`, { note });
+  },
+
   /** Provider withdrawal requests awaiting review. Served by the payment service. */
   getPayouts: async (status?: string): Promise<AdminPayoutRequest[]> => {
     const response = await paymentApiClient.get('/admin/payouts', { params: status ? { status } : {} });

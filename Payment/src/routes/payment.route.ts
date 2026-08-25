@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import paymentController from '../controllers/payment.controller.js';
 import payoutController from '../controllers/payout.controller.js';
+import refundController from '../controllers/refund.controller.js';
 import authMiddleware from '../middlewares/auth.middleware.js';
 
 const router: Router = Router();
@@ -10,6 +11,14 @@ const router: Router = Router();
  * @desc Provider withdrawals. Earnings previously had no exit at all.
  * @access Private (provider)
  */
+/**
+ * Customer-initiated refunds. A paid booking previously had no recovery path:
+ * it couldn't be cancelled and the refund endpoint was admin/provider-only.
+ */
+router.post('/refunds', authMiddleware, refundController.request);
+router.get('/refunds', authMiddleware, refundController.listMine);
+router.get('/refunds/booking/:bookingId', authMiddleware, refundController.getForBooking);
+
 router.get('/payouts/earnings', authMiddleware, payoutController.getMyEarnings);
 router.get('/payouts', authMiddleware, payoutController.listMyPayouts);
 router.post('/payouts', authMiddleware, payoutController.requestPayout);

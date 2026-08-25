@@ -251,6 +251,9 @@ enum BookingStatus {
   PAID
   COMPLETED
   CANCELLED
+  /// Money returned to the customer after an approved refund request. Terminal,
+  /// like COMPLETED - the booking is over, it just ended badly.
+  REFUNDED
 }
 
 enum PaymentMethod {

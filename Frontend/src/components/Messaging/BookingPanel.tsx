@@ -11,6 +11,8 @@ import { useConfirmationSocket } from '../../hooks/useConfirmationSocket';
 import { useAuth } from '../../contexts/AuthContext';
 import { PaymentModal } from '../Payment';
 import DirectionsModal from './DirectionsModal';
+import RefundRequestModal from '../Payment/RefundRequestModal';
+import { paymentApi, type BookingPaymentInfo } from '../../api/paymentApi';
 
 interface Props {
   conversationId: string;
@@ -83,6 +85,16 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
   const [error, setError] = useState<string | null>(null);
   const [payOpen, setPayOpen] = useState(false);
   const [directionsOpen, setDirectionsOpen] = useState(false);
+  const [refundOpen, setRefundOpen] = useState(false);
+  // The refundable payment behind this booking, if the viewer is the customer.
+  const [paymentInfo, setPaymentInfo] = useState<BookingPaymentInfo | null>(null);
+
+  const loadPaymentInfo = useCallback((bookingId: string) => {
+    paymentApi
+      .getBookingPayment(bookingId)
+      .then(setPaymentInfo)
+      .catch(() => setPaymentInfo(null));
+  }, []);
 
   // Quote form (provider only)
   const [price, setPrice] = useState('');
@@ -114,6 +126,7 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
         // Opening the booking counts as seeing it, so the bell badge clears
         // without the user hunting for a "mark as read" button.
         markBookingEventsRead(b.id).catch(() => {});
+        if (!isProvider) loadPaymentInfo(b.id);
       })
       .catch((e: unknown) => {
         if (!alive) return;
@@ -457,6 +470,48 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
           </div>
         )}
 
+        {/* Refunds: the only recovery once a booking is paid, since paid
+            bookings can't be cancelled. Customer-side only. */}
+        {!isProvider && paymentInfo && (status === 'PAID' || status === 'COMPLETED') && (
+          paymentInfo.refund ? (
+            <div
+              className={`rounded-xl border p-3 ${
+                paymentInfo.refund.status === 'APPROVED'
+                  ? 'border-emerald-200 bg-emerald-50'
+                  : paymentInfo.refund.status === 'DECLINED'
+                    ? 'border-red-200 bg-red-50'
+                    : 'border-amber-200 bg-amber-50'
+              }`}
+            >
+              <p
+                className={`text-sm font-medium ${
+                  paymentInfo.refund.status === 'APPROVED'
+                    ? 'text-emerald-700'
+                    : paymentInfo.refund.status === 'DECLINED'
+                      ? 'text-red-600'
+                      : 'text-amber-700'
+                }`}
+              >
+                {paymentInfo.refund.status === 'APPROVED'
+                  ? 'Refund approved'
+                  : paymentInfo.refund.status === 'DECLINED'
+                    ? 'Refund declined'
+                    : 'Refund request under review'}
+              </p>
+              {paymentInfo.refund.decisionNote && (
+                <p className="mt-1 text-xs text-gray-600">{paymentInfo.refund.decisionNote}</p>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setRefundOpen(true)}
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+            >
+              Request a refund
+            </button>
+          )
+        )}
+
         {/* Once money has changed hands, the two parties need to find each other. */}
         {(status === 'PAID' || status === 'COMPLETED') && directions && (
           <>
@@ -502,6 +557,17 @@ const BookingPanel: React.FC<Props> = ({ conversationId, currentUserRole, onRevi
           latitude={directions.latitude}
           longitude={directions.longitude}
           address={directions.address}
+        />
+      )}
+
+      {paymentInfo && (
+        <RefundRequestModal
+          isOpen={refundOpen}
+          onClose={() => setRefundOpen(false)}
+          onSuccess={() => loadPaymentInfo(booking.id)}
+          paymentId={paymentInfo.paymentId}
+          amount={Number(paymentInfo.amount)}
+          currency={paymentInfo.currency}
         />
       )}
 

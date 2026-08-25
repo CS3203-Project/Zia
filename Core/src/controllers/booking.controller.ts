@@ -180,6 +180,21 @@ export const getActiveBookingController = async (req: Request, res: Response) =>
   }
 };
 
+/** Internal: called by the payment service when a refund is approved. */
+export const markRefundedController = async (req: Request, res: Response) => {
+  try {
+    const { bookingId } = req.body;
+    if (!bookingId) {
+      return res.status(400).json({ success: false, message: 'bookingId is required' });
+    }
+    const booking = await bookingService.markRefunded(bookingId);
+    await notify(booking, 'CANCELLED');
+    res.json({ success: true, data: booking });
+  } catch (error) {
+    fail(res, error);
+  }
+};
+
 /** The caller's booking activity, grouped per booking, for the notifications timeline. */
 export const getBookingTimelineController = async (req: Request, res: Response) => {
   try {

@@ -51,6 +51,40 @@ model ProviderEarnings {
   @@index([providerId])
 }
 
+/// A customer's request to be refunded for a booking they've already paid for.
+///
+/// Until now a paid booking had no recovery path at all: it couldn't be
+/// cancelled, the refund endpoint was unreachable from any UI, and the only
+/// advice was "message the other party". Admins decide these rather than
+/// providers, since the provider is the counterparty to the dispute.
+model RefundRequest {
+  id           String       @id @default(cuid())
+  paymentId    String
+  bookingId    String?
+  /// The customer asking for the refund.
+  userId       String
+  providerId   String
+  amount       Decimal      @db.Decimal(10, 2)
+  currency     String       @default("lkr")
+  reason       String
+  status       RefundStatus @default(PENDING)
+  decisionNote String?
+  processedBy  String?
+  processedAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+  @@index([paymentId])
+}
+
+enum RefundStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
 /// A provider's request to withdraw their available balance.
 ///
 /// Until now earnings accumulated with no way out: ProviderEarnings tracked

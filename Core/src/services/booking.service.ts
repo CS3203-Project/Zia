@@ -315,6 +315,22 @@ export const bookingService = {
     });
   },
 
+  /**
+   * Called by the payment service when an admin approves a refund. Trusted
+   * internal path: the decision was already made and the money already moved.
+   */
+  async markRefunded(bookingId: string) {
+    const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: bookingInclude });
+    if (!booking) throw new BookingError('Booking not found', 404);
+    if (booking.status === 'REFUNDED') return booking; // idempotent
+
+    return prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: 'REFUNDED' },
+      include: bookingInclude,
+    });
+  },
+
   /** Provider marks the work delivered. This is what unlocks reviews. */
   async complete(conversationId: string, userId: string) {
     const booking = await this.requireBooking(conversationId);

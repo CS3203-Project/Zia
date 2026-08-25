@@ -133,8 +133,43 @@ export interface EarningsWithLimits extends ProviderEarnings {
   minimumPayout: number;
 }
 
+export type RefundStatus = 'PENDING' | 'APPROVED' | 'DECLINED';
+
+export interface RefundRecord {
+  id: string;
+  paymentId: string;
+  bookingId?: string | null;
+  amount: string | number;
+  currency: string;
+  reason: string;
+  status: RefundStatus;
+  decisionNote?: string | null;
+  processedAt?: string | null;
+  createdAt: string;
+}
+
+/** The refundable payment for a booking, plus any refund already raised on it. */
+export interface BookingPaymentInfo {
+  paymentId: string;
+  amount: string | number;
+  currency: string;
+  gateway?: string | null;
+  refund: RefundRecord | null;
+}
+
 // Payment API Service
 export const paymentApi = {
+  /** Whether this booking has a payment the caller could ask to be refunded. */
+  getBookingPayment: async (bookingId: string): Promise<BookingPaymentInfo | null> => {
+    const response = await paymentApiClient.get(`/payments/refunds/booking/${bookingId}`);
+    return response.data?.data ?? null;
+  },
+
+  requestRefund: async (paymentId: string, reason: string): Promise<RefundRecord> => {
+    const response = await paymentApiClient.post('/payments/refunds', { paymentId, reason });
+    return response.data.success ? response.data.data : response.data;
+  },
+
   /** Provider balance plus the minimum withdrawal the platform allows. */
   getPayoutEarnings: async (): Promise<EarningsWithLimits> => {
     const response = await paymentApiClient.get('/payments/payouts/earnings');
