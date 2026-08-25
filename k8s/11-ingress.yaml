@@ -45,13 +45,23 @@ spec:
                 name: core-service
                 port:
                   number: 3000
-          - path: /uploads
+          # Uploaded images/videos now live in MinIO (zia-uploads bucket, made publicly
+          # downloadable by the minio-createbuckets Job in 13-minio.yaml), not on Core's
+          # local disk, so URLs route straight to MinIO's S3 API instead of Core. MinIO
+          # already expects paths of the form /<bucket>/<key>, so "/zia-uploads" here
+          # lines up with its own routing with no rewrite-target annotation needed — same
+          # as how /api above passes straight through to core-service. Core builds
+          # uploaded-file URLs as {MINIO_PUBLIC_URL}/zia-uploads/<key>
+          # (Core/src/utils/s3.ts), so MINIO_PUBLIC_URL (01-configmaps.yaml) must be just
+          # this ingress host with NO path suffix — the "/zia-uploads" comes from the
+          # bucket name the app code appends, not from the config value itself.
+          - path: /zia-uploads
             pathType: Prefix
             backend:
               service:
-                name: core-service
+                name: minio
                 port:
-                  number: 3000
+                  number: 9000
           - path: /
             pathType: Prefix
             backend:

@@ -2,6 +2,42 @@ import { prisma } from '../utils/database.js';
 import { embeddingService } from './embedding.service.js';
 import chatClient from './chatClient.service.js';
 
+/**
+ * Generates and stores a service's embeddings. Deliberately fire-and-forget at every
+ * call site — the caller does NOT await this, so a slow/unavailable embedding API can't
+ * add latency to a create/update service request. Errors are swallowed here (logged
+ * only) for the same reason: there's no request left to fail by the time this settles.
+ */
+async function generateAndStoreServiceEmbeddings(
+  serviceId: string,
+  title: string | null,
+  description: string | null,
+  tags: string[]
+): Promise<void> {
+  try {
+    const embeddings = await embeddingService.generateServiceEmbeddings({
+      title: title ?? '',
+      description: description ?? '',
+      tags
+    });
+
+    await prisma.$executeRaw`
+      UPDATE "Service"
+      SET
+        "titleEmbedding" = ${`[${embeddings.titleEmbedding.join(',')}]`}::vector,
+        "descriptionEmbedding" = ${`[${embeddings.descriptionEmbedding.join(',')}]`}::vector,
+        "tagsEmbedding" = ${`[${embeddings.tagsEmbedding.join(',')}]`}::vector,
+        "combinedEmbedding" = ${`[${embeddings.combinedEmbedding.join(',')}]`}::vector,
+        "embeddingUpdatedAt" = NOW()
+      WHERE id = ${serviceId}
+    `;
+
+    console.log('✅ Embeddings generated and stored for service:', serviceId);
+  } catch (embeddingError) {
+    console.warn('⚠️ Failed to generate/store embeddings for service:', serviceId, embeddingError);
+  }
+}
+
 // Type definitions
 interface ServiceCreateData {
   providerId: string;
@@ -139,30 +175,10 @@ export const createService = async (serviceData: ServiceCreateData) => {
       }
     });
 
-    // Generate and update embeddings for the newly created service
-    try {
-      const embeddings = await embeddingService.generateServiceEmbeddings({
-        title: newService.title ?? "",
-        description: newService.description ?? "",
-        tags: newService.tags
-      });
-
-      // Update service with embeddings using raw query
-      await prisma.$executeRaw`
-        UPDATE "Service" 
-        SET 
-          "titleEmbedding" = ${`[${embeddings.titleEmbedding.join(',')}]`}::vector,
-          "descriptionEmbedding" = ${`[${embeddings.descriptionEmbedding.join(',')}]`}::vector,
-          "tagsEmbedding" = ${`[${embeddings.tagsEmbedding.join(',')}]`}::vector,
-          "combinedEmbedding" = ${`[${embeddings.combinedEmbedding.join(',')}]`}::vector,
-          "embeddingUpdatedAt" = NOW()
-        WHERE id = ${newService.id}
-      `;
-
-      console.log('✅ Embeddings generated and stored for service:', newService.id);
-    } catch (embeddingError) {
-      // Don't fail the service creation if embedding generation fails
-    }
+    // Generate and store embeddings in the background — deliberately not awaited, so a
+    // slow/unavailable Gemini API can't add latency to every service create request.
+    // generateAndStoreServiceEmbeddings() already swallows its own errors.
+    void generateAndStoreServiceEmbeddings(newService.id, newService.title, newService.description, newService.tags);
 
     return newService;
   } catch (error) {
@@ -399,33 +415,10 @@ export const updateService = async (serviceId: string, updateData: Partial<Servi
       }
     });
 
-    // Regenerate embeddings if content changed
+    // Regenerate embeddings if content changed — background, not awaited (see the
+    // matching comment in createService).
     if (contentChanged) {
-      try {
-        console.log('Content changed, regenerating embeddings for service:', serviceId);
-        const embeddings = await embeddingService.generateServiceEmbeddings({
-          title: updatedService.title ?? "",
-          description: updatedService.description ?? "",
-          tags: updatedService.tags
-        });
-
-        // Update service with new embeddings using raw query
-        await prisma.$executeRaw`
-          UPDATE "Service" 
-          SET 
-            "titleEmbedding" = ${`[${embeddings.titleEmbedding.join(',')}]`}::vector,
-            "descriptionEmbedding" = ${`[${embeddings.descriptionEmbedding.join(',')}]`}::vector,
-            "tagsEmbedding" = ${`[${embeddings.tagsEmbedding.join(',')}]`}::vector,
-            "combinedEmbedding" = ${`[${embeddings.combinedEmbedding.join(',')}]`}::vector,
-            "embeddingUpdatedAt" = NOW()
-          WHERE id = ${serviceId}
-        `;
-
-        console.log('✅ Embeddings regenerated for updated service:', serviceId);
-      } catch (embeddingError) {
-        console.warn('⚠️ Failed to regenerate embeddings for service:', serviceId, embeddingError);
-        // Don't fail the service update if embedding generation fails
-      }
+      void generateAndStoreServiceEmbeddings(serviceId, updatedService.title, updatedService.description, updatedService.tags);
     }
 
     return updatedService;
@@ -591,14 +584,36 @@ export const searchServicesByLocation = async (options: LocationSearchOptions) =
 
     const whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(' AND ')}` : '';
 
-    // Main query to get services within radius
+    // Finds the matching services (radius filter + pagination) first, in one pass, using
+    // the GiST expression index on the location point (see the
+    // Service_location_gist_idx migration) so ST_DWithin is an index scan, not a
+    // sequential one. COUNT(*) OVER() rides along on the same scan instead of a second,
+    // separate full-table COUNT query. Review aggregation and the provider/category
+    // joins only run against the already-limited page of rows (a LATERAL join per row)
+    // instead of every matching service before the LIMIT was applied.
     const servicesQuery = `
-      SELECT 
-        s.*,
-        ST_Distance(
+      WITH matched_services AS (
+        SELECT
+          s.*,
+          ST_Distance(
+            ST_SetSRID(ST_MakePoint(s.longitude, s.latitude), 4326)::geography,
+            ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
+          ) / 1000 as distance_km,
+          COUNT(*) OVER() as total_count
+        FROM "Service" s
+        ${whereClause}
+        AND s.latitude IS NOT NULL
+        AND s.longitude IS NOT NULL
+        AND ST_DWithin(
           ST_SetSRID(ST_MakePoint(s.longitude, s.latitude), 4326)::geography,
-          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
-        ) / 1000 as distance_km,
+          ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
+          $3
+        )
+        ORDER BY distance_km ASC
+        LIMIT $4 OFFSET $5
+      )
+      SELECT
+        ms.*,
         sp.id as provider_id,
         sp."averageRating" as provider_average_rating,
         sp."totalReviews" as provider_total_reviews,
@@ -607,48 +622,22 @@ export const searchServicesByLocation = async (options: LocationSearchOptions) =
         u."imageUrl" as provider_image_url,
         c.name as category_name,
         c.slug as category_slug,
-        COALESCE(AVG(sr.rating), 0) as average_rating,
-        COUNT(sr.id) as review_count
-      FROM "Service" s
-      INNER JOIN "ServiceProvider" sp ON s."providerId" = sp.id
+        COALESCE(review_agg.avg_rating, 0) as average_rating,
+        COALESCE(review_agg.review_count, 0) as review_count
+      FROM matched_services ms
+      INNER JOIN "ServiceProvider" sp ON ms."providerId" = sp.id
       INNER JOIN "User" u ON sp."userId" = u.id
-      INNER JOIN "Category" c ON s."categoryId" = c.id
-      LEFT JOIN "ServiceReview" sr ON s.id = sr."serviceId"
-      ${whereClause}
-      AND s.latitude IS NOT NULL 
-      AND s.longitude IS NOT NULL
-      AND ST_DWithin(
-        ST_SetSRID(ST_MakePoint(s.longitude, s.latitude), 4326)::geography,
-        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
-        $3
-      )
-      GROUP BY s.id, sp.id, u.id, c.id
-      ORDER BY distance_km ASC
-      LIMIT $4 OFFSET $5
+      INNER JOIN "Category" c ON ms."categoryId" = c.id
+      LEFT JOIN LATERAL (
+        SELECT AVG(sr.rating) as avg_rating, COUNT(sr.id) as review_count
+        FROM "ServiceReview" sr
+        WHERE sr."serviceId" = ms.id
+      ) review_agg ON true
+      ORDER BY ms.distance_km ASC
     `;
 
-    // Count query for pagination
-    const countQuery = `
-      SELECT COUNT(*) 
-      FROM "Service" s
-      ${whereClause}
-      AND s.latitude IS NOT NULL 
-      AND s.longitude IS NOT NULL
-      AND ST_DWithin(
-        ST_SetSRID(ST_MakePoint(s.longitude, s.latitude), 4326)::geography,
-        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography,
-        $3
-      )
-    `;
-
-    // Execute queries
-    const [servicesResult, countResult] = await Promise.all([
-      prisma.$queryRawUnsafe(servicesQuery, ...queryParams),
-      prisma.$queryRawUnsafe(countQuery, longitude, latitude, radius * 1000, ...queryParams.slice(5, paramIndex - 1))
-    ]);
-
-    const services = servicesResult as any[];
-    const total = parseInt((countResult as any[])[0].count);
+    const services = (await prisma.$queryRawUnsafe(servicesQuery, ...queryParams)) as any[];
+    const total = services.length > 0 ? parseInt(services[0].total_count) : 0;
 
     // Format the results
     const formattedServices = services.map(service => ({

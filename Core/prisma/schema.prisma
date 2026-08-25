@@ -129,6 +129,11 @@ model Service {
   @@index([latitude, longitude])
   @@index([city])
   @@index([state])
+  // Also indexed outside this schema, via raw-SQL migration 20251025000000_add_perf_indexes
+  // (Prisma's DSL can't express either): an HNSW vector_cosine_ops index on
+  // combinedEmbedding (semantic search), and a GiST index on the ST_SetSRID/ST_MakePoint
+  // geography expression that searchServicesByLocation() filters on with ST_DWithin —
+  // the btree above can't serve that computed expression.
 }
 
 model Schedule {

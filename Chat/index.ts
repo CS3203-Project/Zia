@@ -7,6 +7,9 @@ import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import { createAdapter } from '@socket.io/redis-adapter';
+import { RedisStore } from 'rate-limit-redis';
+import { redis } from './src/utils/redis.js';
 import messagingRoutes from './src/routes/messaging.route.js';
 import internalRoutes from './src/routes/internal.route.js';
 
@@ -27,6 +30,15 @@ const server = createServer(app);
 const io = new SocketIOServer(server, {
   cors: { origin: true, credentials: true },
 });
+
+// Socket.IO Redis adapter — routes io.to(socketId)/room emits through Redis pub/sub so
+// they reach the right socket regardless of which pod actually holds that connection.
+// Without this, once this service runs more than one replica, a user connected to pod A
+// is invisible to `io.to(...)` calls issued from pod B. The adapter needs a dedicated
+// subscriber connection (per the socket.io-redis-adapter docs), hence the duplicate().
+const pubClient = redis;
+const subClient = pubClient.duplicate();
+io.adapter(createAdapter(pubClient, subClient));
 
 const messagingIo = io.of('/messaging');
 const jwtSecret = process.env.JWT_SECRET;
@@ -64,12 +76,14 @@ messagingIo.use((socket, next) => {
   }
 });
 
-const connectedUsers = new Map<string, string>(); // userId -> socketId
-const activeConversations = new Map<string, string>(); // userId -> conversationId
+// Presence state lives in Redis (not process memory) so it's shared across all pods —
+// a user connected to one pod must still be discoverable/reachable from any other pod.
+const CONNECTED_USERS_KEY = 'chat:connected_users'; // Redis hash: userId -> socketId
+const ACTIVE_CONVERSATIONS_KEY = 'chat:active_conversations'; // Redis hash: userId -> conversationId
 
-messagingIo.on('connection', (socket) => {
+messagingIo.on('connection', async (socket) => {
   const socketUserId = socket.data.userId as string;
-  connectedUsers.set(socketUserId, socket.id);
+  await redis.hset(CONNECTED_USERS_KEY, socketUserId, socket.id);
   console.log(`Client connected: ${socket.id} (user ${socketUserId})`);
   messagingIo.emit('user:online', { userId: socketUserId, status: 'online' });
 
@@ -84,13 +98,13 @@ messagingIo.on('connection', (socket) => {
       socket.emit('message:error', { error: 'Not authorized for this conversation' });
       return;
     }
-    activeConversations.set(socketUserId, conversationId);
+    await redis.hset(ACTIVE_CONVERSATIONS_KEY, socketUserId, conversationId);
     socket.emit('conversation:entered', { success: true, conversationId });
   });
 
-  socket.on('conversation:leave', () => {
-    const conversationId = activeConversations.get(socketUserId);
-    activeConversations.delete(socketUserId);
+  socket.on('conversation:leave', async () => {
+    const conversationId = await redis.hget(ACTIVE_CONVERSATIONS_KEY, socketUserId);
+    await redis.hdel(ACTIVE_CONVERSATIONS_KEY, socketUserId);
     console.log(`User ${socketUserId} left conversation ${conversationId}`);
     socket.emit('conversation:left', { success: true });
   });
@@ -114,11 +128,11 @@ messagingIo.on('connection', (socket) => {
 
       socket.emit('message:sent', message);
 
-      const recipientSocketId = connectedUsers.get(data.toId);
+      const recipientSocketId = await redis.hget(CONNECTED_USERS_KEY, data.toId);
       if (recipientSocketId) {
         messagingIo.to(recipientSocketId).emit('message:received', message);
 
-        const recipientActiveConversation = activeConversations.get(data.toId);
+        const recipientActiveConversation = await redis.hget(ACTIVE_CONVERSATIONS_KEY, data.toId);
         if (recipientActiveConversation === message.conversationId) {
           try {
             await prisma.message.update({
@@ -163,7 +177,7 @@ messagingIo.on('connection', (socket) => {
         data: { receivedAt: new Date() },
       });
 
-      const senderSocketId = connectedUsers.get(updatedMessage.fromId);
+      const senderSocketId = await redis.hget(CONNECTED_USERS_KEY, updatedMessage.fromId);
       if (senderSocketId) {
         messagingIo.to(senderSocketId).emit('message:read-receipt', {
           messageId,
@@ -200,14 +214,14 @@ messagingIo.on('connection', (socket) => {
     }
   });
 
-  socket.on('users:online', () => {
-    socket.emit('users:online-list', Array.from(connectedUsers.keys()));
+  socket.on('users:online', async () => {
+    socket.emit('users:online-list', await redis.hkeys(CONNECTED_USERS_KEY));
   });
 
-  socket.on('disconnect', () => {
+  socket.on('disconnect', async () => {
     console.log(`Client disconnected: ${socket.id}`);
-    connectedUsers.delete(socketUserId);
-    activeConversations.delete(socketUserId);
+    await redis.hdel(CONNECTED_USERS_KEY, socketUserId);
+    await redis.hdel(ACTIVE_CONVERSATIONS_KEY, socketUserId);
     messagingIo.emit('user:offline', { userId: socketUserId, status: 'offline' });
   });
 });
@@ -217,10 +231,11 @@ messagingIo.on('connection', (socket) => {
  * viewing that conversation. Triggered by a `confirmation.updated` RabbitMQ event
  * published by the Core service, since Core no longer holds these socket connections.
  */
-function broadcastConfirmationUpdate(conversationId: string, confirmation: any) {
-  for (const [userId, activeConvId] of activeConversations.entries()) {
+async function broadcastConfirmationUpdate(conversationId: string, confirmation: any) {
+  const activeConversations = await redis.hgetall(ACTIVE_CONVERSATIONS_KEY);
+  for (const [userId, activeConvId] of Object.entries(activeConversations)) {
     if (activeConvId === conversationId) {
-      const socketId = connectedUsers.get(userId);
+      const socketId = await redis.hget(CONNECTED_USERS_KEY, userId);
       if (socketId) {
         messagingIo.to(socketId).emit('confirmation_updated', { conversationId, confirmation });
       }
@@ -230,12 +245,19 @@ function broadcastConfirmationUpdate(conversationId: string, confirmation: any) 
 
 app.use(cors({ origin: true, credentials: true }));
 
+// Rate limiting — backed by Redis (shared across all pods) instead of the default
+// in-memory store, which only counted requests hitting that one process. With N
+// replicas the in-memory version let each pod give every client its own separate
+// quota (an effective N× multiplier), and reset the count on every pod restart/deploy.
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000,
-  max: 10000,
+  max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => req.method === 'OPTIONS',
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redis.call(...(args as [string, ...string[]])) as Promise<any>,
+  }),
 });
 app.use(limiter);
 

@@ -40,10 +40,12 @@ async function generatePrismaClient() {
 await generatePrismaClient();
 
 import { prisma } from './src/utils/database.js';
+import { redis } from './src/utils/redis.js';
 import { queueService } from './src/services/queue.service.js';
 import express, { type Application } from 'express';
 import cors, { type CorsOptions } from 'cors';
 import rateLimit from 'express-rate-limit';
+import { RedisStore } from 'rate-limit-redis';
 import userRoutes from './src/routes/user.route.js';
 import providerRoutes from './src/routes/provider.route.js';
 import companyRoutes from './src/routes/company.route.js';
@@ -82,22 +84,29 @@ const corsOptions: CorsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Rate limiting
+// Rate limiting — backed by Redis (shared across all pods) instead of the default
+// in-memory store, which only counted requests hitting that one process. With N
+// replicas the in-memory version let each pod give every client its own separate
+// quota (an effective N× multiplier), and reset the count on every pod restart/deploy.
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000, // 30 minutes
-  max: 10000, // increased limit for development
+  max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
   // Do not rate-limit CORS preflight requests
   skip: (req) => req.method === 'OPTIONS',
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redis.call(...(args as [string, ...string[]])) as Promise<any>,
+  }),
 });
 
 // Apply rate limiting to all routes
 app.use(limiter);
 
+// Uploaded images/videos are served from S3-compatible object storage now (see
+// src/utils/s3.ts) — no local /uploads static route or disk volume needed anymore.
 // Increase JSON payload limit for file uploads
-app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/api/users', userRoutes);

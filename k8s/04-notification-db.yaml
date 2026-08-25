@@ -1,5 +1,11 @@
-# Notification keeps its own separate Postgres + RabbitMQ, unchanged from before the
-# core/chat/payment split — it was never part of the shared-schema decision.
+# Notification keeps its own separate Postgres, unchanged from before the core/chat/
+# payment split — it was never part of the shared-schema decision. It used to also run
+# its own separate RabbitMQ broker (rabbitmq-notification), but nothing published to
+# that broker except itself — Core publishes to the shared "rabbitmq" broker
+# (03-rabbitmq.yaml), so notification emails were queued on the Core side and never
+# consumed. That separate broker's Deployment/Service/PVC have been removed here;
+# notification-config's RABBITMQ_URL (01-configmaps.yaml) now points at the shared
+# broker instead.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -66,69 +72,3 @@ spec:
   ports:
     - port: 5432
       targetPort: 5432
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: rabbitmq-notification-data
-  namespace: zia
-spec:
-  accessModes: ["ReadWriteOnce"]
-  resources:
-    requests:
-      storage: 1Gi
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: rabbitmq-notification
-  namespace: zia
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: rabbitmq-notification
-  template:
-    metadata:
-      labels:
-        app: rabbitmq-notification
-    spec:
-      containers:
-        - name: rabbitmq
-          image: rabbitmq:3.13-management-alpine
-          ports:
-            - containerPort: 5672
-            - containerPort: 15672
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/rabbitmq
-          readinessProbe:
-            tcpSocket:
-              port: 5672
-            initialDelaySeconds: 10
-            periodSeconds: 5
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: rabbitmq-notification-data
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: rabbitmq-notification
-  namespace: zia
-spec:
-  selector:
-    app: rabbitmq-notification
-  ports:
-    - name: amqp
-      port: 5672
-      targetPort: 5672
-    - name: management
-      port: 15672
-      targetPort: 15672

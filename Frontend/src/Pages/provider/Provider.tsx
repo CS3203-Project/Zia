@@ -139,12 +139,14 @@ export default function Provider() {
         setProviderProfile(providerData);
         setUser(providerData.user as UserProfile);
 
-        // Fetch services for this provider
+        // Fetch services, reviews, and review stats for this provider concurrently —
+        // these three calls are independent of one another.
         if (providerData.id) {
-          await fetchServices(providerData.id);
-          // Fetch reviews and stats for this provider
-          await fetchProviderReviews(providerData.id, 1, true);
-          await fetchProviderReviewStats(providerData.id);
+          await Promise.all([
+            fetchServices(providerData.id),
+            fetchProviderReviews(providerData.id, 1, true),
+            fetchProviderReviewStats(providerData.id)
+          ]);
         }
       } catch (error) {
         console.error('Failed to fetch provider profile:', error);

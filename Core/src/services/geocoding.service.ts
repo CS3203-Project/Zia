@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { redis } from '../utils/redis.js';
 
 config();
 
@@ -43,22 +44,47 @@ const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 // Nominatim's usage policy requires a descriptive User-Agent identifying the application.
 const USER_AGENT = 'Zia-Marketplace/1.0 (+https://github.com/zia-app)';
 
-class GeocodingService {
-  private geocodeCache: Map<string, LocationData>;
+// Nominatim results don't change; cache them for a week rather than forever. A plain
+// in-memory Map here would (a) grow unbounded for the life of the process — a slow
+// memory leak — and (b) only ever be warm for whichever single pod happened to serve a
+// given address before, so cache hit rate would fall as replicas scale up. Redis fixes
+// both: bounded by TTL, shared across every pod.
+const CACHE_TTL_SECONDS = 60 * 60 * 24 * 7;
+const CACHE_KEY_PREFIX = 'geocode:';
 
-  constructor() {
-    this.geocodeCache = new Map();
+// Nominatim's usage policy caps public-instance traffic at ~1 request/second, and that
+// budget is shared by the whole deployment, not per pod — a per-process throttle alone
+// would let N pods each independently send ~1 req/sec, N req/sec in total. This acquires
+// a short-lived Redis lock before every outbound call so at most one request goes out
+// per second no matter how many pods are running.
+const THROTTLE_KEY = 'geocode:nominatim-throttle';
+const THROTTLE_INTERVAL_MS = 1000;
+const THROTTLE_MAX_WAIT_MS = 5000;
+const THROTTLE_POLL_MS = 100;
+
+async function throttleNominatimRequest(): Promise<void> {
+  const deadline = Date.now() + THROTTLE_MAX_WAIT_MS;
+  while (Date.now() < deadline) {
+    const acquired = await redis.set(THROTTLE_KEY, '1', 'PX', THROTTLE_INTERVAL_MS, 'NX');
+    if (acquired) return;
+    await new Promise((resolve) => setTimeout(resolve, THROTTLE_POLL_MS));
   }
+  // Waited long enough — proceed anyway rather than fail the caller's request outright;
+  // slightly exceeding Nominatim's budget occasionally beats a hard failure.
+}
 
+class GeocodingService {
   /**
    * Convert address to coordinates using the Nominatim (OpenStreetMap) search API
    */
   async geocodeAddress(address: string): Promise<LocationData> {
-    if (this.geocodeCache.has(address)) {
-      return this.geocodeCache.get(address)!;
-    }
+    const cacheKey = `${CACHE_KEY_PREFIX}fwd:${address}`;
+    const cached = await this.getCached(cacheKey);
+    if (cached) return cached;
 
     try {
+      await throttleNominatimRequest();
+
       const url = `${NOMINATIM_BASE_URL}/search?${new URLSearchParams({
         q: address,
         format: 'jsonv2',
@@ -78,7 +104,7 @@ class GeocodingService {
 
       const locationData = this.toLocationData(results[0]);
 
-      this.geocodeCache.set(address, locationData);
+      await this.setCached(cacheKey, locationData);
 
       return locationData;
     } catch (error) {
@@ -91,12 +117,13 @@ class GeocodingService {
    * Convert coordinates to address using the Nominatim (OpenStreetMap) reverse API
    */
   async reverseGeocode(lat: number, lng: number): Promise<LocationData> {
-    const cacheKey = `${lat},${lng}`;
-    if (this.geocodeCache.has(cacheKey)) {
-      return this.geocodeCache.get(cacheKey)!;
-    }
+    const cacheKey = `${CACHE_KEY_PREFIX}rev:${lat},${lng}`;
+    const cached = await this.getCached(cacheKey);
+    if (cached) return cached;
 
     try {
+      await throttleNominatimRequest();
+
       const url = `${NOMINATIM_BASE_URL}/reverse?${new URLSearchParams({
         lat: String(lat),
         lon: String(lng),
@@ -116,7 +143,7 @@ class GeocodingService {
 
       const locationData = this.toLocationData(result, { lat, lng });
 
-      this.geocodeCache.set(cacheKey, locationData);
+      await this.setCached(cacheKey, locationData);
 
       return locationData;
     } catch (error) {
@@ -127,10 +154,13 @@ class GeocodingService {
 
   /**
    * Search for multiple address candidates (for a type-ahead suggestion list).
-   * Not cached — each keystroke's query is effectively unique.
+   * Not cached — each keystroke's query is effectively unique — but still throttled,
+   * since this is the endpoint most likely to be called frequently.
    */
   async searchAddress(query: string, limit = 5): Promise<AddressSuggestion[]> {
     try {
+      await throttleNominatimRequest();
+
       const url = `${NOMINATIM_BASE_URL}/search?${new URLSearchParams({
         q: query,
         format: 'jsonv2',
@@ -230,18 +260,41 @@ class GeocodingService {
     return degrees * (Math.PI / 180);
   }
 
-  /**
-   * Clear geocoding cache
-   */
-  clearCache(): void {
-    this.geocodeCache.clear();
+  private async getCached(key: string): Promise<LocationData | null> {
+    try {
+      const raw = await redis.get(key);
+      return raw ? (JSON.parse(raw) as LocationData) : null;
+    } catch (error) {
+      // Cache being unreachable shouldn't break geocoding — just miss and fetch fresh.
+      console.error('Redis geocode cache read error:', error);
+      return null;
+    }
+  }
+
+  private async setCached(key: string, value: LocationData): Promise<void> {
+    try {
+      await redis.set(key, JSON.stringify(value), 'EX', CACHE_TTL_SECONDS);
+    } catch (error) {
+      console.error('Redis geocode cache write error:', error);
+    }
   }
 
   /**
-   * Get cache size
+   * Clear all cached geocoding results
    */
-  getCacheSize(): number {
-    return this.geocodeCache.size;
+  async clearCache(): Promise<void> {
+    const keys = await redis.keys(`${CACHE_KEY_PREFIX}*`);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+  }
+
+  /**
+   * Get the number of cached geocoding results
+   */
+  async getCacheSize(): Promise<number> {
+    const keys = await redis.keys(`${CACHE_KEY_PREFIX}*`);
+    return keys.length;
   }
 }
 

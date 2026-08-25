@@ -1,6 +1,10 @@
 # Local dev stack for all 4 microservices + frontend, mirroring the eventual Kubernetes
-# layout: Core/Chat/Payment share one Postgres instance (one schema each) and one
-# RabbitMQ broker; Notification keeps its own separate Postgres + RabbitMQ (unchanged).
+# layout: Core/Chat/Payment share one Postgres instance (one schema each), one RabbitMQ
+# broker, one Redis instance (Chat presence/pubsub, rate limiting, geocode cache), and
+# one MinIO (S3-compatible) bucket for uploads. Notification keeps its own separate
+# Postgres, but now shares the same RabbitMQ broker as everyone else — it previously had
+# its own broker with nothing bridging the two, so published email events were never
+# actually delivered.
 services:
   core:
     build:
@@ -14,17 +18,24 @@ services:
     # itself. These overrides point at the other containers by their Compose service
     # name instead; `environment:` takes precedence over `env_file`.
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?connection_limit=10&pool_timeout=20
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      REDIS_URL: redis://redis:6379
       CHAT_SERVICE_URL: http://chat:3001
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_PUBLIC_URL: http://localhost:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_BUCKET: zia-uploads
+      MINIO_REGION: us-east-1
     ports:
       - "3000:3000"
     depends_on:
       - postgres
       - rabbitmq
+      - redis
+      - createbuckets
     restart: unless-stopped
-    volumes:
-      - core_uploads:/app/uploads
 
   chat:
     build:
@@ -34,13 +45,15 @@ services:
     env_file:
       - ./Chat/.env
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=chat
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=chat&connection_limit=10&pool_timeout=20
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      REDIS_URL: redis://redis:6379
     ports:
       - "3001:3001"
     depends_on:
       - postgres
       - rabbitmq
+      - redis
     restart: unless-stopped
 
   payment:
@@ -51,12 +64,14 @@ services:
     env_file:
       - ./Payment/.env
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=payment
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/zia_core?schema=payment&connection_limit=10&pool_timeout=20
+      REDIS_URL: redis://redis:6379
       CORE_SERVICE_URL: http://core:3000
     ports:
       - "3002:3002"
     depends_on:
       - postgres
+      - redis
     restart: unless-stopped
 
   postgres:
@@ -87,6 +102,54 @@ services:
       - core_rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
 
+  redis:
+    # Shared by Chat (Socket.IO adapter + online-presence store so presence works across
+    # multiple Chat pods), Core/Chat/Payment (rate-limit counters), and Core (geocode
+    # cache with TTL). Persists to disk so presence/cache survive a restart.
+    image: redis:7-alpine
+    container_name: zia-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  minio:
+    # Self-hosted object storage for uploaded images/videos, spoken to via the S3 API
+    # (see Core/src/utils/s3.ts) — replaces the old local-disk `/app/uploads` volume,
+    # which pinned Core to a single replica (an RWO PVC can only mount to one node/pod).
+    # Swap MINIO_ENDPOINT/credentials for real AWS S3 in production if you outgrow this.
+    image: minio/minio:latest
+    container_name: zia-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  createbuckets:
+    # One-shot job: creates the uploads bucket and makes it publicly readable (uploaded
+    # images/videos are served directly by URL, same as the old express.static setup),
+    # then exits. `depends_on: createbuckets` elsewhere just waits for this to finish.
+    image: minio/mc:latest
+    container_name: zia-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set local http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin}; do sleep 1; done;
+      mc mb --ignore-existing local/zia-uploads;
+      mc anonymous set download local/zia-uploads;
+      exit 0;
+      "
+    restart: "no"
+
   notification:
     build:
       context: ./Notification
@@ -96,12 +159,15 @@ services:
       - ./Notification/.env
     environment:
       DATABASE_URL: postgresql://postgres:postgres@notification-postgres:5432/zia_com
-      RABBITMQ_URL: amqp://guest:guest@notification-rabbitmq:5672
+      # Now the same broker Core publishes to — was previously pointed at
+      # notification-rabbitmq, a separate broker nothing else published to, so emails
+      # were queued on the Core side and never consumed.
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
     ports:
       - "3003:3001"
     depends_on:
       - notification-postgres
-      - notification-rabbitmq
+      - rabbitmq
     restart: unless-stopped
 
   notification-postgres:
@@ -115,16 +181,6 @@ services:
       - "5433:5432"
     volumes:
       - notification_pg_data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  notification-rabbitmq:
-    image: rabbitmq:3.13-management-alpine
-    container_name: zia-notification-rabbitmq
-    ports:
-      - "5673:5672"
-      - "15673:15672"
-    volumes:
-      - notification_rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
 
   frontend:
@@ -143,6 +199,6 @@ services:
 volumes:
   core_pg_data:
   core_rabbitmq_data:
-  core_uploads:
   notification_pg_data:
-  notification_rabbitmq_data:
+  redis_data:
+  minio_data:

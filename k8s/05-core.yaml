@@ -19,36 +19,26 @@ spec:
           imagePullPolicy: Never # locally built image, loaded into kind — see k8s/README.md
           ports:
             - containerPort: 3000
+          # REDIS_URL and MINIO_* (incl. MINIO_ACCESS_KEY/MINIO_SECRET_KEY) come in
+          # through these same envFrom refs — see core-config/core-secrets.
           envFrom:
             - configMapRef:
                 name: core-config
             - secretRef:
                 name: core-secrets
-          volumeMounts:
-            - name: uploads
-              mountPath: /app/uploads
           readinessProbe:
             httpGet:
               path: /health
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 10
-      volumes:
-        - name: uploads
-          persistentVolumeClaim:
-            claimName: core-uploads
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: core-uploads
-  namespace: zia
-spec:
-  accessModes: ["ReadWriteOnce"]
-  resources:
-    requests:
-      storage: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 5
 
 ---
 apiVersion: v1

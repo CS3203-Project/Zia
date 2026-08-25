@@ -4,8 +4,9 @@ metadata:
   name: chat
   namespace: zia
 spec:
-  # Socket.IO online-presence/active-conversation state is kept in-memory (see Chat/index.ts) —
-  # keep this at 1 replica until a shared adapter (e.g. Redis) is added for multi-pod presence.
+  # Socket.IO online-presence/active-conversation state and room/emit routing are backed by
+  # Redis (see Chat/index.ts and Chat/src/utils/redis.ts), so this deployment is safe to run
+  # with more than one replica.
   replicas: 1
   selector:
     matchLabels:
@@ -32,6 +33,13 @@ spec:
               port: 3001
             initialDelaySeconds: 10
             periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 5
 
 ---
 apiVersion: v1

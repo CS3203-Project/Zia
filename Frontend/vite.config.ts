@@ -22,6 +22,39 @@ export default defineConfig({
       }
     }
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+
+          if (id.includes('/leaflet/') || id.includes('/react-leaflet/')) {
+            return 'maps';
+          }
+          if (id.includes('/recharts/') || id.includes('/chart.js/') || id.includes('/react-chartjs-2/')) {
+            return 'charts';
+          }
+          if (id.includes('/jspdf/')) {
+            return 'pdf';
+          }
+          if (id.includes('/framer-motion/')) {
+            return 'motion';
+          }
+          if (id.includes('/qrcode/') || id.includes('/react-qr-code/')) {
+            return 'qrcode';
+          }
+          if (id.includes('/socket.io-client/') || id.includes('/engine.io-client/') || id.includes('/socket.io-parser/')) {
+            return 'socket';
+          }
+          if (id.includes('/ogl/')) {
+            return 'ogl';
+          }
+
+          return undefined;
+        }
+      }
+    }
+  },
   preview: {
     host: '0.0.0.0',
     port: 3000,

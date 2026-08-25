@@ -1,25 +1,32 @@
 import multer from 'multer';
 import { Request } from 'express';
-import fs from 'fs';
-import path from 'path';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
-// Define the root uploads directory
-const UPLOADS_DIR = path.join(process.cwd(), 'uploads');
+// Object storage for uploaded images/videos, talked to via the S3 API (hence the
+// @aws-sdk/client-s3 import below — MinIO implements that same API) but pointed at our
+// self-hosted MinIO (see docker-compose.yml/k8s), not real AWS S3.
+//
+// This replaces writing uploads to local disk under /app/uploads: that required an
+// RWO (single-node) PVC, which pinned Core to exactly one replica — any pod other than
+// the one that received a given upload couldn't serve it. Object storage has no such
+// per-pod locality, so Core can now run multiple replicas.
+const MINIO_BUCKET = process.env.MINIO_BUCKET || 'zia-uploads';
+const MINIO_PUBLIC_URL = (process.env.MINIO_PUBLIC_URL || 'http://localhost:9000').replace(/\/$/, '');
 
-// Ensure uploads directory exists
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-}
-
-// Ensure subdirectories exist
-['profile-images', 'uploads', 'service-videos'].forEach(folder => {
-  const folderPath = path.join(UPLOADS_DIR, folder);
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true });
-  }
+const s3Client = new S3Client({
+  endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
+  region: process.env.MINIO_REGION || 'us-east-1',
+  credentials: {
+    accessKeyId: process.env.MINIO_ACCESS_KEY || 'minioadmin',
+    secretAccessKey: process.env.MINIO_SECRET_KEY || 'minioadmin',
+  },
+  // MinIO needs path-style URLs (http://host/bucket/key) rather than AWS's
+  // virtual-hosted style (http://bucket.host/key), which only real AWS S3 supports.
+  forcePathStyle: true,
 });
 
-// Configure multer for memory storage
+// Configure multer for memory storage — files are buffered in memory (not written to
+// disk anywhere) and handed straight to the S3 upload functions below.
 const storage = multer.memoryStorage();
 
 export const upload = multer({
@@ -37,32 +44,33 @@ export const upload = multer({
   },
 });
 
-// Upload file to Local Storage
-export const uploadToS3 = async (
-  file: Express.Multer.File,
-  folder: string = 'profile-images'
-): Promise<string> => {
-  // Sanitize filename
+const buildObjectKey = (file: Express.Multer.File, folder: string): string => {
   const sanitizedFilename = file.originalname
     .replace(/\s+/g, '_')
     .replace(/[^a-zA-Z0-9._-]/g, '')
     .replace(/_+/g, '_');
   const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}-${sanitizedFilename}`;
-  
-  // Ensure the specific folder exists
-  const targetFolder = path.join(UPLOADS_DIR, folder);
-  if (!fs.existsSync(targetFolder)) {
-    fs.mkdirSync(targetFolder, { recursive: true });
-  }
+  return `${folder}/${filename}`;
+};
 
-  const filePath = path.join(targetFolder, filename);
+// Upload file to S3-compatible storage
+export const uploadToS3 = async (
+  file: Express.Multer.File,
+  folder: string = 'profile-images'
+): Promise<string> => {
+  const key = buildObjectKey(file, folder);
 
   try {
-    await fs.promises.writeFile(filePath, file.buffer);
-    // Return relative URL path
-    return `/uploads/${folder}/${filename}`;
+    await s3Client.send(new PutObjectCommand({
+      Bucket: MINIO_BUCKET,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    }));
+
+    return `${MINIO_PUBLIC_URL}/${MINIO_BUCKET}/${key}`;
   } catch (error) {
-    console.error('Error uploading file locally:', error);
+    console.error('Error uploading file to S3:', error);
     throw new Error('Failed to upload image');
   }
 };
@@ -83,46 +91,41 @@ export const uploadVideo = multer({
   },
 });
 
-// Upload video to Local Storage
+// Upload video to S3-compatible storage
 export const uploadVideoToS3 = async (
   file: Express.Multer.File,
   folder: string = 'service-videos'
 ): Promise<string> => {
-  const sanitizedFilename = file.originalname
-    .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9._-]/g, '')
-    .replace(/_+/g, '_');
-  const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}-${sanitizedFilename}`;
-  
-  const targetFolder = path.join(UPLOADS_DIR, folder);
-  if (!fs.existsSync(targetFolder)) {
-    fs.mkdirSync(targetFolder, { recursive: true });
-  }
-
-  const filePath = path.join(targetFolder, filename);
+  const key = buildObjectKey(file, folder);
 
   try {
-    await fs.promises.writeFile(filePath, file.buffer);
-    return `/uploads/${folder}/${filename}`;
+    await s3Client.send(new PutObjectCommand({
+      Bucket: MINIO_BUCKET,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    }));
+
+    return `${MINIO_PUBLIC_URL}/${MINIO_BUCKET}/${key}`;
   } catch (error) {
-    console.error('Error uploading video locally:', error);
+    console.error('Error uploading video to S3:', error);
     throw new Error('Failed to upload video');
   }
 };
 
-// Delete file from Local Storage
+// Delete file from S3-compatible storage
 export const deleteFromS3 = async (fileUrl: string): Promise<void> => {
   try {
-    if (!fileUrl.startsWith('/uploads/')) return;
-    
-    // Convert /uploads/folder/filename.ext to absolute path
-    const relativePath = fileUrl.replace('/uploads/', '');
-    const filePath = path.join(UPLOADS_DIR, relativePath);
+    const prefix = `${MINIO_PUBLIC_URL}/${MINIO_BUCKET}/`;
+    if (!fileUrl.startsWith(prefix)) return;
 
-    if (fs.existsSync(filePath)) {
-      await fs.promises.unlink(filePath);
-    }
+    const key = fileUrl.slice(prefix.length);
+
+    await s3Client.send(new DeleteObjectCommand({
+      Bucket: MINIO_BUCKET,
+      Key: key,
+    }));
   } catch (error) {
-    console.error('Error deleting local file:', error);
+    console.error('Error deleting file from S3:', error);
   }
 };

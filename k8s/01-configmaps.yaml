@@ -1,5 +1,6 @@
 # Non-secret configuration. Real secrets (JWT_SECRET, INTERNAL_API_KEY, PayHere/Gmail
-# credentials) are created separately as Kubernetes Secrets — see k8s/README.md.
+# credentials, MinIO/S3 credentials) are created separately as Kubernetes Secrets — see
+# k8s/README.md.
 #
 # Service DNS: any Service in this namespace is reachable by other pods using just its
 # name (e.g. "postgres-core"), since they share the "zia" namespace.
@@ -17,7 +18,18 @@ data:
   # (fresh migration histories) use their own named schemas below.
   DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core"
   RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
+  REDIS_URL: "redis://redis:6379"
   CHAT_SERVICE_URL: "http://chat-service:3001"
+  MINIO_ENDPOINT: "http://minio:9000"
+  # Must be reachable by browsers loading uploaded images/videos, so it can't be the
+  # cluster-internal "minio" DNS name — point it at your ingress host. The app code
+  # builds full URLs as {MINIO_PUBLIC_URL}/{MINIO_BUCKET}/{key}, and 11-ingress.yaml
+  # routes the /zia-uploads path prefix straight through to MinIO (whose own S3 API
+  # expects /<bucket>/<key>) — so this must be just the host, NOT already including
+  # /zia-uploads, or the bucket name ends up duplicated in every uploaded-file URL.
+  MINIO_PUBLIC_URL: "http://localhost:8080"
+  MINIO_BUCKET: "zia-uploads"
+  MINIO_REGION: "us-east-1"
 
 ---
 apiVersion: v1
@@ -30,6 +42,7 @@ data:
   PORT: "3001"
   DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core?schema=chat"
   RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
+  REDIS_URL: "redis://redis:6379"
 
 ---
 apiVersion: v1
@@ -41,6 +54,7 @@ data:
   NODE_ENV: "production"
   PORT: "3002"
   DATABASE_URL: "postgresql://postgres:postgres@postgres-core:5432/zia_core?schema=payment"
+  REDIS_URL: "redis://redis:6379"
   CORE_SERVICE_URL: "http://core-service:3000"
   PAYHERE_MODE: "sandbox"
   PAYHERE_RETURN_URL: "https://your-domain.example/checkout/success"
@@ -59,6 +73,9 @@ data:
   NODE_ENV: "production"
   PORT: "3001"
   DATABASE_URL: "postgresql://postgres:postgres@postgres-notification:5432/zia_com"
-  RABBITMQ_URL: "amqp://guest:guest@rabbitmq-notification:5672"
+  # Same shared broker Core publishes to (see 03-rabbitmq.yaml) — this previously pointed
+  # at rabbitmq-notification, a separate broker nothing else published to, so published
+  # email events were queued on the Core side and never consumed. Now fixed to match.
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672"
   MAIL_HOST: "smtp.gmail.com"
   MAIL_PORT: "465"

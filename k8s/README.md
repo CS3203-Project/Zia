@@ -68,7 +68,13 @@ kubectl create secret generic core-secrets -n zia \
   --from-literal=INTERNAL_API_KEY=<value from Core/.env> \
   --from-literal=GEMINI_API_KEY= \
   --from-literal=EMBEDDING_API_URL= \
-  --from-literal=EMBEDDING_MODEL=
+  --from-literal=EMBEDDING_MODEL= \
+  --from-literal=MINIO_ACCESS_KEY=<same value as MINIO_ROOT_USER below> \
+  --from-literal=MINIO_SECRET_KEY=<same value as MINIO_ROOT_PASSWORD below>
+
+kubectl create secret generic minio-secrets -n zia \
+  --from-literal=MINIO_ROOT_USER=minioadmin \
+  --from-literal=MINIO_ROOT_PASSWORD=minioadmin
 
 kubectl create secret generic chat-secrets -n zia \
   --from-literal=JWT_SECRET=<same value as core> \
@@ -92,6 +98,19 @@ kubectl create secret generic notification-secrets -n zia \
 `JWT_SECRET` and `INTERNAL_API_KEY` must be identical across core/chat/payment (and
 notification for the internal key) — they're how services trust each other and
 verify user tokens.
+
+`minio-secrets`' `MINIO_ROOT_USER`/`MINIO_ROOT_PASSWORD` are consumed three ways: by the
+MinIO Deployment itself (root credentials), by the one-shot `minio-createbuckets` Job
+(to authenticate `mc`), and — under the differently-named keys
+`MINIO_ACCESS_KEY`/`MINIO_SECRET_KEY` in `core-secrets` — by Core's S3-API client
+(Core/src/utils/s3.ts). All three must carry the same values; there's no cross-reference
+between the two Secrets, so if you change one you must change the other.
+
+Redis (`12-redis.yaml`) needs no Secret — it runs unauthenticated, same as in
+docker-compose. That's fine for this local/dev cluster but is a real gap for a
+production deployment (anyone who can reach the Service can read/write everything in
+it); add `requirepass` (or a managed Redis with auth) before running this anywhere
+Internet-reachable.
 
 ## 5. Apply everything else
 
@@ -128,12 +147,22 @@ cd Chat && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/zia_core?
 cd Payment && DATABASE_URL="postgresql://postgres:postgres@localhost:5432/zia_core?schema=payment" npx prisma migrate deploy
 ```
 
-## 7. Point PAYHERE_NOTIFY_URL at something PayHere can reach
+## 7. Point PAYHERE_NOTIFY_URL and MINIO_PUBLIC_URL at something reachable
 
 `k8s/01-configmaps.yaml`'s `PAYHERE_NOTIFY_URL` is a placeholder — PayHere calls this
 over the public internet, so it must be your actual ingress host once you have one
 (a cloud load balancer IP/DNS name, or a tunnel for local testing). Update the
 ConfigMap and restart the `payment` Deployment after changing it.
+
+Similarly, `MINIO_PUBLIC_URL` (also in `core-config`) is the host Core prepends to the
+URLs it hands back for uploaded images/videos — it builds the full URL as
+`{MINIO_PUBLIC_URL}/zia-uploads/<key>`, so this must be **just the ingress host, with no
+path** (it defaults to `http://localhost:8080`, matching the ingress host
+`kind-config.yaml` maps to your machine; the `/zia-uploads` portion of the final URL
+comes from the bucket name the app code appends, and is what the `/zia-uploads` rule in
+`11-ingress.yaml` routes to MinIO). If you change the ingress host (a real domain, a
+different port), update `MINIO_PUBLIC_URL` to match and restart the `core` Deployment,
+or uploaded-file URLs in API responses will point somewhere nothing is listening.
 
 ## 8. Verify
 
@@ -154,9 +183,14 @@ kubectl rollout restart deployment/core -n zia
 
 ## Known limitations of this setup
 
-- Chat's Socket.IO presence state is in-memory — stays at `replicas: 1` until a shared
-  adapter (e.g. Redis) is added.
+- Redis (`12-redis.yaml`) runs unauthenticated, matching docker-compose — a real gap if
+  this were ever deployed somewhere network-reachable. See the Redis note under step 4.
 - No TLS/cert-manager configured — this is a local dev cluster, not a production one.
 - The Frontend image bakes `VITE_*` URLs in at build time — if you change
   `Frontend/.env`, you must rebuild and reload the `zia/frontend:dev` image, not just
   restart the pod.
+- MinIO (`13-minio.yaml`) runs as a single unauthenticated-console, single-replica pod
+  with root credentials shared across every consumer (see step 4) — fine for local dev,
+  but swap in real AWS S3 (or a properly access-controlled MinIO deployment) for
+  production by changing `MINIO_ENDPOINT`/credentials; the app code only ever talks to
+  the S3 API (Core/src/utils/s3.ts), so nothing else needs to change.

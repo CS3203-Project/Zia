@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import { prisma } from './src/utils/database.js';
+import { redis } from './src/utils/redis.js';
 import express, { type Application } from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
+import { RedisStore } from 'rate-limit-redis';
 import paymentRoutes from './src/routes/payment.route.js';
 import adminRoutes from './src/routes/admin.route.js';
 
@@ -21,12 +23,17 @@ const app: Application = express();
 
 app.use(cors({ origin: true, credentials: true }));
 
+// Backed by Redis (shared across pods) instead of the default in-memory store — see the
+// matching comment in Core/index.ts for why that mattered.
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000,
-  max: 10000,
+  max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => req.method === 'OPTIONS',
+  store: new RedisStore({
+    sendCommand: (...args: string[]) => redis.call(...(args as [string, ...string[]])) as Promise<any>,
+  }),
 });
 app.use(limiter);
 

@@ -12,8 +12,11 @@
   "description": "Chat (real-time messaging) microservice for the Zia platform",
   "dependencies": {
     "@prisma/client": "6.17.0",
+    "@socket.io/redis-adapter": "^8.3.0",
     "amqplib": "^0.10.9",
     "cors": "^2.8.5",
+    "ioredis": "^5.4.1",
+    "rate-limit-redis": "^4.2.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",

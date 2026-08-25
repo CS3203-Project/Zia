@@ -1,0 +1,105 @@
+# Self-hosted object storage for uploaded images/videos — replaces the old core-uploads
+# PVC (removed from 05-core.yaml), which pinned Core to a single replica (an RWO PVC can
+# only mount to one node/pod). Core talks to this via the S3 API (@aws-sdk/client-s3,
+# see Core/src/utils/s3.ts) but against MinIO here, not real AWS S3 — swap
+# MINIO_ENDPOINT/credentials in 01-configmaps.yaml/core-secrets if you outgrow this.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-data
+  namespace: zia
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: zia
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: minio/minio:latest
+          args: ["server", "/data", "--console-address", ":9001"]
+          envFrom:
+            - secretRef:
+                name: minio-secrets
+          ports:
+            - containerPort: 9000
+            - containerPort: 9001
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: zia
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: s3
+      port: 9000
+      targetPort: 9000
+    - name: console
+      port: 9001
+      targetPort: 9001
+
+---
+# One-shot equivalent of docker-compose's `createbuckets` service: creates the
+# zia-uploads bucket and makes it publicly downloadable (uploaded images/videos are
+# served directly by URL). The retry loop below stands in for docker-compose's
+# `depends_on: minio` — Jobs have no built-in "wait for another workload to be ready"
+# primitive, so it polls until MinIO answers instead of relying on ordering.
+# Re-running is safe (--ignore-existing). Apply/re-run manually if it ever needs to
+# run again: `kubectl delete job/minio-createbuckets -n zia && kubectl apply -f k8s/13-minio.yaml`.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-createbuckets
+  namespace: zia
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: createbuckets
+          image: minio/mc:latest
+          envFrom:
+            - secretRef:
+                name: minio-secrets
+          command:
+            - /bin/sh
+            - -c
+            - |
+              until mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do sleep 1; done
+              mc mb --ignore-existing local/zia-uploads
+              mc anonymous set download local/zia-uploads
