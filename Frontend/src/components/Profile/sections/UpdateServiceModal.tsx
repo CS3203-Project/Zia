@@ -54,7 +54,7 @@ export default function UpdateServiceModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 pt-24 sm:pt-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 pt-24 sm:pt-4">
       <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden my-auto">
         {/* Header */}
         <div className="flex items-center justify-between px-8 pt-8 pb-6 border-b border-gray-100 flex-shrink-0">
@@ -232,7 +232,7 @@ export default function UpdateServiceModal({
                 id="isActive"
                 checked={serviceFormData.isActive}
                 onChange={(e) => onFormChange('isActive', e.target.checked)}
-                className="rounded border-gray-300 bg-white text-orange-500 focus:ring-orange-500 focus:ring-offset-0"
+                className="rounded border-gray-300 bg-white accent-orange-500 focus:ring-orange-500 focus:ring-offset-0"
               />
               <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
                 Service is active and visible to clients
