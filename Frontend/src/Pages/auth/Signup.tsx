@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Lock, User, Phone, MapPin, Home, Check, Eye, EyeOff, Loader, ArrowRight, Compass, Zap, Award, ShieldCheck } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { userApi, type RegisterUserData } from '../../api/userApi';
@@ -215,14 +216,23 @@ export default function SignupForm() {
           <div className="lg:col-span-3 flex flex-col justify-center h-full max-h-[640px]">
             <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 flex flex-col h-full overflow-y-auto">
               {/* Logo + heading */}
-              <div className="flex items-center gap-2.5 mb-4">
-                <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-sm shadow-orange-500/30 flex-shrink-0">
-                  <img src="/logo_svg_only_light.svg" alt="Logo" className="h-4.5 w-4.5" />
+              <div className="flex items-center justify-between gap-2.5 mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-sm shadow-orange-500/30 flex-shrink-0">
+                    <img src="/logo_svg_only_light.svg" alt="Logo" className="h-4.5 w-4.5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 leading-tight">Create Account</h2>
+                    <p className="text-xs text-gray-500">Join our community today</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-lg font-bold text-gray-900 leading-tight">Create Account</h2>
-                  <p className="text-xs text-gray-500">Join our community today</p>
-                </div>
+                <Link
+                  to="/"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-orange-600 transition-colors flex-shrink-0"
+                >
+                  Continue without logging in
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-3">

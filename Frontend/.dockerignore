@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+*.log
+npm-debug.log*
+.vscode
+coverage
+
+# Unlike the backend services, Vite bakes VITE_* vars into the bundle at BUILD time —
+# .env must stay in this image's build context, or every import.meta.env.VITE_* becomes
+# undefined and the app silently calls its own origin instead of the real API hosts.

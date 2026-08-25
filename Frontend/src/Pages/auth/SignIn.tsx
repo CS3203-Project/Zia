@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { userApi } from '../../api/userApi';
 import { useAuth } from '../../contexts/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
@@ -103,11 +104,20 @@ export default function SignIn() {
           {/* Right Side - Sign In Form */}
           <div className="lg:col-span-3 flex flex-col justify-center max-w-md mx-auto w-full">
             {/* Logo */}
-            <div className="flex items-center gap-2.5 mb-6">
-              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-sm shadow-orange-500/30">
-                <img src="/logo_svg_only_light.svg" alt="Logo" className="h-5 w-5" />
+            <div className="flex items-center justify-between gap-2.5 mb-6">
+              <div className="flex items-center gap-2.5">
+                <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-sm shadow-orange-500/30">
+                  <img src="/logo_svg_only_light.svg" alt="Logo" className="h-5 w-5" />
+                </div>
+                <span className="text-xl font-bold text-gray-900">Zia</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Zia</span>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-orange-600 transition-colors"
+              >
+                Continue without logging in
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
 
             <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
