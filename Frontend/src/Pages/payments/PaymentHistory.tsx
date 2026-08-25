@@ -97,9 +97,21 @@ const PaymentHistory: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handleRetryPayment = (_paymentId: string) => {
-    // Implement retry logic - could redirect to payment page with service info
-    toast.success('Retry payment functionality would be implemented here');
+  /**
+   * Takes the user back to the service so they can start the booking again.
+   *
+   * This used to pop a success toast saying retry "would be implemented here",
+   * which told the customer their payment had been retried when nothing had
+   * happened at all. Payment now runs through the booking panel, so the honest
+   * action is to send them to the service rather than fake a charge.
+   */
+  const handleRetryPayment = (paymentId: string) => {
+    const payment = payments.find((p) => p.id === paymentId);
+    if (payment?.serviceId) {
+      navigate(`/service/${payment.serviceId}`);
+      return;
+    }
+    toast.error('We could not find that service. Please search for it again.');
   };
 
   if (!isLoggedIn || !user) {

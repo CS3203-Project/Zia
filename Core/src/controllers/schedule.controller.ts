@@ -33,10 +33,7 @@ export const getCurrentScheduleTimes = async (req: Request, res: Response) => {
   }
 };
 
-export const createSchedule = async (req: Request, res: Response) => {
-  // Implementation for creating schedule
-};
-
-export const updateSchedule = async (req: Request, res: Response) => {
-  // Implementation for updating schedule
-};
+// createSchedule / updateSchedule used to live here as empty stubs. They were
+// routed but never sent a response, so any request to them held the connection
+// open until it timed out. Bookings are created and updated through
+// /api/bookings now, so the routes were removed rather than implemented.

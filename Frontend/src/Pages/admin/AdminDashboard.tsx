@@ -293,19 +293,31 @@ const AdminDashboard: React.FC = () => {
           </div>
 
           {/* Navigation Tabs */}
-          <nav className="flex items-center gap-1 overflow-x-auto pb-3 -mx-1 px-1" aria-label="Tabs">
+          {/* Eight tabs don't fit a phone, so this scrolls. Two things make that
+              workable: the strip fades at its right edge so it reads as
+              scrollable, and the selected tab scrolls itself into view - it
+              could otherwise sit off-screen with no sign of which one is on. */}
+          <nav
+            className="-mx-1 flex items-center gap-1 overflow-x-auto px-1 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            aria-label="Tabs"
+          >
             {[
-              { id: 'overview', label: 'Overview', icon: TrendingUp },
-              { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, icon: UserCheck },
-              { id: 'payouts', label: 'Payouts', icon: Banknote },
-              { id: 'refunds', label: 'Refunds', icon: Undo2 },
-              { id: 'listings', label: 'Listings', icon: ClipboardCheck },
-              { id: 'categories', label: 'Categories', icon: FolderTree },
-              { id: 'settings', label: 'Platform Settings', icon: SlidersHorizontal },
-              { id: 'profile', label: 'Admin Profile', icon: Settings },
+              { id: 'overview', label: 'Overview', shortLabel: 'Overview', icon: TrendingUp },
+              { id: 'providers', label: `Service Providers (${serviceProviders?.length || 0})`, shortLabel: 'Providers', icon: UserCheck },
+              { id: 'payouts', label: 'Payouts', shortLabel: 'Payouts', icon: Banknote },
+              { id: 'refunds', label: 'Refunds', shortLabel: 'Refunds', icon: Undo2 },
+              { id: 'listings', label: 'Listings', shortLabel: 'Listings', icon: ClipboardCheck },
+              { id: 'categories', label: 'Categories', shortLabel: 'Categories', icon: FolderTree },
+              { id: 'settings', label: 'Platform Settings', shortLabel: 'Settings', icon: SlidersHorizontal },
+              { id: 'profile', label: 'Admin Profile', shortLabel: 'Profile', icon: Settings },
             ].map((tab) => (
               <button
                 key={tab.id}
+                ref={(el) => {
+                  if (el && activeTab === tab.id) {
+                    el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+                  }
+                }}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`${
                   activeTab === tab.id
@@ -314,7 +326,10 @@ const AdminDashboard: React.FC = () => {
                 } whitespace-nowrap flex-shrink-0 px-4 py-2 rounded-full font-medium text-sm flex items-center transition-colors`}
               >
                 <tab.icon className="w-4 h-4 mr-2" />
-                {tab.label}
+                {/* Shorter labels on phones, so eight tabs need far less
+                    scrolling; the full wording returns at sm and up. */}
+                <span className="sm:hidden">{tab.shortLabel}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
             ))}
           </nav>

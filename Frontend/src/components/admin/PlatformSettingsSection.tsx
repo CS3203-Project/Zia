@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, Save, AlertCircle, Percent, SlidersHorizontal } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminApi, type PlatformSetting } from '../../api/adminApi';
+import Toggle from '../shared/Toggle';
 
 type Values = Record<string, number | boolean>;
 
@@ -109,23 +110,11 @@ const PlatformSettingsSection: React.FC = () => {
 
                   <div className="flex-shrink-0">
                     {spec.type === 'boolean' ? (
-                      <button
-                        type="button"
-                        role="switch"
-                        aria-checked={Boolean(values[spec.key])}
-                        onClick={() =>
-                          setValues((v) => ({ ...v, [spec.key]: !v[spec.key] }))
-                        }
-                        className={`relative h-6 w-11 rounded-full transition-colors ${
-                          values[spec.key] ? 'bg-orange-500' : 'bg-gray-300'
-                        }`}
-                      >
-                        <span
-                          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                            values[spec.key] ? 'translate-x-[22px]' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
+                      <Toggle
+                        checked={Boolean(values[spec.key])}
+                        onChange={(next) => setValues((v) => ({ ...v, [spec.key]: next }))}
+                        label={spec.label}
+                      />
                     ) : (
                       <div className="flex items-center gap-2">
                         <input

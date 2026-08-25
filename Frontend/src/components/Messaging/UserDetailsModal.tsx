@@ -341,9 +341,18 @@ const UserDetailsModal: React.FC<UserDetailsModalProps> = ({
                             </div>
                             <div>
                               <p className="text-gray-900 font-medium">
-                                {userRole === 'PROVIDER'
-                                  ? `Given to: ${review.reviewee?.firstName} ${review.reviewee?.lastName}` || 'Unknown'
-                                  : `By: ${review.reviewer?.firstName} ${review.reviewer?.lastName}` || 'Unknown'}
+                                {/* A template literal is always truthy, so the old
+                                    `...` || 'Unknown' fallback was dead code and a
+                                    missing name rendered as "undefined undefined".
+                                    Build the name first, then fall back. */}
+                                {(() => {
+                                  const person =
+                                    userRole === 'PROVIDER' ? review.reviewee : review.reviewer;
+                                  const name =
+                                    [person?.firstName, person?.lastName].filter(Boolean).join(' ') ||
+                                    'Unknown';
+                                  return userRole === 'PROVIDER' ? `Given to: ${name}` : `By: ${name}`;
+                                })()}
                               </p>
                               <div className="flex items-center space-x-2">
                                 {renderStars(review.rating)}

@@ -1,33 +1,19 @@
 import { Router } from 'express';
-import { getCurrentScheduleTimes, createSchedule, updateSchedule } from '../controllers/schedule.controller.js';
+import { getCurrentScheduleTimes } from '../controllers/schedule.controller.js';
 import validate from '../middlewares/validation.middleware.js';
-import { serviceIdSchema, createScheduleSchema, updateScheduleSchema } from '../validators/schedule.validator.js';
-import authMiddleware from '../middlewares/auth.middleware.js';
+import { serviceIdSchema } from '../validators/schedule.validator.js';
 
 const router: Router = Router();
 
-// Apply authentication middleware to all routes
-// router.use(authMiddleware);
-
 /**
- * @route   GET /api/schedules/current/:serviceId
- * @desc    Get current schedule times for a service (confirmed by both user and provider)
+ * @route   GET /api/schedule/current/:serviceId
+ * @desc    Upcoming slots the service's provider is already committed to
  * @access  Public
+ *
+ * The POST / and PUT /:id routes that used to sit here pointed at empty stub
+ * handlers which never sent a response, so calling them hung the connection
+ * until it timed out. Bookings are created and updated via /api/bookings.
  */
 router.get('/current/:serviceId', validate(serviceIdSchema), getCurrentScheduleTimes);
-
-/**
- * @route   POST /api/schedules
- * @desc    Create a new schedule
- * @access  Private
- */
-router.post('/', validate(createScheduleSchema), createSchedule);
-
-/**
- * @route   PUT /api/schedules/:id
- * @desc    Update a schedule
- * @access  Private
- */
-router.put('/:id', validate(updateScheduleSchema), updateSchedule);
 
 export default router;

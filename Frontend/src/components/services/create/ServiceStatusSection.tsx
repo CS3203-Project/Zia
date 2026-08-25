@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiEye } from 'react-icons/fi';
+import Toggle from '../../shared/Toggle';
 
 interface ServiceStatusSectionProps {
   isActive: boolean;
@@ -30,24 +31,11 @@ const ServiceStatusSection: React.FC<ServiceStatusSectionProps> = ({ isActive, o
         </p>
         </div>
       </div>
-      <label className="flex items-center cursor-pointer">
-        <div className="relative">
-        <input
-          type="checkbox"
-          checked={isActive}
-          onChange={(e) => onToggleActive(e.target.checked)}
-          className="sr-only"
-          aria-label="Toggle service active status"
-        />
-        <div className={`w-12 h-6 rounded-full shadow-inner transition-colors duration-300 border-2 ${
-          isActive ? 'bg-orange-500 border-orange-500' : 'bg-gray-200 border-gray-300'
-        }`}>
-          <div className={`w-5 h-5 bg-white rounded-full shadow mt-0.5 ml-0.5 transition-transform duration-300 border ${
-          isActive ? 'transform translate-x-5 border-orange-500' : 'border-gray-300'
-          }`}></div>
-        </div>
-        </div>
-      </label>
+      <Toggle
+        checked={isActive}
+        onChange={onToggleActive}
+        label="Toggle service active status"
+      />
       </div>
     </div>
   );
