@@ -94,7 +94,7 @@ export default function RecentReviewsCard({ reviews, averageRating, totalReviews
         <div className="pt-4 border-t border-gray-200 mt-6">
           <Button
             variant="outline"
-            className="w-full justify-center flex items-center space-x-2 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+            className="w-full justify-center flex items-center space-x-2"
           >
             <span>View All {totalReviews || reviews.length} Reviews</span>
             <Star className="w-4 h-4" />

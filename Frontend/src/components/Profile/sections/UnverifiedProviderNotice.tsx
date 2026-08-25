@@ -20,7 +20,7 @@ export default function UnverifiedProviderNotice({
           <Clock className="h-12 w-12 text-yellow-400" />
         </div>
         <h2 className="text-2xl font-semibold text-gray-900 mb-2">Verification in Progress</h2>
-        <p className="text-gray-400 mb-6">
+        <p className="text-gray-500 mb-6">
           Your provider profile has been submitted and is currently under review.
           Our team is verifying your information and credentials.
         </p>
@@ -33,20 +33,18 @@ export default function UnverifiedProviderNotice({
             <li>• Once verified, you can start adding services</li>
           </ul>
         </div>
-        <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button
             onClick={onEditProvider}
-            variant="outline"
-            size="lg"
-            className="flex items-center space-x-2 mx-auto px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-gray-900 border-2 !border-white/40 hover:!border-white/60 !rounded-full backdrop-blur-md shadow-[0_8px_24px_0_rgba(0,0,0,0.15)] hover:shadow-[0_12px_32px_0_rgba(0,0,0,0.25)] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+            className="flex items-center space-x-2"
           >
-            <Edit2 className="h-5 w-5" />
+            <Edit2 className="h-4 w-4" />
             <span>Edit Profile</span>
           </Button>
           <Button
             onClick={onCancelApplication}
-            variant="ghost"
-            className="px-6 py-3 text-base font-semibold !bg-white hover:!bg-white/90 !text-red-400 border-2 !border-white/40 hover:!border-red-400/60 !rounded-full backdrop-blur-md shadow-[0_8px_24px_0_rgba(239,68,68,0.2)] hover:shadow-[0_12px_32px_0_rgba(239,68,68,0.3)] hover:scale-105 hover:-translate-y-1 transition-all duration-300"
+            variant="outline"
+            className="!text-red-600 !border-red-200 hover:!bg-red-50 hover:!border-red-300 hover:!text-red-700"
           >
             Cancel Application
           </Button>
@@ -55,7 +53,7 @@ export default function UnverifiedProviderNotice({
         {/* Show basic provider info */}
         <div className="mt-8 text-left">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Submitted Information</h3>
-          <div className="space-y-4 p-4 rounded-lg bg-white/70 border border-gray-200">
+          <div className="space-y-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
             {providerProfile.bio && (
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">Bio</h4>
@@ -70,7 +68,7 @@ export default function UnverifiedProviderNotice({
                   {providerProfile.skills.map((skill, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-gray-100 text-blue-400 border border-blue-300/60 rounded-full text-sm"
+                      className="px-3 py-1 bg-orange-50 text-orange-700 border border-orange-100 rounded-full text-sm"
                     >
                       {skill}
                     </span>
@@ -85,7 +83,7 @@ export default function UnverifiedProviderNotice({
                 <div className="space-y-1">
                   {providerProfile.qualifications.map((qualification, index) => (
                     <div key={index} className="flex items-center space-x-2">
-                      <Award className="h-4 w-4 text-blue-500" />
+                      <Award className="h-4 w-4 text-orange-600" />
                       <span className="text-gray-500 text-base">{qualification}</span>
                     </div>
                   ))}

@@ -16,14 +16,13 @@ export default function CompaniesCard({
   onDeleteCompanyClick
 }: CompaniesCardProps) {
   return (
-    <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-gray-100">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-900">Companies</h2>
         <Button
           onClick={onAddCompany}
-          variant="white"
           size="sm"
-          className="flex items-center space-x-2 px-5 py-2.5 text-sm font-semibold rounded-full hover:scale-105 hover:-translate-y-0.5 transition-all duration-300"
+          className="flex items-center space-x-2"
         >
           <Plus className="h-4 w-4" />
           <span>Add Company</span>
@@ -33,7 +32,7 @@ export default function CompaniesCard({
       {companies && companies.length > 0 ? (
         <div className="space-y-4">
           {companies.map((company) => (
-            <div key={company.id} className="border border-gray-100 rounded-lg p-4 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-200">
+            <div key={company.id} className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-3">
                   {company.logo ? (
@@ -43,38 +42,37 @@ export default function CompaniesCard({
                       className="w-12 h-12 rounded-lg object-cover border border-gray-100"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center border border-gray-100">
+                    <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center border border-gray-100">
                       <Building className="h-6 w-6 text-gray-400" />
                     </div>
                   )}
                   <div>
                     <h3 className="font-semibold text-gray-900">{company.name}</h3>
                     {company.description && (
-                      <p className="text-gray-400 text-sm mt-1">{company.description}</p>
+                      <p className="text-gray-500 text-sm mt-1">{company.description}</p>
                     )}
                   </div>
                 </div>
                 <div className="flex space-x-2">
                   <Button
                     onClick={() => onEditCompany(company)}
-                    variant="white"
-                    size="sm"
-                    className="p-2.5 rounded-full hover:scale-110 transition-all duration-300"
+                    variant="tonal"
+                    size="icon"
                   >
                     <Edit2 className="h-4 w-4" />
                   </Button>
                   <Button
                     onClick={() => onDeleteCompanyClick(company.id)}
-                    variant="white"
-                    size="sm"
-                    className="p-2.5 !text-red-400 hover:!text-red-700 rounded-full hover:scale-110 transition-all duration-300"
+                    variant="outline"
+                    size="icon"
+                    className="!text-red-600 !border-red-200 hover:!bg-red-50 hover:!border-red-300 hover:!text-red-700"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-400">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
                 {company.address && (
                   <div className="flex items-center space-x-2">
                     <MapPin className="h-4 w-4" />
@@ -98,7 +96,7 @@ export default function CompaniesCard({
                         href={link.startsWith('http') ? link : `https://${link}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                        className="flex items-center text-orange-600 hover:text-orange-700 text-sm transition-colors duration-200"
                       >
                         <ExternalLink className="h-3 w-3 mr-1" />
                         {new URL(link.startsWith('http') ? link : `https://${link}`).hostname}
@@ -112,13 +110,11 @@ export default function CompaniesCard({
         </div>
       ) : (
         <div className="text-center py-8">
-          <Building className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-          <p className="text-gray-400 mb-4">No companies added yet</p>
+          <Building className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500 mb-4">No companies added yet</p>
           <Button
             onClick={onAddCompany}
-            variant="white"
             size="sm"
-            className="rounded-full"
           >
             Add Your First Company
           </Button>

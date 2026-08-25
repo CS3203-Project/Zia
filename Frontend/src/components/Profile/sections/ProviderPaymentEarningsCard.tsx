@@ -47,9 +47,9 @@ export default function ProviderPaymentEarningsCard({
         </div>
         <Button
           onClick={onTogglePaymentHistory}
-          variant="white"
+          variant="tonal"
           size="sm"
-          className="flex items-center space-x-2 rounded-full"
+          className="flex items-center space-x-2"
         >
           <CreditCard className="h-4 w-4" />
           <span>{showPaymentHistory ? 'Hide History' : 'View History'}</span>
@@ -219,9 +219,9 @@ export default function ProviderPaymentEarningsCard({
                   <Button
                     onClick={() => onPageChange(paymentPage - 1)}
                     disabled={paymentPage <= 1}
-                    variant="white"
+                    variant="outline"
                     size="sm"
-                    className="flex items-center space-x-1 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center space-x-1"
                   >
                     <ChevronLeft className="h-4 w-4" />
                     <span>Previous</span>
@@ -234,9 +234,9 @@ export default function ProviderPaymentEarningsCard({
                   <Button
                     onClick={() => onPageChange(paymentPage + 1)}
                     disabled={paymentPage >= totalPaymentPages}
-                    variant="white"
+                    variant="outline"
                     size="sm"
-                    className="flex items-center space-x-1 rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center space-x-1"
                     >
                       <span>Next</span>
                       <ChevronRight className="h-4 w-4" />

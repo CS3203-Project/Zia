@@ -13,6 +13,11 @@ interface CompanyModalProps {
   company?: Company | null;
 }
 
+const inputClass =
+  'w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors hover:border-gray-300';
+
+const labelClass = 'block text-sm font-medium text-gray-700 mb-2';
+
 export default function CompanyModal({ isOpen, onClose, onSuccess, company }: CompanyModalProps) {
   const [formData, setFormData] = useState({
     name: company?.name || '',
@@ -98,7 +103,7 @@ export default function CompanyModal({ isOpen, onClose, onSuccess, company }: Co
 
     try {
       let result: Company;
-      
+
       if (company) {
         // Update existing company
         const updateData: UpdateCompanyData = {};
@@ -110,7 +115,7 @@ export default function CompanyModal({ isOpen, onClose, onSuccess, company }: Co
         if (JSON.stringify(formData.socialmedia) !== JSON.stringify(company.socialmedia)) {
           updateData.socialmedia = formData.socialmedia;
         }
-        
+
         result = await userApi.updateCompany(company.id, updateData);
         toast.success('Company updated successfully!');
       } else {
@@ -123,7 +128,7 @@ export default function CompanyModal({ isOpen, onClose, onSuccess, company }: Co
           contact: formData.contact || undefined,
           socialmedia: formData.socialmedia.length > 0 ? formData.socialmedia : undefined
         };
-        
+
         result = await userApi.createCompany(createData);
         toast.success('Company created successfully!');
       }
@@ -138,248 +143,258 @@ export default function CompanyModal({ isOpen, onClose, onSuccess, company }: Co
   };
 
   return (
-    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {company ? 'Edit Company' : 'Add New Company'}
-          </h2>
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-start sm:items-center justify-center z-50 p-4 pt-24 sm:pt-4 overflow-y-auto">
+      <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden my-auto">
+        {/* Header */}
+        <div className="flex items-start justify-between px-8 pt-8 pb-6 border-b border-gray-100 flex-shrink-0">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {company ? 'Edit Company' : 'Add New Company'}
+            </h2>
+            <p className="text-gray-500 mt-1">
+              {company ? 'Update your company details' : 'Add a company to showcase alongside your services'}
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
           >
-            <X className="h-6 w-6 text-gray-400" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Company Name */}
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Company Name *
-            </label>
-            <div className="relative">
-              <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto">
+          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
+            {/* Company Name */}
+            <div>
+              <label htmlFor="name" className={labelClass}>
+                Company Name *
+              </label>
+              <div className="relative">
+                <Building className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className={inputClass}
+                  placeholder="Enter company name"
+                />
+              </div>
+            </div>
+
+            {/* Description */}
+            <div>
+              <label htmlFor="description" className={labelClass}>
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
                 onChange={handleInputChange}
-                required
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter company name"
+                rows={3}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors hover:border-gray-300 resize-none"
+                placeholder="Describe your company..."
               />
             </div>
-          </div>
 
-          {/* Description */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              rows={3}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Describe your company..."
-            />
-          </div>
+            {/* Company Logo Upload */}
+            <div>
+              <label className={labelClass}>
+                Company Logo
+              </label>
+              <div className="space-y-4">
+                {/* Current Logo Preview */}
+                {formData.logo && (
+                  <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="flex-shrink-0">
+                      <img
+                        src={formData.logo}
+                        alt="Company logo preview"
+                        className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">Current Logo</p>
+                      <p className="text-xs text-gray-500 truncate">{formData.logo}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeLogo}
+                      className="flex-shrink-0 p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Remove logo"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
 
-          {/* Company Logo Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Company Logo
-            </label>
-            <div className="space-y-4">
-              {/* Current Logo Preview */}
-              {formData.logo && (
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <div className="flex-shrink-0">
-                    <img
-                      src={formData.logo}
-                      alt="Company logo preview"
-                      className="w-16 h-16 object-cover rounded-lg border border-gray-200"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
+                {/* Upload Section */}
+                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-orange-300 transition-colors">
+                  <div className="space-y-2">
+                    <Upload className="mx-auto h-8 w-8 text-gray-400" />
+                    <div className="text-sm text-gray-600">
+                      <label htmlFor="logo-upload" className="relative cursor-pointer font-medium text-orange-600 hover:text-orange-700">
+                        <span>Upload a logo</span>
+                        <input
+                          id="logo-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          disabled={uploadingLogo}
+                          className="sr-only"
+                        />
+                      </label>
+                      <span> or drag and drop</span>
+                    </div>
+                    <p className="text-xs text-gray-400">PNG, JPG, GIF up to 5MB</p>
+                    {uploadingLogo && (
+                      <div className="flex items-center justify-center space-x-2 text-orange-600">
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-orange-200 border-t-orange-600"></div>
+                        <span className="text-sm">Uploading...</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Manual URL Input */}
+                <div>
+                  <p className="text-xs text-gray-400 mb-2 text-center">Or enter logo URL manually:</p>
+                  <div className="relative">
+                    <Image className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="url"
+                      name="logo"
+                      value={formData.logo}
+                      onChange={handleInputChange}
+                      className={inputClass}
+                      placeholder="https://example.com/logo.png"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Address */}
+            <div>
+              <label htmlFor="address" className={labelClass}>
+                Address
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                  placeholder="Company address"
+                />
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <label htmlFor="contact" className={labelClass}>
+                Contact Information
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  id="contact"
+                  name="contact"
+                  value={formData.contact}
+                  onChange={handleInputChange}
+                  className={inputClass}
+                  placeholder="Phone number or email"
+                />
+              </div>
+            </div>
+
+            {/* Social Media */}
+            <div>
+              <label className={labelClass}>
+                Social Media Links
+              </label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Globe className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      type="url"
+                      value={socialMediaInput}
+                      onChange={(e) => setSocialMediaInput(e.target.value)}
+                      className={inputClass}
+                      placeholder="https://example.com/yourcompany"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addSocialMedia();
+                        }
                       }}
                     />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">Current Logo</p>
-                    <p className="text-xs text-gray-500 truncate">{formData.logo}</p>
-                  </div>
-                  <button
+                  <Button
                     type="button"
-                    onClick={removeLogo}
-                    className="flex-shrink-0 p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Remove logo"
+                    onClick={addSocialMedia}
+                    variant="tonal"
+                    size="sm"
+                    className="px-4"
                   >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                    Add
+                  </Button>
                 </div>
-              )}
 
-              {/* Upload Section */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-                <div className="space-y-2">
-                  <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                  <div className="text-sm text-gray-600">
-                    <label htmlFor="logo-upload" className="relative cursor-pointer font-medium text-blue-600 hover:text-blue-500">
-                      <span>Upload a logo</span>
-                      <input
-                        id="logo-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        disabled={uploadingLogo}
-                        className="sr-only"
-                      />
-                    </label>
-                    <span> or drag and drop</span>
+                {formData.socialmedia.length > 0 && (
+                  <div className="space-y-2">
+                    {formData.socialmedia.map((link, index) => (
+                      <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                        <span className="text-sm text-gray-700 truncate flex-1">{link}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeSocialMedia(index)}
+                          className="ml-2 text-red-500 hover:text-red-700"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
-                  {uploadingLogo && (
-                    <div className="flex items-center justify-center space-x-2 text-blue-600">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span className="text-sm">Uploading...</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Manual URL Input */}
-              <div className="text-center">
-                <p className="text-xs text-gray-500 mb-2">Or enter logo URL manually:</p>
-                <div className="relative">
-                  <Image className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type="url"
-                    name="logo"
-                    value={formData.logo}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/logo.png"
-                  />
-                </div>
+                )}
               </div>
             </div>
-          </div>
+          </form>
+        </div>
 
-          {/* Address */}
-          <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-              Address
-            </label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Company address"
-              />
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <label htmlFor="contact" className="block text-sm font-medium text-gray-700 mb-2">
-              Contact Information
-            </label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                id="contact"
-                name="contact"
-                value={formData.contact}
-                onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Phone number or email"
-              />
-            </div>
-          </div>
-
-          {/* Social Media */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Social Media Links
-            </label>
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    type="url"
-                    value={socialMediaInput}
-                    onChange={(e) => setSocialMediaInput(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/yourcompany"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        addSocialMedia();
-                      }
-                    }}
-                  />
-                </div>
-                <Button
-                  type="button"
-                  onClick={addSocialMedia}
-                  variant="outline"
-                  size="sm"
-                  className="px-4"
-                >
-                  Add
-                </Button>
-              </div>
-              
-              {formData.socialmedia.length > 0 && (
-                <div className="space-y-2">
-                  {formData.socialmedia.map((link, index) => (
-                    <div key={index} className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
-                      <span className="text-sm text-gray-700 truncate flex-1">{link}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeSocialMedia(index)}
-                        className="ml-2 text-red-600 hover:text-red-800"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Submit Buttons */}
-          <div className="flex space-x-4 pt-4">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={onClose}
-              className="flex-1"
-              disabled={loading || uploadingLogo}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1"
-              disabled={loading || uploadingLogo || !formData.name.trim()}
-            >
-              {loading ? 'Saving...' : uploadingLogo ? 'Uploading...' : company ? 'Update Company' : 'Create Company'}
-            </Button>
-          </div>
-        </form>
+        {/* Footer */}
+        <div className="flex space-x-3 px-8 py-6 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="flex-1"
+            disabled={loading || uploadingLogo}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className="flex-1"
+            disabled={loading || uploadingLogo || !formData.name.trim()}
+          >
+            {loading ? 'Saving...' : uploadingLogo ? 'Uploading...' : company ? 'Update Company' : 'Create Company'}
+          </Button>
+        </div>
       </div>
     </div>
   );

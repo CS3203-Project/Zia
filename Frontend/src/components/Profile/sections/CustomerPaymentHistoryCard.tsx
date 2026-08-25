@@ -33,9 +33,9 @@ export default function CustomerPaymentHistoryCard({
           </div>
           <Button
             onClick={onTogglePaymentHistory}
-            variant="outline"
+            variant="tonal"
             size="sm"
-            className="flex items-center space-x-2 bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200 hover:border-orange-300 backdrop-blur-sm"
+            className="flex items-center space-x-2"
           >
             <CreditCard className="h-4 w-4" />
             <span>{showPaymentHistory ? 'Hide History' : 'View History'}</span>

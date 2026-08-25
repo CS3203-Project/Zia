@@ -73,8 +73,7 @@ export default function MyServicesCard({
           </p>
           <Button
             onClick={onCreateService}
-            variant="white"
-            className="flex items-center space-x-2 mx-auto px-6 py-3 text-sm font-semibold rounded-full hover:scale-105 transition-all duration-300"
+            className="flex items-center space-x-2 mx-auto"
           >
             <Plus className="h-5 w-5" />
             <span>Create First Service</span>
@@ -145,13 +144,13 @@ export default function MyServicesCard({
                       };
                       onEditService(serviceData);
                     }}
-                    variant="white"
+                    variant="tonal"
                     size="sm"
-                    className="px-3 py-1 rounded-full flex items-center gap-1.5 backdrop-blur-md bg-white/90 border border-white/40 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+                    className="px-3 py-1 flex items-center gap-1.5"
                     title="Edit Service"
                   >
-                    <Edit2 className="h-3.5 w-3.5 text-gray-900" strokeWidth={2.5} />
-                    <span className="text-xs font-semibold text-gray-900">Edit</span>
+                    <Edit2 className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    <span className="text-xs font-semibold">Edit</span>
                   </Button>
                 </div>
                 <p className="text-xs text-gray-500 line-clamp-2 mb-2">
@@ -179,8 +178,8 @@ export default function MyServicesCard({
           e.stopPropagation();
           onCreateService();
         }}
-        variant="white"
-        className="w-full mt-4 flex items-center justify-center space-x-2 px-6 py-3 text-sm font-semibold rounded-full hover:scale-105 transition-all duration-300"
+        variant="tonal"
+        className="w-full mt-4 flex items-center justify-center space-x-2"
       >
         <Plus className="h-4 w-4" />
         <span>Create New Service</span>
