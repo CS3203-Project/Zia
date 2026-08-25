@@ -20,9 +20,9 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   onInputChange,
 }) => {
   return (
-    <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
+    <div className="pb-8 border-b border-gray-100">
 
-      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center">
+      <h2 className="text-lg font-bold text-gray-900 mb-5 flex items-center">
         <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
         Category Selection
       </h2>

@@ -14,9 +14,9 @@ const WorkingHoursSection: React.FC<WorkingHoursSectionProps> = ({
   onWorkingHoursChange,
 }) => {
   return (
-    <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-        <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Working Hours</span>
+    <div className="pb-8 border-b border-gray-100">
+      <h2 className="text-lg font-bold text-gray-900 mb-5 flex items-center">
+        <span>Working Hours</span>
       </h2>
       <div className="space-y-4 relative z-10">
         {daysOfWeek.map(({ key, label }) => (

@@ -23,9 +23,9 @@ const ImagesSection: React.FC<ImagesSectionProps> = ({
   onRemoveImage,
 }) => {
   return (
-    <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-        <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Images</span>
+    <div className="pb-8 border-b border-gray-100">
+      <h2 className="text-lg font-bold text-gray-900 mb-5 flex items-center">
+        <span>Service Images</span>
         <span className="text-red-500 ml-2">*</span>
         <span className="ml-4 text-sm font-normal text-gray-400">(Max 5 images, 5MB each)</span>
       </h2>

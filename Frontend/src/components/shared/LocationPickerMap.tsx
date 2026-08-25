@@ -216,7 +216,7 @@ const LocationPickerMap: React.FC<LocationPickerMapProps> = ({
         <MapContainer
           center={mapCenter}
           zoom={zoom}
-          scrollWheelZoom
+          scrollWheelZoom={false}
           className="w-full h-full rounded-lg border border-gray-300"
         >
           <TileLayer

@@ -10,10 +10,10 @@ interface LocationSectionProps {
 
 const LocationSection: React.FC<LocationSectionProps> = ({ location, isDisabled, onLocationChange }) => {
   return (
-    <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-        <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Service Location</span>
-        <span className="ml-3 text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200">
+    <div className="pb-8 border-b border-gray-100">
+      <h2 className="text-lg font-bold text-gray-900 mb-5 flex items-center">
+        <span>Service Location</span>
+        <span className="ml-3 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
           Optional
         </span>
       </h2>

@@ -18,9 +18,9 @@ const TagsSection: React.FC<TagsSectionProps> = ({
   onRemoveTag,
 }) => {
   return (
-    <div className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_1px_2px_0_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]">
-      <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent mb-6 flex items-center relative z-10">
-        <span className="bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Tags</span>
+    <div className="pb-8 border-b border-gray-100">
+      <h2 className="text-lg font-bold text-gray-900 mb-5 flex items-center">
+        <span>Tags</span>
       </h2>
       <div className="space-y-6 relative z-10">
         <div className="flex gap-4">
@@ -37,8 +37,7 @@ const TagsSection: React.FC<TagsSectionProps> = ({
           <Button
             type="button"
             onClick={onAddTag}
-            size="sm"
-            className="px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg transition-all duration-300 rounded-xl font-semibold border border-transparent"
+            size="lg"
           >
             <FiPlus className="w-4 h-4 mr-2" />
             Add Tag
@@ -49,7 +48,7 @@ const TagsSection: React.FC<TagsSectionProps> = ({
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-orange-50 backdrop-blur-sm text-orange-700 border border-orange-100 transition-all duration-300 group"
+                className="inline-flex items-center px-4 py-2 rounded-full text-sm bg-orange-50 text-orange-700 border border-orange-100"
               >
                 {tag}
                 <button
