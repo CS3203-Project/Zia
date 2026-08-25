@@ -24,15 +24,15 @@ export default function ProviderQualificationsSection({
   touched
 }: ProviderQualificationsSectionProps) {
   return (
-    <div ref={sectionRef} className="space-y-4">
-      <label className="flex items-center text-xl font-semibold text-gray-900 mb-4">
+    <div ref={sectionRef} className="space-y-4 pb-8 border-b border-gray-100">
+      <label className="flex items-center text-lg font-bold text-gray-900">
         <div className="p-2 bg-orange-50 rounded-lg mr-3">
           <Award className="h-5 w-5 text-orange-600" />
         </div>
         Qualifications & Certifications
       </label>
 
-      <div className="flex items-center space-x-3 mb-4">
+      <div className="flex items-center space-x-3">
         <input
           type="text"
           value={newQualification}
@@ -44,8 +44,7 @@ export default function ProviderQualificationsSection({
         <Button
           type="button"
           onClick={onAddQualification}
-          size="default"
-          className="bg-orange-500 hover:bg-orange-600 text-white flex items-center space-x-2 px-6 border border-orange-500"
+          className="flex items-center space-x-2"
         >
           <Plus className="h-4 w-4" />
           <span>Add</span>

@@ -24,11 +24,11 @@ export default function ProviderSkillsSection({
   touched
 }: ProviderSkillsSectionProps) {
   return (
-    <div ref={sectionRef} className="space-y-6">
+    <div ref={sectionRef} className="space-y-6 pb-8 border-b border-gray-100">
       <div className="flex items-center justify-between">
-        <label className="flex items-center text-xl font-semibold text-gray-900">
-          <div className="relative p-3 bg-orange-50 rounded-xl mr-3">
-            <Award className="h-6 w-6 text-orange-600" />
+        <label className="flex items-center text-lg font-bold text-gray-900">
+          <div className="relative p-2 bg-orange-50 rounded-lg mr-3">
+            <Award className="h-5 w-5 text-orange-600" />
           </div>
           Your Skills & Expertise
         </label>
@@ -59,7 +59,8 @@ export default function ProviderSkillsSection({
             type="button"
             onClick={onAddSkill}
             disabled={!newSkill.trim()}
-            className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 px-6 py-4 border border-orange-500"
+            size="lg"
+            className="flex items-center space-x-2"
           >
             <Plus className="h-5 w-5" />
             <span>Add Skill</span>

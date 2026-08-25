@@ -31,8 +31,8 @@ export default function ProviderUploadCard({
   footerHint
 }: ProviderUploadCardProps) {
   return (
-    <div className="space-y-4">
-      <label className="flex items-center text-xl font-semibold text-gray-900 mb-4">
+    <div className="space-y-4 pb-8 border-b border-gray-100">
+      <label className="flex items-center text-lg font-bold text-gray-900">
         <div className="p-2 bg-orange-50 rounded-lg mr-3">
           {icon}
         </div>

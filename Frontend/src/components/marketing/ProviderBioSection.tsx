@@ -12,11 +12,11 @@ interface ProviderBioSectionProps {
 
 export default function ProviderBioSection({ sectionRef, bio, error, touched, onChange, onBlur }: ProviderBioSectionProps) {
   return (
-    <div ref={sectionRef} className="space-y-6">
+    <div ref={sectionRef} className="space-y-6 pb-8 border-b border-gray-100">
       <div className="flex items-center justify-between">
-        <label className="flex items-center text-xl font-semibold text-gray-900">
-          <div className="relative p-3 bg-orange-50 rounded-xl mr-3">
-            <User className="h-6 w-6 text-orange-600" />
+        <label className="flex items-center text-lg font-bold text-gray-900">
+          <div className="relative p-2 bg-orange-50 rounded-lg mr-3">
+            <User className="h-5 w-5 text-orange-600" />
           </div>
           Tell Us About Yourself
         </label>
