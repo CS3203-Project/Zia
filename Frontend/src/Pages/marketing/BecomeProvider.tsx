@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Camera, IdCard } from 'lucide-react';
 import { userApi } from '../../api/userApi';
 import type { CreateProviderData } from '../../api/userApi';
 import { uploadImage } from '../../utils/imageUpload';
@@ -231,7 +230,7 @@ export default function BecomeProvider() {
           <div className="relative bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
 
             <form onSubmit={handleSubmit} className="relative z-10">
-              <div className="p-6 lg:p-8 space-y-8">
+              <div className="p-8 space-y-8">
               {/* Bio Section */}
               <ProviderBioSection
                 sectionRef={bioSectionRef}
@@ -271,7 +270,6 @@ export default function BecomeProvider() {
 
               {/* Logo Upload Section */}
               <ProviderUploadCard
-                icon={<Camera className="h-5 w-5 text-orange-600" />}
                 label="Business Logo / Profile Picture"
                 inputId="logo-upload"
                 onChange={handleLogoUpload}
@@ -287,7 +285,6 @@ export default function BecomeProvider() {
 
               {/* ID Card Upload Section */}
               <ProviderUploadCard
-                icon={<IdCard className="h-5 w-5 text-orange-600" />}
                 label="ID Verification"
                 inputId="id-upload"
                 onChange={handleIdUpload}

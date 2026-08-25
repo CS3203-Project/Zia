@@ -26,12 +26,10 @@ export default function ProviderSkillsSection({
   return (
     <div ref={sectionRef} className="space-y-6 pb-8 border-b border-gray-100">
       <div className="flex items-center justify-between">
-        <label className="flex items-center text-lg font-bold text-gray-900">
-          <div className="relative p-2 bg-orange-50 rounded-lg mr-3">
-            <Award className="h-5 w-5 text-orange-600" />
-          </div>
+        <h2 className="text-lg font-bold text-gray-900 flex items-center">
+          <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
           Your Skills & Expertise
-        </label>
+        </h2>
         <span className="text-xs text-orange-700 bg-orange-50 px-2 py-1 rounded-full">
           {skills?.length || 0} skills added
         </span>

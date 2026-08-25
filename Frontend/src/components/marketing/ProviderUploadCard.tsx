@@ -1,8 +1,6 @@
 import { CheckCircle, Upload } from 'lucide-react';
-import type { ReactNode } from 'react';
 
 interface ProviderUploadCardProps {
-  icon: ReactNode;
   label: string;
   inputId: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -17,7 +15,6 @@ interface ProviderUploadCardProps {
 }
 
 export default function ProviderUploadCard({
-  icon,
   label,
   inputId,
   onChange,
@@ -32,12 +29,10 @@ export default function ProviderUploadCard({
 }: ProviderUploadCardProps) {
   return (
     <div className="space-y-4 pb-8 border-b border-gray-100">
-      <label className="flex items-center text-lg font-bold text-gray-900">
-        <div className="p-2 bg-orange-50 rounded-lg mr-3">
-          {icon}
-        </div>
+      <h2 className="text-lg font-bold text-gray-900 flex items-center">
+        <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
         {label}
-      </label>
+      </h2>
 
       <div className="relative">
         <input

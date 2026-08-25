@@ -1,4 +1,4 @@
-import { Award, Trash2, Plus, CheckCircle } from 'lucide-react';
+import { Trash2, Plus, CheckCircle } from 'lucide-react';
 import type { RefObject } from 'react';
 import Button from '../shared/Button';
 
@@ -25,12 +25,10 @@ export default function ProviderQualificationsSection({
 }: ProviderQualificationsSectionProps) {
   return (
     <div ref={sectionRef} className="space-y-4 pb-8 border-b border-gray-100">
-      <label className="flex items-center text-lg font-bold text-gray-900">
-        <div className="p-2 bg-orange-50 rounded-lg mr-3">
-          <Award className="h-5 w-5 text-orange-600" />
-        </div>
+      <h2 className="text-lg font-bold text-gray-900 flex items-center">
+        <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
         Qualifications & Certifications
-      </label>
+      </h2>
 
       <div className="flex items-center space-x-3">
         <input

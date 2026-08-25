@@ -1,4 +1,4 @@
-import { User, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import type { RefObject } from 'react';
 
 interface ProviderBioSectionProps {
@@ -14,12 +14,10 @@ export default function ProviderBioSection({ sectionRef, bio, error, touched, on
   return (
     <div ref={sectionRef} className="space-y-6 pb-8 border-b border-gray-100">
       <div className="flex items-center justify-between">
-        <label className="flex items-center text-lg font-bold text-gray-900">
-          <div className="relative p-2 bg-orange-50 rounded-lg mr-3">
-            <User className="h-5 w-5 text-orange-600" />
-          </div>
+        <h2 className="text-lg font-bold text-gray-900 flex items-center">
+          <div className="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
           Tell Us About Yourself
-        </label>
+        </h2>
         <span className="text-xs text-orange-700 bg-orange-50 px-2 py-1 rounded-full">Required</span>
       </div>
 
