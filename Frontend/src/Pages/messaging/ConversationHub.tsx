@@ -10,7 +10,9 @@ import ConversationListSkeleton from '../../components/Messaging/ConversationLis
 import EmptyConversationsState from '../../components/Messaging/EmptyConversationsState';
 import ConversationHubError from '../../components/Messaging/ConversationHubError';
 import ConversationHubPageSkeleton from '../../components/Messaging/ConversationHubPageSkeleton';
+import ConversationDetailPane from '../../components/Messaging/ConversationDetailPane';
 import PageHeader from '../../components/shared/PageHeader';
+import { getBookingTimeline, type BookingTimelineEntry } from '../../api/bookingApi';
 import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
 
@@ -29,8 +31,26 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
     error,
     startNewConversation,
     loadConversations,
+    selectConversation,
     checkUserOnlineStatus
   } = useMessaging();
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // conversationId -> booking status/unread, so each row can preview its pipeline.
+  const [bookings, setBookings] = useState<Map<string, BookingTimelineEntry>>(new Map());
+
+  useEffect(() => {
+    let alive = true;
+    getBookingTimeline()
+      .then((entries) => {
+        if (!alive) return;
+        setBookings(new Map(entries.map((e) => [e.conversationId, e])));
+      })
+      .catch(() => alive && setBookings(new Map()));
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const navigate = useNavigate();
   const [isNewConversationModalOpen, setIsNewConversationModalOpen] = useState(false);
@@ -106,7 +126,18 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
     }
   };
 
+  /**
+   * On a wide screen the conversation opens beside the list; on a narrow one
+   * there isn't room for both, so it still takes over the page.
+   */
   const handleSelectConversation = (conversation: ConversationWithLastMessage) => {
+    if (window.matchMedia('(min-width: 1024px)').matches) {
+      setSelectedId(conversation.id);
+      selectConversation(conversation).catch((err) =>
+        console.error('Failed to open conversation:', err)
+      );
+      return;
+    }
     navigate(`/conversation/${conversation.id}`);
   };
 
@@ -121,7 +152,7 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-orange-50 to-white text-gray-900">
       <main className="container mx-auto mt-16 flex-grow px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="mx-auto max-w-4xl lg:max-w-7xl">
           {/* Header */}
           <PageHeader
             title="Conversation Hub"
@@ -144,8 +175,11 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
             />
           )}
 
-          {/* Conversations List */}
-          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+          {/* Master-detail: the list keeps its own column and the selected
+              conversation opens beside it, so reading a thread no longer means
+              losing sight of the rest. Single column below lg. */}
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:items-start">
+          <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm lg:max-h-[calc(100vh-16rem)] lg:overflow-y-auto">
             <div>
               {loading && conversations.length === 0 ? (
                 <ConversationListSkeleton />
@@ -165,12 +199,24 @@ const ConversationHubInner: React.FC<{ currentUserId: string }> = ({ currentUser
                         isLoadingProfile={loadingProfiles.has(otherParticipantId)}
                         isOnline={checkUserOnlineStatus(otherParticipantId)}
                         onSelect={handleSelectConversation}
+                        bookingStatus={bookings.get(conversation.id)?.status}
+                        bookingUnread={bookings.get(conversation.id)?.unreadCount}
+                        isSelected={selectedId === conversation.id}
                       />
                     );
                   })}
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Detail pane - wide screens only; narrow ones navigate instead. */}
+          <div className="hidden overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm lg:block lg:h-[calc(100vh-16rem)]">
+            <ConversationDetailPane
+              conversationId={selectedId}
+              currentUserId={currentUserId}
+            />
+          </div>
           </div>
         </div>
       </main>

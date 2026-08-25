@@ -2,6 +2,14 @@ import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import type { UserProfile } from '../../api/userApi';
 import type { ConversationWithLastMessage } from '../../api/messagingApi';
+import { STATUS_META, type BookingStatus } from '../../api/bookingApi';
+
+const STATUS_TONE: Record<string, string> = {
+  neutral: 'bg-gray-100 text-gray-600 border-gray-200',
+  active: 'bg-orange-50 text-orange-700 border-orange-200',
+  done: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  error: 'bg-red-50 text-red-600 border-red-200',
+};
 
 interface ConversationListItemProps {
   conversation: ConversationWithLastMessage;
@@ -11,6 +19,12 @@ interface ConversationListItemProps {
   isLoadingProfile: boolean;
   isOnline: boolean;
   onSelect: (conversation: ConversationWithLastMessage) => void;
+  /** Where this conversation's booking has got to, previewed in the row. */
+  bookingStatus?: BookingStatus;
+  /** Unread booking actions by the other party. */
+  bookingUnread?: number;
+  /** Highlights the row when its conversation is open in the detail pane. */
+  isSelected?: boolean;
 }
 
 const getContactDisplayName = (otherParticipantId: string, userProfile?: UserProfile) => {
@@ -49,14 +63,22 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
   userProfile,
   isLoadingProfile,
   isOnline,
-  onSelect
+  onSelect,
+  bookingStatus,
+  bookingUnread = 0,
+  isSelected = false
 }) => {
   const contactDisplayName = getContactDisplayName(otherParticipantId, userProfile);
+  const statusMeta = bookingStatus ? STATUS_META[bookingStatus] : null;
 
   return (
     <div
       onClick={() => onSelect(conversation)}
-      className="p-6 hover:bg-orange-50/60 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 border-transparent hover:border-orange-400"
+      className={`p-4 sm:p-6 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 ${
+        isSelected
+          ? 'bg-orange-50 border-orange-500'
+          : 'border-transparent hover:bg-orange-50/60 hover:border-orange-400'
+      }`}
     >
       <div className="flex items-center space-x-4 relative z-10">
         {/* Avatar with enhanced styling */}
@@ -85,6 +107,23 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
                 )}
               </div>
+
+              {/* Where the booking has got to, so the list doubles as a
+                  pipeline overview rather than just a message log. */}
+              {statusMeta && (
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-xs font-medium ${STATUS_TONE[statusMeta.tone]}`}
+                  >
+                    {statusMeta.label}
+                  </span>
+                  {bookingUnread > 0 && (
+                    <span className="rounded-full bg-rose-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                      {bookingUnread} new
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Conversation Title */}
               {conversation.title &&
