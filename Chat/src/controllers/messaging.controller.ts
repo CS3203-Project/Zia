@@ -11,8 +11,8 @@ function getActorId(req: Request): string {
 class MessagingController {
   async createConversation(req: Request, res: Response) {
     try {
-      const { userIds, title } = req.body;
-      const conversation = await messagingService.createConversation(userIds, title);
+      const { userIds, title, serviceId } = req.body;
+      const conversation = await messagingService.createConversation(userIds, title, serviceId);
       res.status(201).json(conversation);
     } catch (error) {
       res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to create conversation' });

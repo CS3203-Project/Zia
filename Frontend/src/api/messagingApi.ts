@@ -35,6 +35,7 @@ export interface PaginatedResponse<T> {
 export interface CreateConversationDto {
   userIds: string[];
   title?: string;
+  serviceId?: string;
 }
 
 export interface CreateMessageDto {

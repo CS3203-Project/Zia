@@ -9,9 +9,9 @@ export interface PaginatedResponse<T> {
 }
 
 class MessagingService {
-  async createConversation(userIds: string[], title?: string) {
+  async createConversation(userIds: string[], title?: string, serviceId?: string) {
     return prisma.conversation.create({
-      data: { userIds, title },
+      data: { userIds, title, serviceId },
     });
   }
 
