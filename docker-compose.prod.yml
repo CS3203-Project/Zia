@@ -96,10 +96,14 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@notification-postgres:5432/zia_com
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672
+      # Names must match email.module.ts exactly (MAIL_PASS, not MAIL_PASSWORD)
+      # or the mailer silently starts with no credentials.
       MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT:-587}
       MAIL_USER: ${MAIL_USER}
-      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_PASS: ${MAIL_PASS}
       MAIL_FROM: ${MAIL_FROM}
+      MAIL_LIMIT: ${MAIL_LIMIT:-450}
       NODE_ENV: production
     depends_on: [notification-postgres, rabbitmq]
     restart: unless-stopped

@@ -68,6 +68,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: read
+      # The repo is private, so its GHCR packages are too: the server needs a
+      # credential to pull. The job's own GITHUB_TOKEN is used rather than a
+      # long-lived PAT, so it expires when the run ends.
+      packages: read
     steps:
       - uses: actions/checkout@v4
 
@@ -87,11 +93,13 @@ jobs:
           # Nothing here is ever written into the repository.
           REGISTRY: ghcr.io/${{ github.repository_owner }}/zia
           IMAGE_TAG: ${{ github.sha }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: REGISTRY,IMAGE_TAG
+          envs: REGISTRY,IMAGE_TAG,GHCR_USER,GHCR_TOKEN
           script: |
             set -euo pipefail
             cd ~/zia
@@ -110,7 +118,8 @@ jobs:
             MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}
             MAIL_HOST=${{ secrets.MAIL_HOST }}
             MAIL_USER=${{ secrets.MAIL_USER }}
-            MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
+            MAIL_PORT=${{ secrets.MAIL_PORT }}
+            MAIL_PASS=${{ secrets.MAIL_PASS }}
             MAIL_FROM=${{ secrets.MAIL_FROM }}
             PAYHERE_MODE=${{ secrets.PAYHERE_MODE }}
             PAYHERE_MERCHANT_ID=${{ secrets.PAYHERE_MERCHANT_ID }}
@@ -119,7 +128,7 @@ jobs:
             PAYHERE_APP_SECRET=${{ secrets.PAYHERE_APP_SECRET }}
             ENVEOF
 
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
