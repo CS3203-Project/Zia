@@ -74,16 +74,16 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
   return (
     <div
       onClick={() => onSelect(conversation)}
-      className={`p-4 sm:p-6 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 ${
+      className={`p-4 cursor-pointer transition-all duration-300 group relative overflow-hidden border-l-4 ${
         isSelected
           ? 'bg-orange-50 border-orange-500'
           : 'border-transparent hover:bg-orange-50/60 hover:border-orange-400'
       }`}
     >
-      <div className="flex items-center space-x-4 relative z-10">
+      <div className="relative z-10 flex items-center gap-3">
         {/* Avatar with enhanced styling */}
         <div className="flex-shrink-0 relative">
-          <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-md ring-2 ring-white group-hover:shadow-lg transition-all duration-300">
+          <div className="w-11 h-11 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-base shadow-md ring-2 ring-white group-hover:shadow-lg transition-all duration-300">
             {contactDisplayName.charAt(0).toUpperCase()}
           </div>
           {/* Enhanced online status indicator */}
@@ -100,7 +100,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
             <div className="flex-1 min-w-0">
               {/* Contact Name */}
               <div className="flex items-center space-x-2">
-                <p className="text-xl font-bold text-gray-900 truncate">
+                <p className="truncate text-base font-bold text-gray-900">
                   {contactDisplayName}
                 </p>
                 {isLoadingProfile && (
@@ -149,27 +149,31 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
               )}
             </div>
 
-            {/* Time and Unread with enhanced styling */}
-            <div className="flex flex-col items-end ml-4 space-y-2">
+            {/* Time and Unread */}
+            <div className="ml-3 flex flex-shrink-0 flex-col items-end space-y-2">
               {conversation.lastMessage && (
-                <p className="text-xs text-gray-400 font-medium">
+                <p className="whitespace-nowrap text-xs font-medium text-gray-400">
                   {formatTime(conversation.lastMessage.createdAt)}
                 </p>
               )}
 
-              {conversation.unreadCount && conversation.unreadCount > 0 && (
-                <div className="bg-orange-500 text-white text-xs rounded-full h-7 w-7 flex items-center justify-center font-bold shadow-md">
-                  {conversation.unreadCount > 99 ? '99+' : conversation.unreadCount}
+              {/* `count && ...` renders a literal 0 when the count is zero, which
+                  is why every row showed a stray "0" under its timestamp. */}
+              {(conversation.unreadCount ?? 0) > 0 && (
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white shadow-md">
+                  {conversation.unreadCount! > 99 ? '99+' : conversation.unreadCount}
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Enhanced Arrow */}
-        <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center group-hover:bg-orange-100 transition-all duration-300 group-hover:scale-110">
-            <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-orange-600 transition-colors duration-300" />
+        {/* Chevron: only meaningful on narrow screens, where tapping navigates
+            to the conversation. Beside the detail pane it's just noise eating
+            width the contact name needs. */}
+        <div className="flex-shrink-0 lg:hidden">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-50 transition-all duration-300 group-hover:bg-orange-100">
+            <ChevronRight className="h-4 w-4 text-gray-500 transition-colors duration-300 group-hover:text-orange-600" />
           </div>
         </div>
       </div>
