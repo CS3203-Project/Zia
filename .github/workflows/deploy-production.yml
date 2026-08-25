@@ -12,7 +12,10 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io/${{ github.repository_owner }}/zia
+  # GHCR rejects any uppercase in a repository name, and the owner here is
+  # "CS3203-Project". github.repository_owner preserves that casing, so it has
+  # to be lowercased before it can be used in a tag.
+  REGISTRY: ghcr.io/cs3203-project/zia
 
 jobs:
   build:
@@ -91,7 +94,7 @@ jobs:
         env:
           # Passed through so the heredoc below can write .env on the host.
           # Nothing here is ever written into the repository.
-          REGISTRY: ghcr.io/${{ github.repository_owner }}/zia
+          REGISTRY: ghcr.io/cs3203-project/zia
           IMAGE_TAG: ${{ github.sha }}
           GHCR_USER: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
