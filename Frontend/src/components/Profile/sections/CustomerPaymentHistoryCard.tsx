@@ -22,10 +22,8 @@ export default function CustomerPaymentHistoryCard({
   onPageChange
 }: CustomerPaymentHistoryCardProps) {
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-xl shadow-2xl p-6 border border-gray-100 relative overflow-hidden">
-      {/* Animated background glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-orange-500/5 to-pink-500/5 blur-3xl"></div>
-      <div className="relative z-10">
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+      <div>
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Payment History</h2>
@@ -56,7 +54,7 @@ export default function CustomerPaymentHistoryCard({
               <>
                 <div className="space-y-3">
                   {paymentHistory.map((payment) => (
-                    <div key={payment.id} className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border border-gray-100 hover:border-gray-100 transition-colors">
+                    <div key={payment.id} className="bg-gray-50 rounded-lg p-4 border border-gray-100 hover:bg-gray-100 transition-colors">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3">

@@ -12,11 +12,11 @@ export default function RecentReviewsCard({ reviews, averageRating, totalReviews
   if (!reviews || reviews.length === 0) return null;
 
   return (
-    <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-2xl p-6 border border-gray-100">
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Recent Reviews</h2>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             Latest feedback from your clients
           </p>
         </div>
@@ -28,22 +28,22 @@ export default function RecentReviewsCard({ reviews, averageRating, totalReviews
                 {averageRating?.toFixed(1) || 'N/A'}
               </span>
             </div>
-            <p className="text-xs text-gray-400">{totalReviews || 0} reviews</p>
+            <p className="text-xs text-gray-500">{totalReviews || 0} reviews</p>
           </div>
         </div>
       </div>
       <div className="space-y-6">
         {reviews.slice(0, 3).map((review) => (
-          <div key={review.id} className="group hover:bg-white/5 -mx-3 px-3 py-4 rounded-xl transition-colors duration-200">
+          <div key={review.id} className="group hover:bg-gray-50 -mx-3 px-3 py-4 rounded-xl transition-colors duration-200">
             <div className="flex items-start space-x-4">
               {review.reviewer.imageUrl ? (
                 <img
                   src={review.reviewer.imageUrl}
                   alt={`${review.reviewer.firstName} ${review.reviewer.lastName}`}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 group-hover:border-blue-400/50 transition-colors duration-200"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100 group-hover:border-orange-300 transition-colors duration-200"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-gray-100 group-hover:border-blue-400/50 transition-colors duration-200">
+                <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-gray-100 group-hover:border-orange-300 transition-colors duration-200">
                   {(review.reviewer.firstName || '').charAt(0)}{(review.reviewer.lastName || '').charAt(0)}
                 </div>
               )}
@@ -66,11 +66,11 @@ export default function RecentReviewsCard({ reviews, averageRating, totalReviews
                           />
                         ))}
                       </div>
-                      <span className="text-sm font-medium text-yellow-300">
+                      <span className="text-sm font-medium text-gray-900">
                         {review.rating}.0
                       </span>
                       <span className="text-sm text-gray-400">•</span>
-                      <span className="text-sm text-gray-400">
+                      <span className="text-sm text-gray-500">
                         {new Date(review.createdAt).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -80,7 +80,7 @@ export default function RecentReviewsCard({ reviews, averageRating, totalReviews
                     </div>
                   </div>
                 </div>
-                <blockquote className="text-gray-400 text-sm leading-relaxed border-l-3 border-blue-400/50 pl-4 italic">
+                <blockquote className="text-gray-600 text-sm leading-relaxed border-l-2 border-orange-200 pl-4 italic">
                   "{review.comment}"
                 </blockquote>
               </div>

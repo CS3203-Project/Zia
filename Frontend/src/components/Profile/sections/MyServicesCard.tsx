@@ -45,7 +45,7 @@ export default function MyServicesCard({
 
   if (servicesLoading) {
     return (
-      <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Services</h2>
@@ -62,7 +62,7 @@ export default function MyServicesCard({
 
   if (services.length === 0) {
     return (
-      <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6">
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
         <div className="text-center py-8">
           <div className="w-16 h-16 bg-white/50 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/30">
             <Briefcase className="h-8 w-8 text-gray-500" />
@@ -84,7 +84,7 @@ export default function MyServicesCard({
   }
 
   return (
-    <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Services</h2>

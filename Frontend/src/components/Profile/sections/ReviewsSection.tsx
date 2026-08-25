@@ -43,10 +43,10 @@ export default function ReviewsSection({
   showServiceOption
 }: ReviewsSectionProps) {
   return (
-    <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div>
-          <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">My Reviews</h2>
+          <h2 className="text-xl font-bold text-gray-900">My Reviews</h2>
           <p className="text-sm text-gray-500 font-medium">
             {selectedReviewType === 'customer'
               ? 'Feedback received from service providers'
@@ -60,7 +60,7 @@ export default function ReviewsSection({
           <select
             value={selectedReviewType}
             onChange={(e) => onReviewTypeChange(e.target.value as 'customer' | 'service')}
-            className="px-4 py-2 pr-8 bg-white/80 border border-white/30 rounded-xl text-sm font-medium text-gray-900 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-black/20 transition-all duration-200 hover:bg-white/90 appearance-none"
+            className="px-4 py-2 pr-8 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-colors hover:bg-gray-100 appearance-none"
           >
             {customerReviews.length > 0 && (
               <option value="customer" className="bg-white text-gray-900">⭐ Reviews from Providers</option>
@@ -75,22 +75,22 @@ export default function ReviewsSection({
 
       {reviewsLoading ? (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto mb-3"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-3"></div>
           <p className="text-gray-500">Loading reviews...</p>
         </div>
       ) : selectedReviewType === 'customer' && customerReviews.length > 0 ? (
         <div className="space-y-6">
           {customerReviews.slice(0, 5).map((review, index) => (
-            <div key={review.id || index} className="group border border-gray-100 rounded-xl p-4 bg-white/30 backdrop-blur-sm hover:border-white/40 transition-all duration-300">
+            <div key={review.id || index} className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-start space-x-4">
                 {review.reviewer?.imageUrl ? (
                   <img
                     src={review.reviewer.imageUrl}
                     alt={`${review.reviewer?.firstName || 'Provider'} ${review.reviewer?.lastName || ''}`}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white/40"
+                    className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-white/40">
+                  <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-semibold text-sm border-2 border-gray-100">
                     {((review.reviewer?.firstName || 'P').charAt(0) || 'P').toUpperCase()}
                     {((review.reviewer?.lastName || '').charAt(0) || 'R').toUpperCase()}
                   </div>
@@ -114,7 +114,7 @@ export default function ReviewsSection({
                             />
                           ))}
                         </div>
-                        <span className="text-sm font-medium text-yellow-600">
+                        <span className="text-sm font-medium text-gray-900">
                           {review.rating || 0}.0
                         </span>
                         <span className="text-sm text-gray-400">• Provider</span>
@@ -131,7 +131,7 @@ export default function ReviewsSection({
                     </div>
                   </div>
                   <div className="mt-3">
-                    <blockquote className="text-gray-500 text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
+                    <blockquote className="text-gray-600 text-sm leading-relaxed border-l-2 border-orange-200 pl-4 italic bg-gray-50 p-3 rounded-r-lg">
                       "{review.comment || 'No comment provided'}"
                     </blockquote>
                   </div>
@@ -151,12 +151,12 @@ export default function ReviewsSection({
       ) : selectedReviewType === 'service' && serviceReviews.length > 0 ? (
         <div className="space-y-6">
           {serviceReviews.slice(0, 5).map((review, index) => (
-            <div key={review.id || index} className="group border border-gray-100 rounded-xl p-4 bg-white/30 backdrop-blur-sm hover:border-white/40 transition-all duration-300">
+            <div key={review.id || index} className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-start space-x-4">
                 <img
                   src={review.clientAvatar || `https://picsum.photos/seed/${review.reviewerId}/60/60`}
                   alt={review.clientName}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white/40"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
                   onError={(e) => {
                     e.currentTarget.src = `https://picsum.photos/seed/${review.reviewerId}/60/60`;
                   }}
@@ -180,7 +180,7 @@ export default function ReviewsSection({
                             />
                           ))}
                         </div>
-                        <span className="text-sm font-medium text-yellow-600">
+                        <span className="text-sm font-medium text-gray-900">
                           {review.rating || 0}.0
                         </span>
                         <span className="text-sm text-gray-400">•</span>
@@ -200,7 +200,7 @@ export default function ReviewsSection({
                     </div>
                   </div>
                   <div className="mt-3">
-                    <blockquote className="text-gray-500 text-sm leading-relaxed border-l-4 border-blue-500/30 pl-4 italic bg-white/50 p-3 rounded-r-lg">
+                    <blockquote className="text-gray-600 text-sm leading-relaxed border-l-2 border-orange-200 pl-4 italic bg-gray-50 p-3 rounded-r-lg">
                       "{review.comment || 'No comment provided'}"
                     </blockquote>
                   </div>

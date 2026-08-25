@@ -39,7 +39,7 @@ export default function ProviderPaymentEarningsCard({
   onPageChange
 }: ProviderPaymentEarningsCardProps) {
   return (
-    <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] p-6 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
+    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold bg-gradient-to-br from-black from-30% to-black/40 bg-clip-text text-transparent">Payment & Earnings</h2>
