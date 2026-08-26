@@ -5,6 +5,7 @@ import type { ProviderProfile } from '../../../api/userApi';
 import type { DetailedService } from '../../../Pages/services/ServiceDetailPage';
 import ServiceProviderCard from './ServiceProviderCard';
 import ServiceQRCodePanel from './ServiceQRCodePanel';
+import SaveServiceButton from '../SaveServiceButton';
 
 interface ServiceBookingSidebarProps {
   service: DetailedService;
@@ -131,6 +132,13 @@ const ServiceBookingSidebar: React.FC<ServiceBookingSidebarProps> = ({
               </button>
             )}
           </div>
+
+          {/* Save for later, directly above the QR panel. */}
+          <SaveServiceButton
+            serviceId={service.id}
+            ownerUserId={provider?.userId}
+            className="w-full mb-4"
+          />
 
           {/* QR Code Section */}
           <ServiceQRCodePanel
