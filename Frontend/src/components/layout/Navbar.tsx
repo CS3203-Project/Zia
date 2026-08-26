@@ -103,6 +103,7 @@ const Navbar = () => {
       ? [
           { name: 'Messages', href: '/conversation-hub' },
           { name: 'Bookings', href: '/bookings' },
+          { name: 'Saved', href: '/saved' },
         ]
       : [])
   ];

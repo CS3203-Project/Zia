@@ -52,6 +52,7 @@ import companyRoutes from './src/routes/company.route.js';
 import servicesRoutes from './src/routes/services.route.js';
 import categoryRoutes from './src/routes/category.route.js';
 import adminRoutes from './src/Admin/routes/admin.route.js';
+import wishlistRoutes from './src/routes/wishlist.route.js';
 import confirmationRoutes from './src/routes/confirmation.route.js';
 import bookingRoutes from './src/routes/booking.route.js';
 import accountRoutes from './src/routes/account.route.js';
@@ -137,6 +138,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/account', accountRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 // Superseded by /api/bookings - kept mounted so older clients don't hard-fail
 // mid-deploy, but the booking panel no longer calls it.
 app.use('/api/confirmations', confirmationRoutes);

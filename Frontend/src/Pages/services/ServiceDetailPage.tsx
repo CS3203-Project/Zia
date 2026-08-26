@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SaveServiceButton from '../../components/services/SaveServiceButton';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Star, MapPin, Calendar,
@@ -907,6 +908,17 @@ const ServiceDetailPage: React.FC = () => {
                     </div>
                   )}
               </div>
+            </div>
+
+            {/* Save-for-later sits beside booking, not on the video banner: it is a
+                customer action about this listing, and burying it in the media
+                made it look like a media control. */}
+            <div className="lg:col-span-1 order-last lg:order-none">
+              <SaveServiceButton
+                serviceId={service.id}
+                ownerUserId={provider?.userId}
+                className="w-full mb-4"
+              />
             </div>
 
             <ServiceBookingSidebar

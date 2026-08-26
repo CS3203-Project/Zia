@@ -36,6 +36,7 @@ model User {
   customerReviewsReceived CustomerReview[] @relation("CustomerReviewReviewee")
   customerReviewsWritten  CustomerReview[] @relation("CustomerReviewReviewer")
   bookings                Booking[]
+  wishlist                Wishlist[]
   schedules               Schedule[]
   serviceProvider         ServiceProvider?
   serviceRequests         ServiceRequest[]
@@ -135,6 +136,7 @@ model Service {
   serviceRadiusKm      Float?                 @default(10)
   state                String?
   bookings             Booking[]
+  wishlist             Wishlist[]
   schedules            Schedule[]
   category             Category               @relation(fields: [categoryId], references: [id])
   provider             ServiceProvider        @relation(fields: [providerId], references: [id])
@@ -379,4 +381,20 @@ enum ServiceRequestStatus {
   MATCHED
   COMPLETED
   CLOSED
+}
+
+/// A customer's save-for-later list. Deliberately not a "like" or a rating:
+/// it carries no public signal and is only ever visible to its owner.
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  serviceId String
+  createdAt DateTime @default(now())
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// One row per customer per service - saving twice is a no-op, not a duplicate.
+  @@unique([userId, serviceId])
+  @@index([userId])
+  @@map("wishlist")
 }
