@@ -1,6 +1,5 @@
 import React from 'react';
-import { Eye, Heart, Bookmark } from 'lucide-react';
-import { cn } from '../../../utils/utils';
+import { Eye } from 'lucide-react';
 
 interface ServiceVideoBannerProps {
   videoUrl: string;
@@ -8,32 +7,34 @@ interface ServiceVideoBannerProps {
   onVideoPlay: () => void;
   onVideoPause: () => void;
   onVideoEnded: () => void;
-  isWishlisted: boolean;
-  onToggleWishlist: () => void;
 }
 
 /**
  * Full-width demo video shown above the main content grid, with a
- * "playing/demo" badge and floating wishlist/bookmark actions.
+ * "playing/demo" badge.
  */
 const ServiceVideoBanner: React.FC<ServiceVideoBannerProps> = ({
   videoUrl,
   isVideoPlaying,
   onVideoPlay,
   onVideoPause,
-  onVideoEnded,
-  isWishlisted,
-  onToggleWishlist
+  onVideoEnded
 }) => {
   return (
     <div className="-mx-4 mb-8 bg-white rounded-3xl shadow-sm overflow-hidden border border-gray-100 group">
-      <div className="relative bg-gradient-to-br from-white via-gray-100 to-white">
+      {/* A fixed 16:9 frame the video fills. Previously the <video> carried the
+          sizing itself (w-full max-h-[60vh]), so its height came from the file's
+          own aspect ratio: any clip that wasn't 16:9 left the frame taller or
+          shorter than its content and the picture sat off to one side. Giving the
+          wrapper the shape and letting the video cover it keeps the crop centred
+          whatever the source dimensions are. */}
+      <div className="relative w-full aspect-video max-h-[60vh] bg-black">
         <video
           autoPlay
           muted
           playsInline
           loop
-          className="w-full max-h-[60vh] object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-center"
           onPlay={onVideoPlay}
           onEnded={onVideoEnded}
           onPause={onVideoPause}
@@ -51,28 +52,6 @@ const ServiceVideoBanner: React.FC<ServiceVideoBannerProps> = ({
             <Eye className="w-4 h-4 mr-2" />
             {isVideoPlaying ? 'Playing' : 'Demo Video'}
           </div>
-        </div>
-
-        {/* Floating Action Buttons with Glass Morphism */}
-        <div className="absolute top-4 right-4 flex space-x-2">
-          <button
-            onClick={onToggleWishlist}
-            className={cn(
-              "p-3 rounded-full backdrop-blur-md border transition-all duration-300 hover:scale-110 shadow-lg",
-              isWishlisted
-                ? 'bg-orange-500 text-white border-orange-500/10'
-                : 'bg-white/70 text-gray-900 border-white/5 hover:bg-white'
-            )}
-            title="Add to wishlist"
-          >
-            <Heart className={cn("w-4 h-4", isWishlisted && "fill-current")} />
-          </button>
-          <button
-            className="p-3 rounded-full bg-white/70 backdrop-blur-md border border-white/5 text-gray-900 hover:bg-white transition-all duration-300 hover:scale-110 shadow-lg"
-            title="Bookmark service"
-          >
-            <Bookmark className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </div>

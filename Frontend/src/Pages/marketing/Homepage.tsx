@@ -196,7 +196,11 @@ export default function Homepage() {
       {/* Content Overlay */}
       <div className="relative">
         {/* Hero Section - fits one viewport height on desktop (no scroll); flows naturally on mobile */}
-        <section className="relative w-full flex flex-col pt-14 lg:pt-16 pb-10 lg:pb-0 px-4 sm:px-6 lg:px-8 text-center overflow-hidden lg:h-screen lg:min-h-[560px] bg-gradient-to-b from-orange-50 to-white">
+        {/* No overflow-hidden here on purpose: the location picker opens a map panel
+            taller than the hero, and clipping it here cut the panel off at the section
+            edge. The wrapper above still has overflow-hidden, so decorative art can
+            not cause horizontal page scroll. */}
+        <section className="relative w-full flex flex-col pt-14 lg:pt-16 pb-10 lg:pb-0 px-4 sm:px-6 lg:px-8 text-center lg:h-screen lg:min-h-[560px] bg-gradient-to-b from-orange-50 to-white">
           {/* Decorative asterisk */}
           <Asterisk strokeWidth={1.5} className="hidden sm:block absolute top-20 left-6 lg:left-16 w-8 h-8 text-orange-400 rotate-12" />
           <div className="hidden lg:block absolute top-36 right-10 w-3 h-3 rounded-full bg-orange-300" />

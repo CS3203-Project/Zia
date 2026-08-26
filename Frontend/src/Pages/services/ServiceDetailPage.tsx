@@ -76,7 +76,6 @@ const ServiceDetailPage: React.FC = () => {
   const [providerLoading, setProviderLoading] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [autoSlide, setAutoSlide] = useState(true);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Track if video is currently playing
 
@@ -518,10 +517,6 @@ const ServiceDetailPage: React.FC = () => {
     navigate(`/provider/${provider.id}`);
   };
 
-  const toggleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist');
-  };
 
   const nextImage = () => {
     if (service?.images.length > 1) {
@@ -689,8 +684,6 @@ const ServiceDetailPage: React.FC = () => {
               onVideoPlay={() => setIsVideoPlaying(true)}
               onVideoEnded={() => setIsVideoPlaying(false)}
               onVideoPause={() => setIsVideoPlaying(false)}
-              isWishlisted={isWishlisted}
-              onToggleWishlist={toggleWishlist}
             />
           )}
 

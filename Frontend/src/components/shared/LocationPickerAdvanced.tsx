@@ -327,7 +327,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({
         className={
           bordered
             ? undefined
-            : 'absolute left-0 right-0 top-full z-30 mt-2 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl empty:hidden'
+            : 'absolute left-0 right-0 top-full z-50 mt-2 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl empty:hidden'
         }
       >
       {/* Add Service Radius Button and Input */}
