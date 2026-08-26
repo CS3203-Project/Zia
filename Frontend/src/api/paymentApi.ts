@@ -1,3 +1,13 @@
+export interface PayoutAccount {
+  id: string;
+  providerId: string;
+  accountName: string;
+  bankName: string;
+  branch?: string | null;
+  accountNumberMasked: string;
+  updatedAt: string;
+}
+
 import { paymentApiClient } from './axios';
 
 // Payment Types
@@ -188,6 +198,22 @@ export const paymentApi = {
 
   getMyPayouts: async (): Promise<PayoutRequest[]> => {
     const response = await paymentApiClient.get('/payments/payouts');
+    return response.data.success ? response.data.data : response.data;
+  },
+
+  /** Where approved payouts are sent. Comes back masked - never the full number. */
+  getPayoutAccount: async (): Promise<PayoutAccount | null> => {
+    const response = await paymentApiClient.get('/payments/payouts/account');
+    return response.data.success ? response.data.data : response.data;
+  },
+
+  savePayoutAccount: async (data: {
+    accountName: string;
+    bankName: string;
+    branch?: string;
+    accountNumber: string;
+  }): Promise<PayoutAccount> => {
+    const response = await paymentApiClient.put('/payments/payouts/account', data);
     return response.data.success ? response.data.data : response.data;
   },
 

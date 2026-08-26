@@ -98,10 +98,35 @@ export const payoutService = {
   },
 
   async listAll(status?: string) {
-    return prisma.payoutRequest.findMany({
+    const requests = await prisma.payoutRequest.findMany({
       where: status ? { status: status as prismaPkg.PayoutStatus } : undefined,
       orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
       take: 200,
+    });
+
+    // The admin approving a payout is the person making the bank transfer, so
+    // the destination has to travel with the request - otherwise approving is a
+    // decision made without the one detail it depends on. PayoutAccount is a
+    // separate table, so this is one extra query rather than a join.
+    const providerIds = [...new Set(requests.map((r) => r.providerId))];
+    const accounts = providerIds.length
+      ? await prisma.payoutAccount.findMany({ where: { providerId: { in: providerIds } } })
+      : [];
+    const byProvider = new Map(accounts.map((a) => [a.providerId, a]));
+
+    return requests.map((r) => {
+      const account = byProvider.get(r.providerId);
+      return {
+        ...r,
+        payoutAccount: account
+          ? {
+              accountName: account.accountName,
+              bankName: account.bankName,
+              branch: account.branch,
+              accountNumber: account.accountNumber,
+            }
+          : null,
+      };
     });
   },
 

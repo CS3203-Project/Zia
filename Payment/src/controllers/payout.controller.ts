@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import { upsertPayoutAccount, getPayoutAccount } from '../services/payoutAccount.service.js';
 import payoutService, { PayoutError } from '../services/payout.service.js';
 import coreClient from '../services/coreClient.service.js';
 
@@ -99,6 +100,33 @@ class PayoutController {
       res.json({ success: true, message: 'Payout rejected and funds returned', data: updated });
     } catch (error) {
       fail(res, error);
+    }
+  }
+
+  /** The provider's own payout destination, returned masked. */
+  async getAccount(req: Request, res: Response) {
+    try {
+      const providerId = await providerIdFor(req);
+      res.json({ success: true, data: await getPayoutAccount(providerId) });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to load payout account',
+      });
+    }
+  }
+
+  async saveAccount(req: Request, res: Response) {
+    try {
+      const providerId = await providerIdFor(req);
+      const saved = await upsertPayoutAccount(providerId, req.body ?? {});
+      res.json({ success: true, data: saved });
+    } catch (error) {
+      const status = (error as { status?: number })?.status ?? 500;
+      res.status(status).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to save payout account',
+      });
     }
   }
 }

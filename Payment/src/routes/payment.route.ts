@@ -23,6 +23,11 @@ router.get('/payouts/earnings', authMiddleware, payoutController.getMyEarnings);
 router.get('/payouts', authMiddleware, payoutController.listMyPayouts);
 router.post('/payouts', authMiddleware, payoutController.requestPayout);
 
+// Where approved payouts are sent. Read back masked; only the transfer path
+// ever sees the full number.
+router.get('/payouts/account', authMiddleware, payoutController.getAccount);
+router.put('/payouts/account', authMiddleware, payoutController.saveAccount);
+
 /**
  * @route POST /api/payments/checkout
  * @desc Create a PayHere checkout payload

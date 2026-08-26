@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import PayoutAccountCard from '../../components/provider/PayoutAccountCard';
 import { useNavigate } from 'react-router-dom';
 import {
   DollarSign,
@@ -213,6 +214,12 @@ const ProviderEarningsPage: React.FC = () => {
             </div>
 
             {/* Earnings Breakdown */}
+            {/* Where approved withdrawals actually land. Sits above the payout
+                history because requesting one without a destination is a dead end. */}
+            <div className="mb-8">
+              <PayoutAccountCard />
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Earnings Summary */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

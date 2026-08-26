@@ -126,3 +126,23 @@ enum PaymentStatus {
   REFUNDED
   PARTIALLY_REFUNDED
 }
+
+/// Where a provider's payouts are sent.
+///
+/// Bank details, deliberately not card details: cards are an instrument for
+/// taking money, not sending it, and storing a PAN would put this system in
+/// PCI-DSS scope for no benefit. Local payouts settle to a bank account.
+model PayoutAccount {
+  id            String   @id @default(cuid())
+  providerId    String   @unique
+  accountName   String
+  bankName      String
+  branch        String?
+  /// Stored in full because a payout cannot be made without it. Only ever
+  /// returned masked to the provider and to admins - see payoutAccount.service.
+  accountNumber String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([providerId])
+}
