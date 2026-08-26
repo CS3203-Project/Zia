@@ -1,4 +1,5 @@
 import React from 'react';
+import RichTextArea from '../../shared/RichTextArea';
 import { FiX } from 'react-icons/fi';
 import Select from '../../shared/Select';
 
@@ -60,16 +61,17 @@ const ServiceDetailsSection: React.FC<ServiceDetailsSectionProps> = ({
             Description <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <textarea
-              id="description"
-              name="description"
+            {/* Markdown, not HTML: the stored value stays readable and there is no
+                markup to sanitise wherever it gets rendered. */}
+            <RichTextArea
               value={description}
-              onChange={onInputChange}
+              onChange={(next) =>
+                onInputChange({
+                  target: { name: 'description', value: next },
+                } as React.ChangeEvent<HTMLTextAreaElement>)
+              }
               rows={6}
-              placeholder="Describe your service in detail. Include what's included, your experience, and what makes your service unique."
-              className={`w-full px-4 py-4 bg-gray-50 border rounded-xl focus:outline-none focus:bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none text-gray-900 placeholder-gray-400 ${
-                descriptionError ? 'border-red-300 ring-red-500' : 'border-gray-200 hover:border-gray-300'
-              }`}
+              placeholder="Describe your service. Use the toolbar for bold text, bullet points and numbered steps."
             />
           </div>
           {descriptionError && <p className="mt-2 text-sm text-red-500 flex items-center">

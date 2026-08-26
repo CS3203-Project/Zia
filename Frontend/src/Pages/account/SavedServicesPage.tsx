@@ -4,6 +4,7 @@ import { Bookmark, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { wishlistApi, type WishlistEntry } from '../../api/wishlistApi';
 import PageHeader from '../../components/shared/PageHeader';
+import { toPlainText } from '../../utils/richText';
 
 export default function SavedServicesPage() {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ export default function SavedServicesPage() {
 
                 <div className="flex flex-1 flex-col p-4">
                   <h3 className="mb-1 line-clamp-1 font-semibold text-gray-900">{service.title}</h3>
-                  <p className="mb-3 line-clamp-2 text-sm text-gray-500">{service.description}</p>
+                  <p className="mb-3 line-clamp-2 text-sm text-gray-500">{toPlainText(service.description)}</p>
 
                   <div className="mt-auto flex items-center justify-between">
                     <span className="font-semibold text-orange-600">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { toPlainText } from '../../../utils/richText';
 import { Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ServiceHeroGalleryProps {
@@ -66,7 +67,7 @@ const ServiceHeroGallery: React.FC<ServiceHeroGalleryProps> = ({
         </h1>
         {description && (
           <p className="text-white/90 text-xs sm:text-sm max-w-2xl line-clamp-1">
-            {description}
+            {toPlainText(description)}
           </p>
         )}
       </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { renderRichText } from '../../utils/richText';
 import SaveServiceButton from '../../components/services/SaveServiceButton';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -775,9 +776,9 @@ const ServiceDetailPage: React.FC = () => {
                 <h2 className="text-base font-semibold text-gray-900 mb-2">About This Service</h2>
 
                 {service.description && (
-                  <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                    {service.description}
-                  </p>
+                  <div className="text-sm text-gray-600 mb-3 leading-relaxed">
+                    {renderRichText(service.description)}
+                  </div>
                 )}
 
                 {service.tags && service.tags.length > 0 && (
