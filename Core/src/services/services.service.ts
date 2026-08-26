@@ -205,6 +205,14 @@ export const createService = async (serviceData: ServiceCreateData) => {
 
     return newService;
   } catch (error) {
+    // A deliberate failure already carries its own status and a message written
+    // for the person reading it - the verification gate above being the case in
+    // point. Re-wrapping it in a plain Error dropped that status, so a 403 reached
+    // the error handler looking like a 500 and the handler replaced "awaiting
+    // verification" with "An unexpected error occurred".
+    if (typeof error === 'object' && error !== null && 'status' in error) {
+      throw error;
+    }
     const errorMessage = typeof error === 'object' && error !== null && 'message' in error
       ? (error as { message: string }).message
       : String(error);
