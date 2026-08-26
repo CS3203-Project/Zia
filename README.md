@@ -110,9 +110,9 @@ replicas, and the Socket.IO adapter so chat can scale horizontally.
 
 | Service | Stack | Port | Owns |
 |---|---|---|---|
-| **Core** | Express · TypeScript · Prisma | 3000 | Users, providers, companies, categories, services, schedules, bookings, reviews, notifications, admin, platform settings |
+| **Core** | Express · TypeScript · Prisma | 3000 | Users, providers, companies, categories, services, schedules, bookings, reviews, wishlists, notifications, admin, platform settings |
 | **Chat** | Express · Socket.IO · Prisma | 3001 | Conversations and messages (`chat` schema) |
-| **Payment** | Express · Prisma | 3002 | Payments, provider earnings, payout requests, refund requests (`payment` schema) |
+| **Payment** | Express · Prisma | 3002 | Payments, provider earnings, payout requests and destinations, refund requests (`payment` schema) |
 | **Notification** | NestJS · TypeORM | 3001 (3003 host) | Consumes RabbitMQ, renders and sends email |
 | **Frontend** | React · Vite · Tailwind v4 | 80 (8080 host) | SPA, served as static files by nginx |
 
@@ -120,8 +120,10 @@ replicas, and the Socket.IO adapter so chat can scale horizontally.
 
 - **Geospatial search** — PostGIS; services carry a location and are searchable by radius.
 - **Semantic search** — pgvector embeddings generated via Gemini, exposed as `/api/services/search/hybrid`, blending keyword and vector similarity.
-- **Platform settings** — admin-editable values (`platformFeePercent`, `allowCashPayments`, `minPayoutAmount`, `maxUploadSizeMb`, `maxServiceImages`, `requireServiceApproval`, `requireProviderVerification`) read at request time rather than baked into code.
+- **Platform settings** — admin-editable values (`platformFeePercent`, `allowCashPayments`, `minPayoutAmount`, `maxUploadSizeMb`, `maxServiceImages`, `requireServiceApproval`, `requireProviderVerification`) read at request time rather than baked into code. `requireProviderVerification` defaults **on**, so a provider cannot publish a listing until an admin approves them.
 - **Account lifecycle** — email verification and password reset using SHA-256 hashed, single-use, expiring tokens. Password reset always reports success so the endpoint can't be used to enumerate accounts.
+- **Save for later** — a private per-customer wishlist keyed unique on `(userId, serviceId)`. Every route takes the user from the token; nothing accepts a `userId` from the client. Delisted services stay in the table but are filtered from the list, so a service returns if its provider relists it.
+- **Formatted descriptions** — listings accept a small Markdown subset (bold, italics, bullets, numbered steps). Stored as Markdown and rendered to React nodes, never through `dangerouslySetInnerHTML`: React escapes every text node and only the renderer's own tags are constructed, so there is no sanitiser to get wrong.
 
 ---
 
@@ -144,6 +146,9 @@ erDiagram
     Payment ||--o{ RefundRequest : "may be refunded by"
     Service ||--o{ ServiceReview : "is reviewed in"
     User ||--o{ CustomerReview : "writes"
+    User ||--o{ Wishlist : "saves"
+    Service ||--o{ Wishlist : "is saved in"
+    ServiceProvider ||--o| PayoutAccount : "is paid to"
 ```
 
 A **`Booking` is keyed one-to-one on `conversationId`**. This matters: an earlier
@@ -235,6 +240,15 @@ LKR 1425 credited to the provider's `availableBalance`.
 **Payouts** move value across three buckets in a single transaction — request
 (`available → pending`), approve (`pending → withdrawn`), reject (`pending →
 available`) — so a failed step can never strand funds in between.
+
+**Payout destinations are bank accounts, not cards.** A card is the instrument
+for taking money, not sending it, and storing a card number would put the
+platform in PCI-DSS scope for no benefit. `PayoutAccount` holds the provider's
+bank details; the number is returned masked to the last four everywhere except
+the transfer path, which is a separate function so revealing it in full is always
+a deliberate call. The admin payout list carries the destination, because
+approving a transfer without it is a decision made without the one detail it
+depends on.
 
 **Cash** is an alternative path: when `allowCashPayments` is on, the provider
 marks the booking cash-paid, which moves `ACCEPTED → PAID` without touching the
@@ -507,6 +521,18 @@ only — an email address is not a valid username), with its own token shape.
 `POST /api/admin/register` is open only while zero admins exist; once one exists
 it requires an existing admin. There is no admin password-reset flow — change it
 via `PUT /api/admin/profile`.
+
+### In-app notifications
+
+The bell counts rows in Core's `notification` table. Chat calls Core after
+persisting a message so a new message actually raises one — the call is
+fire-and-forget, because the message is already stored by then and a bell that
+fails to update must never turn into a failed send. Repeats collapse: an unread
+notification for the same conversation is bumped rather than duplicated, so a
+chatty sender cannot push the badge to 30 and bury everything else.
+
+Service-to-service calls authenticate with the `x-internal-key` header (not
+`x-internal-api-key` — the wrong name fails silently as a 401).
 
 ### Rate limiting behind a proxy
 
