@@ -43,6 +43,11 @@ export default function MyServicesCard({
 }: MyServicesCardProps) {
   if (!providerProfile) return null;
 
+  // An unverified provider can't publish a listing - the API rejects it with 403
+  // when "Require verified providers" is on. Showing an enabled button meant
+  // filling the whole form only to be refused at the end.
+  const awaitingVerification = providerProfile.isVerified === false;
+
   if (servicesLoading) {
     return (
       <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
@@ -71,13 +76,19 @@ export default function MyServicesCard({
           <p className="text-sm text-gray-500 mb-4">
             Start showcasing your skills
           </p>
-          <Button
-            onClick={onCreateService}
-            className="flex items-center space-x-2 mx-auto"
-          >
-            <Plus className="h-5 w-5" />
-            <span>Create First Service</span>
-          </Button>
+          {awaitingVerification ? (
+            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+              An admin needs to verify your provider account before you can publish a service.
+            </p>
+          ) : (
+            <Button
+              onClick={onCreateService}
+              className="flex items-center space-x-2 mx-auto"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Create First Service</span>
+            </Button>
+          )}
         </div>
       </div>
     );
@@ -173,17 +184,23 @@ export default function MyServicesCard({
           </div>
         ))}
       </div>
-      <Button
-        onClick={(e) => {
-          e.stopPropagation();
-          onCreateService();
-        }}
-        variant="tonal"
-        className="w-full mt-4 flex items-center justify-center space-x-2"
-      >
-        <Plus className="h-4 w-4" />
-        <span>Create New Service</span>
-      </Button>
+      {awaitingVerification ? (
+        <p className="mt-4 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-center">
+          Awaiting admin verification before you can add more services.
+        </p>
+      ) : (
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            onCreateService();
+          }}
+          variant="tonal"
+          className="w-full mt-4 flex items-center justify-center space-x-2"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Create New Service</span>
+        </Button>
+      )}
     </div>
   );
 }

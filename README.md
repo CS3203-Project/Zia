@@ -244,6 +244,43 @@ gateway.
 redirect.** nginx routes `/api/payments/notify` straight to the Payment service
 ahead of the general `/api/` rule for exactly this reason.
 
+### Testing in sandbox
+
+With `PAYHERE_MODE=sandbox` no real money moves, and the gateway accepts **only**
+its own test cards — any other number is refused with *"Unknown card"*, which is
+the usual reason a sandbox payment appears to fail for no reason.
+
+**Successful payment**
+
+| Card | Number |
+|---|---|
+| Visa | `4916217501611292` |
+| MasterCard | `5307732125531191` |
+| AMEX | `346781005510225` |
+
+**Decline scenarios** — worth exercising, because the failure path is the one that
+tends to go untested. A declined payment must leave the booking in `ACCEPTED`, not
+silently advance it.
+
+| Scenario | Visa | MasterCard | AMEX |
+|---|---|---|---|
+| Insufficient funds | `4024007194349121` | `5459051433777487` | `370787711978928` |
+| Limit exceeded | `4929119799365646` | `5491182243178283` | `340701811823469` |
+| Do not honor | `4929768900837248` | `5388172137367973` | `374664175202812` |
+| Network error | `4024007120869333` | `5237980565185003` | `373433500205887` |
+
+Name on card, CVV and expiry accept any valid data — use a future expiry and a
+3-digit CVV (4 for AMEX). There is no 3-D Secure/OTP step in sandbox.
+
+To verify settlement without a browser, post a signed callback to
+`/api/payments/notify`. The signature is
+`MD5(merchant_id + order_id + amount + currency + status_code + MD5(merchant_secret))`
+upper-cased, with `status_code=2` for success. A wrong signature must come back
+`400 Invalid signature` — that check is what stops a forged callback marking a
+booking paid.
+
+Sandbox card list: <https://support.payhere.lk/sandbox-and-testing>
+
 ---
 
 ## Deployment

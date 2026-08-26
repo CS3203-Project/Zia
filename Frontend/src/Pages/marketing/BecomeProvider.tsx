@@ -15,7 +15,7 @@ import ProviderFormSubmitBar from '../../components/marketing/ProviderFormSubmit
 
 export default function BecomeProvider() {
   const navigate = useNavigate();
-  const { isLoggedIn, isLoading: authLoading } = useAuth();
+  const { isLoggedIn, isLoading: authLoading, updateUser } = useAuth();
 
   // Redirect straight to login if the user isn't authenticated
   useEffect(() => {
@@ -153,7 +153,18 @@ export default function BecomeProvider() {
     
     try {
       await userApi.createProvider(formData);
-      toast.success('Provider profile created successfully! Please wait for verification.');
+
+      // createProvider promotes the user to PROVIDER server-side, but AuthContext
+      // only loads the profile on mount - without re-reading it the navbar kept
+      // offering "Become a Provider" until the user manually refreshed.
+      try {
+        const refreshed = await userApi.getProfile();
+        updateUser(refreshed);
+      } catch {
+        // Non-fatal: the profile page reloads it anyway.
+      }
+
+      toast.success('Application submitted. Your profile is pending verification.');
       setTimeout(() => {
         navigate('/profile');
       }, 2000);

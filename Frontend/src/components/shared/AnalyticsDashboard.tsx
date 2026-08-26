@@ -458,6 +458,9 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
                         scales: {
                           y: {
                             beginAtZero: true,
+                            // Whole people only: without this Chart.js labels a
+                            // one-provider bar 0, 0.5, 1.
+                            ticks: { stepSize: 1, precision: 0 },
                           },
                         },
                       }}
@@ -482,6 +485,9 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ className }) =>
                         scales: {
                           y: {
                             beginAtZero: true,
+                            // Whole people only: without this Chart.js labels a
+                            // one-provider bar 0, 0.5, 1.
+                            ticks: { stepSize: 1, precision: 0 },
                           },
                         },
                       }}

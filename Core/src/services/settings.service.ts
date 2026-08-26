@@ -88,7 +88,7 @@ export const SETTING_SPECS: SettingSpec[] = [
     label: 'Require verified providers',
     description: 'When on, only admin-verified providers can publish services and receive bookings.',
     type: 'boolean',
-    default: false,
+    default: true,
     group: 'limits',
   },
 ];
