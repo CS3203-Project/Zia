@@ -5,6 +5,7 @@ export const createProviderSchema = Joi.object({
   skills: Joi.array().items(Joi.string()).optional(),
   qualifications: Joi.array().items(Joi.string()).optional(),
   logoUrl: Joi.string().uri().allow('').optional(),
+  coverUrl: Joi.string().uri().allow('').optional(),
   IDCardUrl: Joi.string().uri().allow('').optional() // Optional ID card image URL
 });
 
@@ -13,6 +14,7 @@ export const updateProviderSchema = Joi.object({
   skills: Joi.array().items(Joi.string()).optional(),
   qualifications: Joi.array().items(Joi.string()).optional(),
   logoUrl: Joi.string().uri().allow('').optional(),
+  coverUrl: Joi.string().uri().allow('').optional(),
   IDCardUrl: Joi.string().uri().allow('').optional() // Optional for updates
 });
 

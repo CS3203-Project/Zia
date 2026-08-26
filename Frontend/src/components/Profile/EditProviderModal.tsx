@@ -101,13 +101,14 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
   const [loading, setLoading] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingId, setUploadingId] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const [newSkill, setNewSkill] = useState('');
   const [newQualification, setNewQualification] = useState('');
 
   /** Uploads a picked file and stores the resulting URL on the form. */
   const handleFile = async (
     file: File,
-    field: 'logoUrl' | 'IDCardUrl',
+    field: 'logoUrl' | 'coverUrl' | 'IDCardUrl',
     setBusy: (busy: boolean) => void
   ) => {
     if (!file.type.startsWith('image/')) {
@@ -138,6 +139,7 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
         skills: [...(provider.skills || [])],
         qualifications: [...(provider.qualifications || [])],
         logoUrl: provider.logoUrl || '',
+        coverUrl: provider.coverUrl || '',
         IDCardUrl: provider.IDCardUrl || ''
       });
       setPhone(provider.user?.phone || '');
@@ -268,6 +270,17 @@ export default function EditProviderModal({ isOpen, onClose, onSuccess, provider
               uploading={uploadingLogo}
               onFile={(file) => handleFile(file, 'logoUrl', setUploadingLogo)}
               hint="Add a professional headshot or company logo"
+            />
+
+            {/* Cover Image */}
+            <FileField
+              icon={<Camera className="h-4 w-4 mr-2 text-orange-600" />}
+              label="Profile Background"
+              inputId="edit-provider-cover"
+              value={formData.coverUrl}
+              uploading={uploadingCover}
+              onFile={(file) => handleFile(file, 'coverUrl', setUploadingCover)}
+              hint="Wide banner shown behind your profile header. Falls back to a gradient if unset."
             />
 
             {/* ID Document */}

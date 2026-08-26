@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { SOCIAL_PLATFORMS, WEBSITE_INDEX, toUsername, toUrl, toWebsiteUrl } from '../../utils/socialLinks';
 import { X, Save, User, Phone, MapPin, Globe, Upload, Image } from 'lucide-react';
 import Button from '../shared/Button';
 import toast from 'react-hot-toast';
@@ -303,88 +304,52 @@ export default function EditProfileModal({ isOpen, onClose, onSuccess, user }: E
                 Social Media
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Twitter/X
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.socialmedia?.[0] || ''}
-                    onChange={(e) => {
-                      const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
-                      newSocial[0] = e.target.value.trim();
-                      setFormData(prev => ({ ...prev, socialmedia: newSocial }));
-                    }}
-                    className={inputClass}
-                    placeholder="twitter.com/username or x.com/username"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    LinkedIn
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.socialmedia?.[1] || ''}
-                    onChange={(e) => {
-                      const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
-                      newSocial[1] = e.target.value.trim();
-                      setFormData(prev => ({ ...prev, socialmedia: newSocial }));
-                    }}
-                    className={inputClass}
-                    placeholder="linkedin.com/in/username"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Instagram
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.socialmedia?.[2] || ''}
-                    onChange={(e) => {
-                      const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
-                      newSocial[2] = e.target.value.trim();
-                      setFormData(prev => ({ ...prev, socialmedia: newSocial }));
-                    }}
-                    className={inputClass}
-                    placeholder="instagram.com/username"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    GitHub
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.socialmedia?.[3] || ''}
-                    onChange={(e) => {
-                      const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
-                      newSocial[3] = e.target.value.trim();
-                      setFormData(prev => ({ ...prev, socialmedia: newSocial }));
-                    }}
-                    className={inputClass}
-                    placeholder="github.com/username"
-                  />
-                </div>
+                {/* Only the handle is asked for; the platform prefix is fixed and the
+                    full URL is assembled on save. People know their username, not
+                    the URL, and typing the whole thing invited malformed links. */}
+                {SOCIAL_PLATFORMS.map((platform) => (
+                  <div key={platform.index}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {platform.label}
+                    </label>
+                    <div className="flex items-stretch rounded-xl border border-gray-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 overflow-hidden">
+                      <span className="flex items-center px-3 bg-gray-50 text-gray-500 text-sm border-r border-gray-200 whitespace-nowrap select-none">
+                        {platform.prefix}
+                      </span>
+                      <input
+                        type="text"
+                        value={toUsername(formData.socialmedia?.[platform.index], platform)}
+                        onChange={(e) => {
+                          const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
+                          newSocial[platform.index] = toUrl(e.target.value, platform);
+                          setFormData(prev => ({ ...prev, socialmedia: newSocial }));
+                        }}
+                        className="flex-1 min-w-0 px-3 py-2.5 text-sm outline-none"
+                        placeholder="username"
+                      />
+                    </div>
+                  </div>
+                ))}
 
                 <div className="sm:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Website/Portfolio
                   </label>
                   <input
-                    type="url"
-                    value={formData.socialmedia?.[4] || ''}
+                    type="text"
+                    value={formData.socialmedia?.[WEBSITE_INDEX] || ''}
                     onChange={(e) => {
                       const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
-                      newSocial[4] = e.target.value.trim();
+                      newSocial[WEBSITE_INDEX] = e.target.value;
+                      setFormData(prev => ({ ...prev, socialmedia: newSocial }));
+                    }}
+                    onBlur={(e) => {
+                      const newSocial = [...(formData.socialmedia || new Array(5).fill(''))];
+                      newSocial[WEBSITE_INDEX] = toWebsiteUrl(e.target.value);
                       setFormData(prev => ({ ...prev, socialmedia: newSocial }));
                     }}
                     className={inputClass}
-                    placeholder="https://yourwebsite.com"
+                    placeholder="yourwebsite.com"
                   />
                 </div>
 

@@ -37,14 +37,20 @@ export default function ProfileHeader({
     <div className="backdrop-blur-md bg-white/70 border border-gray-100 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.08)] overflow-hidden mb-8 hover:shadow-[0_12px_48px_0_rgba(0,0,0,0.15)] transition-all duration-300">
       {/* Banner - Minimal Gradient */}
       <div className="relative h-36 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600">
-        <img
-          src="https://4kwallpapers.com/images/walls/thumbs_3t/8728.jpg"
-          alt="Profile Banner"
-          className="w-full h-full object-cover opacity-10 mix-blend-overlay"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
+        {/* The provider's own banner when they have set one. This used to hotlink a
+            stock wallpaper from a third-party site at 10% opacity - outside our
+            control, and nothing anyone could change. Unset, the gradient stands
+            on its own. */}
+        {providerProfile?.coverUrl?.trim() ? (
+          <img
+            src={providerProfile.coverUrl}
+            alt=""
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
+          />
+        ) : null}
         {/* Subtle overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/2 to-black/5"></div>
 

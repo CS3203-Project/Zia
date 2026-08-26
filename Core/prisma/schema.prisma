@@ -55,6 +55,7 @@ model ServiceProvider {
   skills         String[]
   qualifications String[]
   logoUrl        String?
+  coverUrl       String?
   averageRating  Float?
   totalReviews   Int?
   createdAt      DateTime   @default(now())

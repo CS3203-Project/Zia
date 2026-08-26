@@ -6,6 +6,7 @@ interface ProviderCreateData {
   skills?: string[];
   qualifications?: string[];
   logoUrl?: string;
+  coverUrl?: string;
   IDCardUrl?: string;
 }
 
@@ -14,6 +15,7 @@ interface ProviderUpdateData {
   skills?: string[];
   qualifications?: string[];
   logoUrl?: string;
+  coverUrl?: string;
   IDCardUrl?: string;
 }
 
@@ -45,6 +47,7 @@ export const createProvider = async (userId: string, providerData: ProviderCreat
         skills: providerData.skills || [],
         qualifications: providerData.qualifications || [],
         logoUrl: providerData.logoUrl,
+        coverUrl: providerData.coverUrl,
         IDCardUrl: providerData.IDCardUrl || '',
       },
       include: {
@@ -80,6 +83,7 @@ export const updateProvider = async (userId: string, providerData: ProviderUpdat
   if (providerData.skills !== undefined) updatedData.skills = providerData.skills;
   if (providerData.qualifications !== undefined) updatedData.qualifications = providerData.qualifications;
   if (providerData.logoUrl !== undefined) updatedData.logoUrl = providerData.logoUrl;
+  if (providerData.coverUrl !== undefined) updatedData.coverUrl = providerData.coverUrl;
   if (providerData.IDCardUrl !== undefined) updatedData.IDCardUrl = providerData.IDCardUrl;
 
   const updatedProvider = await prisma.serviceProvider.update({
