@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { createMessageNotification } from '../services/notification.service.js';
 import { prisma } from '../utils/database.js';
 
 /**
@@ -63,6 +64,27 @@ export class InternalController {
 
     if (!admin) return res.status(404).json({ message: 'Admin not found' });
     res.json(admin);
+  }
+
+  /**
+   * Chat calls this after persisting a message so the recipient's bell updates.
+   * Fire-and-forget on the caller's side: a notification failure must never stop
+   * a message being delivered.
+   */
+  async notifyMessage(req: Request, res: Response) {
+    const { recipientId, senderName, conversationId, preview } = req.body ?? {};
+    if (!recipientId || !conversationId) {
+      return res.status(400).json({ message: 'recipientId and conversationId are required' });
+    }
+
+    await createMessageNotification({
+      recipientId: String(recipientId),
+      senderName: String(senderName || 'Someone'),
+      conversationId: String(conversationId),
+      preview: preview ? String(preview) : undefined,
+    });
+
+    res.json({ success: true });
   }
 }
 

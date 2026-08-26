@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { socket } from '../api/socket';
 import { notificationApi, Notification, NotificationStats } from '../api/notificationApi';
 
 export interface UseNotificationsReturn {
@@ -85,7 +86,16 @@ export const useNotifications = (): UseNotificationsReturn => {
   // Initially fetch both notifications and stats
   useEffect(() => {
     fetchNotifications();
+
   }, [fetchNotifications]);
+  // Keep the bell live. Core records a notification when a message is stored, but
+  // without this the badge only moved on a page load, so a message arriving while
+  // the user sat on another page went unannounced until they navigated.
+  useEffect(() => {
+    const onIncoming = () => { void fetchStats(); };
+    socket.on('message:received', onIncoming);
+    return () => { socket.off('message:received', onIncoming); };
+  }, [fetchStats]);
 
   return {
     notifications,

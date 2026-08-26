@@ -1,5 +1,45 @@
 import { prisma } from '../utils/database.js';
 
+const CORE_SERVICE_URL = process.env.CORE_SERVICE_URL || 'http://core:3000';
+
+/**
+ * Tells Core to record an in-app notification for the recipient.
+ *
+ * Deliberately fire-and-forget: the message is already stored, and a bell that
+ * fails to update must never turn into a failed send.
+ */
+async function notifyCoreOfMessage(input: {
+  recipientId: string;
+  senderId: string;
+  conversationId: string;
+  preview: string;
+}): Promise<void> {
+  try {
+    const sender = await prisma.$queryRaw<Array<{ firstName: string | null; lastName: string | null }>>`
+      SELECT "firstName", "lastName" FROM public."User" WHERE id = ${input.senderId} LIMIT 1
+    `;
+    const first = sender?.[0]?.firstName ?? '';
+    const last = sender?.[0]?.lastName ?? '';
+    const senderName = `${first} ${last}`.trim() || 'Someone';
+
+    await fetch(`${CORE_SERVICE_URL}/api/internal/notifications/message`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-internal-key': process.env.INTERNAL_API_KEY || '',
+      },
+      body: JSON.stringify({
+        recipientId: input.recipientId,
+        senderName,
+        conversationId: input.conversationId,
+        preview: input.preview,
+      }),
+    });
+  } catch (err) {
+    console.error('Failed to record message notification:', err);
+  }
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
@@ -89,7 +129,16 @@ class MessagingService {
       throw new Error('Not authorized for this conversation');
     }
 
-    return prisma.message.create({ data });
+    const message = await prisma.message.create({ data });
+
+    void notifyCoreOfMessage({
+      recipientId: data.toId,
+      senderId: data.fromId,
+      conversationId: data.conversationId,
+      preview: data.content,
+    });
+
+    return message;
   }
 
   async getMessages(conversationId: string, page: number, limit: number): Promise<PaginatedResponse<any>> {

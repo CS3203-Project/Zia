@@ -208,3 +208,58 @@ export const getNotificationById = async (notificationId: string, userId: string
 
   return notification;
 };
+
+/**
+ * Records an in-app notification for a chat message.
+ *
+ * The bell counts rows in this table, and nothing was writing one when a message
+ * arrived - so a new message was only ever visible by opening the conversation.
+ *
+ * Deliberately collapses repeats: if the recipient already has an unread message
+ * notification for the same conversation, the timestamp is bumped instead of
+ * adding another row. Otherwise a chatty sender would push the badge to 30 and
+ * bury every other notification.
+ */
+export const createMessageNotification = async (input: {
+  recipientId: string;
+  senderName: string;
+  conversationId: string;
+  preview?: string;
+}) => {
+  const recipient = await prisma.user.findUnique({
+    where: { id: input.recipientId },
+    select: { id: true, email: true },
+  });
+  if (!recipient) return null;
+
+  const existing = await prisma.notification.findFirst({
+    where: {
+      userId: recipient.id,
+      emailType: 'NEW_MESSAGE_OR_REVIEW',
+      isRead: false,
+      html: { contains: input.conversationId },
+    },
+    select: { id: true },
+  });
+
+  const subject = `New message from ${input.senderName}`;
+  const preview = (input.preview || '').slice(0, 140);
+  const html = `<p>${subject}</p><p>${preview}</p><!--conversation:${input.conversationId}-->`;
+
+  if (existing) {
+    return prisma.notification.update({
+      where: { id: existing.id },
+      data: { subject, html, createdAt: new Date() },
+    });
+  }
+
+  return prisma.notification.create({
+    data: {
+      userId: recipient.id,
+      to: recipient.email,
+      subject,
+      html,
+      emailType: 'NEW_MESSAGE_OR_REVIEW',
+    },
+  });
+};

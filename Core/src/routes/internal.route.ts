@@ -21,4 +21,7 @@ router.get('/providers/by-user/:userId', internalController.getProviderByUserId)
 router.get('/providers/:id', internalController.getProvider);
 router.get('/admins/:id', internalController.getAdmin);
 
+// Chat calls this when a message is stored, so the recipient's bell updates.
+router.post('/notifications/message', internalController.notifyMessage);
+
 export default router;
